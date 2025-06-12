@@ -10,6 +10,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import vn.edu.fpt.sapsmobile.R;
+import vn.edu.fpt.sapsmobile.activities.main.MainActivity;
 import vn.edu.fpt.sapsmobile.models.User;
 import vn.edu.fpt.sapsmobile.services.AuthenticationService;
 import vn.edu.fpt.sapsmobile.utils.TokenManager;
@@ -20,6 +21,7 @@ public class LoginActivity  extends AppCompatActivity implements AuthenticationS
     private AuthenticationService authenticationService;
     private Button signInGoogleButton, signOutButton;
     private TextView userInfoText;
+   private TokenManager tokenManager ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +31,10 @@ public class LoginActivity  extends AppCompatActivity implements AuthenticationS
         }
         setContentView(R.layout.activity_login);
 
+        if(tokenManager.isLoggedIn()){
+            Intent mainIntent= new Intent(this, MainActivity.class) ;
+            startActivity(mainIntent);
+        }
         initializeViews();
         initializeAuthService();
         checkLoginStatus();

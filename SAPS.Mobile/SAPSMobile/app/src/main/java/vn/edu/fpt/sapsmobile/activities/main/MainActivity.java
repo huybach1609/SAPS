@@ -41,54 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         initializeBottomNavigation();
-//        // Set up navigation item selection listener
-//        bottomNavigation.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-//            @Override
-//            public boolean onNavigationItemSelected(MenuItem item) {
-//                int itemId = item.getItemId();
-//
-//                if (itemId == R.id.nav_home) {
-//                    // Navigate to Home Fragment
-//                    loadFragment(new HomeFragment());
-//                    return true;
-//                } else if (itemId == R.id.nav_vehicle) {
-//                    // Navigate to Vehicle Fragment
-//                    loadFragment(new VehicleFragment());
-//                    return true;
-//                } else if (itemId == R.id.nav_history) {
-//                    // Navigate to History Fragment
-//                    loadFragment(new HistoryFragment());
-//                    return true;
-//                } else if (itemId == R.id.nav_profile) {
-//                    // Navigate to Profile Fragment
-//                    loadFragment(new ProfileFragment());
-//                    return true;
-//                }
-//                return false;
-//            }
-//        });
-//
-//        // Set default selection (Home)
-//        bottomNavigation.setSelectedItemId(R.id.nav_home);
-//
-//        // Optional: Handle reselection (e.g., scroll to top)
-//        bottomNavigation.setOnItemReselectedListener(new NavigationBarView.OnItemReselectedListener() {
-//            @Override
-//            public void onNavigationItemReselected(MenuItem item) {
-//                int itemId = item.getItemId();
-//
-//                if (itemId == R.id.nav_home) {
-//                    // Handle home reselection (e.g., scroll to top)
-//                    // Example: scrollToTop() or refreshData()
-//                } else if (itemId == R.id.nav_vehicle) {
-//                    // Handle vehicle reselection
-//                } else if (itemId == R.id.nav_history) {
-//                    // Handle history reselection
-//                } else if (itemId == R.id.nav_profile) {
-//                    // Handle profile reselection
-//                }
-//            }
-//        });
+
     }
 
     private void initializeBottomNavigation() {
@@ -138,11 +91,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    private Fragment currentFragment;
     private void loadFragment(Fragment fragment) {
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, fragment)
-                .commit();
+        if (fragment != null && fragment.getClass() != (currentFragment != null ? currentFragment.getClass() : null)) {
+            currentFragment = fragment;
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .commit();
+        }
     }
+
+    public TokenManager getTokenManager(){return tokenManager;};
     // Method to programmatically change navigation
     public void navigateToTab(int tabId) {
         bottomNavigation.setSelectedItemId(tabId);

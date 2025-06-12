@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "afLI2q1/cTMlEPegGeOGY+6l7GctN1wNLxooBOV8Ceg=",
+  "Source": "SAPS.Desktop",
+  "BasePath": "_content/SAPS.Desktop",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}

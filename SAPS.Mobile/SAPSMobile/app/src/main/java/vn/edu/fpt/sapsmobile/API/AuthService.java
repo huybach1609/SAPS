@@ -9,9 +9,9 @@ import vn.edu.fpt.sapsmobile.models.GoogleTokenRequest;
 
 
 public interface AuthService {
-    @POST("api/authentication/google/verify")
+    @POST("api/auth/google/verify")
     Call<AuthResponse> verifyGoogleToken(@Body GoogleTokenRequest request);
 
-    @POST("api/authentication/refresh")
+    @POST("api/auth/refresh")
     Call<AuthResponse> refreshToken(@Header("Authorization") String bearerToken);
 }

@@ -29,4 +29,18 @@ public class User {
 
     public boolean isActive() { return isActive; }
     public void setActive(boolean active) { isActive = active; }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", googleId='" + googleId + '\'' +
+                ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", profilePictureUrl='" + profilePictureUrl + '\'' +
+                ", createdAt='" + createdAt + '\'' +
+                ", updatedAt='" + updatedAt + '\'' +
+                ", isActive=" + isActive +
+                '}';
+    }
 }
