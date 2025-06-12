@@ -27,7 +27,9 @@ import vn.edu.fpt.sapsmobile.utils.TokenManager;
 public class AuthenticationService {
     private static final String TAG = "AuthenticationService";
     private static final String SERVER_CLIENT_ID = BuildConfig.SERVER_CLIENT_ID;
+//    private static final String SERVER_CLIENT_ID = "";
     private static final String SERVER_BASE_URL = BuildConfig.SERVER_BASE_URL;
+//    private static final String SERVER_BASE_URL = "";
 
     private Context context;
     private GoogleSignInClient mGoogleSignInClient;
@@ -71,6 +73,7 @@ public class AuthenticationService {
     }
 
     public void handleSignInResult(Intent data) {
+
         Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
         try {
             GoogleSignInAccount account = task.getResult(ApiException.class);

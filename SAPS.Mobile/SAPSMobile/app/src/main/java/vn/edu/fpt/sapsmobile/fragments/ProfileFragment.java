@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import androidx.fragment.app.Fragment;
@@ -16,6 +17,7 @@ import com.bumptech.glide.request.RequestOptions;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.activities.main.MainActivity;
 import vn.edu.fpt.sapsmobile.models.User;
+import vn.edu.fpt.sapsmobile.services.AuthenticationService;
 
 
 public class ProfileFragment extends Fragment {
@@ -27,13 +29,14 @@ public class ProfileFragment extends Fragment {
     MainActivity mainActivity;
     User user;
 
-    private String TAG ="ProfileFragment" ;
+    private String TAG = "ProfileFragment";
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         // Initialize profile views and user data
         mainActivity = (MainActivity) requireActivity();
-        user= mainActivity.getTokenManager().getUserData();
+        user = mainActivity.getTokenManager().getUserData();
         Log.i(TAG, "onViewCreated: " + user.toString());
 
         String profileUrl = user.getProfilePictureUrl();
@@ -49,5 +52,17 @@ public class ProfileFragment extends Fragment {
                     .into(profileImageView);
         } else {
             profileImageView.setImageResource(R.drawable.account_circle_24);
-        }    }
+        }
+
+
+       logoutButton = view.findViewById(R.id.btn_logout) ;
+
+        logoutButton.setOnClickListener(v -> {
+            mainActivity.getAuthService().signOut(()->{
+
+            });
+        });
+    }
+    private Button logoutButton;
+
 }

@@ -31,6 +31,7 @@ public class LoginActivity  extends AppCompatActivity implements AuthenticationS
         }
         setContentView(R.layout.activity_login);
 
+        tokenManager = new TokenManager(this);
         if(tokenManager.isLoggedIn()){
             Intent mainIntent= new Intent(this, MainActivity.class) ;
             startActivity(mainIntent);

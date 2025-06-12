@@ -20,12 +20,15 @@ import vn.edu.fpt.sapsmobile.fragments.HistoryFragment;
 import vn.edu.fpt.sapsmobile.fragments.HomeFragment;
 import vn.edu.fpt.sapsmobile.fragments.ProfileFragment;
 import vn.edu.fpt.sapsmobile.fragments.VehicleFragment;
+import vn.edu.fpt.sapsmobile.models.User;
+import vn.edu.fpt.sapsmobile.services.AuthenticationService;
 import vn.edu.fpt.sapsmobile.utils.TokenManager;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AuthenticationService.AuthCallback{
     private TokenManager tokenManager;
 
     private BottomNavigationView bottomNavigation;
+    private AuthenticationService authService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,9 +43,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
+        authService = new AuthenticationService(this, this );
+
         initializeBottomNavigation();
 
     }
+    public AuthenticationService getAuthService(){return authService;}
 
     private void initializeBottomNavigation() {
         bottomNavigation = findViewById(R.id.bottom_navigation);
@@ -101,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     public TokenManager getTokenManager(){return tokenManager;};
     // Method to programmatically change navigation
     public void navigateToTab(int tabId) {
@@ -118,4 +125,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onAuthSuccess(User user) {
+
+    }
+
+    @Override
+    public void onAuthFailure(String error) {
+
+    }
 }
