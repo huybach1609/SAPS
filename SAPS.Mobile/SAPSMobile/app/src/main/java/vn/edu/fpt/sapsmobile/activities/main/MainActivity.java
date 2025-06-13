@@ -24,7 +24,7 @@ import vn.edu.fpt.sapsmobile.models.User;
 import vn.edu.fpt.sapsmobile.services.AuthenticationService;
 import vn.edu.fpt.sapsmobile.utils.TokenManager;
 
-public class MainActivity extends AppCompatActivity implements AuthenticationService.AuthCallback{
+public class MainActivity extends AppCompatActivity implements AuthenticationService.AuthCallback {
     private TokenManager tokenManager;
 
     private BottomNavigationView bottomNavigation;
@@ -37,18 +37,26 @@ public class MainActivity extends AppCompatActivity implements AuthenticationSer
 
         // check login info
         tokenManager = new TokenManager(this);
-        if(!tokenManager.isLoggedIn()){
+        if (!tokenManager.isLoggedIn()) {
             Intent loginIntent = new Intent(this, LoginActivity.class);
             startActivity(loginIntent);
         }
 
 
-        authService = new AuthenticationService(this, this );
+        authService = new AuthenticationService(this, this);
 
         initializeBottomNavigation();
 
     }
-    public AuthenticationService getAuthService(){return authService;}
+
+    public void logoutProgress() {
+        Intent loginIntent = new Intent(this, LoginActivity.class);
+        startActivity(loginIntent);
+    }
+
+    public AuthenticationService getAuthService() {
+        return authService;
+    }
 
     private void initializeBottomNavigation() {
         bottomNavigation = findViewById(R.id.bottom_navigation);
@@ -70,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements AuthenticationSer
         loadFragment(new HomeFragment());
         bottomNavigation.setSelectedItemId(R.id.nav_home);
     }
+
     private Fragment getFragmentForMenuItem(int itemId) {
         if (itemId == R.id.nav_home) {
             return new HomeFragment();
@@ -98,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements AuthenticationSer
 
 
     private Fragment currentFragment;
+
     private void loadFragment(Fragment fragment) {
         if (fragment != null && fragment.getClass() != (currentFragment != null ? currentFragment.getClass() : null)) {
             currentFragment = fragment;
@@ -108,7 +118,12 @@ public class MainActivity extends AppCompatActivity implements AuthenticationSer
     }
 
 
-    public TokenManager getTokenManager(){return tokenManager;};
+    public TokenManager getTokenManager() {
+        return tokenManager;
+    }
+
+    ;
+
     // Method to programmatically change navigation
     public void navigateToTab(int tabId) {
         bottomNavigation.setSelectedItemId(tabId);

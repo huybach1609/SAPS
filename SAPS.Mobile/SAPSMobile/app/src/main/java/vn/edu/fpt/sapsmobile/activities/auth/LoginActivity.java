@@ -87,6 +87,8 @@ public class LoginActivity  extends AppCompatActivity implements AuthenticationS
         runOnUiThread(() -> {
             updateUI(user);
             Toast.makeText(this, "Welcome, " + user.getName() + "!", Toast.LENGTH_SHORT).show();
+            Intent mainIntent= new Intent(this, MainActivity.class) ;
+            startActivity(mainIntent);
         });
     }
 
