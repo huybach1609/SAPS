@@ -1,8 +1,0 @@
-<resources>
-    <string name="app_name">SAPS</string>
-    <string name="forgot_password"><u>forgot password</u></string>
-    <string name="nav_home">Home</string>
-    <string name="nav_vehicle">Vehicle</string>
-    <string name="nav_history">History</string>
-    <string name="nav_profile">Profile</string>
-</resources>
