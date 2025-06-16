@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--    <color name="black">#FF000000</color>-->
+    <!--    <color name="white">#FFFFFFFF</color>-->
+    <!-- Background -->
+    <color name="bg">#f1f3ff</color>
+    <color name="bg0_h">#e6eaff</color>
+    <color name="bg1">#d0d8ff</color>
+    <color name="bg2">#abb7ff</color>
+
+    <!-- Foreground -->
+    <color name="fg">#030452</color>
+    <color name="fg0">#0C0A90</color>
+
+    <!-- Bright Red, Green, Yellow, etc. -->
+    <color name="redBright">#cc241d</color>
+    <color name="greenBright">#98971a</color>
+    <color name="blueBright">#458588</color>
+    <color name="orangeBright">#d65d0e</color>
+
+    <!-- Assign to Material Roles -->
+    <color name="colorPrimary">@color/fg</color>
+    <color name="colorOnPrimary">@color/bg1</color>
+    <color name="colorSecondary">@color/fg0</color>
+    <color name="colorTertiary">#525103</color>
+    <color name="colorBackground">#e7f4f7</color>
+    <color name="colorOnBackground">#3c3836</color>
+    <color name="colorOnSurfaceVariant">@color/fg0</color>
+</resources>
