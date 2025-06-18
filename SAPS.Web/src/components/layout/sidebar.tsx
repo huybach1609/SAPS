@@ -1,14 +1,99 @@
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
-import { Button, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Image, Input, Listbox, ListboxItem } from "@heroui/react";
-import { EllipsisVertical, LogOut, Plus, Search, Settings } from "lucide-react";
+import { Button, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger,  Listbox, ListboxItem } from "@heroui/react";
+import { EllipsisVertical, LogOut, Plus, Search, Settings, Home, Users, Building2, FileText, AlertTriangle, ClipboardList} from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ThemeSwitch } from "../theme-switch";
 import blankProfile from "../../assets/Default/blank-profile-picture.webp"
 
 interface SidebarProps {
     isOpen: boolean;
+    role?: 'admin' | 'parkinglotowner';
 }
+
+interface NavigationItem {
+    icon: React.ReactNode;
+    title: string;
+    path: string;
+}
+
+interface NavigationListProps {
+    items: NavigationItem[];
+}
+
+const NavigationList: React.FC<NavigationListProps> = ({ items }) => {
+    const navigate = useNavigate();
+
+    return (
+        <Listbox className="flex flex-col gap-2">
+            {items.map((item, index) => (
+                <ListboxItem
+                    key={index}
+                    startContent={item.icon}
+                    title={item.title}
+                    onClick={() => navigate(item.path)}
+                    className="p-3"
+                />
+            ))}
+        </Listbox>
+    );
+};
+
+// Configuration for different user roles
+const adminItems: NavigationItem[] = [
+    {
+        icon: <Home size={20} />,
+        title: "Home",
+        path: "/admin"
+    },
+    {
+        icon: <Users size={20} />,
+        title: "Account List",
+        path: "/admin/accounts"
+    },
+    {
+        icon: <Building2 size={20} />,
+        title: "Parking Lot Owner List",
+        path: "/admin/parking-owners"
+    },
+    {
+        icon: <FileText size={20} />,
+        title: "Request List",
+        path: "/admin/requests"
+    }
+];
+
+const parkingLotOwnerItems: NavigationItem[] = [
+    {
+        icon: <Home size={20} />,
+        title: "Home",
+        path: "/owner"
+    },
+    {
+        icon: <Building2 size={20} />,
+        title: "Parking Lot Information",
+        path: "/owner/parking-info"
+    },
+    {
+        icon: <Users size={20} />,
+        title: "Staff List",
+        path: "/owner/staff"
+    },
+    {
+        icon: <ClipboardList size={20} />,
+        title: "Parking History",
+        path: "/owner/history"
+    },
+    {
+        icon: <AlertTriangle size={20} />,
+        title: "Incident Reports",
+        path: "/owner/incidents"
+    },
+    {
+        icon: <FileText size={20} />,
+        title: "Whitelist",
+        path: "/owner/whitelist"
+    }
+];
 
 
 const HeadingBar: React.FC = () => {
@@ -22,7 +107,6 @@ const HeadingBar: React.FC = () => {
                 </div>
             </div>
 
-
             <Dropdown>
                 <DropdownTrigger>
                     <Button className="bg-transparent text-background " isIconOnly><EllipsisVertical /></Button>
@@ -31,7 +115,7 @@ const HeadingBar: React.FC = () => {
                     <DropdownItem key="settings">
 
                         <button className="flex items-center gap-2 w-full text-left transition-opacity hover:opacity-80 "
-                            ><Settings size={16}/>Settings</button>
+                        ><Settings size={16} />Settings</button>
 
                     </DropdownItem>
 
@@ -45,7 +129,7 @@ const HeadingBar: React.FC = () => {
                     <DropdownItem key="logout">
 
                         <button className="flex items-center gap-2 w-full text-left transition-opacity hover:opacity-80 "
-                            ><LogOut size={16}/>Logout</button>
+                        ><LogOut size={16} />Logout</button>
 
                     </DropdownItem>
                 </DropdownMenu>
@@ -54,8 +138,7 @@ const HeadingBar: React.FC = () => {
     );
 };
 
-export const SideBar: React.FC<SidebarProps> = ({ isOpen }) => {
-
+export const SideBar: React.FC<SidebarProps> = ({ isOpen, role = 'admin' }) => {
     return (
         <motion.div
             initial={false}
@@ -64,15 +147,19 @@ export const SideBar: React.FC<SidebarProps> = ({ isOpen }) => {
                 opacity: isOpen ? 1 : 0,
             }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
-
             className=" 
             bg-foreground text-background border-r border-divider h-full flex flex-col
             p-5 shadow-lg overflow-hidden
             "
         >
             <HeadingBar />
-            <Divider className="bg-border" />
-
+            <Divider className="bg-border my-4" />
+            {role === 'parkinglotowner' ?
+                <NavigationList items={parkingLotOwnerItems} /> :
+                <NavigationList items={adminItems} />
+            }
+            {/* // {role === 'parkinglotowner' ? <ParkingLotOwnerList /> : <AdminList />} */}
         </motion.div>
+
     );
 };

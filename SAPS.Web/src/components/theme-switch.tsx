@@ -3,8 +3,8 @@ import { VisuallyHidden } from "@react-aria/visually-hidden";
 import { SwitchProps, useSwitch } from "@heroui/switch";
 import clsx from "clsx";
 import { useTheme } from "@heroui/use-theme";
+import { Moon, Sun } from "lucide-react";
 
-import { SunFilledIcon, MoonFilledIcon } from "@/components/icons";
 
 export interface ThemeSwitchProps {
   className?: string;
@@ -68,7 +68,7 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({
         )}
         aria-label={isSelected ? "Switch to dark mode" : "Switch to light mode"}
       >
-        {isSelected ? <SunFilledIcon size={16} /> : <MoonFilledIcon size={16} />}
+        {isSelected ? <Sun size={16} /> : <Moon size={16} />}
         {showLabel && (
           <span>{isSelected ? "Light Mode" : "Dark Mode"}</span>
         )}
