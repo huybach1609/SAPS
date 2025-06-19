@@ -1,9 +1,11 @@
 import { motion } from "framer-motion";
-import { Button, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger,  Listbox, ListboxItem } from "@heroui/react";
-import { EllipsisVertical, LogOut, Plus, Search, Settings, Home, Users, Building2, FileText, AlertTriangle, ClipboardList} from "lucide-react";
+import { Button, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Listbox, ListboxItem } from "@heroui/react";
+import { EllipsisVertical, LogOut, Settings, Home, Users, Building2, FileText, AlertTriangle, ClipboardList } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ThemeSwitch } from "../theme-switch";
 import blankProfile from "../../assets/Default/blank-profile-picture.webp"
+import { useAuth } from "@/services/auth/AuthContext";
+import { OWNER_ROLE } from "@/config/base";
 
 interface SidebarProps {
     isOpen: boolean;
@@ -24,10 +26,11 @@ const NavigationList: React.FC<NavigationListProps> = ({ items }) => {
     const navigate = useNavigate();
 
     return (
-        <Listbox className="flex flex-col gap-2">
+        <Listbox aria-label="Navigation List" className="flex flex-col gap-2">
             {items.map((item, index) => (
                 <ListboxItem
                     key={index}
+
                     startContent={item.icon}
                     title={item.title}
                     onClick={() => navigate(item.path)}
@@ -43,7 +46,7 @@ const adminItems: NavigationItem[] = [
     {
         icon: <Home size={20} />,
         title: "Home",
-        path: "/admin"
+        path: "/admin/home"
     },
     {
         icon: <Users size={20} />,
@@ -66,7 +69,7 @@ const parkingLotOwnerItems: NavigationItem[] = [
     {
         icon: <Home size={20} />,
         title: "Home",
-        path: "/owner"
+        path: "/owner/home"
     },
     {
         icon: <Building2 size={20} />,
@@ -97,12 +100,13 @@ const parkingLotOwnerItems: NavigationItem[] = [
 
 
 const HeadingBar: React.FC = () => {
+    const { user, logout } = useAuth();
     return (
         <div className="flex justify-between items-center my-4">
             <div className="flex items-center gap-2">
                 <img src={blankProfile} alt="Profile" className="w-12 h-12 rounded-full m-2" />
                 <div>
-                    <h2 className="text-medium font-bold ">Admin John</h2>
+                    <h2 className="text-medium font-bold ">{user?.fullName}</h2>
                     <h2 className="text-xs ">Head Administrator</h2>
                 </div>
             </div>
@@ -112,25 +116,26 @@ const HeadingBar: React.FC = () => {
                     <Button className="bg-transparent text-background " isIconOnly><EllipsisVertical /></Button>
                 </DropdownTrigger>
                 <DropdownMenu className="dark">
-                    <DropdownItem key="settings">
+                    <DropdownItem key="settings" textValue="Settings ">
 
                         <button className="flex items-center gap-2 w-full text-left transition-opacity hover:opacity-80 "
                         ><Settings size={16} />Settings</button>
 
+
                     </DropdownItem>
 
-                    <DropdownItem key="changeThemes">
+
+                    <DropdownItem textValue="Change Themes" key="changeThemes">
                         <ThemeSwitch
                             variant="button"
                             showLabel={true}
                             className="w-full"
                         />
                     </DropdownItem>
-                    <DropdownItem key="logout">
-
+                    <DropdownItem textValue="Logout" key="logout">
                         <button className="flex items-center gap-2 w-full text-left transition-opacity hover:opacity-80 "
+                            onClick={logout}
                         ><LogOut size={16} />Logout</button>
-
                     </DropdownItem>
                 </DropdownMenu>
             </Dropdown>
@@ -138,7 +143,8 @@ const HeadingBar: React.FC = () => {
     );
 };
 
-export const SideBar: React.FC<SidebarProps> = ({ isOpen, role = 'admin' }) => {
+export const SideBar: React.FC<SidebarProps> = ({ isOpen }) => {
+    const { user } = useAuth();
     return (
         <motion.div
             initial={false}
@@ -154,7 +160,7 @@ export const SideBar: React.FC<SidebarProps> = ({ isOpen, role = 'admin' }) => {
         >
             <HeadingBar />
             <Divider className="bg-border my-4" />
-            {role === 'parkinglotowner' ?
+            {user?.role === OWNER_ROLE ?
                 <NavigationList items={parkingLotOwnerItems} /> :
                 <NavigationList items={adminItems} />
             }

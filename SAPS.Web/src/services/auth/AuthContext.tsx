@@ -1,10 +1,10 @@
-import { mockUrl } from '@/config/base';
+import { ADMIN_ROLE, mockUrl } from '@/config/base';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
 interface User {
   id: string;
   email: string;
-  role: 'admin' | 'parkinglotowner' | 'user';
+  role: 'admin' | 'parkinglotowner';
   fullName: string;
   phoneNumber: string;
   address: string;
@@ -15,7 +15,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string, remember: boolean) => Promise<void>;
   logout: () => void;
   loading: boolean;
 }
@@ -38,8 +38,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const validateToken = async (token: string) => {
     try {
-      // TODO: Replace with your actual API endpoint
-      const response = await fetch(mockUrl + '/api/auth/validate', {
+      console.log(user?.role);
+      const url = mockUrl + '/api/auth/validate?isAdmin=' + (user?.role === ADMIN_ROLE);
+      console.log(url);
+      const response = await fetch(url, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -60,16 +62,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string, remember: boolean = false) => {
     try {
       // TODO: Replace with your actual API endpoint
-      const response = await fetch(mockUrl + '/api/auth/login', {
+      const response = await fetch(mockUrl + '/api/auth/login?isAdmin=' + remember, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
-      });
+      })
 
       if (!response.ok) {
         throw new Error('Login failed');
@@ -78,6 +80,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const { token, user } = await response.json();
       localStorage.setItem('auth_token', token);
       setUser(user);
+      console.log(user);
     } catch (error) {
       console.error('Login error:', error);
       throw error;

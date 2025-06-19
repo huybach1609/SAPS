@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/services/auth/AuthContext";
 
 import IndexPage from "@/pages/index";
@@ -18,11 +18,7 @@ import ParkingLotInfo from "./pages/ParkingLotOwner/ParkingInfo/ParkingLotInfo";
 import AdminAccountList from "./pages/Admin/AdminAccounts/AdminAccountList";
 import AdminParkingLotOwnerList from "./pages/Admin/ParkingLotOwnerAccounts/AdminParkingLotOwnerList";
 import AdminRequestList from "./pages/Admin/Requests/AdminRequestList";
-
-// You'll need to create these components
-// import LoginPage from "@/pages/auth/LoginPage";
-// import AdminDashboard from "@/pages/admin/AdminDashboard";
-// import OwnerDashboard from "@/pages/owner/OwnerDashboard";
+import { ADMIN_ROLE, OWNER_ROLE } from "./config/base";
 
 // Protected Route Component
 interface ProtectedRouteProps {
@@ -58,9 +54,9 @@ const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   if (isAuthenticated) {
     switch (user?.role) {
       case 'admin':
-        return <Navigate to="/admin" replace />;
+        return <Navigate to="/admin/home" replace />;
       case 'parkinglotowner':
-        return <Navigate to="/owner" replace />;
+        return <Navigate to="/owner/parking-info" replace />;
       default:
         return <Navigate to="/unauthorized" replace />;
     }
@@ -82,9 +78,9 @@ const RoleBasedRedirect: React.FC = () => {
 
   switch (user?.role) {
     case 'admin':
-      return <Navigate to="/admin" replace />;
+      return <Navigate to="/admin/home" replace />;
     case 'parkinglotowner':
-      return <Navigate to="/owner" replace />;
+      return <Navigate to="/owner/parking-info" replace />;
     default:
       return <Navigate to="/unauthorized" replace />;
   }
@@ -114,13 +110,14 @@ function App() {
         {/* Protected Routes */}
         {/* Admin Routes */}
         <Route
-          path="/admin/*"
+          path="/admin"
           element={
-            <ProtectedRoute requiredRole="admin">
-              <AdminDashboard />
+            <ProtectedRoute requiredRole={ADMIN_ROLE}>
+              <Outlet />
             </ProtectedRoute>
           }
         >
+          <Route path="home" element={<AdminDashboard />} />
           <Route path="accounts" element={<AdminAccountList />} />
           <Route path="parking-owners" element={<AdminParkingLotOwnerList />} />
           <Route path="requests" element={<AdminRequestList />} />
@@ -130,11 +127,12 @@ function App() {
         <Route
           path="/owner/*"
           element={
-            <ProtectedRoute requiredRole="parkinglotowner">
-              <OwnerDashboard />
+            <ProtectedRoute requiredRole={OWNER_ROLE}>
+              <Outlet />
             </ProtectedRoute>
           }
         >
+          <Route path="home" element={<OwnerDashboard />} />
           <Route path="parking-info" element={<ParkingLotInfo />} />
           <Route path="staff" element={<StaffManagement />} />
           <Route path="history" element={<ParkingHistory />} />

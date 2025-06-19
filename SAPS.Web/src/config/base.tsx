@@ -1,1 +1,3 @@
 export const mockUrl = "https://a12fd66f-74be-4779-97a3-4fef023e9291.mock.pstmn.io";
+export const OWNER_ROLE = "parkinglotowner";
+export const ADMIN_ROLE = "admin";

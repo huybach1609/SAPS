@@ -29,7 +29,7 @@ export default function DefaultLayout({
   return (
     <div className="relative flex h-screen">
       {/* Sidebar */}
-      <SideBar isOpen={isSidebarOpen} role="parkinglotowner" />
+      <SideBar isOpen={isSidebarOpen} />
       {/* Main Content Area */}
       <div className="flex flex-col flex-1">
         {/* Top Bar with Toggle Button */}
