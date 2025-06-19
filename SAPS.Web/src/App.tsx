@@ -1,47 +1,153 @@
-import { Route, Routes } from "react-router-dom";
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet, Route, Routes } from "react-router-dom";
+import { AuthProvider, useAuth } from "@/services/auth/AuthContext";
 
-// Layouts
-import AdminLayout from "@/layouts/AdminLayout";
+import IndexPage from "@/pages/index";
+import DocsPage from "@/pages/docs";
+import PricingPage from "@/pages/pricing";
+import BlogPage from "@/pages/blog";
+import AboutPage from "@/pages/about";
+import ErrorPage from "@/pages/ErrorPage";
+import LoginPage from "./pages/Auth/Login";
+import OwnerDashboard from "./pages/ParkingLotOwner/Home/OwnerDashboard";
+import AdminDashboard from "./pages/Admin/AdminDashboard";
+import Whitelist from "./pages/ParkingLotOwner/Whitelist/WhiteList";
+import IncidentReports from "./pages/ParkingLotOwner/IncidentReports/IncidentReports";
+import ParkingHistory from "./pages/ParkingLotOwner/ParkingHistory/HistoryManagement/ParkingHistory";
+import StaffManagement from "./pages/ParkingLotOwner/StaffManagement/StaffManagement";
+import ParkingLotInfo from "./pages/ParkingLotOwner/ParkingInfo/ParkingLotInfo";
+import AdminAccountList from "./pages/Admin/AdminAccounts/AdminAccountList";
+import AdminParkingLotOwnerList from "./pages/Admin/ParkingLotOwnerAccounts/AdminParkingLotOwnerList";
+import AdminRequestList from "./pages/Admin/Requests/AdminRequestList";
+import { ADMIN_ROLE, OWNER_ROLE } from "./config/base";
 
-// Admin pages
-import AdminDashboard from "@/pages/Admin/AdminDashboardPage";
-import AdminLogin from "@/pages/Admin/Auth/LoginPage";
-import UserAccountList from "@/pages/Admin/Accounts/UserAccounts/UserAccountList";
-import AdminAccountList from "@/pages/Admin/Accounts/AdminAccounts/AdminAccountList";
-import UserAccountDetails from "@/pages/Admin/Accounts/UserAccounts/UserAccountDetails";
-import AdminAccountDetails from "@/pages/Admin/Accounts/AdminAccounts/AdminAccountDetails";
-import ParkingLotOwnerList from "@/pages/Admin/ParkingLotOwner/ParkingLotOwnerList";
-import ParkingLotOwnerDetails from "@/pages/Admin/ParkingLotOwner/ParkingLotOwnerDetails";
-import RequestList from "@/pages/Admin/Requests/RequestList";
-import RequestDetails from "@/pages/Admin/Requests/RequestDetails";
+// Protected Route Component
+interface ProtectedRouteProps {
+  children: React.ReactNode;
+  requiredRole?: 'admin' | 'parkinglotowner';
+}
+
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole }) => {
+  const { user, isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return <div>Loading...</div>; // Or your loading component
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/auth/login" replace />;
+  }
+
+  if (requiredRole && user?.role !== requiredRole) {
+    return <Navigate to="/unauthorized" replace />;
+  }
+
+  return <>{children}</>;
+};
+
+const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { isAuthenticated, user, loading } = useAuth();
+
+  if (loading) {
+    return <div>Loading...</div>; // Or your loading component
+  }
+
+  if (isAuthenticated) {
+    switch (user?.role) {
+      case 'admin':
+        return <Navigate to="/admin/home" replace />;
+      case 'parkinglotowner':
+        return <Navigate to="/owner/parking-info" replace />;
+      default:
+        return <Navigate to="/unauthorized" replace />;
+    }
+  }
+
+  return <>{children}</>;
+};
+
+const RoleBasedRedirect: React.FC = () => {
+  const { user, isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return <div>Loading...</div>; // Or your loading component
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/auth/login" replace />;
+  }
+
+  switch (user?.role) {
+    case 'admin':
+      return <Navigate to="/admin/home" replace />;
+    case 'parkinglotowner':
+      return <Navigate to="/owner/parking-info" replace />;
+    default:
+      return <Navigate to="/unauthorized" replace />;
+  }
+};
 
 function App() {
   return (
-    <Routes>
-      {/* Redirect root to admin dashboard */}
-      <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
+    <AuthProvider>
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<IndexPage />} />
+        <Route path="/docs" element={<DocsPage />} />
+        <Route path="/pricing" element={<PricingPage />} />
+        <Route path="/blog" element={<BlogPage />} />
+        <Route path="/about" element={<AboutPage />} />
 
-      {/* Admin Routes */}
-      <Route path="/admin/login" element={<AdminLogin />} />      {/* Protected Admin Routes */}
-      <Route path="/admin" element={<AdminLayout />}>
-        <Route path="dashboard" element={<AdminDashboard />} />
+        {/* Auth Routes */}
+        <Route
+          path="/auth/login"
+          element={
+            <PublicRoute>
+              <LoginPage />
+            </PublicRoute>
+          }
+        />
 
-        {/* Account Management */}
-        <Route path="accounts/users" element={<UserAccountList />} />
-        <Route path="accounts/users/:id" element={<UserAccountDetails />} />
-        <Route path="accounts/admins" element={<AdminAccountList />} />
-        <Route path="accounts/admins/:id" element={<AdminAccountDetails />} />
+        {/* Protected Routes */}
+        {/* Admin Routes */}
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute requiredRole={ADMIN_ROLE}>
+              <Outlet />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="home" element={<AdminDashboard />} />
+          <Route path="accounts" element={<AdminAccountList />} />
+          <Route path="parking-owners" element={<AdminParkingLotOwnerList />} />
+          <Route path="requests" element={<AdminRequestList />} />
+        </Route>
 
-        {/* Parking Lot Owner Management */}
-        <Route path="parking-owners" element={<ParkingLotOwnerList />} />
-        <Route path="parking-owners/:id" element={<ParkingLotOwnerDetails />} />
+        {/* Owner Routes */}
+        <Route
+          path="/owner/*"
+          element={
+            <ProtectedRoute requiredRole={OWNER_ROLE}>
+              <Outlet />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="home" element={<OwnerDashboard />} />
+          <Route path="parking-info" element={<ParkingLotInfo />} />
+          <Route path="staff" element={<StaffManagement />} />
+          <Route path="history" element={<ParkingHistory />} />
+          <Route path="incidents" element={<IncidentReports />} />
+          <Route path="whitelist" element={<Whitelist />} />
+        </Route>
 
-        {/* Request Management */}
-        <Route path="requests" element={<RequestList />} />
-        <Route path="requests/:id" element={<RequestDetails />} />
-      </Route>
-    </Routes>
+        {/* Dashboard redirect route */}
+        <Route path="/dashboard" element={<RoleBasedRedirect />} />
+
+        {/* Error Routes */}
+        <Route path="/unauthorized" element={<ErrorPage statusCode={401} />} />
+        <Route path="*" element={<ErrorPage statusCode={404} />} />
+      </Routes>
+    </AuthProvider>
   );
 }
 

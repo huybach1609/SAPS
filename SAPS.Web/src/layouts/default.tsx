@@ -1,15 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "@heroui/link";
 import { Button } from "@heroui/react";
 import { Menu } from "lucide-react";
 import { SideBar } from "@/components/layout/sidebar";
 
-export default function DefaultLayout({
+export default function DefaultLayout({ 
   children,
+  title = "Page Title"
 }: {
   children: React.ReactNode;
+  title?: string;
 }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  // Initialize state from localStorage
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
+    const saved = localStorage.getItem('sidebarOpen');
+    return saved ? JSON.parse(saved) : false;
+  });
+
+  // Save state to localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem('sidebarOpen', JSON.stringify(isSidebarOpen));
+  }, [isSidebarOpen]);
+
+  const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+  }
 
   return (
     <div className="relative flex h-screen">
@@ -22,12 +37,12 @@ export default function DefaultLayout({
           <Button
             isIconOnly
             variant="light"
-            onPress={() => setIsSidebarOpen(!isSidebarOpen)}
+            onPress={toggleSidebar}
             aria-label="Toggle sidebar"
           >
             <Menu size={20} />
           </Button>
-          <h1 className="ml-4 text-lg font-semibold">Dashboard</h1>
+          <h1 className="ml-4 text-lg font-semibold">{title}</h1>
         </div>
 
         {/* Main Content */}
