@@ -20,25 +20,43 @@ export default {
       light: {
         colors: {
           primary: "#00449D",
-          background: "#e7f4f7",
+          background: "#EFF7F8",
           foreground: "#030452",
           secondary: "#0077B6",
           accent: "#1618c1",
           muted: "#C6D9F1",
           card: "#83B9FF",
           border: "#253C5A",
-        },
+          // color for button, warning text
+          danger: "#c1121f",
+          danger_light: "#FF0000",
+          success: "#606c38",
+          success_light: "#dad7cd",
+          warning: "#c1121f",
+          warning_light: "#fdf0d5",
+          info: "#457b9d",
+          info_light: "#f1faee",
+        }
       },
       dark: {
         colors: {
           primary: "#90E0EF",
           background: "#000131", 
-          foreground: "#DCF3F7",
+          foreground: "#EFF7F8",
           secondary: "#C0DAF0",
           accent: "#E2F2FF", 
           muted: "#023E8A",
           card: "#0077B6",
-          border: "#ADE8F4"
+          border: "#ADE8F4",
+           // color for button, warning text
+          danger_light: "#c1121f",
+          danger: "#FF0000",
+          success_light: "#606c38",
+          success: "#dad7cd",
+          warning_light: "#c1121f",
+          warning: "#fdf0d5",
+          info_light: "#457b9d",
+          info: "#f1faee",
         },
       },
       "purple-dark": {
