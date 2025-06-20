@@ -38,8 +38,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const validateToken = async (token: string) => {
     try {
-      console.log(user?.role);
-      const url = mockUrl + '/api/auth/validate?isAdmin=' + (user?.role === ADMIN_ROLE);
+      const url = mockUrl + '/api/auth/validate?isAdmin=' + (token === "admin");
       console.log(url);
       const response = await fetch(url, {
         headers: {
