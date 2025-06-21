@@ -19,6 +19,7 @@ import AdminAccountList from "./pages/Admin/AdminAccounts/AdminAccountList";
 import AdminParkingLotOwnerList from "./pages/Admin/ParkingLotOwnerAccounts/AdminParkingLotOwnerList";
 import AdminRequestList from "./pages/Admin/Requests/AdminRequestList";
 import { ADMIN_ROLE, OWNER_ROLE } from "./config/base";
+import ParkingFeeManagement from "./pages/ParkingLotOwner/ParkingFee/ParkingFeeManagement";
 
 // Protected Route Component
 interface ProtectedRouteProps {
@@ -138,6 +139,7 @@ function App() {
           <Route path="history" element={<ParkingHistory />} />
           <Route path="incidents" element={<IncidentReports />} />
           <Route path="whitelist" element={<Whitelist />} />
+          <Route path="parking-fee" element={<ParkingFeeManagement />} />
         </Route>
 
         {/* Dashboard redirect route */}

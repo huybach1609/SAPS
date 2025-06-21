@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Button, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Listbox, ListboxItem } from "@heroui/react";
-import { EllipsisVertical, LogOut, Settings, Home, Users, Building2, FileText, AlertTriangle, ClipboardList } from "lucide-react";
+import { EllipsisVertical, LogOut, Settings, Home, Users, Building2, FileText, AlertTriangle, ClipboardList, DollarSign } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ThemeSwitch } from "../theme-switch";
 import blankProfile from "../../assets/Default/blank-profile-picture.webp"
@@ -87,6 +87,11 @@ const parkingLotOwnerItems: NavigationItem[] = [
         path: "/owner/history"
     },
     {
+        icon: <DollarSign size={20} />,
+        title: "Parking Fee Management",
+        path: "/owner/parking-fee"
+    },
+    {
         icon: <AlertTriangle size={20} />,
         title: "Incident Reports",
         path: "/owner/incidents"
@@ -96,6 +101,7 @@ const parkingLotOwnerItems: NavigationItem[] = [
         title: "Whitelist",
         path: "/owner/whitelist"
     }
+    
 ];
 
 
