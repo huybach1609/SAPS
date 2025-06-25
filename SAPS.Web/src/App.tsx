@@ -9,7 +9,8 @@ import AboutPage from "@/pages/about";
 import ErrorPage from "@/pages/ErrorPage";
 import LoginPage from "./pages/Auth/Login";
 import OwnerDashboard from "./pages/ParkingLotOwner/Home/OwnerDashboard";
-import AdminDashboard from "./pages/Admin/AdminDashboard";
+import DefaultLayout from "./layouts/default";
+import AdminDashboardPage from "./pages/Admin/AdminDashboardPage";
 import Whitelist from "./pages/ParkingLotOwner/Whitelist/WhiteList";
 import IncidentReports from "./pages/ParkingLotOwner/IncidentReports/IncidentReports";
 import ParkingHistory from "./pages/ParkingLotOwner/ParkingHistory/HistoryManagement/ParkingHistory";
@@ -20,27 +21,33 @@ import AdminParkingLotOwnerList from "./pages/Admin/ParkingLotOwnerAccounts/Admi
 import AdminRequestList from "./pages/Admin/Requests/AdminRequestList";
 import { ADMIN_ROLE, OWNER_ROLE } from "./config/base";
 import ParkingFeeManagement from "./pages/ParkingLotOwner/ParkingFee/ParkingFeeManagement";
+import AccountListSelector from "./pages/Admin/Accounts/AccountListSelector";
+import UserAccountList from "./pages/Admin/Accounts/UserAccounts/UserAccountList";
+import AdminAccountDetails from "./pages/Admin/Accounts/AdminAccounts/AdminAccountDetails";
 
 // Protected Route Component
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  requiredRole?: 'admin' | 'parkinglotowner';
+  requiredRole?: "admin" | "parkinglotowner";
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole }) => {
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  children,
+  requiredRole,
+}) => {
   const { user, isAuthenticated, loading } = useAuth();
 
   if (loading) {
     return <div>Loading...</div>; // Or your loading component
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/auth/login" replace />;
-  }
+  // if (!isAuthenticated) {
+  //   return <Navigate to="/auth/login" replace />;
+  // }
 
-  if (requiredRole && user?.role !== requiredRole) {
-    return <Navigate to="/unauthorized" replace />;
-  }
+  // if (requiredRole && user?.role !== requiredRole) {
+  //   return <Navigate to="/unauthorized" replace />;
+  // }
 
   return <>{children}</>;
 };
@@ -52,15 +59,13 @@ const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     return <div>Loading...</div>; // Or your loading component
   }
 
-  if (isAuthenticated) {
-    switch (user?.role) {
-      case 'admin':
-        return <Navigate to="/admin/home" replace />;
-      case 'parkinglotowner':
-        return <Navigate to="/owner/parking-info" replace />;
-      default:
-        return <Navigate to="/unauthorized" replace />;
-    }
+  switch (user?.role) {
+    case "admin":
+      return <Navigate to="/admin/home" replace />;
+    case "parkinglotowner":
+      return <Navigate to="/owner/parking-info" replace />;
+    default:
+      return <Navigate to="/unauthorized" replace />;
   }
 
   return <>{children}</>;
@@ -78,9 +83,9 @@ const RoleBasedRedirect: React.FC = () => {
   }
 
   switch (user?.role) {
-    case 'admin':
+    case "admin":
       return <Navigate to="/admin/home" replace />;
-    case 'parkinglotowner':
+    case "parkinglotowner":
       return <Navigate to="/owner/parking-info" replace />;
     default:
       return <Navigate to="/unauthorized" replace />;
@@ -108,18 +113,24 @@ function App() {
           }
         />
 
-        {/* Protected Routes */}
         {/* Admin Routes */}
         <Route
           path="/admin"
           element={
             <ProtectedRoute requiredRole={ADMIN_ROLE}>
-              <Outlet />
+              <DefaultLayout role="admin" title="SAPLS Admin Dashboard">
+                <Outlet />
+              </DefaultLayout>
             </ProtectedRoute>
           }
         >
-          <Route path="home" element={<AdminDashboard />} />
-          <Route path="accounts" element={<AdminAccountList />} />
+          <Route path="dashboard" element={<AdminDashboardPage />} />
+
+          {/* Account Management Routes */}
+          <Route path="accounts" element={<AccountListSelector />} />
+          <Route path="accounts/users" element={<UserAccountList />} />
+          <Route path="accounts/admins" element={<AdminAccountList />} />
+          <Route path="accounts/admins/:id" element={<AdminAccountDetails />} />
           <Route path="parking-owners" element={<AdminParkingLotOwnerList />} />
           <Route path="requests" element={<AdminRequestList />} />
         </Route>
@@ -129,7 +140,12 @@ function App() {
           path="/owner/*"
           element={
             <ProtectedRoute requiredRole={OWNER_ROLE}>
-              <Outlet />
+              <DefaultLayout
+                role="parkinglotowner"
+                title="SAPLS Parking Lot Owner Dashboard"
+              >
+                <Outlet />
+              </DefaultLayout>
             </ProtectedRoute>
           }
         >

@@ -4,32 +4,36 @@ import { Button } from "@heroui/react";
 import { Menu } from "lucide-react";
 import { SideBar } from "@/components/layout/sidebar";
 
-export default function DefaultLayout({ 
-  children,
-  title = "Page Title"
-}: {
+interface DefaultLayoutProps {
   children: React.ReactNode;
   title?: string;
-}) {
+  role?: "admin" | "parkinglotowner";
+}
+
+export default function DefaultLayout({
+  children,
+  title = "Page Title",
+  role = "admin",
+}: DefaultLayoutProps) {
   // Initialize state from localStorage
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
-    const saved = localStorage.getItem('sidebarOpen');
+    const saved = localStorage.getItem("sidebarOpen");
     return saved ? JSON.parse(saved) : false;
   });
 
   // Save state to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem('sidebarOpen', JSON.stringify(isSidebarOpen));
+    localStorage.setItem("sidebarOpen", JSON.stringify(isSidebarOpen));
   }, [isSidebarOpen]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
-  }
+  };
 
   return (
     <div className="relative flex h-screen">
       {/* Sidebar */}
-      <SideBar isOpen={isSidebarOpen} />
+      <SideBar isOpen={isSidebarOpen} role={role} />
       {/* Main Content Area */}
       <div className="flex flex-col flex-1">
         {/* Top Bar with Toggle Button */}

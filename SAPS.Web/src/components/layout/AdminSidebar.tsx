@@ -104,16 +104,7 @@ export const AdminSidebar: React.FC<SidebarProps> = ({ isOpen }) => {
 
       <nav className="flex flex-col gap-2">
         <MenuItem icon={Home} label="Dashboard" to="/admin/dashboard" />
-        <MenuItem
-          icon={Users}
-          label="User Accounts"
-          to="/admin/accounts/users"
-        />
-        <MenuItem
-          icon={Users}
-          label="Admin Accounts"
-          to="/admin/accounts/admins"
-        />
+        <MenuItem icon={Users} label="Account List" to="/admin/accounts" />
         <MenuItem
           icon={Building2}
           label="Parking Lot Owners"
