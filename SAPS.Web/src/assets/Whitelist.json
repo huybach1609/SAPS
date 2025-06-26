@@ -1,0 +1,134 @@
+{
+    "name": "Whitelist",
+    "item": [
+        {
+            "name": "getall",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{url}}/api/WhiteList/:parkingLotId",
+                    "host": [
+                        "{{url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "WhiteList",
+                        ":parkingLotId"
+                    ],
+                    "variable": [
+                        {
+                            "key": "parkingLotId",
+                            "value": "1"
+                        }
+                    ]
+                }
+            },
+            "response": [
+                {
+                    "name": "getall",
+                    "originalRequest": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{url}}/api/WhiteList/:parkingLotId",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "WhiteList",
+                                ":parkingLotId"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "parkingLotId",
+                                    "value": "1"
+                                }
+                            ]
+                        }
+                    },
+                    "status": "OK",
+                    "code": 200,
+                    "_postman_previewlanguage": "json",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json",
+                            "description": "",
+                            "type": "text"
+                        }
+                    ],
+                    "cookie": [],
+                    "body": "{\n    \"data\": [\n        {\n            \"parkingLotId\": \"PL001\",\n            \"clientId\": \"U001\",\n            \"addedDate\": \"2025-06-01T10:00:00Z\",\n            \"expiredDate\": \"2025-12-01T10:00:00Z\",\n            \"client\": {\n                \"id\": \"U001\",\n                \"email\": \"john.doe@example.com\",\n                \"fullName\": \"John Doe\",\n                \"phone\": \"123456789\",\n                \"address\": \"123 Main St, Cityville\"\n            }\n        },\n        {\n            \"parkingLotId\": \"PL001\",\n            \"clientId\": \"U002\",\n            \"addedDate\": \"2025-06-03T14:30:00Z\",\n            \"expiredDate\": null,\n            \"client\": {\n                \"id\": \"U002\",\n                \"email\": \"jane.smith@example.com\",\n                \"fullName\": \"Jane Smith\",\n                \"phone\": \"987654321\",\n                \"address\": \"456 Elm St, Townsville\"\n            }\n        },\n        {\n            \"parkingLotId\": \"PL001\",\n            \"clientId\": \"U003\",\n            \"addedDate\": \"2025-06-05T09:15:00Z\",\n            \"expiredDate\": \"2025-09-05T09:15:00Z\",\n            \"client\": {\n                \"id\": \"U003\",\n                \"email\": \"bob.williams@example.com\",\n                \"fullName\": \"Bob Williams\",\n                \"phone\": \"1122334455\",\n                \"address\": \"789 Oak St, Villageton\"\n            }\n        },\n        {\n            \"parkingLotId\": \"PL001\",\n            \"clientId\": \"U004\",\n            \"addedDate\": \"2025-06-07T13:45:00Z\",\n            \"expiredDate\": null,\n            \"client\": {\n                \"id\": \"U004\",\n                \"email\": \"alice.brown@example.com\",\n                \"fullName\": \"Alice Brown\",\n                \"phone\": \"9988776655\",\n                \"address\": \"321 Pine St, Hamlet\"\n            }\n        },\n        {\n            \"parkingLotId\": \"PL001\",\n            \"clientId\": \"U005\",\n            \"addedDate\": \"2025-06-09T16:20:00Z\",\n            \"expiredDate\": \"2025-12-31T23:59:59Z\",\n            \"client\": {\n                \"id\": \"U005\",\n                \"email\": \"charlie.johnson@example.com\",\n                \"fullName\": \"Charlie Johnson\",\n                \"phone\": \"5566778899\",\n                \"address\": \"654 Maple St, Metro\"\n            }\n        }\n    ],\n    \"pagination\": {\n        \"currentPage\": 1,\n        \"pageSize\": 5,\n        \"totalItems\": 47,\n        \"totalPages\": 10,\n        \"hasPreviousPage\": false,\n        \"hasNextPage\": true\n    }\n}"
+                }
+            ]
+        },
+        {
+            "name": "Search User",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{url}}/api/Users/Whitelist/search?q=bach03@gmail.com",
+                    "host": [
+                        "{{url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "Users",
+                        "Whitelist",
+                        "search"
+                    ],
+                    "query": [
+                        {
+                            "key": "q",
+                            "value": "bach03@gmail.com",
+                            "description": "search by username, id"
+                        }
+                    ]
+                }
+            },
+            "response": [
+                {
+                    "name": "ex1",
+                    "originalRequest": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{url}}/api/Users/Whitelist/search?q=bach03@gmail.com",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "Users",
+                                "Whitelist",
+                                "search"
+                            ],
+                            "query": [
+                                {
+                                    "key": "q",
+                                    "value": "bach03@gmail.com",
+                                    "description": "search by username, id"
+                                }
+                            ]
+                        }
+                    },
+                    "_postman_previewlanguage": "json",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json",
+                            "name": "Content-Type",
+                            "description": "",
+                            "type": "text"
+                        }
+                    ],
+                    "cookie": [],
+                    "body": "[\n    {\n        \"id\": \"1\",\n        \"email\": \"john.doe@example.com\",\n        \"fullName\": \"John Doe\",\n        \"phone\": \"+1-202-555-0143\",\n        \"address\": \"123 Main St, Springfield, IL\",\n        \"profileImageUrl\": \"https://example.com/images/users/john.jpg\"\n    },\n    {\n        \"id\": \"2\",\n        \"email\": \"jane.smith@example.com\",\n        \"fullName\": \"Jane Smith\",\n        \"phone\": \"+1-202-555-0176\",\n        \"address\": \"456 Oak Ave, Lincoln, NE\",\n        \"profileImageUrl\": \"https://example.com/images/users/jane.jpg\"\n    },\n    {\n        \"id\": \"3\",\n        \"email\": \"michael.nguyen@example.com\",\n        \"fullName\": \"Michael Nguyen\",\n        \"phone\": \"+84-90-123-4567\",\n        \"address\": \"89 Lê Lợi, Q.1, TP. HCM, Vietnam\",\n        \"profileImageUrl\": \"https://example.com/images/users/michael.jpg\"\n    },\n    {\n        \"id\": \"4\",\n        \"email\": \"sophia.lee@example.com\",\n        \"fullName\": \"Sophia Lee\",\n        \"phone\": \"+1-415-555-0102\",\n        \"address\": \"789 Pine St, San Francisco, CA\",\n        \"profileImageUrl\": \"https://example.com/images/users/sophia.jpg\"\n    }\n]"
+                }
+            ]
+        }
+    ]
+}

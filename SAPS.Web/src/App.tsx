@@ -1,5 +1,6 @@
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/services/auth/AuthContext";
+import { ParkingLotProvider } from "@/pages/ParkingLotOwner/ParkingLotContext";
 
 import IndexPage from "@/pages/index";
 import DocsPage from "@/pages/docs";
@@ -87,6 +88,17 @@ const RoleBasedRedirect: React.FC = () => {
   }
 };
 
+const OwnerParkingLotProviderWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user } = useAuth();
+  // You may need to adjust this if the parkingLotId is stored elsewhere
+  const userId = user?.id || "1"; // fallback to '1' if not available
+  return (
+    <ParkingLotProvider userId={userId}>
+      {children}
+    </ParkingLotProvider>
+  );
+};
+
 function App() {
   return (
     <AuthProvider>
@@ -129,7 +141,9 @@ function App() {
           path="/owner/*"
           element={
             <ProtectedRoute requiredRole={OWNER_ROLE}>
-              <Outlet />
+              <OwnerParkingLotProviderWrapper>
+                <Outlet />
+              </OwnerParkingLotProviderWrapper>
             </ProtectedRoute>
           }
         >
