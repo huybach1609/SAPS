@@ -16,6 +16,7 @@ import { apiUrl } from '@/config/base';
 
 export interface ParkingFeeSchedule {
     id: string;
+    name: string;
     startTime: number; // minutes from midnight
     endTime: number; // minutes from midnight
     initialFee: number;
@@ -26,6 +27,8 @@ export interface ParkingFeeSchedule {
     updatedAt: string;
     forVehicleType: 'Car' | 'Motorbike';
     parkingLotId: string;
+    validFrom: Date;
+    validTo: Date;
 }
 
 // Helper function to get auth headers
@@ -92,7 +95,7 @@ export const updateFeeSchedule = async (
             { headers: getAuthHeaders() }
         );
         return response.data;
-        
+
     } catch (error) {
         console.error('Error updating parking fee schedule:', error);
         throw error;

@@ -21,6 +21,7 @@ import AdminParkingLotOwnerList from "./pages/Admin/ParkingLotOwnerAccounts/Admi
 import AdminRequestList from "./pages/Admin/Requests/AdminRequestList";
 import { ADMIN_ROLE, OWNER_ROLE } from "./config/base";
 import ParkingFeeManagement from "./pages/ParkingLotOwner/ParkingFee/ParkingFeeManagement";
+import StaffDetailScreen from "./pages/ParkingLotOwner/StaffManagement/StaffDetail";
 
 // Protected Route Component
 interface ProtectedRouteProps {
@@ -150,6 +151,7 @@ function App() {
           <Route path="home" element={<OwnerDashboard />} />
           <Route path="parking-info" element={<ParkingLotInfo />} />
           <Route path="staff" element={<StaffManagement />} />
+          <Route path="staff/:parkingLotId/:staffId" element={<StaffDetailScreen  />} />
           <Route path="history" element={<ParkingHistory />} />
           <Route path="incidents" element={<IncidentReports />} />
           <Route path="whitelist" element={<Whitelist />} />

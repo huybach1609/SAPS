@@ -13,17 +13,9 @@ import {
 } from '@/services/parkinglot/parkinglotFeeService';
 
 
-// const SINGLE_PARKING_LOT: ParkingLot = {
-//     id: '1',
-//     Name: 'Downtown Plaza',
-//     Description: 'Premium parking in the heart of downtown',
-//     Address: '123 Main Street, Downtown',
-//     TotalParkingSlot: 150,
-//     CreatedAt: '2024-01-15T10:00:00Z',
-//     UpdatedAt: '2024-01-15T10:00:00Z',
-//     Status: 'Active',
-//     ParkingLotOwnerid: '1',
-// };
+
+// add name : string, validFrom : Date, validTo : Date
+
 
 const ParkingFeeManagement: React.FC = () => {
     const [feeSchedules, setFeeSchedules] = useState<ParkingFeeSchedule[]>([]);
