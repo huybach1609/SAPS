@@ -1,6 +1,8 @@
 package vn.edu.fpt.sapsmobile.models;
 
-public class Vehicle {
+import java.io.Serializable;
+
+public class Vehicle implements Serializable {
     private String id;
     private String licensePlate;
     private String brand;

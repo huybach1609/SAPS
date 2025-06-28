@@ -13,18 +13,14 @@ import java.util.List;
 
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
+import vn.edu.fpt.sapsmobile.listener.VehicleActionListener;
 
 public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleViewHolder> {
 
-    private List<Vehicle> vehicles;
-    private OnVehicleActionListener actionListener;
+    private final List<Vehicle> vehicles;
+    private final VehicleActionListener actionListener;
 
-    public interface OnVehicleActionListener {
-        void onEditClicked(Vehicle vehicle);
-        void onShareClicked(Vehicle vehicle);
-    }
-
-    public VehicleAdapter(List<Vehicle> vehicles, OnVehicleActionListener listener) {
+    public VehicleAdapter(List<Vehicle> vehicles, VehicleActionListener listener) {
         this.vehicles = vehicles;
         this.actionListener = listener;
     }
@@ -39,14 +35,7 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleV
     @Override
     public void onBindViewHolder(@NonNull VehicleViewHolder holder, int position) {
         Vehicle vehicle = vehicles.get(position);
-
-        holder.tvLicensePlate.setText(vehicle.getLicensePlate());
-        holder.tvMakeModelYear.setText(vehicle.getBrand() + " " + vehicle.getModel());
-        holder.tvColor.setText("Color: " + vehicle.getColor());
-        holder.tvSharingStatus.setText(vehicle.getSharingStatus());
-
-        holder.btnEdit.setOnClickListener(v -> actionListener.onEditClicked(vehicle));
-        holder.btnShare.setOnClickListener(v -> actionListener.onShareClicked(vehicle));
+        holder.bind(vehicle, actionListener);
     }
 
     @Override
@@ -67,6 +56,17 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleV
             tvSharingStatus = itemView.findViewById(R.id.tvSharingStatus);
             btnEdit = itemView.findViewById(R.id.btnEdit);
             btnShare = itemView.findViewById(R.id.btnShare);
+        }
+
+        void bind(Vehicle vehicle, VehicleActionListener actionListener) {
+            tvLicensePlate.setText(vehicle.getLicensePlate());
+            tvMakeModelYear.setText(vehicle.getBrand() + " " + vehicle.getModel());
+            tvColor.setText("Color: " + vehicle.getColor());
+            tvSharingStatus.setText(vehicle.getSharingStatus());
+
+            btnEdit.setOnClickListener(v -> actionListener.onEditClicked(vehicle));
+            btnShare.setOnClickListener(v -> actionListener.onShareClicked(vehicle));
+            itemView.setOnClickListener(v -> actionListener.onVehicleClicked(vehicle));
         }
     }
 }
