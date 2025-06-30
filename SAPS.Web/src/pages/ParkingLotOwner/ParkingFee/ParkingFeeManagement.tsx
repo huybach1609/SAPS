@@ -106,7 +106,7 @@ const ParkingFeeManagement: React.FC = () => {
     };
 
     return (
-        <DefaultLayout title="Parking Fee Management">
+        <DefaultLayout title="Parking Fee Management" role="parkinglotowner">
             <div className="bg-background rounded-lg shadow-sm border border-divider mt-10">
                 <div className="flex flex-col gap-4">
 

@@ -150,7 +150,7 @@ export default function Whitelist() {
     }
 
     return (
-        <DefaultLayout title="Whitelist">
+        <DefaultLayout title="Whitelist" role="parkinglotowner">
             <div className="max-w-7xl mx-auto p-6">
                 <WhitelistStatusComponent parkingLotId={parkingLot?.id || ''} loadparking={parkingLotLoading} />
 

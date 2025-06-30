@@ -300,7 +300,7 @@ const ParkingLotInfo: React.FC = () => {
     ];
 
     return (
-        <DefaultLayout>
+        <DefaultLayout role="parkinglotowner">
             <Tabs aria-label="Dynamic tabs" items={tabs} className='mt-2'>
                 {(item) => (
                     <Tab key={item.id} title={item.label}>

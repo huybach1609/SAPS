@@ -94,15 +94,13 @@ const RoleBasedRedirect: React.FC = () => {
   }
 };
 
-const OwnerParkingLotProviderWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const OwnerParkingLotProviderWrapper: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
   const { user } = useAuth();
   // You may need to adjust this if the parkingLotId is stored elsewhere
   const userId = user?.id || "1"; // fallback to '1' if not available
-  return (
-    <ParkingLotProvider userId={userId}>
-      {children}
-    </ParkingLotProvider>
-  );
+  return <ParkingLotProvider userId={userId}>{children}</ParkingLotProvider>;
 };
 
 function App() {
@@ -137,7 +135,7 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route path="dashboard" element={<AdminDashboardPage />} />
+          <Route path="home" element={<AdminDashboardPage />} />
 
           {/* Account Management Routes */}
           <Route path="accounts" element={<AccountListSelector />} />
@@ -150,7 +148,7 @@ function App() {
 
         {/* Owner Routes */}
         <Route
-          path="/owner/*"
+          path="/owner"
           element={
             <ProtectedRoute requiredRole={OWNER_ROLE}>
               <OwnerParkingLotProviderWrapper>
@@ -162,7 +160,10 @@ function App() {
           <Route path="home" element={<OwnerDashboard />} />
           <Route path="parking-info" element={<ParkingLotInfo />} />
           <Route path="staff" element={<StaffManagement />} />
-          <Route path="staff/:parkingLotId/:staffId" element={<StaffDetailScreen  />} />
+          <Route
+            path="staff/:parkingLotId/:staffId"
+            element={<StaffDetailScreen />}
+          />
           <Route path="history" element={<ParkingHistory />} />
           <Route path="incidents" element={<IncidentReports />} />
           <Route path="whitelist" element={<Whitelist />} />

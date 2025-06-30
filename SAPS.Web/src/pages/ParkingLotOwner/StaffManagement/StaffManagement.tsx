@@ -162,7 +162,7 @@ export default function StaffManagement() {
     }, [selectedUser]);
 
     return (
-        <DefaultLayout title="Staff List">
+        <DefaultLayout title="Staff List" role="parkinglotowner">
             <StaffListStatusComponent parkingLotId={parkingLot?.id || ''} loadparking={parkingLotLoading} />
             {/* Search & add */}
             <Card className="bg-background-100/20 mb-6">

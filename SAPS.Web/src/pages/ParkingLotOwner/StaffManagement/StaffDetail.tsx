@@ -97,7 +97,7 @@ const StaffDetailScreen = () => {
     };
 
     return (
-        <DefaultLayout>
+        <DefaultLayout role="parkinglotowner">
             <Link href='/owner/staff' className='my-5'><CornerUpLeft size={16} /> return to staff list</Link>
 
             <div className="max-w-4xl mx-auto">
