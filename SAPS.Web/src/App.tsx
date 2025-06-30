@@ -1,5 +1,6 @@
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/services/auth/AuthContext";
+import { ParkingLotProvider } from "@/pages/ParkingLotOwner/ParkingLotContext";
 
 import IndexPage from "@/pages/index";
 import DocsPage from "@/pages/docs";
@@ -24,6 +25,7 @@ import ParkingFeeManagement from "./pages/ParkingLotOwner/ParkingFee/ParkingFeeM
 import AccountListSelector from "./pages/Admin/Accounts/AccountListSelector";
 import UserAccountList from "./pages/Admin/Accounts/UserAccounts/UserAccountList";
 import AdminAccountDetails from "./pages/Admin/Accounts/AdminAccounts/AdminAccountDetails";
+import StaffDetailScreen from "./pages/ParkingLotOwner/StaffManagement/StaffDetail";
 
 // Protected Route Component
 interface ProtectedRouteProps {
@@ -92,6 +94,17 @@ const RoleBasedRedirect: React.FC = () => {
   }
 };
 
+const OwnerParkingLotProviderWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user } = useAuth();
+  // You may need to adjust this if the parkingLotId is stored elsewhere
+  const userId = user?.id || "1"; // fallback to '1' if not available
+  return (
+    <ParkingLotProvider userId={userId}>
+      {children}
+    </ParkingLotProvider>
+  );
+};
+
 function App() {
   return (
     <AuthProvider>
@@ -140,18 +153,16 @@ function App() {
           path="/owner/*"
           element={
             <ProtectedRoute requiredRole={OWNER_ROLE}>
-              <DefaultLayout
-                role="parkinglotowner"
-                title="SAPLS Parking Lot Owner Dashboard"
-              >
+              <OwnerParkingLotProviderWrapper>
                 <Outlet />
-              </DefaultLayout>
+              </OwnerParkingLotProviderWrapper>
             </ProtectedRoute>
           }
         >
           <Route path="home" element={<OwnerDashboard />} />
           <Route path="parking-info" element={<ParkingLotInfo />} />
           <Route path="staff" element={<StaffManagement />} />
+          <Route path="staff/:parkingLotId/:staffId" element={<StaffDetailScreen  />} />
           <Route path="history" element={<ParkingHistory />} />
           <Route path="incidents" element={<IncidentReports />} />
           <Route path="whitelist" element={<Whitelist />} />
