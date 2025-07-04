@@ -3,7 +3,7 @@ import DefaultLayout from "@/layouts/default";
 import { useParkingLot } from '../ParkingLotContext';
 
 import { User } from '@/types/User';
-import type { Whitelist, PaginationInfo } from '@/types/Whitelist';
+import type { PaginationInfo } from '@/types/Whitelist';
 import { Accordion, AccordionItem, addToast, Button, ButtonGroup, Card, CardBody, CardHeader, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Pagination, PressEvent, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure, UseDisclosureProps } from '@heroui/react';
 import { BarChart, Calendar, ClipboardList, Edit2, FolderSearch, InfoIcon, PlusIcon, RefreshCcw, Trash2, Users } from 'lucide-react';
 import { addStaff, fetchStaffList, fetchStaffListStatus, removeStaff, updateStaff } from './StaffService';
@@ -22,14 +22,14 @@ export default function StaffManagement() {
     // search results for add staff
     const [searchResults, setSearchResults] = useState<User[]>([]);
 
-    // user selected for add to whitelist
+    // user selected for add to 
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
     // expiry date for input modal
     const [expiryDate, setExpiryDate] = useState('');
 
-    // edit for update whitelist 
-    const [editingEntry, setEditingEntry] = useState<Whitelist | null>(null);
+    // edit for update 
+    const [editingEntry, setEditingEntry] = useState<User | null>(null);
     // pagination for staff list
     const [pagination, setPagination] = useState<PaginationInfo | null>(null);
     // pagination for staff list
@@ -47,7 +47,6 @@ export default function StaffManagement() {
     const editModalDisclosure = useDisclosure();
     const updateModalDisclosure = useDisclosure();
 
-    // Fetch whitelist data
     const loadStaffList = async () => {
         if (!parkingLot?.id) return;
 
@@ -64,7 +63,7 @@ export default function StaffManagement() {
             }
 
         } catch (error) {
-            console.error('Failed to load whitelist:', error);
+            console.error('Failed to load stafflist:', error);
         } finally {
             setLoading(false);
         }
@@ -80,24 +79,8 @@ export default function StaffManagement() {
         }
     };
 
-    // Add user to whitelist
-    const handleAddToWhitelist = async (onClose?: () => void) => {
-        if (!selectedUser || !parkingLot?.id) return;
 
-        try {
-            await addToWhitelist(parkingLot.id, selectedUser.id, expiryDate || undefined);
-            if (onClose) onClose();
-            setSelectedUser(null);
-            setExpiryDate('');
-            setSearchTerm('');
-            setSearchResults([]);
-            loadStaffList(); // Refresh the list
-        } catch (error) {
-            console.error('Failed to add to whitelist:', error);
-        }
-    };
-
-    // Remove user from whitelist
+    // Remove user from 
     const handleRemoveFromStaffList = async (staffId: string) => {
         if (!parkingLot?.id) return;
 
@@ -106,34 +89,24 @@ export default function StaffManagement() {
                 await removeStaff(parkingLot.id, staffId);
                 loadStaffList(); // Refresh the list
             } catch (error) {
-                console.error('Failed to remove from whitelist:', error);
+                console.error('Failed to remove from stafflist:', error);
             }
         }
     };
 
-    // Update whitelist entry
     const handleUpdateEntry = async (onClose?: () => void) => {
         if (!editingEntry || !parkingLot?.id) return;
 
         try {
-            await updateWhitelistEntry(parkingLot.id, editingEntry.clientId, {
-                expiredDate: expiryDate || undefined
-            });
             if (onClose) onClose();
             setEditingEntry(null);
             setExpiryDate('');
             loadStaffList(); // Refresh the list
         } catch (error) {
-            console.error('Failed to update whitelist entry:', error);
+            console.error('Failed to update stafflist  entry:', error);
         }
     };
 
-    // Open edit modal
-    const openEditModal = (entry: Whitelist) => {
-        setEditingEntry(entry);
-        setExpiryDate(entry.expiredDate || '');
-        editModalDisclosure.onOpen();
-    };
 
     useEffect(() => {
         loadStaffList();
@@ -237,7 +210,7 @@ export default function StaffManagement() {
                 </CardBody>
             </Card>
 
-            {/* Whitelist Table */}
+            {/*  Table */}
             <div className="min-h-[70vh]">
                 {(parkingLotLoading || loading) ? (
                     <div className="flex justify-center items-center h-64">
@@ -295,11 +268,11 @@ export default function StaffManagement() {
                     {(onClose) => (
                         editingEntry && (
                             <>
-                                <ModalHeader className="flex flex-col gap-1">Edit Whitelist Entry</ModalHeader>
+                                <ModalHeader className="flex flex-col gap-1">Edit Staff Entry</ModalHeader>
                                 <ModalBody>
                                     <div className="mb-4">
-                                        <div className="font-medium">{editingEntry.client?.fullName || 'Unknown User'}</div>
-                                        <div className="text-sm text-gray-600">{editingEntry.client?.email || editingEntry.clientId}</div>
+                                        <div className="font-medium">{editingEntry.fullName || 'Unknown User'}</div>
+                                        <div className="text-sm text-gray-600">{editingEntry.email || editingEntry.staffProfile?.staffId}</div>
                                     </div>
                                     <div className="mb-4">
                                         <label className="block text-sm font-medium text-primary-900/90 mb-2">
@@ -359,7 +332,7 @@ function StaffListTable({ staffList, selectUser, setSelectUser }: StaffListTable
                 <div className='text-lg font-bold'></div>
 
             </div>
-            <Table aria-label="Whitelist Table" className=""
+            <Table aria-label="Staff Table" className=""
                 color='secondary'
                 selectedKeys={selectUser ? [selectUser.staffProfile?.staffId || ''] : []}
                 onSelectionChange={(keys) => {

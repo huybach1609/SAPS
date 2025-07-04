@@ -22,6 +22,7 @@ import AdminRequestList from "./pages/Admin/Requests/AdminRequestList";
 import { ADMIN_ROLE, OWNER_ROLE } from "./config/base";
 import ParkingFeeManagement from "./pages/ParkingLotOwner/ParkingFee/ParkingFeeManagement";
 import StaffDetailScreen from "./pages/ParkingLotOwner/StaffManagement/StaffDetail";
+import UploadFile from "./pages/ParkingLotOwner/UploadFile";
 
 // Protected Route Component
 interface ProtectedRouteProps {
@@ -156,6 +157,7 @@ function App() {
           <Route path="incidents" element={<IncidentReports />} />
           <Route path="whitelist" element={<Whitelist />} />
           <Route path="parking-fee" element={<ParkingFeeManagement />} />
+          <Route path="upload-file" element={<UploadFile />} />
         </Route>
 
         {/* Dashboard redirect route */}
