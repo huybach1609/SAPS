@@ -51,7 +51,10 @@ export const fetchParkingHistory = async (
     parkingLotId: string, 
     pageSize: number = 10, 
     currentPage: number = 1, 
-    searchKey?: string
+    searchKey?: string,
+    dateRangeStart?: string,
+    dateRangeEnd?: string,
+    status?: string
 ): Promise<PaginatedParkingHistoryResponse> => {
     try {
         // Build query parameters
@@ -63,6 +66,17 @@ export const fetchParkingHistory = async (
         // Only add searchKey if it's provided and not empty
         if (searchKey && searchKey.trim()) {
             params.append('searchKey', searchKey.trim());
+        }
+        // Add date range if provided
+        if (dateRangeStart) {
+            params.append('dateRangeStart', dateRangeStart);
+        }
+        if (dateRangeEnd) {
+            params.append('dateRangeEnd', dateRangeEnd);
+        }
+        // Add status if provided
+        if (status && status.trim()) {
+            params.append('status', status.trim());
         }
         
         const response = await axios.get(`${apiUrl}/api/ParkingSession/${parkingLotId}?${params.toString()}`, {

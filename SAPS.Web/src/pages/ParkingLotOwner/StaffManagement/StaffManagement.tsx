@@ -4,10 +4,12 @@ import { useParkingLot } from '../ParkingLotContext';
 
 import { User } from '@/types/User';
 import type { PaginationInfo } from '@/types/Whitelist';
-import { Accordion, AccordionItem, addToast, Button, ButtonGroup, Card, CardBody, CardHeader, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Pagination, PressEvent, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure, UseDisclosureProps } from '@heroui/react';
-import { BarChart, Calendar, ClipboardList, Edit2, FolderSearch, InfoIcon, PlusIcon, RefreshCcw, Trash2, Users } from 'lucide-react';
+import { Accordion, AccordionItem, addToast, Button, ButtonGroup, Card, CardBody, CardHeader, DropdownMenu, DropdownTrigger, DropdownItem, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Pagination, PressEvent, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure, UseDisclosureProps, Dropdown } from '@heroui/react';
+import { BarChart, Calendar, ClipboardList, Edit2, EllipsisVertical, FolderSearch, InfoIcon, PlusIcon, RefreshCcw, Trash2, Users } from 'lucide-react';
 import { addStaff, fetchStaffList, fetchStaffListStatus, removeStaff, updateStaff } from './StaffService';
 import { useNavigate } from 'react-router-dom';
+import { ParkingLot } from '@/types/ParkingLot';
+import { formatPhoneNumber } from '@/components/utils/stringUtils';
 
 // thiếu dateof birth
 export default function StaffManagement() {
@@ -187,11 +189,11 @@ export default function StaffManagement() {
                             size="sm"
                             color='secondary'
                             className='text-background'
-                            isIconOnly
                         >
+                            Add Staff
                         </Button>
 
-
+{/* 
                         <ButtonGroup isDisabled={selectedUser === null}>
                             <Button color='primary' className='text-background' size='sm' startContent={<ClipboardList size={16} />}
                                 onPress={() => navigate(`/owner/staff/${parkingLot?.id}/${selectedUser?.staffProfile?.staffId}`)}>Detail</Button>
@@ -202,8 +204,8 @@ export default function StaffManagement() {
                                 <Trash2 size={16} />
                             }
                                 onPress={() => handleRemoveFromStaffList(selectedUser?.staffProfile?.staffId || '')}
-                            >Remove</Button>
-                        </ButtonGroup>
+                            >Deactivate</Button>
+                        </ButtonGroup> */}
 
                     </div>
 
@@ -225,6 +227,9 @@ export default function StaffManagement() {
                         staffList={stafflist}
                         selectUser={selectedUser}
                         setSelectUser={setSelectedUser}
+                        parkingLot={parkingLot}
+                        updateModalDisclosure={updateModalDisclosure}
+                        handleRemoveFromStaffList={handleRemoveFromStaffList}
                     />
                 )}
             </div>
@@ -320,12 +325,14 @@ type StaffListTableProps = {
     staffList: User[];
     selectUser: User | null;
     setSelectUser: React.Dispatch<React.SetStateAction<User | null>>;
+    parkingLot: ParkingLot | null;
+    updateModalDisclosure: UseDisclosureProps;
+    handleRemoveFromStaffList: (staffId: string) => void;
 };
 
-function StaffListTable({ staffList, selectUser, setSelectUser }: StaffListTableProps) {
+function StaffListTable({ staffList, selectUser, setSelectUser, parkingLot, updateModalDisclosure, handleRemoveFromStaffList }: StaffListTableProps) {
     // Example: useEffect to do something when selectUser changes
-
-
+    const navigate = useNavigate();
     return (
         <div className="overflow-x-auto">
             <div className="flex justify-between mb-4">
@@ -344,7 +351,7 @@ function StaffListTable({ staffList, selectUser, setSelectUser }: StaffListTable
                     const staff = staffList.find((s) => s.staffProfile?.staffId === selectedid);
                     setSelectUser(staff || null);
                 }}
-                selectionMode="single"
+                // selectionMode="single"
             >
                 <TableHeader className="">
                     <TableColumn key="user" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -354,10 +361,16 @@ function StaffListTable({ staffList, selectUser, setSelectUser }: StaffListTable
                         Name
                     </TableColumn>
                     <TableColumn key="expiryDate" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Email
+                        Email & Phone
+                    </TableColumn>
+                    <TableColumn key="createdAt" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Created Date
                     </TableColumn>
                     <TableColumn key="status" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Created Date
+                        Status
+                    </TableColumn>
+                    <TableColumn key="action" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Actions
                     </TableColumn>
                 </TableHeader>
                 <TableBody >
@@ -372,23 +385,63 @@ function StaffListTable({ staffList, selectUser, setSelectUser }: StaffListTable
                                 <TableCell className="px-6 py-4 whitespace-nowrap">
                                     <div className="flex items-center">
                                         <div className="ml-4">
+                                            
                                             <div className="text-sm font-medium ">
                                                 {entry.fullName || 'Unknown User'}
                                             </div>
-                                            <div className="text-sm text-gray-500">
+                                            {/* <div className="text-sm text-gray-500">
                                                 {entry.email || entry.staffProfile?.staffId}
-                                            </div>
+                                            </div> */}
                                         </div>
                                     </div>
                                 </TableCell >
                                 {/* email */}
                                 <TableCell className="px-6 py-4 whitespace-nowrap text-sm ">
                                     {entry.email}
+                                    <div className="text-sm text-gray-500">
+                                        {entry.phone ? formatPhoneNumber(entry.phone) : 'No phone'}
+                                    </div>
                                 </TableCell >
                                 {/* created date */}
                                 <TableCell className="px-6 py-4 whitespace-nowrap">
                                     {new Date(entry.createdAt).toLocaleDateString()}
+
                                 </TableCell >
+                                <TableCell >
+                                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${entry.isActive
+                                        ? 'bg-green-100 text-green-800'
+                                        : 'bg-red-100 text-red-800'
+                                        }`}>
+                                        {entry.isActive ? 'Active' : 'Inactive'}
+                                    </span>
+
+                                </TableCell>
+                                <TableCell >
+                                    <Dropdown className='mx-auto'>
+                                        <DropdownTrigger>
+                                            <Button variant='light' isIconOnly> <EllipsisVertical size={16} /></Button>
+                                        </DropdownTrigger>
+                                        <DropdownMenu aria-label="action" >
+                                         
+                                            <DropdownItem key="detail" onPress={() => navigate(`/owner/staff/${parkingLot?.id}/${entry?.staffProfile?.staffId}`)}>
+                                                Detail
+                                            </DropdownItem>
+                                            <DropdownItem key="update" onPress={() => {
+                                                setSelectUser(entry);
+                                                updateModalDisclosure.onOpen?.();
+                                            }}>
+                                                Update
+                                            </DropdownItem>
+
+                                            <DropdownItem key="delete" className="text-danger" color="danger"
+                                                onPress={() => handleRemoveFromStaffList(entry?.staffProfile?.staffId || '')}
+                                            >
+                                                Deactivate
+                                            </DropdownItem>
+
+                                        </DropdownMenu>
+                                    </Dropdown>
+                                </TableCell>
 
                             </TableRow>
                         );

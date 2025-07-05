@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Search, Car, Calendar, Clock, DollarSign, Eye, Filter, FolderSearch, RefreshCcw, PlusIcon, ClipboardList, Edit2, Trash2 } from 'lucide-react';
 import DefaultLayout from '@/layouts/default';
 import { useParkingLot } from '../../ParkingLotContext';
-import { Button, ButtonGroup, Card, CardBody, CardHeader, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Pagination, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure } from '@heroui/react';
+import { Button, ButtonGroup, Card, CardBody, CardHeader, DateRangePicker, DateValue, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Pagination, RangeValue, SelectItem, Select, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure } from '@heroui/react';
 import { PaginationInfo } from '@/types/Whitelist';
 import { useNavigate } from 'react-router-dom';
 import { fetchParkingHistory, ParkingSession, PaginatedParkingHistoryResponse } from '@/services/parkinglot/parkingHistoryService';
@@ -35,6 +35,19 @@ const ParkingHistory: React.FC = () => {
 
     // search for search & add field
     const [tableSearch, setTableSearch] = useState('');
+    // filter by date range (entryDateTime, exitDateTime)
+    const [dateRange, setDateRange] = useState<RangeValue<DateValue> | null>(null);
+    // const [dateRange, setDateRange] = useState<{ start: Date | null; end: Date | null }>({ start: null, end: null });
+
+    // filter by status
+    const [status, setStatus] = useState<string | null>(null);
+
+    const statusOptions = [
+        { key: "completed", label: "Completed" },
+        { key: "currentlyParked", label: "Currently Parked" },
+        { key: "paymentPending", label: "Payment Pending" },
+    ];
+
 
     const navigate = useNavigate();
 
@@ -43,11 +56,17 @@ const ParkingHistory: React.FC = () => {
     const editModalDisclosure = useDisclosure();
     const updateModalDisclosure = useDisclosure();
 
+    // hiện thị ở bãi,các id thì để theo thứ tự và các trạng mặc định là đang đỗ.
     const loadParkingSessions = async () => {
         if (!parkingLot?.id) return;
 
         setLoading(true);
         try {
+            // Prepare date range values as ISO strings if present
+            const dateRangeStart = dateRange && dateRange.start ? dateRange.start : undefined;
+            const dateRangeEnd = dateRange && dateRange.end ? dateRange.end : undefined;
+            const statusValue = status || undefined;
+
             if (tableSearch != null && tableSearch.trim() !== '') {
                 const response = await fetchParkingHistory(parkingLot.id, 6, currentPage, tableSearch);
                 setParkingSessions(response.data);
@@ -152,6 +171,29 @@ const ParkingHistory: React.FC = () => {
                                     }
                                 }}
                             />
+                            <DateRangePicker label="" value={dateRange} onChange={setDateRange}
+                                size="sm" color='primary' className='w-1/2 text-primary-900' />
+
+                            {/* <p className="text-default-500 text-sm">
+                                Selected date:{" "}
+                                {dateRange
+                                    ? dateRange.start.toDate() + " - " + dateRange.end.toDate()
+                                    : "--"}
+                            </p> */}
+                            <Select
+                                className="w-1/2"
+                                color='primary'
+                                size="sm"
+                                label=""
+                                placeholder="select status"
+                                selectedKeys={status ? [status] : []}
+                                onSelectionChange={(keys) => setStatus(keys.currentKey || null)}
+                            >
+                                {statusOptions.map((status) => (
+                                    <SelectItem key={status.key}>{status.label}</SelectItem>
+                                ))}
+                            </Select>
+
                             <Button
                                 size="sm"
                                 onPress={() => handleSearch(tableSearch)}
@@ -160,6 +202,7 @@ const ParkingHistory: React.FC = () => {
                             >
                                 Search
                             </Button>
+
                             <Button
                                 size="sm"
                                 onPress={() => handleReset()}
@@ -169,14 +212,17 @@ const ParkingHistory: React.FC = () => {
                             >
                                 <RefreshCcw size={16} />
                             </Button>
+
                         </div>
+
+
 
                         <ButtonGroup isDisabled={selectedSession === null}>
                             <Button color='primary' className='text-background' size='sm' startContent={<Eye size={16} />}
                                 onPress={() => handleViewSessionDetails(selectedSession?.id || '')}>View Details</Button>
-                            <Button color='secondary' className='text-background' size='sm'
+                            {/* <Button color='secondary' className='text-background' size='sm'
                                 onPress={() => updateModalDisclosure.onOpen()}
-                                startContent={<Edit2 size={16} />}>Edit</Button>
+                                startContent={<Edit2 size={16} />}>Edit</Button> */}
                         </ButtonGroup>
                     </div>
                 </CardBody>
