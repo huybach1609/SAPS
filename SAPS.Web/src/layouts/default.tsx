@@ -3,19 +3,24 @@ import { Link } from "@heroui/link";
 import { Button } from "@heroui/react";
 import { Menu } from "lucide-react";
 import { SideBar } from "@/components/layout/sidebar";
+import { useParkingLot } from "@/pages/ParkingLotOwner/ParkingLotContext";
+import { useAuth } from "@/services/auth/AuthContext";
 
-export default function DefaultLayout({ 
+export default function DefaultLayout({
   children,
   title = "Page Title"
 }: {
   children: React.ReactNode;
   title?: string;
 }) {
+
   // Initialize state from localStorage
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
     const saved = localStorage.getItem('sidebarOpen');
     return saved ? JSON.parse(saved) : false;
   });
+
+
 
   // Save state to localStorage whenever it changes
   useEffect(() => {
@@ -25,6 +30,8 @@ export default function DefaultLayout({
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   }
+  const { user } = useAuth();
+  const { parkingLot } = useParkingLot();
 
   return (
     <div className="relative flex h-screen">

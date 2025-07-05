@@ -100,8 +100,13 @@ const parkingLotOwnerItems: NavigationItem[] = [
         icon: <FileText size={20} />,
         title: "Whitelist",
         path: "/owner/whitelist"
+    },
+    {
+        icon: <FileText size={20} />,
+        title: "Upload File",
+        path: "/owner/upload-file"
     }
-    
+
 ];
 
 

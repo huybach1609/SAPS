@@ -1,5 +1,6 @@
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/services/auth/AuthContext";
+import { ParkingLotProvider } from "@/pages/ParkingLotOwner/ParkingLotContext";
 
 import IndexPage from "@/pages/index";
 import DocsPage from "@/pages/docs";
@@ -20,6 +21,8 @@ import AdminParkingLotOwnerList from "./pages/Admin/ParkingLotOwnerAccounts/Admi
 import AdminRequestList from "./pages/Admin/Requests/AdminRequestList";
 import { ADMIN_ROLE, OWNER_ROLE } from "./config/base";
 import ParkingFeeManagement from "./pages/ParkingLotOwner/ParkingFee/ParkingFeeManagement";
+import StaffDetailScreen from "./pages/ParkingLotOwner/StaffManagement/StaffDetail";
+import UploadFile from "./pages/ParkingLotOwner/UploadFile";
 
 // Protected Route Component
 interface ProtectedRouteProps {
@@ -87,6 +90,17 @@ const RoleBasedRedirect: React.FC = () => {
   }
 };
 
+const OwnerParkingLotProviderWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { user } = useAuth();
+  // You may need to adjust this if the parkingLotId is stored elsewhere
+  const userId = user?.id || "1"; // fallback to '1' if not available
+  return (
+    <ParkingLotProvider userId={userId}>
+      {children}
+    </ParkingLotProvider>
+  );
+};
+
 function App() {
   return (
     <AuthProvider>
@@ -129,17 +143,21 @@ function App() {
           path="/owner/*"
           element={
             <ProtectedRoute requiredRole={OWNER_ROLE}>
-              <Outlet />
+              <OwnerParkingLotProviderWrapper>
+                <Outlet />
+              </OwnerParkingLotProviderWrapper>
             </ProtectedRoute>
           }
         >
           <Route path="home" element={<OwnerDashboard />} />
           <Route path="parking-info" element={<ParkingLotInfo />} />
           <Route path="staff" element={<StaffManagement />} />
+          <Route path="staff/:parkingLotId/:staffId" element={<StaffDetailScreen  />} />
           <Route path="history" element={<ParkingHistory />} />
           <Route path="incidents" element={<IncidentReports />} />
           <Route path="whitelist" element={<Whitelist />} />
           <Route path="parking-fee" element={<ParkingFeeManagement />} />
+          <Route path="upload-file" element={<UploadFile />} />
         </Route>
 
         {/* Dashboard redirect route */}

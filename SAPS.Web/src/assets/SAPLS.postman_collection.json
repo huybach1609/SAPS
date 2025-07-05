@@ -1,0 +1,1664 @@
+{
+	"info": {
+		"_postman_id": "4a192e46-5ecd-4cff-8f85-4a8d67eb7279",
+		"name": "SAPLS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "33998619"
+	},
+	"item": [
+		{
+			"name": "Desktop",
+			"item": []
+		},
+		{
+			"name": "Moblie",
+			"item": [
+				{
+					"name": "Authentication",
+					"item": [
+						{
+							"name": "api/Auth/login",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": "{{url}}/api/Auth/login"
+							},
+							"response": [
+								{
+									"name": "Default",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": ""
+										},
+										"url": "{{url}}/api/Auth/login"
+									},
+									"code": 200,
+									"_postman_previewlanguage": null,
+									"header": null,
+									"cookie": [],
+									"body": "{\n  \"accessToken\": \"string\",\n  \"refreshToken\": \"string\",\n  \"user\": {\n    \"userId\": 1,\n    \"googleId\": \"string\",\n    \"username\": null,\n    \"email\": \"string\",\n    \"name\": null,\n    \"profilePictureUrl\": null,\n    \"createdAt\": null,\n    \"updatedAt\": null,\n    \"isActive\": null,\n    \"role\": 1\n  },\n  \"expiresAt\": \"2025-06-17T15:15:03.098Z\"\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "UserProfile",
+					"item": []
+				},
+				{
+					"name": "Vehicle Share",
+					"item": []
+				},
+				{
+					"name": "History (parking turn)",
+					"item": []
+				},
+				{
+					"name": "payment process",
+					"item": []
+				},
+				{
+					"name": "Notification",
+					"item": []
+				}
+			]
+		},
+		{
+			"name": "Web",
+			"item": [
+				{
+					"name": "Authentication",
+					"item": [
+						{
+							"name": "auth/validate",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{url}}/api/auth/validate?isAdmin=true",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"validate"
+									],
+									"query": [
+										{
+											"key": "isAdmin",
+											"value": "true"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "admin",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url}}/api/auth/validate?isAdmin=true",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"api",
+												"auth",
+												"validate"
+											],
+											"query": [
+												{
+													"key": "isAdmin",
+													"value": "true"
+												}
+											]
+										}
+									},
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json",
+											"description": "",
+											"type": "text"
+										}
+									],
+									"cookie": [
+										{
+											"expires": "Invalid Date"
+										}
+									],
+									"body": "{\n    \"id\": \"f9e95e6a-2b4b-4a6c-9150-1b9dca3a2f11\",\n    \"email\": \"admin@example.com\",\n    \"role\": \"admin\",\n    \"fullName\": \"Alice Nguyen\",\n    \"phone\": \"0912345678\",\n    \"address\": \"123 Admin St, Hanoi\",\n    \"profileImageUrl\": \"https://example.com/images/admin1.jpg\",\n    \"isActive\": true\n}"
+								},
+								{
+									"name": "owner",
+									"originalRequest": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url}}/api/auth/validate?isAdmin=false",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"api",
+												"auth",
+												"validate"
+											],
+											"query": [
+												{
+													"key": "isAdmin",
+													"value": "false"
+												}
+											]
+										}
+									},
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json",
+											"description": "",
+											"type": "text"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"id\": \"f9e95e6a-2b4b-4a6c-9150-1b9dca3a2f11\",\n    \"email\": \"admin@example.com\",\n    \"role\": \"parkinglotowner\",\n    \"fullName\": \"Alice Nguyen Ower\",\n    \"phone\": \"0912345678\",\n    \"address\": \"123 Admin St, Hanoi\",\n    \"profileImageUrl\": \"https://example.com/images/admin1.jpg\",\n    \"isActive\": true\n}"
+								}
+							]
+						},
+						{
+							"name": "api/auth/login",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"email\":\"example@mail.com\",\r\n    \"password\":\"123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/api/auth/login?isAdmin",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"api",
+										"auth",
+										"login"
+									],
+									"query": [
+										{
+											"key": "isAdmin",
+											"value": null,
+											"description": "mock admin or not"
+										}
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "admin",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\":\"example@mail.com\",\r\n    \"password\":\"123\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url}}/api/auth/login?isAdmin=true",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"api",
+												"auth",
+												"login"
+											],
+											"query": [
+												{
+													"key": "isAdmin",
+													"value": "true",
+													"description": "test is admin or not"
+												}
+											]
+										}
+									},
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json",
+											"description": "",
+											"type": "text"
+										}
+									],
+									"cookie": [],
+									"body": "{\r\n    \"token\": \"admin\",\r\n    \"user\": {\r\n        \"id\": \"f9e95e6a-2b4b-4a6c-9150-1b9dca3a2f11\",\r\n        \"email\": \"admin@example.com\",\r\n        \"role\": \"admin\",\r\n        \"fullName\": \"Alice Nguyen\",\r\n        \"phone\": \"0912345678\",\r\n        \"address\": \"123 Admin St, Hanoi\",\r\n        \"profileImageUrl\": \"https://example.com/images/admin1.jpg\",\r\n        \"isActive\": true\r\n    }\r\n}"
+								},
+								{
+									"name": "owner",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\":\"example@mail.com\",\r\n    \"password\":\"123\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url}}/api/auth/login?isAdmin=false",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"api",
+												"auth",
+												"login"
+											],
+											"query": [
+												{
+													"key": "isAdmin",
+													"value": "false",
+													"description": "mock admin or not"
+												}
+											]
+										}
+									},
+									"_postman_previewlanguage": "json",
+									"header": [
+										{
+											"key": "Content-Type",
+											"value": "application/json",
+											"description": "",
+											"type": "text"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"token\": \"parkinglotowner\",\n    \"user\": {\n        \"id\": \"f9e95e6a-2b4b-4a6c-9150-1b9dca3a2f11\",\n        \"email\": \"admin@example.com\",\n        \"role\": \"parkinglotowner\",\n        \"fullName\": \"Alice Nguyen Owner\",\n        \"phone\": \"0912345678\",\n        \"address\": \"123 Admin St, Hanoi\",\n        \"profileImageUrl\": \"https://example.com/images/admin1.jpg\",\n        \"isActive\": true\n    }\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Admin",
+					"item": [
+						{
+							"name": "User Management",
+							"item": [
+								{
+									"name": "api/users",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url}}/api/users",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"api",
+												"users"
+											],
+											"query": [
+												{
+													"key": "page",
+													"value": null,
+													"disabled": true
+												},
+												{
+													"key": "pageSize",
+													"value": null,
+													"disabled": true
+												},
+												{
+													"key": "search",
+													"value": null,
+													"disabled": true
+												},
+												{
+													"key": "status",
+													"value": null,
+													"disabled": true
+												},
+												{
+													"key": "dateTo",
+													"value": null,
+													"disabled": true
+												},
+												{
+													"key": "dateFrom",
+													"value": null,
+													"disabled": true
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "api/users",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{url}}/api/users?page&pageSize&search&status&dateTo&dateFrom",
+													"host": [
+														"{{url}}"
+													],
+													"path": [
+														"api",
+														"users"
+													],
+													"query": [
+														{
+															"key": "page",
+															"value": null,
+															"description": "(integer, optional): Page number, default 1"
+														},
+														{
+															"key": "pageSize",
+															"value": null,
+															"description": "(integer, optional): Number of users per page, default 5"
+														},
+														{
+															"key": "search",
+															"value": null,
+															"description": "(string, optional): Search by ID, name, email, or phone"
+														},
+														{
+															"key": "status",
+															"value": null,
+															"description": "(string, optional): Filter by user status (Active, Banned, Pending, etc.)"
+														},
+														{
+															"key": "dateTo",
+															"value": null,
+															"description": "(string, optional): Filter by created date (end, format: YYYY-MM-DD)"
+														},
+														{
+															"key": "dateFrom",
+															"value": null,
+															"description": "(string, optional): Filter by created date (start, format: YYYY-MM-DD)"
+														}
+													]
+												}
+											},
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [
+												{
+													"expires": "Invalid Date"
+												}
+											],
+											"body": "{\r\n  \"data\": [\r\n    {\r\n      \"userId\": \"U001\",\r\n      \"fullName\": \"John Michael Smith\",\r\n      \"email\": \"john.smith@email.com\",\r\n      \"createdDate\": \"2024-03-15\",\r\n      \"status\": \"Active\"\r\n    },\r\n    {\r\n      \"userId\": \"U002\",\r\n      \"fullName\": \"Sarah Elizabeth Johnson\",\r\n      \"email\": \"sarah.johnson@email.com\",\r\n      \"createdDate\": \"2024-04-20\",\r\n      \"status\": \"Active\"\r\n    },\r\n    {\r\n      \"userId\": \"U003\",\r\n      \"fullName\": \"Michael Robert Wilson\",\r\n      \"email\": \"mike.wilson@email.com\",\r\n      \"createdDate\": \"2024-02-10\",\r\n      \"status\": \"Banned\"\r\n    },\r\n    {\r\n      \"userId\": \"U004\",\r\n      \"fullName\": \"Emma Catherine Davis\",\r\n      \"email\": \"emma.davis@email.com\",\r\n      \"createdDate\": \"2024-05-08\",\r\n      \"status\": \"Active\"\r\n    },\r\n    {\r\n      \"userId\": \"U005\",\r\n      \"fullName\": \"David Christopher Lee\",\r\n      \"email\": \"david.lee@email.com\",\r\n      \"createdDate\": \"2024-06-01\",\r\n      \"status\": \"Pending\"\r\n    }\r\n  ],\r\n  \"pagination\": {\r\n    \"currentPage\": 1,\r\n    \"pageSize\": 5,\r\n    \"totalEntries\": 1247,\r\n    \"totalPages\": 250\r\n  }\r\n}\r\n"
+										}
+									]
+								},
+								{
+									"name": "api/users/summary",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": "{{url}}/api/users/summary"
+									},
+									"response": [
+										{
+											"name": "api/users/summary",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": "/api/users/summary"
+											},
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [
+												{
+													"expires": "Invalid Date"
+												}
+											],
+											"body": "{\n    \"totalUsers\": 1247,\n    \"activeUsers\": 1189,\n    \"bannedUsers\": 32,\n    \"pendingUsers\": 26\n}"
+										}
+									]
+								},
+								{
+									"name": "api/users/{userId}/ban",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{url}}/api/users/:userId/ban",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"api",
+												"users",
+												":userId",
+												"ban"
+											],
+											"variable": [
+												{
+													"key": "userId",
+													"value": "123123"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "api/users/{userId}/ban",
+											"originalRequest": {
+												"method": "POST",
+												"header": [],
+												"url": {
+													"raw": "{{url}}/api/users/:userId/ban",
+													"host": [
+														"{{url}}"
+													],
+													"path": [
+														"api",
+														"users",
+														":userId",
+														"ban"
+													],
+													"variable": [
+														{
+															"key": "userId",
+															"value": "123123"
+														}
+													]
+												}
+											},
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [
+												{
+													"expires": "Invalid Date"
+												}
+											],
+											"body": "{\r\n  \"success\": true,\r\n  \"message\": \"User has been banned.\"\r\n}"
+										}
+									]
+								},
+								{
+									"name": "api/users/:userId/unban",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{url}}/api/users/:userId/unban",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"api",
+												"users",
+												":userId",
+												"unban"
+											],
+											"variable": [
+												{
+													"key": "userId",
+													"value": "123123"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "ex",
+											"originalRequest": {
+												"method": "POST",
+												"header": [],
+												"url": {
+													"raw": "{{url}}/api/users/:userId/unban",
+													"host": [
+														"{{url}}"
+													],
+													"path": [
+														"api",
+														"users",
+														":userId",
+														"unban"
+													],
+													"variable": [
+														{
+															"key": "userId",
+															"value": "123"
+														}
+													]
+												}
+											},
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [
+												{
+													"expires": "Invalid Date"
+												}
+											],
+											"body": "{\r\n  \"success\": true,\r\n  \"message\": \"User has been unbanned.\"\r\n}"
+										}
+									]
+								},
+								{
+									"name": "api/users/:userId/approve",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{url}}/api/users/:userId/approve",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"api",
+												"users",
+												":userId",
+												"approve"
+											],
+											"variable": [
+												{
+													"key": "userId",
+													"value": "123"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "api/users/:userId/approve",
+											"originalRequest": {
+												"method": "POST",
+												"header": [],
+												"url": {
+													"raw": "{{url}}/api/users/:userId/approve",
+													"host": [
+														"{{url}}"
+													],
+													"path": [
+														"api",
+														"users",
+														":userId",
+														"approve"
+													],
+													"variable": [
+														{
+															"key": "userId",
+															"value": "123"
+														}
+													]
+												}
+											},
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [
+												{
+													"expires": "Invalid Date"
+												}
+											],
+											"body": "{\r\n  \"success\": true,\r\n  \"message\": \"User has been approved.\"\r\n}"
+										}
+									]
+								},
+								{
+									"name": "api/users/{userId}",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url}}/api/users/:userId",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"api",
+												"users",
+												":userId"
+											],
+											"variable": [
+												{
+													"key": "userId",
+													"value": "123123"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "api/users/{userId}",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{url}}/api/users/:userId",
+													"host": [
+														"{{url}}"
+													],
+													"path": [
+														"api",
+														"users",
+														":userId"
+													],
+													"variable": [
+														{
+															"key": "userId",
+															"value": "123123"
+														}
+													]
+												}
+											},
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [
+												{
+													"expires": "Invalid Date"
+												}
+											],
+											"body": "{\r\n  \"userId\": \"U001\",\r\n  \"fullName\": \"John Michael Smith\",\r\n  \"email\": \"john.smith@email.com\",\r\n  \"createdDate\": \"2024-03-15\",\r\n  \"status\": \"Active\",\r\n  \"phone\": \"123-456-7890\",\r\n  \"profileImageUrl\": \"https://example.com/profile.jpg\"\r\n}\r\n"
+										}
+									]
+								}
+							],
+							"description": "StartFragment\n\n## **1\\. Get User Account List**\n\n**Endpoint:**  \n`GET /api/users`\n\n**Query Parameters:**\n\n- `page` (integer, optional): Page number, default 1\n    \n- `pageSize` (integer, optional): Number of users per page, default 5\n    \n- `search` (string, optional): Search by ID, name, email, or phone\n    \n- `status` (string, optional): Filter by user status (`Active`, `Banned`, `Pending`, etc.)\n    \n- `dateFrom` (string, optional): Filter by created date (start, format: `YYYY-MM-DD`)\n    \n- `dateTo` (string, optional): Filter by created date (end, format: `YYYY-MM-DD`)\n    \n\nEndFragment\n\nStartFragment\n\n## **2\\. Get User Account Summary Counts**\n\n**Endpoint:**  \n`GET /api/users/summary`\n\n**Response:**\n\n```\njson{\n  \"totalUsers\": 1247,\n  \"activeUsers\": 1189,\n  \"bannedUsers\": 32,\n  \"pendingUsers\": 26\n}\n\n ```\n\nEndFragment\n\nStartFragment\n\n## **3\\. User Actions**\n\n## **Ban User**\n\n**Endpoint:**  \n`POST /api/users/{userId}/ban`\n\n**Response:**\n\n```\njson{\n  \"success\": true,\n  \"message\": \"User has been banned.\"\n}\n\n ```\n\n## **Unban User**\n\n**Endpoint:**  \n`POST /api/users/{userId}/unban`\n\n**Response:**\n\n```\njson{\n  \"success\": true,\n  \"message\": \"User has been unbanned.\"\n}\n\n ```\n\n## **Approve User**\n\n**Endpoint:**  \n`POST /api/users/{userId}/approve`\n\n**Response:**\n\n```\njson{\n  \"success\": true,\n  \"message\": \"User has been approved.\"\n}\n\n ```\n\n---\n\n## **4\\. Get User Details**\n\n**Endpoint:**  \n`GET /api/users/{userId}`\n\n**Response:**\n\n```\njson{\n  \"userId\": \"U001\",\n  \"fullName\": \"John Michael Smith\",\n  \"email\": \"john.smith@email.com\",\n  \"createdDate\": \"2024-03-15\",\n  \"status\": \"Active\",\n  \"phone\": \"123-456-7890\",\n  \"profileImageUrl\": \"https://example.com/profile.jpg\"\n}\n\n ```\n\nEndFragment"
+						},
+						{
+							"name": "Admin  Management Copy",
+							"item": [
+								{
+									"name": "api/admins",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url}}/api/admins",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"api",
+												"admins"
+											],
+											"query": [
+												{
+													"key": "search",
+													"value": null,
+													"description": "(string): Search by ID, name, or email.",
+													"disabled": true
+												},
+												{
+													"key": "status",
+													"value": null,
+													"description": "(string): Filter by status (e.g., \"Active\", \"Banned\").",
+													"disabled": true
+												},
+												{
+													"key": "role",
+													"value": null,
+													"description": "(string): Filter by role (e.g., \"Head Admin\", \"Admin\").",
+													"disabled": true
+												},
+												{
+													"key": "page",
+													"value": null,
+													"description": "(integer): Page number.",
+													"disabled": true
+												},
+												{
+													"key": "pageSize",
+													"value": null,
+													"description": "(integer): Results per page.",
+													"disabled": true
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "api/admins",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{url}}/api/admins",
+													"host": [
+														"{{url}}"
+													],
+													"path": [
+														"api",
+														"admins"
+													],
+													"query": [
+														{
+															"key": "search",
+															"value": null,
+															"description": "(string): Search by ID, name, or email.",
+															"disabled": true
+														},
+														{
+															"key": "status",
+															"value": null,
+															"description": "(string): Filter by status (e.g., \"Active\", \"Banned\").",
+															"disabled": true
+														},
+														{
+															"key": "role",
+															"value": null,
+															"description": "(string): Filter by role (e.g., \"Head Admin\", \"Admin\").",
+															"disabled": true
+														},
+														{
+															"key": "page",
+															"value": null,
+															"description": "(integer): Page number.",
+															"disabled": true
+														},
+														{
+															"key": "pageSize",
+															"value": null,
+															"description": "(integer): Results per page.",
+															"disabled": true
+														}
+													]
+												}
+											},
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [
+												{
+													"expires": "Invalid Date"
+												}
+											],
+											"body": " {\r\n\"data\": [\r\n    {\r\n      \"adminId\": \"A001\",\r\n      \"fullName\": \"John David Smith\",\r\n      \"email\": \"john.admin@sapls.com\",\r\n      \"role\": \"Head Admin\",\r\n      \"createdDate\": \"2024-01-01\",\r\n      \"status\": \"Active\",\r\n      \"isProtected\": true\r\n    },\r\n    {\r\n      \"adminId\": \"A002\",\r\n      \"fullName\": \"Sarah Michelle Johnson\",\r\n      \"email\": \"sarah.admin@sapls.com\",\r\n      \"role\": \"Admin\",\r\n      \"createdDate\": \"2024-01-15\",\r\n      \"status\": \"Active\",\r\n      \"isProtected\": false\r\n    }\r\n  ],\r\n  \"pagination\": {\r\n    \"currentPage\": 1,\r\n    \"pageSize\": 10,\r\n    \"totalEntries\": 2,\r\n    \"totalPages\": 1\r\n  }\r\n } \r\n"
+										}
+									]
+								}
+							],
+							"description": "StartFragment\n\nThe admins shown in your UI (\"Admin Account List\") are users who have an associated entry in the **AdminProfile** table, which connects to the main **User** table for basic information. Here’s how the data maps from your schema to the screen:\n\n---\n\n## **How Admins Are Represented**\n\n- **Admin ID**:  \n    Comes from `AdminProfile.AdminId`.\n    \n- **Full Name**:  \n    From `User.FullName`, joined via `AdminProfile.UserId = User.Id`.\n    \n- **Email Address**:  \n    From `User.Email`.\n    \n- **Role**:  \n    From `AdminProfile.Role` (e.g., \"Head Admin\", \"Admin\").\n    \n- **Created Date**:  \n    From `User.CreatedAt`.\n    \n- **Status**:  \n    From `AdminProfile.Status` (or possibly `User.IsActive` for \"Active\"/\"Inactive\" logic).\n    \n- **Actions**:  \n    The available actions (View, Edit, Ban, Protected) are determined by the admin’s role and status:\n    \n    - \"Protected\" is likely for the Head Admin (cannot be banned/edited).\n        \n    - \"Ban\" and \"Edit\" are available for other admins.\n        \n\n---\n\n## **API Mockup for Admin Account List**\n\n## **1\\. Get Admin Account List**\n\n**Endpoint:**  \n`GET /api/admins`\n\n**Query Parameters:**\n\n- `search` (string): Search by ID, name, or email.\n    \n- `status` (string): Filter by status (e.g., \"Active\", \"Banned\").\n    \n- `role` (string): Filter by role (e.g., \"Head Admin\", \"Admin\").\n    \n- `page` (integer): Page number.\n    \n- `pageSize` (integer): Results per page.\n    \n\n**Response Example:**\n\n```\njson{\n  \"data\": [\n    {\n      \"adminId\": \"A001\",\n      \"fullName\": \"John David Smith\",\n      \"email\": \"john.admin@sapls.com\",\n      \"role\": \"Head Admin\",\n      \"createdDate\": \"2024-01-01\",\n      \"status\": \"Active\",\n      \"isProtected\": true\n    },\n    {\n      \"adminId\": \"A002\",\n      \"fullName\": \"Sarah Michelle Johnson\",\n      \"email\": \"sarah.admin@sapls.com\",\n      \"role\": \"Admin\",\n      \"createdDate\": \"2024-01-15\",\n      \"status\": \"Active\",\n      \"isProtected\": false\n    }\n  ],\n  \"pagination\": {\n    \"currentPage\": 1,\n    \"pageSize\": 10,\n    \"totalEntries\": 2,\n    \"totalPages\": 1\n  }\n}\n\n ```\n\n## **2\\. Admin Actions**\n\n- **Add Admin:**  \n    `POST /api/admins` (with new admin details)\n    \n- **Edit Admin:**  \n    `PUT /api/admins/{adminId}`\n    \n- **Ban Admin:**  \n    `POST /api/admins/{adminId}/ban`\n    \n- **View Admin:**  \n    `GET /api/admins/{adminId}`\n    \n\n---\n\n## **Database Mapping**\n\n| UI Field | Database Field(s) |\n| --- | --- |\n| Admin ID | AdminProfile.AdminId |\n| Full Name | User.FullName |\n| Email Address | User.Email |\n| Role | AdminProfile.Role |\n| Created Date | User.CreatedAt |\n| Status | AdminProfile.Status (or User.IsActive for boolean) |\n| Actions | Derived from Role/Status |\n\n---\n\n**Summary:**  \nAdmins are users with an entry in the AdminProfile table, and their list is constructed by joining AdminProfile and User tables using UserId. All fields in your UI are directly mapped to the schema, and the available actions depend on the admin’s role and status\n\nEndFragment"
+						},
+						{
+							"name": "ParkingLotOwner Management",
+							"item": []
+						},
+						{
+							"name": "Request Management",
+							"item": []
+						}
+					]
+				},
+				{
+					"name": "ParkingLotOwner",
+					"item": [
+						{
+							"name": "ParkingLotInfo",
+							"item": [
+								{
+									"name": "get",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url}}/api/ParkingLot/:parkingLotOwnerId",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"api",
+												"ParkingLot",
+												":parkingLotOwnerId"
+											],
+											"variable": [
+												{
+													"key": "parkingLotOwnerId",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "get",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{url}}/api/ParkingLot/:parkingLotOwnerId",
+													"host": [
+														"{{url}}"
+													],
+													"path": [
+														"api",
+														"ParkingLot",
+														":parkingLotOwnerId"
+													],
+													"variable": [
+														{
+															"key": "parkingLotOwnerId",
+															"value": "1"
+														}
+													]
+												}
+											},
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [
+												{
+													"expires": "Invalid Date"
+												}
+											],
+											"body": "{\n    \"id\": \"1\",\n    \"name\": \"Downtown Plaza\",\n    \"description\": \"Premium parking in the heart of downtown\",\n    \"address\": \"123 Main Street, Downtown\",\n    \"totalParkingSlot\": 150,\n    \"createdAt\": \"2024-01-15T10:00:00Z\",\n    \"updatedAt\": \"2024-01-15T10:00:00Z\",\n    \"status\": \"Active\",\n    \"parkingLotOwnerId\": \"1\"\n}"
+										}
+									]
+								},
+								{
+									"name": "update",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"Name\": \"Downtown Plaza\",\r\n    \"Description\": \"Premium parking in the heart of downtown\",\r\n    \"TotalParkingSlot\": 150\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url}}/api/ParkingLot/:parkingLotOwnerId/:parkingLotId",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"api",
+												"ParkingLot",
+												":parkingLotOwnerId",
+												":parkingLotId"
+											],
+											"variable": [
+												{
+													"key": "parkingLotOwnerId",
+													"value": "1"
+												},
+												{
+													"key": "parkingLotId",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "update",
+											"originalRequest": {
+												"method": "PUT",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"Name\": \"Downtown Plaza\",\r\n    \"Description\": \"Premium parking in the heart of downtown\",\r\n    \"TotalParkingSlot\": 150\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{url}}/api/ParkingLot/:parkingLotOwnerId/:parkingLotId",
+													"host": [
+														"{{url}}"
+													],
+													"path": [
+														"api",
+														"ParkingLot",
+														":parkingLotOwnerId",
+														":parkingLotId"
+													],
+													"variable": [
+														{
+															"key": "parkingLotOwnerId",
+															"value": "1"
+														},
+														{
+															"key": "parkingLotId",
+															"value": "1"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": null,
+											"header": null,
+											"cookie": [],
+											"body": null
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "PaymentSource",
+							"item": [
+								{
+									"name": "get",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url}}/api/PaymentSource/:parkingLotOwnerId",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"api",
+												"PaymentSource",
+												":parkingLotOwnerId"
+											],
+											"variable": [
+												{
+													"key": "parkingLotOwnerId",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "get",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{url}}/api/PaymentSource/:parkingLotOwnerId",
+													"host": [
+														"{{url}}"
+													],
+													"path": [
+														"api",
+														"PaymentSource",
+														":parkingLotOwnerId"
+													],
+													"variable": [
+														{
+															"key": "parkingLotOwnerId",
+															"value": "1"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": " {\r\n  \"id\": 1,\r\n  \"bankName\": \"Vietcombank\",\r\n  \"accountName\": \"Downtown Mall Corporation\",\r\n  \"accountNumber\": \"1234567890123\",\r\n  \"branch\": \"Downtown Branch\",\r\n  \"swiftCode\": \"BFTVVNVX\"\r\n}"
+										}
+									]
+								},
+								{
+									"name": "Statistics",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url}}/api/PaymentSource/:parkingLotOwnerId/Statistics",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"api",
+												"PaymentSource",
+												":parkingLotOwnerId",
+												"Statistics"
+											],
+											"variable": [
+												{
+													"key": "parkingLotOwnerId",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Statistics",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{url}}/api/PaymentSource/:parkingLotOwnerId/Statistics",
+													"host": [
+														"{{url}}"
+													],
+													"path": [
+														"api",
+														"PaymentSource",
+														":parkingLotOwnerId",
+														"Statistics"
+													],
+													"variable": [
+														{
+															"key": "parkingLotOwnerId",
+															"value": "1"
+														}
+													]
+												}
+											},
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "{\r\n  \"monthlyRevenue\": 12450,\r\n  \"totalTransactions\": 847,\r\n  \"successRate\": 98.5\r\n}"
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "Staff Mangement",
+							"item": []
+						},
+						{
+							"name": "ParkingHistory Management (parking turn)",
+							"item": []
+						},
+						{
+							"name": "Incident",
+							"item": []
+						},
+						{
+							"name": "Whitelist",
+							"item": [
+								{
+									"name": "getall",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url}}/api/WhiteList/:parkingLotId",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"api",
+												"WhiteList",
+												":parkingLotId"
+											],
+											"variable": [
+												{
+													"key": "parkingLotId",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "getall",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{url}}/api/WhiteList/:parkingLotId",
+													"host": [
+														"{{url}}"
+													],
+													"path": [
+														"api",
+														"WhiteList",
+														":parkingLotId"
+													],
+													"variable": [
+														{
+															"key": "parkingLotId",
+															"value": "1"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"data\": [\n        {\n            \"parkingLotId\": \"PL001\",\n            \"clientId\": \"U001\",\n            \"addedDate\": \"2025-06-01T10:00:00Z\",\n            \"expiredDate\": \"2025-12-01T10:00:00Z\",\n            \"client\": {\n                \"id\": \"U001\",\n                \"email\": \"john.doe@example.com\",\n                \"fullName\": \"John Doe\",\n                \"phone\": \"123456789\",\n                \"address\": \"123 Main St, Cityville\"\n            }\n        },\n        {\n            \"parkingLotId\": \"PL001\",\n            \"clientId\": \"U002\",\n            \"addedDate\": \"2025-06-03T14:30:00Z\",\n            \"expiredDate\": null,\n            \"client\": {\n                \"id\": \"U002\",\n                \"email\": \"jane.smith@example.com\",\n                \"fullName\": \"Jane Smith\",\n                \"phone\": \"987654321\",\n                \"address\": \"456 Elm St, Townsville\"\n            }\n        },\n        {\n            \"parkingLotId\": \"PL001\",\n            \"clientId\": \"U003\",\n            \"addedDate\": \"2025-06-05T09:15:00Z\",\n            \"expiredDate\": \"2025-09-05T09:15:00Z\",\n            \"client\": {\n                \"id\": \"U003\",\n                \"email\": \"bob.williams@example.com\",\n                \"fullName\": \"Bob Williams\",\n                \"phone\": \"1122334455\",\n                \"address\": \"789 Oak St, Villageton\"\n            }\n        },\n        {\n            \"parkingLotId\": \"PL001\",\n            \"clientId\": \"U004\",\n            \"addedDate\": \"2025-06-07T13:45:00Z\",\n            \"expiredDate\": null,\n            \"client\": {\n                \"id\": \"U004\",\n                \"email\": \"alice.brown@example.com\",\n                \"fullName\": \"Alice Brown\",\n                \"phone\": \"9988776655\",\n                \"address\": \"321 Pine St, Hamlet\"\n            }\n        },\n        {\n            \"parkingLotId\": \"PL001\",\n            \"clientId\": \"U005\",\n            \"addedDate\": \"2025-06-09T16:20:00Z\",\n            \"expiredDate\": \"2025-12-31T23:59:59Z\",\n            \"client\": {\n                \"id\": \"U005\",\n                \"email\": \"charlie.johnson@example.com\",\n                \"fullName\": \"Charlie Johnson\",\n                \"phone\": \"5566778899\",\n                \"address\": \"654 Maple St, Metro\"\n            }\n        }\n    ],\n    \"pagination\": {\n        \"currentPage\": 1,\n        \"pageSize\": 5,\n        \"totalItems\": 47,\n        \"totalPages\": 10,\n        \"hasPreviousPage\": false,\n        \"hasNextPage\": true\n    }\n}"
+										}
+									]
+								},
+								{
+									"name": "Search User",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url}}/api/Users/Whitelist/search?q=bach03@gmail.com",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"api",
+												"Users",
+												"Whitelist",
+												"search"
+											],
+											"query": [
+												{
+													"key": "q",
+													"value": "bach03@gmail.com",
+													"description": "search by username, id"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "ex1",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{url}}/api/Users/Whitelist/search?q=bach03@gmail.com",
+													"host": [
+														"{{url}}"
+													],
+													"path": [
+														"api",
+														"Users",
+														"Whitelist",
+														"search"
+													],
+													"query": [
+														{
+															"key": "q",
+															"value": "bach03@gmail.com",
+															"description": "search by username, id"
+														}
+													]
+												}
+											},
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"name": "Content-Type",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "[\n    {\n        \"id\": \"1\",\n        \"email\": \"john.doe@example.com\",\n        \"fullName\": \"John Doe\",\n        \"phone\": \"+1-202-555-0143\",\n        \"address\": \"123 Main St, Springfield, IL\",\n        \"profileImageUrl\": \"https://example.com/images/users/john.jpg\"\n    },\n    {\n        \"id\": \"2\",\n        \"email\": \"jane.smith@example.com\",\n        \"fullName\": \"Jane Smith\",\n        \"phone\": \"+1-202-555-0176\",\n        \"address\": \"456 Oak Ave, Lincoln, NE\",\n        \"profileImageUrl\": \"https://example.com/images/users/jane.jpg\"\n    },\n    {\n        \"id\": \"3\",\n        \"email\": \"michael.nguyen@example.com\",\n        \"fullName\": \"Michael Nguyen\",\n        \"phone\": \"+84-90-123-4567\",\n        \"address\": \"89 Lê Lợi, Q.1, TP. HCM, Vietnam\",\n        \"profileImageUrl\": \"https://example.com/images/users/michael.jpg\"\n    },\n    {\n        \"id\": \"4\",\n        \"email\": \"sophia.lee@example.com\",\n        \"fullName\": \"Sophia Lee\",\n        \"phone\": \"+1-415-555-0102\",\n        \"address\": \"789 Pine St, San Francisco, CA\",\n        \"profileImageUrl\": \"https://example.com/images/users/sophia.jpg\"\n    }\n]"
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "ParkingFee",
+							"item": [
+								{
+									"name": "getAllParkingLot",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{url}}/api/ParkingFeeSchedule/:parkingLotId",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"api",
+												"ParkingFeeSchedule",
+												":parkingLotId"
+											],
+											"variable": [
+												{
+													"key": "parkingLotId",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "getAllParkingLot",
+											"originalRequest": {
+												"method": "GET",
+												"header": [],
+												"url": {
+													"raw": "{{url}}/api/ParkingFeeSchedule/:parkingLotId",
+													"host": [
+														"{{url}}"
+													],
+													"path": [
+														"api",
+														"ParkingFeeSchedule",
+														":parkingLotId"
+													],
+													"variable": [
+														{
+															"key": "parkingLotId",
+															"value": "1"
+														}
+													]
+												}
+											},
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [
+												{
+													"expires": "Invalid Date"
+												}
+											],
+											"body": "[\r\n  {\r\n    \"id\": \"1\",\r\n    \"startTime\": 0,\r\n    \"endTime\": 360,\r\n    \"initialFee\": 5.0,\r\n    \"additionalFee\": 2.0,\r\n    \"additionalMinutes\": 60,\r\n    \"dayOfWeeks\": [0, 1, 2, 3, 4],\r\n    \"isActive\": true,\r\n    \"updatedAt\": \"2024-01-15T10:00:00Z\",\r\n    \"forVehicleType\": \"Car\",\r\n    \"parkingLotId\": \"abc123\"\r\n  },\r\n  {\r\n    \"id\": \"2\",\r\n    \"startTime\": 360,\r\n    \"endTime\": 1080,\r\n    \"initialFee\": 10.0,\r\n    \"additionalFee\": 5.0,\r\n    \"additionalMinutes\": 60,\r\n    \"dayOfWeeks\": [0, 1, 2, 3, 4],\r\n    \"isActive\": true,\r\n    \"updatedAt\": \"2024-01-15T10:00:00Z\",\r\n    \"forVehicleType\": \"Car\",\r\n    \"parkingLotId\": \"abc123\"\r\n  },\r\n  {\r\n    \"id\": \"3\",\r\n    \"startTime\": 1080,\r\n    \"endTime\": 1440,\r\n    \"initialFee\": 8.0,\r\n    \"additionalFee\": 3.0,\r\n    \"additionalMinutes\": 60,\r\n    \"dayOfWeeks\": [0, 1, 2, 3, 4],\r\n    \"isActive\": true,\r\n    \"updatedAt\": \"2024-01-15T10:00:00Z\",\r\n    \"forVehicleType\": \"Car\",\r\n    \"parkingLotId\": \"abc123\"\r\n  }\r\n]\r\n"
+										}
+									]
+								},
+								{
+									"name": "deleteFee",
+									"request": {
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{url}}/api/ParkingFeeSchedule/:parkingLotId/:parkingFeeId",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"api",
+												"ParkingFeeSchedule",
+												":parkingLotId",
+												":parkingFeeId"
+											],
+											"variable": [
+												{
+													"key": "parkingLotId",
+													"value": "1"
+												},
+												{
+													"key": "parkingFeeId",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "success code",
+											"originalRequest": {
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{url}}/api/ParkingFeeSchedule/:parkingLotId/:parkingFeeId",
+													"host": [
+														"{{url}}"
+													],
+													"path": [
+														"api",
+														"ParkingFeeSchedule",
+														":parkingLotId",
+														":parkingFeeId"
+													],
+													"variable": [
+														{
+															"key": "parkingLotId",
+															"value": "1"
+														},
+														{
+															"key": "parkingFeeId",
+															"value": "1"
+														}
+													]
+												}
+											},
+											"status": "No Content",
+											"code": 204,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [
+												{
+													"expires": "Invalid Date"
+												}
+											],
+											"body": ""
+										},
+										{
+											"name": "error code",
+											"originalRequest": {
+												"method": "DELETE",
+												"header": [],
+												"url": {
+													"raw": "{{url}}/api/ParkingFeeSchedule/:parkingLotId/:parkingFeeId",
+													"host": [
+														"{{url}}"
+													],
+													"path": [
+														"api",
+														"ParkingFeeSchedule",
+														":parkingLotId",
+														":parkingFeeId"
+													],
+													"variable": [
+														{
+															"key": "parkingLotId",
+															"value": "1"
+														},
+														{
+															"key": "parkingFeeId",
+															"value": "2"
+														}
+													]
+												}
+											},
+											"status": "Not Found",
+											"code": 404,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"message\": \"no found\"\n}"
+										}
+									]
+								},
+								{
+									"name": "updateFee",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"url": {
+											"raw": "{{url}}/api/ParkingFeeSchedule/:parkingLotId/:parkingFeeId",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"api",
+												"ParkingFeeSchedule",
+												":parkingLotId",
+												":parkingFeeId"
+											],
+											"variable": [
+												{
+													"key": "parkingLotId",
+													"value": "1"
+												},
+												{
+													"key": "parkingFeeId",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "success code",
+											"originalRequest": {
+												"method": "PUT",
+												"header": [],
+												"url": {
+													"raw": "{{url}}/api/ParkingFeeSchedule/:parkingLotId/:parkingFeeId",
+													"host": [
+														"{{url}}"
+													],
+													"path": [
+														"api",
+														"ParkingFeeSchedule",
+														":parkingLotId",
+														":parkingFeeId"
+													],
+													"variable": [
+														{
+															"key": "parkingLotId",
+															"value": "1"
+														},
+														{
+															"key": "parkingFeeId",
+															"value": "1"
+														}
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [
+												{
+													"expires": "Invalid Date"
+												}
+											],
+											"body": "{\r\n    \"id\": \"1\",\r\n    \"startTime\": 0,\r\n    \"endTime\": 360,\r\n    \"initialFee\": 5,\r\n    \"additionalFee\": 2,\r\n    \"additionalMinutes\": 60,\r\n    \"dayOfWeeks\": [\r\n        0,\r\n        1,\r\n        2,\r\n        3,\r\n        4\r\n    ],\r\n    \"isActive\": true,\r\n    \"updatedAt\": \"2024-01-15T10:00:00Z\",\r\n    \"forVehicleType\": \"Motorbike\",\r\n    \"parkingLotId\": \"abc123\"\r\n}"
+										}
+									]
+								},
+								{
+									"name": "addFee",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n  \"StartTime\": 0,\r\n  \"EndTime\": 1440,\r\n  \"InitialFee\": 0,\r\n  \"AdditionalFee\": 0,\r\n  \"AdditionalMinutes\": 60,\r\n  \"DayOfWeeks\": [1, 2, 3, 4, 5],\r\n  \"IsActive\": true,\r\n  \"UpdatedAt\": \"2025-06-21T15:00:00Z\",\r\n  \"ForVehicleType\": \"Car\",\r\n  \"ParkingLotId\": \"1\"\r\n}\r\n",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{url}}/api/ParkingFeeSchedule/:parkingLotId",
+											"host": [
+												"{{url}}"
+											],
+											"path": [
+												"api",
+												"ParkingFeeSchedule",
+												":parkingLotId"
+											],
+											"variable": [
+												{
+													"key": "parkingLotId",
+													"value": "1"
+												}
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "addFee",
+											"originalRequest": {
+												"method": "POST",
+												"header": [
+													{
+														"key": "Content-Type",
+														"value": "application/json",
+														"type": "text"
+													}
+												],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n  \"StartTime\": 0,\r\n  \"EndTime\": 1440,\r\n  \"InitialFee\": 0,\r\n  \"AdditionalFee\": 0,\r\n  \"AdditionalMinutes\": 60,\r\n  \"DayOfWeeks\": [1, 2, 3, 4, 5],\r\n  \"IsActive\": true,\r\n  \"UpdatedAt\": \"2025-06-21T15:00:00Z\",\r\n  \"ForVehicleType\": \"Car\",\r\n  \"ParkingLotId\": \"1\"\r\n}\r\n",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{url}}/api/ParkingFeeSchedule/:parkingLotId",
+													"host": [
+														"{{url}}"
+													],
+													"path": [
+														"api",
+														"ParkingFeeSchedule",
+														":parkingLotId"
+													],
+													"variable": [
+														{
+															"key": "parkingLotId",
+															"value": "1"
+														}
+													]
+												}
+											},
+											"status": "Created",
+											"code": 201,
+											"_postman_previewlanguage": "json",
+											"header": [
+												{
+													"key": "Content-Type",
+													"value": "application/json",
+													"description": "",
+													"type": "text"
+												}
+											],
+											"cookie": [
+												{
+													"expires": "Invalid Date"
+												}
+											],
+											"body": "{\n    \"id\": \"4\",\n    \"startTime\": 0,\n    \"endTime\": 1440,\n    \"initialFee\": 0,\n    \"additionalFee\": 0,\n    \"additionalMinutes\": 60,\n    \"dayOfWeeks\": [\n        1,\n        2,\n        3,\n        4,\n        5\n    ],\n    \"isActive\": true,\n    \"updatedAt\": \"2025-06-21T15:00:00Z\",\n    \"forVehicleType\": \"Car\",\n    \"parkingLotId\": \"1\"\n}"
+										}
+									]
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "https://a12fd66f-74be-4779-97a3-4fef023e9291.mock.pstmn.io"
+		}
+	]
+}

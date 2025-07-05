@@ -1,0 +1,131 @@
+{
+    "name": "PaymentSource",
+    "item": [
+        {
+            "name": "get",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{url}}/api/PaymentSource/:parkingLotOwnerId",
+                    "host": [
+                        "{{url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "PaymentSource",
+                        ":parkingLotOwnerId"
+                    ],
+                    "variable": [
+                        {
+                            "key": "parkingLotOwnerId",
+                            "value": "1"
+                        }
+                    ]
+                }
+            },
+            "response": [
+                {
+                    "name": "get",
+                    "originalRequest": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{url}}/api/PaymentSource/:parkingLotOwnerId",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "PaymentSource",
+                                ":parkingLotOwnerId"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "parkingLotOwnerId",
+                                    "value": "1"
+                                }
+                            ]
+                        }
+                    },
+                    "status": "OK",
+                    "code": 200,
+                    "_postman_previewlanguage": "json",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json",
+                            "description": "",
+                            "type": "text"
+                        }
+                    ],
+                    "cookie": [],
+                    "body": " {\r\n  \"id\": 1,\r\n  \"bankName\": \"Vietcombank\",\r\n  \"accountName\": \"Downtown Mall Corporation\",\r\n  \"accountNumber\": \"1234567890123\",\r\n  \"branch\": \"Downtown Branch\",\r\n  \"swiftCode\": \"BFTVVNVX\"\r\n}"
+                }
+            ]
+        },
+        {
+            "name": "Statistics",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                    "raw": "{{url}}/api/PaymentSource/:parkingLotOwnerId/Statistics",
+                    "host": [
+                        "{{url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "PaymentSource",
+                        ":parkingLotOwnerId",
+                        "Statistics"
+                    ],
+                    "variable": [
+                        {
+                            "key": "parkingLotOwnerId",
+                            "value": "1"
+                        }
+                    ]
+                }
+            },
+            "response": [
+                {
+                    "name": "Statistics",
+                    "originalRequest": {
+                        "method": "GET",
+                        "header": [],
+                        "url": {
+                            "raw": "{{url}}/api/PaymentSource/:parkingLotOwnerId/Statistics",
+                            "host": [
+                                "{{url}}"
+                            ],
+                            "path": [
+                                "api",
+                                "PaymentSource",
+                                ":parkingLotOwnerId",
+                                "Statistics"
+                            ],
+                            "variable": [
+                                {
+                                    "key": "parkingLotOwnerId",
+                                    "value": "1"
+                                }
+                            ]
+                        }
+                    },
+                    "_postman_previewlanguage": "json",
+                    "header": [
+                        {
+                            "key": "Content-Type",
+                            "value": "application/json",
+                            "description": "",
+                            "type": "text"
+                        }
+                    ],
+                    "cookie": [],
+                    "body": "{\r\n  \"monthlyRevenue\": 12450,\r\n  \"totalTransactions\": 847,\r\n  \"successRate\": 98.5\r\n}"
+                }
+            ]
+        }
+    ]
+}

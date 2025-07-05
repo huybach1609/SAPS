@@ -1,16 +1,8 @@
-import { ADMIN_ROLE, mockUrl } from '@/config/base';
+import { apiUrl } from '@/config/base';
+import { User } from '@/types/User';
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-interface User {
-  id: string;
-  email: string;
-  role: 'admin' | 'parkinglotowner';
-  fullName: string;
-  phoneNumber: string;
-  address: string;
-  profileImageUrl: string;
-  isActive: boolean;
-}
+
 
 interface AuthContextType {
   user: User | null;
@@ -38,13 +30,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const validateToken = async (token: string) => {
     try {
-      const url = mockUrl + '/api/auth/validate?isAdmin=' + (token === "admin");
+      const url = apiUrl + '/api/auth/validate?isAdmin=' + (token === "admin");
       console.log(url);
       const response = await fetch(url, {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       });
+
 
       if (response.ok) {
         const userData = await response.json();
@@ -64,7 +57,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async (email: string, password: string, remember: boolean = false) => {
     try {
       // TODO: Replace with your actual API endpoint
-      const response = await fetch(mockUrl + '/api/auth/login?isAdmin=' + remember, {
+      const response = await fetch(apiUrl + '/api/auth/login?isAdmin=' + remember, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
