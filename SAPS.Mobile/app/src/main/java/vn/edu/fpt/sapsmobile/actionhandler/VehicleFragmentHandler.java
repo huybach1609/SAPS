@@ -3,23 +3,18 @@ package vn.edu.fpt.sapsmobile.actionhandler;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.activities.CheckoutActivity;
 import vn.edu.fpt.sapsmobile.dialog.VehicleDetailDialog;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
-import vn.edu.fpt.sapsmobile.listener.VehicleActionListener;
+import vn.edu.fpt.sapsmobile.listener.VehicleFragmentListener;
 
-public class VehicleActionHandler implements VehicleActionListener {
+public class VehicleFragmentHandler implements VehicleFragmentListener {
 
     private final Context context;
 
-    public VehicleActionHandler(Context context) {
+    public VehicleFragmentHandler(Context context) {
         this.context = context;
     }
 

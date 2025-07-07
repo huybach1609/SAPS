@@ -13,14 +13,14 @@ import java.util.List;
 
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
-import vn.edu.fpt.sapsmobile.listener.VehicleActionListener;
+import vn.edu.fpt.sapsmobile.listener.VehicleFragmentListener;
 
 public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleViewHolder> {
 
     private final List<Vehicle> vehicles;
-    private final VehicleActionListener actionListener;
+    private final VehicleFragmentListener actionListener;
 
-    public VehicleAdapter(List<Vehicle> vehicles, VehicleActionListener listener) {
+    public VehicleAdapter(List<Vehicle> vehicles, VehicleFragmentListener listener) {
         this.vehicles = vehicles;
         this.actionListener = listener;
     }
@@ -58,7 +58,7 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleV
             btnShare = itemView.findViewById(R.id.btnShare);
         }
 
-        void bind(Vehicle vehicle, VehicleActionListener actionListener) {
+        void bind(Vehicle vehicle, VehicleFragmentListener actionListener) {
             tvLicensePlate.setText(vehicle.getLicensePlate());
             tvMakeModelYear.setText(vehicle.getBrand() + " " + vehicle.getModel());
             tvColor.setText("Color: " + vehicle.getColor());
