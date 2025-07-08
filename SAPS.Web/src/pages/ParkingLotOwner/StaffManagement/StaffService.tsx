@@ -64,7 +64,8 @@ export const fetchStaffList = async (
     parkingLotId: string, 
     pageSize: number = 10, 
     currentPage: number = 1, 
-    searchKey?: string
+    searchKey?: string,
+    status?: number
 ): Promise<PaginatedStafflistResponse> => {
     try {
         // Build query parameters
@@ -78,6 +79,12 @@ export const fetchStaffList = async (
             params.append('searchKey', searchKey.trim());
         }
         
+        // Only add status if it's provided and not undefined
+        if (status !== undefined && status !== null) {
+            params.append('status', status.toString());
+        }
+        
+        console.log(`${apiUrl}/api/Staff/${parkingLotId}?${params.toString()}`);
         const response = await axios.get(`${apiUrl}/api/Staff/${parkingLotId}?${params.toString()}`, {
             headers: getAuthHeaders()
         });

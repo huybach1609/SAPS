@@ -20,7 +20,15 @@ export interface StaffProfile {
   userId: string;
   staffId: string;
   parkingLotId: string;
+  status: number;
 }
+export enum StaffStatus {
+  ACTIVE = 0,
+  ON_LEAVE = 1,
+  SUSPENDED = 2,
+  TERMINATED = 3
+}
+
 
 export interface ClientProfile {
   userId: string;

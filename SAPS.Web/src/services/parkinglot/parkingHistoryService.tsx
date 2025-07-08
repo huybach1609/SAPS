@@ -1,4 +1,5 @@
 import { apiUrl } from '@/config/base';
+import { ParkingSessionStatus } from '@/pages/ParkingLotOwner/ParkingHistory/HistoryManagement/ParkingHistory';
 import { PaginationInfo } from '@/types/Whitelist';
 import axios from 'axios';
 
@@ -32,7 +33,8 @@ export interface ParkingSession {
     // Joined data
     vehicle?: Vehicle;
     duration?: string;
-    status: 'Completed' | 'Currently Parked' | 'Pending';
+    status: ParkingSessionStatus;
+
 }
 
 export interface PaginatedParkingHistoryResponse {
@@ -79,6 +81,7 @@ export const fetchParkingHistory = async (
             params.append('status', status.trim());
         }
         
+        console.log(`${apiUrl}/api/ParkingSession/${parkingLotId}?${params.toString()}`);
         const response = await axios.get(`${apiUrl}/api/ParkingSession/${parkingLotId}?${params.toString()}`, {
             headers: getAuthHeaders()
         });

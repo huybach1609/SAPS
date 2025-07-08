@@ -8,10 +8,12 @@ import { useAuth } from "@/services/auth/AuthContext";
 
 export default function DefaultLayout({
   children,
-  title = "Page Title"
+  title = "Page Title",
+  className = ""
 }: {
   children: React.ReactNode;
   title?: string;
+  className?: string;
 }) {
 
   // Initialize state from localStorage
@@ -30,8 +32,8 @@ export default function DefaultLayout({
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   }
-  const { user } = useAuth();
-  const { parkingLot } = useParkingLot();
+  // const { user } = useAuth();
+  // const { parkingLot } = useParkingLot();
 
   return (
     <div className="relative flex h-screen">
@@ -53,7 +55,7 @@ export default function DefaultLayout({
         </div>
 
         {/* Main Content */}
-        <main className="container mx-auto max-w-7xl px-6 flex-grow overflow-auto ">
+        <main className={`container mx-auto max-w-7xl px-6 flex-grow overflow-auto ${className}`}>
           {children}
         </main>
 
