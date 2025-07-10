@@ -30,6 +30,7 @@ export interface IncidentReport {
     descriptionNote?: string;
     status: IncidentStatus;
     reporter: ReporterInfo;
+    incidentEvidences?: IncidentEvidence[];
     
 }
 export interface ReporterInfo

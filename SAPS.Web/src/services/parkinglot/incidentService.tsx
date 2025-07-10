@@ -45,3 +45,41 @@ export const fetchIncidents = async (
         throw error;
     }
 }; 
+
+export interface IncidentReportStatistics {
+    openIncidents: number;
+    inProgress: number;
+    thisMonth: number;
+    resolved: number;
+}
+export const fetchIncidentStatistics = async (parkingLotId: string): Promise<IncidentReportStatistics> => {
+    const response = await axios.get(`${apiUrl}/api/incident/${parkingLotId}/statistics`, {
+        headers: getAuthHeaders(),
+    });
+    return response.data;
+};
+
+export const fetchIncidentById = async (parkingLotId: string, incidentId: string): Promise<IncidentReport> => {
+    try {
+        const response = await axios.get(`${apiUrl}/api/Incident/${parkingLotId}/${incidentId}`, {
+            headers: getAuthHeaders(),
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching incident:', error);
+        throw error;
+    }
+};
+
+export const updateIncidentStatus = async (parkingLotId: string, incidentId: string, status: IncidentStatus): Promise<IncidentReport> => {
+    try {
+        const response = await axios.put(`${apiUrl}/api/Incident/${parkingLotId}/${incidentId}/status`, 
+            { status },
+            { headers: getAuthHeaders() }
+        );
+        return response.data;
+    } catch (error) {
+        console.error('Error updating incident status:', error);
+        throw error;
+    }
+};

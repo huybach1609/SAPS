@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import DefaultLayout from "@/layouts/default";
-import { Card, CardHeader, CardBody, Input, Select, SelectItem, Button, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Spinner, Pagination } from '@heroui/react';
+import { Card, CardHeader, CardBody, Input, Select, SelectItem, Button, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Spinner, Pagination, RangeValue, DateValue, DateRangePicker } from '@heroui/react';
 import { IncidentReport, IncidentStatus, IncidentPriority } from '@/types/IncidentReport';
 import { formatDateTime, formatTime } from '../ParkingHistory/HistoryManagement/ParkingHistoryDetail';
-import { Eye } from 'lucide-react';
+import { BarChart, Eye } from 'lucide-react';
 import { useParkingLot } from '../ParkingLotContext';
-import { fetchIncidents } from '@/services/parkinglot/incidentService';
+import { fetchIncidents, fetchIncidentStatistics, IncidentReportStatistics } from '@/services/parkinglot/incidentService';
 import { PaginationInfo } from '@/types/Whitelist';
 import { useNavigate } from 'react-router-dom';
 import { s } from 'framer-motion/client';
@@ -68,6 +68,10 @@ export default function IncidentReports() {
     const [currentPage, setCurrentPage] = useState(1);
     const pageSize = 10;
 
+    // filter by date range (entryDateTime, exitDateTime)
+    const [dateRange, setDateRange] = useState<RangeValue<DateValue> | null>(null);
+
+
     const navigate = useNavigate();
 
     // Fetch incidents from API
@@ -75,13 +79,15 @@ export default function IncidentReports() {
         if (!parkingLot?.id) return;
         setLoading(true);
         console.log(status, priority, date, search);
+        const dateRangeStart = dateRange?.start ? new Date(dateRange.start.year, dateRange.start.month - 1, dateRange.start.day).toISOString() : undefined;
+        const dateRangeEnd = dateRange?.end ? new Date(dateRange.end.year, dateRange.end.month - 1, dateRange.end.day).toISOString() : undefined;
         fetchIncidents(
             parkingLot.id,
             pageSize,
             currentPage,
             search,
-            date ? date : undefined,
-            date ? date : undefined,
+            dateRangeStart,
+            dateRangeEnd,
             status !== '' ? Number(status) : undefined,
             priority !== '' ? Number(priority) : undefined
         )
@@ -94,10 +100,11 @@ export default function IncidentReports() {
                 setPagination(null);
             })
             .finally(() => setLoading(false));
-    }, [parkingLot?.id, search, status, priority, date, currentPage]);
+    }, [parkingLot?.id, search, status, priority, date, currentPage, dateRange]);
 
     return (
         <DefaultLayout title="Incident Reports">
+            <IncidentReportStatisticsCard parkingLotId={parkingLot?.id ?? ''} loading={parkingLotLoading} />
             <Card className="bg-background-100/20 mb-6 ">
                 <CardHeader className="flex items-center gap-2">
                     <span role="img" aria-label="search">🔍</span>
@@ -124,10 +131,10 @@ export default function IncidentReports() {
                             color='primary'
                         >
                             {statusOptions.map(opt => (
-                                <SelectItem key={opt.key} textValue={opt.label}> 
-                                <div
-                                className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(opt.key as IncidentStatus)}`}
-                                >{opt.label}</div>
+                                <SelectItem key={opt.key} textValue={opt.label}>
+                                    <div
+                                        className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(opt.key as IncidentStatus)}`}
+                                    >{opt.label}</div>
 
                                 </SelectItem>
                             ))}
@@ -148,15 +155,11 @@ export default function IncidentReports() {
                                 </SelectItem>
                             ))}
                         </Select>
+                     
+                        <DateRangePicker aria-label="date range picker" value={dateRange} onChange={setDateRange}
+                            size="sm" color='primary' className='w-auto text-primary-900' />
 
-                        <Input
-                            type="date"
-                            value={date}
-                            onChange={e => setDate(e.target.value)}
-                            className="w-40"
-                            size="sm"
-                            color='primary'
-                        />
+
                         <Button size="sm" color="primary" className="text-background">Search</Button>
                     </div>
                 </CardBody>
@@ -260,3 +263,45 @@ export default function IncidentReports() {
         </DefaultLayout>
     );
 }
+const IncidentReportStatisticsCard = ({parkingLotId, loading}: {parkingLotId: string, loading: boolean}) => {
+    const [statistics, setStatistics] = useState<IncidentReportStatistics>();
+    useEffect(() => {
+        fetchIncidentStatistics(parkingLotId)
+            .then(res => setStatistics(res))
+            .catch(err => setStatistics(undefined));
+    }, [parkingLotId]);
+    return (
+        loading ? (
+            <div className="flex justify-center items-center h-[78vh]">
+                <Spinner />
+            </div>
+        ) : (
+        <Card className="bg-background-100/20 mb-6">
+            <CardHeader className="flex items-center gap-2">
+                <BarChart className="w-6 h-6 text-primary" />
+                <h2 className="text-lg font-bold">Incident Report Statistics</h2>
+            </CardHeader>
+            <CardBody className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div className="bg-orange-500/80 text-background p-4 rounded-lg text-center">
+                    <p className="text-3xl font-bold">{statistics?.openIncidents}</p>
+                    <p className="text-sm">Open Incidents</p>
+                </div>
+                <div className="bg-yellow-500/80 text-background p-4 rounded-lg text-center">
+                    <p className="text-3xl font-bold">{statistics?.inProgress}</p>
+                    <p className="text-sm">In Progress</p>
+                </div>
+                <div className="bg-blue-600/80 text-background p-4 rounded-lg text-center">
+                    <p className="text-3xl font-bold">{statistics?.thisMonth}</p>
+                    <p className="text-sm">This Month</p>
+                </div>
+                <div className="bg-green-600/80 text-background p-4 rounded-lg text-center">
+                    <p className="text-3xl font-bold">{statistics?.resolved}</p>
+                    <p className="text-sm">Resolved</p>
+                </div>
+            </CardBody>
+        </Card>
+        )
+    )
+}
+
+

@@ -24,13 +24,13 @@ export const formatTime = (date: string) => {
     }).format(new Date(date));
 };
 
-interface ModalImageInfoContent {
+export interface ModalImageInfoContent {
     imageUrl: string;
     time: string;
     licensePlate: string;
 }
 
-interface ModalImageInfoProps extends ModalImageInfoContent {
+export interface ModalImageInfoProps extends ModalImageInfoContent {
     isOpen: boolean;
     onClose: () => void;
 }
@@ -486,7 +486,7 @@ const ParkingHistoryDetail: React.FC = () => {
     );
 };
 
-const ModalImageInfo = ({ imageUrl, time, licensePlate, isOpen, onClose }: ModalImageInfoProps) => {
+export const ModalImageInfo = ({ imageUrl, time, licensePlate = '', isOpen, onClose }: ModalImageInfoProps) => {
     return (
         <Modal isOpen={isOpen} onClose={onClose} size='4xl'>
             <ModalContent>
