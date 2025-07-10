@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Car, Calendar, Clock, DollarSign, Eye, Filter, FolderSearch, RefreshCcw, PlusIcon, ClipboardList, Edit2, Trash2 } from 'lucide-react';
+import { Search, Car, Calendar, Clock, DollarSign, Eye, Filter, FolderSearch, RefreshCcw, PlusIcon, ClipboardList, Edit2, Trash2, CheckCircle, EraserIcon } from 'lucide-react';
 import DefaultLayout from '@/layouts/default';
 import { useParkingLot } from '../../ParkingLotContext';
 import { Button, ButtonGroup, Card, CardBody, CardHeader, DateRangePicker, DateValue, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Pagination, RangeValue, SelectItem, Select, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure } from '@heroui/react';
 import { PaginationInfo } from '@/types/Whitelist';
 import { useNavigate } from 'react-router-dom';
 import { fetchParkingHistory, ParkingSession, PaginatedParkingHistoryResponse } from '@/services/parkinglot/parkingHistoryService';
+import ParkingHistoryStatistics from './ParkingHistoryStatistics';
 
+export enum ParkingSessionStatus {
+    COMPLETED = 0,
+    CURRENTLY_PARKED = 1,
+    PAYMENT_PENDING = 2,
+}
 
 const ParkingHistory: React.FC = () => {
     const { parkingLot, loading: parkingLotLoading } = useParkingLot();
@@ -37,16 +43,12 @@ const ParkingHistory: React.FC = () => {
     const [tableSearch, setTableSearch] = useState('');
     // filter by date range (entryDateTime, exitDateTime)
     const [dateRange, setDateRange] = useState<RangeValue<DateValue> | null>(null);
-    // const [dateRange, setDateRange] = useState<{ start: Date | null; end: Date | null }>({ start: null, end: null });
+
 
     // filter by status
-    const [status, setStatus] = useState<string | null>(null);
+    const [status, setStatus] = useState<string>(ParkingSessionStatus.CURRENTLY_PARKED.toString());
 
-    const statusOptions = [
-        { key: "completed", label: "Completed" },
-        { key: "currentlyParked", label: "Currently Parked" },
-        { key: "paymentPending", label: "Payment Pending" },
-    ];
+
 
 
     const navigate = useNavigate();
@@ -62,17 +64,17 @@ const ParkingHistory: React.FC = () => {
 
         setLoading(true);
         try {
-            // Prepare date range values as ISO strings if present
-            const dateRangeStart = dateRange && dateRange.start ? dateRange.start : undefined;
-            const dateRangeEnd = dateRange && dateRange.end ? dateRange.end : undefined;
+            // Convert DateValue objects to ISO strings if present
+            const dateRangeStart = dateRange?.start ? new Date(dateRange.start.year, dateRange.start.month - 1, dateRange.start.day).toISOString() : undefined;
+            const dateRangeEnd = dateRange?.end ? new Date(dateRange.end.year, dateRange.end.month - 1, dateRange.end.day).toISOString() : undefined;
             const statusValue = status || undefined;
 
             if (tableSearch != null && tableSearch.trim() !== '') {
-                const response = await fetchParkingHistory(parkingLot.id, 6, currentPage, tableSearch);
+                const response = await fetchParkingHistory(parkingLot.id, 6, currentPage, tableSearch, dateRangeStart, dateRangeEnd, statusValue);
                 setParkingSessions(response.data);
                 setPagination(response.pagination);
             } else {
-                const response = await fetchParkingHistory(parkingLot.id, 6, currentPage);
+                const response = await fetchParkingHistory(parkingLot.id, 6, currentPage, undefined, dateRangeStart, dateRangeEnd, statusValue);
                 setParkingSessions(response.data);
                 setPagination(response.pagination);
             }
@@ -87,6 +89,7 @@ const ParkingHistory: React.FC = () => {
     // Search parking sessions
     const handleSearch = async (term: string) => {
         try {
+            setCurrentPage(1);
             loadParkingSessions();
         } catch (error) {
             console.error('Failed to search parking sessions:', error);
@@ -99,7 +102,7 @@ const ParkingHistory: React.FC = () => {
 
         try {
             // Navigate to session details page or open modal
-            navigate(`/owner/parking-history/${parkingLot.id}/${sessionId}`);
+            navigate(`/owner/history/${parkingLot.id}/${sessionId}`);
         } catch (error) {
             console.error('Failed to view session details:', error);
         }
@@ -120,7 +123,7 @@ const ParkingHistory: React.FC = () => {
 
     useEffect(() => {
         loadParkingSessions();
-    }, [parkingLot?.id, currentPage]);
+    }, [parkingLot?.id, currentPage, dateRange, status]);
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
@@ -137,17 +140,19 @@ const ParkingHistory: React.FC = () => {
 
     function handleReset() {
         setTableSearch('');
+        setDateRange(null);
+        setStatus(ParkingSessionStatus.CURRENTLY_PARKED.toString());
         setCurrentPage(1);
         loadParkingSessions();
     }
 
-    useEffect(() => {
-        console.log(selectedSession);
 
-    }, [selectedSession]);
 
     return (
         <DefaultLayout title="Parking History">
+
+            <ParkingHistoryStatistics parkingLotId={parkingLot?.id || ''} />
+
             {/* Search & Filter */}
             <Card className="bg-background-100/20 mb-6">
                 <CardHeader className="flex items-center gap-2">
@@ -171,27 +176,33 @@ const ParkingHistory: React.FC = () => {
                                     }
                                 }}
                             />
-                            <DateRangePicker label="" value={dateRange} onChange={setDateRange}
+                            <DateRangePicker aria-label="date range picker" value={dateRange} onChange={setDateRange}
                                 size="sm" color='primary' className='w-1/2 text-primary-900' />
 
-                            {/* <p className="text-default-500 text-sm">
-                                Selected date:{" "}
-                                {dateRange
-                                    ? dateRange.start.toDate() + " - " + dateRange.end.toDate()
-                                    : "--"}
-                            </p> */}
+
                             <Select
                                 className="w-1/2"
                                 color='primary'
                                 size="sm"
                                 label=""
                                 placeholder="select status"
-                                selectedKeys={status ? [status] : []}
-                                onSelectionChange={(keys) => setStatus(keys.currentKey || null)}
+                                aria-label="select status"
+                                selectedKeys={status === '' ? new Set() : new Set([status])}
+                                onSelectionChange={(keys) => {
+                                    setStatus(keys.currentKey || '')
+                                    setCurrentPage(1);
+                                }}
                             >
-                                {statusOptions.map((status) => (
-                                    <SelectItem key={status.key}>{status.label}</SelectItem>
-                                ))}
+                                <SelectItem key="">All</SelectItem>
+                                <SelectItem key={ParkingSessionStatus.COMPLETED} className='text-green-700' >
+                                    Completed
+                                </SelectItem>
+                                <SelectItem key={ParkingSessionStatus.CURRENTLY_PARKED} className='text-primary-700' >
+                                    Currently Parked
+                                </SelectItem>
+                                <SelectItem key={ParkingSessionStatus.PAYMENT_PENDING} className='text-yellow-700' >
+                                    Payment Pending
+                                </SelectItem>
                             </Select>
 
                             <Button
@@ -358,14 +369,14 @@ function ParkingHistoryTable({ parkingSessions, selectedSession, setSelectedSess
         });
     };
 
-    const getStatusBadge = (status: string) => {
+    const getStatusBadge = (status: ParkingSessionStatus) => {
         const baseClasses = "px-3 py-1 rounded-full text-sm font-medium";
         switch (status) {
-            case 'Completed':
+            case ParkingSessionStatus.COMPLETED:
                 return `${baseClasses} bg-green-100 text-green-800`;
-            case 'Currently Parked':
+            case ParkingSessionStatus.CURRENTLY_PARKED:
                 return `${baseClasses} bg-blue-100 text-blue-800`;
-            case 'Pending':
+            case ParkingSessionStatus.PAYMENT_PENDING:
                 return `${baseClasses} bg-yellow-100 text-yellow-800`;
             default:
                 return `${baseClasses} bg-gray-100 text-gray-800`;
@@ -416,7 +427,6 @@ function ParkingHistoryTable({ parkingSessions, selectedSession, setSelectedSess
                 </TableHeader>
                 <TableBody>
                     {parkingSessions.map((session, index) => {
-                        console.log(session);
                         return (
                             <TableRow key={`${session.id}`}>
                                 {/* session id */}
@@ -455,23 +465,19 @@ function ParkingHistoryTable({ parkingSessions, selectedSession, setSelectedSess
                                     </div>
                                 </TableCell>
                                 {/* duration */}
-                                <TableCell className={`text-sm font-medium ${session.status === 'Currently Parked' ? 'text-orange-600' : 'text-gray-900'}`}>
+                                <TableCell className={`text-sm font-medium ${session.status === ParkingSessionStatus.CURRENTLY_PARKED ? 'text-orange-600' : 'text-gray-900'}`}>
                                     {session.duration}
                                 </TableCell>
                                 {/* amount */}
                                 <TableCell className="px-6 py-4 whitespace-nowrap">
-                                    {session.status === 'Currently Parked'
-                                        ? 'Pending'
-                                        : session.cost != null
-                                            ? `$${session.cost.toFixed(2)}`
-                                            : '$0.00'}
-
-                                    {/* {session.status === 'Currently Parked' ? 'Pending' : `$${session.cost.toFixed(2)}`} */}
+                                    {session.status === ParkingSessionStatus.CURRENTLY_PARKED ? '-' : (session.cost != null && session.cost > 0
+                                        ? `${session.cost.toFixed(0)} đ`
+                                        : '0 đ')}
                                 </TableCell>
                                 {/* status */}
                                 <TableCell className="px-6 py-4 whitespace-nowrap">
                                     <span className={getStatusBadge(session.status)}>
-                                        {session.status}
+                                        {session.status === ParkingSessionStatus.CURRENTLY_PARKED ? 'Currently Parked' : session.status === ParkingSessionStatus.COMPLETED ? 'Completed' : 'Payment Pending'}
                                     </span>
                                 </TableCell>
                             </TableRow>

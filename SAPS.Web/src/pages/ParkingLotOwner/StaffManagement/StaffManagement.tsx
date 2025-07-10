@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react';
 import DefaultLayout from "@/layouts/default";
 import { useParkingLot } from '../ParkingLotContext';
 
-import { User } from '@/types/User';
+import { StaffStatus, User } from '@/types/User';
 import type { PaginationInfo } from '@/types/Whitelist';
-import { Accordion, AccordionItem, addToast, Button, ButtonGroup, Card, CardBody, CardHeader, DropdownMenu, DropdownTrigger, DropdownItem, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Pagination, PressEvent, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure, UseDisclosureProps, Dropdown } from '@heroui/react';
+import { Accordion, AccordionItem, addToast, Button, ButtonGroup, Card, CardBody, CardHeader, DropdownMenu, DropdownTrigger, DropdownItem, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Pagination, PressEvent, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure, UseDisclosureProps, Dropdown } from '@heroui/react';
 import { BarChart, Calendar, ClipboardList, Edit2, EllipsisVertical, FolderSearch, InfoIcon, PlusIcon, RefreshCcw, Trash2, Users } from 'lucide-react';
 import { addStaff, fetchStaffList, fetchStaffListStatus, removeStaff, updateStaff } from './StaffService';
 import { useNavigate } from 'react-router-dom';
@@ -39,10 +39,10 @@ export default function StaffManagement() {
 
     // search for search & add field
     const [tableSearch, setTableSearch] = useState('');
-
+    // status filter for staff
+    const [statusFilter, setStatusFilter] = useState<string>('');
 
     const navigate = useNavigate();
-
 
     // Modal disclosure hooks
     const addModalDisclosure = useDisclosure();
@@ -54,23 +54,22 @@ export default function StaffManagement() {
 
         setLoading(true);
         try {
+            let response;
+            const statusParam = statusFilter === '' ? undefined : Number(statusFilter);
+            
             if (tableSearch != null && tableSearch.trim() !== '') {
-                const response = await fetchStaffList(parkingLot.id, 6, currentPage, tableSearch);
-                setStafflist(response.data);
-                setPagination(response.pagination);
+                response = await fetchStaffList(parkingLot.id, 6, currentPage, tableSearch, statusParam);
             } else {
-                const response = await fetchStaffList(parkingLot.id, 6, currentPage);
-                setStafflist(response.data);
-                setPagination(response.pagination);
+                response = await fetchStaffList(parkingLot.id, 6, currentPage, undefined, statusParam);
             }
-
+            setStafflist(response.data);
+            setPagination(response.pagination);
         } catch (error) {
             console.error('Failed to load stafflist:', error);
         } finally {
             setLoading(false);
         }
     };
-
 
     // Search users
     const handleSearch = async (term: string) => {
@@ -80,7 +79,6 @@ export default function StaffManagement() {
             console.error('Failed to search users:', error);
         }
     };
-
 
     // Remove user from 
     const handleRemoveFromStaffList = async (staffId: string) => {
@@ -109,10 +107,9 @@ export default function StaffManagement() {
         }
     };
 
-
     useEffect(() => {
         loadStaffList();
-    }, [parkingLot?.id, currentPage]);
+    }, [parkingLot?.id, currentPage, statusFilter]);
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
@@ -129,6 +126,7 @@ export default function StaffManagement() {
 
     function handleReset() {
         setTableSearch('');
+        setStatusFilter('');
         setCurrentPage(1);
         loadStaffList();
     }
@@ -162,6 +160,28 @@ export default function StaffManagement() {
                                     }
                                 }}
                             />
+                            {/* Status Filter Dropdown */}
+                            <Select
+                                aria-label="Filter by Status"
+                                placeholder="All Statuses"
+                                className="w-40"
+                                size="sm"
+                                color='primary'
+                                selectedKeys={statusFilter === '' ? new Set() : new Set([statusFilter])}
+                                onSelectionChange={keys => {
+                                    const val = Array.from(keys)[0]?.toString() ?? '';
+                                    setStatusFilter(val);
+                                    setCurrentPage(1);
+                                    // Optionally trigger search immediately
+                                    loadStaffList();
+                                }}
+                            >
+                                <SelectItem key="">All</SelectItem>
+                                <SelectItem key={StaffStatus.ACTIVE}>Active</SelectItem>
+                                <SelectItem key={StaffStatus.ON_LEAVE}>On Leave</SelectItem>
+                                <SelectItem key={StaffStatus.SUSPENDED}>Suspended</SelectItem>
+                                <SelectItem key={StaffStatus.TERMINATED}>Terminated</SelectItem>
+                            </Select>
                             <Button
                                 size="sm"
                                 onPress={() => handleSearch(tableSearch)}
@@ -180,7 +200,6 @@ export default function StaffManagement() {
                                 <RefreshCcw size={16} />
                             </Button>
 
-
                         </div>
                         <Button
                             onPress={addModalDisclosure.onOpen}
@@ -193,7 +212,7 @@ export default function StaffManagement() {
                             Add Staff
                         </Button>
 
-{/* 
+                        {/* 
                         <ButtonGroup isDisabled={selectedUser === null}>
                             <Button color='primary' className='text-background' size='sm' startContent={<ClipboardList size={16} />}
                                 onPress={() => navigate(`/owner/staff/${parkingLot?.id}/${selectedUser?.staffProfile?.staffId}`)}>Detail</Button>
@@ -330,6 +349,63 @@ type StaffListTableProps = {
     handleRemoveFromStaffList: (staffId: string) => void;
 };
 
+// Status display configuration
+export const staffStatusConfig = {
+    [StaffStatus.ACTIVE]: {
+        label: 'Active',
+        color: 'text-green-600 bg-green-100',
+        dotColor: 'bg-green-600'
+    },
+    [StaffStatus.ON_LEAVE]: {
+        label: 'On Leave',
+        color: 'text-yellow-600 bg-yellow-100',
+        dotColor: 'bg-yellow-600'
+    },
+    [StaffStatus.SUSPENDED]: {
+        label: 'Suspended',
+        color: 'text-orange-600 bg-orange-100',
+        dotColor: 'bg-orange-600'
+    },
+    [StaffStatus.TERMINATED]: {
+        label: 'Terminated',
+        color: 'text-red-600 bg-red-100',
+        dotColor: 'bg-red-600'
+    }
+};
+// Helper function to get status display info
+export const getStaffStatusDisplay = (status: number) => {
+    const config = staffStatusConfig[status as StaffStatus];
+    return config || {
+        label: 'Unknown',
+        color: 'text-gray-600 bg-gray-100',
+        dotColor: 'bg-gray-600'
+    };
+};
+
+// Component to render status with color
+export const StaffStatusBadge = ({ status }: { status: number }) => {
+    const statusDisplay = getStaffStatusDisplay(status);
+
+    return (
+        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusDisplay.color}`}>
+            <span className={`w-2 h-2 rounded-full mr-1.5 ${statusDisplay.dotColor}`}></span>
+            {statusDisplay.label}
+        </span>
+    );
+};
+
+// Alternative simple version without badge styling
+export const StaffStatusSimple = ({ status }: { status: number }) => {
+    const statusDisplay = getStaffStatusDisplay(status);
+
+    return (
+        <span className={`font-medium ${statusDisplay.color.split(' ')[0]}`}>
+            {statusDisplay.label}
+        </span>
+    );
+};
+
+
 function StaffListTable({ staffList, selectUser, setSelectUser, parkingLot, updateModalDisclosure, handleRemoveFromStaffList }: StaffListTableProps) {
     // Example: useEffect to do something when selectUser changes
     const navigate = useNavigate();
@@ -351,7 +427,7 @@ function StaffListTable({ staffList, selectUser, setSelectUser, parkingLot, upda
                     const staff = staffList.find((s) => s.staffProfile?.staffId === selectedid);
                     setSelectUser(staff || null);
                 }}
-                // selectionMode="single"
+            // selectionMode="single"
             >
                 <TableHeader className="">
                     <TableColumn key="user" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -385,7 +461,7 @@ function StaffListTable({ staffList, selectUser, setSelectUser, parkingLot, upda
                                 <TableCell className="px-6 py-4 whitespace-nowrap">
                                     <div className="flex items-center">
                                         <div className="ml-4">
-                                            
+
                                             <div className="text-sm font-medium ">
                                                 {entry.fullName || 'Unknown User'}
                                             </div>
@@ -408,12 +484,7 @@ function StaffListTable({ staffList, selectUser, setSelectUser, parkingLot, upda
 
                                 </TableCell >
                                 <TableCell >
-                                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${entry.isActive
-                                        ? 'bg-green-100 text-green-800'
-                                        : 'bg-red-100 text-red-800'
-                                        }`}>
-                                        {entry.isActive ? 'Active' : 'Inactive'}
-                                    </span>
+                                    <StaffStatusBadge status={entry.staffProfile?.status || 0} />
 
                                 </TableCell>
                                 <TableCell >
@@ -422,7 +493,7 @@ function StaffListTable({ staffList, selectUser, setSelectUser, parkingLot, upda
                                             <Button variant='light' isIconOnly> <EllipsisVertical size={16} /></Button>
                                         </DropdownTrigger>
                                         <DropdownMenu aria-label="action" >
-                                         
+
                                             <DropdownItem key="detail" onPress={() => navigate(`/owner/staff/${parkingLot?.id}/${entry?.staffProfile?.staffId}`)}>
                                                 Detail
                                             </DropdownItem>
@@ -504,7 +575,16 @@ export interface AddStaffFormRequest {
     phone: string;
     employeeId: string;
     dateOfBirth: string;
+    status: number;
 }
+
+// Status options for the select dropdown
+const statusOptions = [
+    { key: StaffStatus.ACTIVE.toString(), label: 'Active' },
+    { key: StaffStatus.ON_LEAVE.toString(), label: 'On Leave' },
+    { key: StaffStatus.SUSPENDED.toString(), label: 'Suspended' },
+    { key: StaffStatus.TERMINATED.toString(), label: 'Terminated' }
+];
 function AddStaffModal({ addModalDisclosure, parkingLotId }: { addModalDisclosure: UseDisclosureProps, parkingLotId: string }) {
 
     const [formData, setFormData] = useState<AddStaffFormRequest>({
@@ -512,7 +592,8 @@ function AddStaffModal({ addModalDisclosure, parkingLotId }: { addModalDisclosur
         email: 'staff@downtownmall.com',
         phone: '+1 (555) 123-4567',
         employeeId: 'EMP-2025-XXX',
-        dateOfBirth: ''
+        dateOfBirth: '',
+        status: StaffStatus.ACTIVE
     });
 
     const handleInputChange = (field: string, value: string) => {
@@ -676,13 +757,15 @@ function AddStaffModal({ addModalDisclosure, parkingLotId }: { addModalDisclosur
 function UpdateStaffModal({ updateModalDisclosure, parkingLotId, user }
     : { updateModalDisclosure: UseDisclosureProps, parkingLotId: string, user: User | null }) {
 
+    const [selectedStatus, setSelectedStatus] = useState(new Set([user?.staffProfile?.status?.toString() || '0']));
 
     const [formData, setFormData] = useState<AddStaffFormRequest>({
         fullName: user?.fullName || '',
         email: user?.email || '',
         phone: user?.phone || '',
         employeeId: user?.staffProfile?.staffId || '',
-        dateOfBirth: ''
+        dateOfBirth: '',
+        status: user?.staffProfile?.status || 0
     });
     useEffect(() => {
         if (user) {
@@ -691,8 +774,10 @@ function UpdateStaffModal({ updateModalDisclosure, parkingLotId, user }
                 email: user?.email || '',
                 phone: user?.phone || '',
                 employeeId: user?.staffProfile?.staffId || '',
-                dateOfBirth: ''
+                dateOfBirth: '',
+                status: user?.staffProfile?.status || 0
             });
+            setSelectedStatus(new Set([user?.staffProfile?.status?.toString() || '0']));
         }
     }, [user]);
 
@@ -702,6 +787,16 @@ function UpdateStaffModal({ updateModalDisclosure, parkingLotId, user }
             [field]: value
         }));
     };
+
+    const handleStatusChange = (keys: any) => {
+        setSelectedStatus(keys);
+        const statusValue = Array.from(keys)[0] as string;
+        setFormData(prev => ({
+            ...prev,
+            status: parseInt(statusValue)
+        }));
+    };
+
     async function handleUpdateUser(e: PressEvent): Promise<void> {
         try {
             const response = await updateStaff(parkingLotId, formData);
@@ -733,19 +828,45 @@ function UpdateStaffModal({ updateModalDisclosure, parkingLotId, user }
                                 {/* Personal Information Section */}
                                 <div className="">
                                     {/* Full Name */}
-                                    <div className="mb-6">
-                                        <label className="block text-sm font-medium text-primary-900/90 mb-2">
-                                            Full Name <span className="text-red-500">*</span>
-                                        </label>
-                                        <Input
-                                            type="text"
-                                            value={formData.fullName}
-                                            onChange={(e) => handleInputChange('fullName', e.target.value)}
-                                            placeholder="Enter staff member's full name"
-                                            className=""
-                                        />
-                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
 
+                                        <div className="mb-6">
+                                            <label className="block text-sm font-medium text-primary-900/90 mb-2">
+                                                Full Name <span className="text-red-500">*</span>
+                                            </label>
+                                            <Input
+                                                type="text"
+                                                value={formData.fullName}
+                                                onChange={(e) => handleInputChange('fullName', e.target.value)}
+                                                placeholder="Enter staff member's full name"
+                                                className=""
+                                            />
+
+
+                                        </div>
+
+                                        {/* Status */}
+                                        <div className="mb-6">
+                                            <label className="block text-sm font-medium text-primary-900/90 mb-2">
+                                                Status <span className="text-red-500">*</span>
+                                            </label>
+                                            <Select
+                                                aria-label="Select Status"
+                                                placeholder="Choose staff status"
+                                                selectedKeys={selectedStatus}
+                                                onSelectionChange={handleStatusChange}
+                                                className="w-full"
+                                            >
+                                                {statusOptions.map((status) => (
+                                                    <SelectItem key={status.key}>
+                                                        {status.label}
+                                                    </SelectItem>
+                                                ))}
+                                            </Select>
+                                        </div>
+
+
+                                    </div>
                                     {/* Email and Phone */}
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                                         <div>
@@ -805,38 +926,10 @@ function UpdateStaffModal({ updateModalDisclosure, parkingLotId, user }
                                             <p className="text-xs text-gray-500 mt-1">Optional - for HR records</p>
                                         </div>
                                     </div>
+
+
                                 </div>
 
-                                {/* Account Setup Info */}
-                                {/* <Accordion>
-                                    <AccordionItem key="1" aria-label="account-setup" title="Account Setup" startContent={<InfoIcon className='w-4 h-4 text-primary-900' />}>
-                                        <div className="bg-cyan-50 border bordeir-cyan-200 rounded-lg p-4 ">
-                                            <ul className=" text-sm text-primary-900/90">
-                                                <li className="flex items-center gap-2">
-                                                    <span className="text-primary-600">•</span>
-                                                    <span className='text-xs'>System will auto-generate a secure temporary password</span>
-                                                </li>
-                                                <li className="flex items-center gap-2">
-                                                    <span className="text-primary-600">•</span>
-                                                    <span className='text-xs'>Login credentials will be sent to the staff's email address</span>
-                                                </li>
-                                                <li className="flex items-center gap-2">
-                                                    <span className="text-primary-600">•</span>
-                                                    <span className='text-xs'>Staff will be required to change password on first login</span>
-                                                </li>
-                                                <li className="flex items-center gap-2">
-                                                    <span className="text-primary-600">•</span>
-                                                    <span className='text-xs'>Email will include desktop application download link and instructions</span>
-                                                </li>
-                                                <li className="flex items-center gap-2">
-                                                    <span className="text-primary-600">•</span>
-                                                    <span className='text-xs'>Additional employment details can be configured after account creation</span>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </AccordionItem>
-
-                                </Accordion> */}
                             </div>
 
                         </ModalBody>
