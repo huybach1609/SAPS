@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom styles for pagination */
+.pagination-wrapper .text {
+  color: #000 !important;
+}
+
+.pagination-wrapper button {
+  border-radius: 9999px;
+}
+
+/* Active pagination item style */
+.pagination-wrapper button[aria-current="true"] {
+  color: white !important;
+}

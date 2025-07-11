@@ -1,11 +1,11 @@
-﻿using SAPS.Api.Models.Generated;
+using SAPS.Api.Models.Generated;
 
-namespace SAPS.Api.Dtos
+namespace SAPS.Api.Models
 {
     public class AuthResponse
     {
         public string AccessToken { get; set; } = null!;
-        public UserResponseDto User { get; set; } = null!;
+        public User User { get; set; } = null!;
         public DateTime ExpiresAt { get; set; }
     }
 }

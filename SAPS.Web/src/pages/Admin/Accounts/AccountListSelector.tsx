@@ -1,47 +1,61 @@
 import React from "react";
-import { Users, ShieldCheck } from "lucide-react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { Users, ShieldCheck, Target } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const AccountListSelector: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
-  const isAdmin = location.pathname.includes("admins");
-  const isUser = location.pathname.includes("users");
 
   return (
-    <div className="max-w-2xl mx-auto mt-12 p-8 bg-white rounded-xl shadow-lg">
-      <h1 className="text-2xl font-bold mb-6 text-[#023E8A]">
-        Select Account List
-      </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <button
-          className={`flex flex-col items-center justify-center p-8 border-2 rounded-lg transition-colors ${
-            isUser
-              ? "bg-[#023E8A] text-white border-[#023E8A]"
-              : "bg-white text-[#023E8A] border-[#023E8A]"
-          }`}
-          onClick={() => navigate("/admin/accounts/users")}
-        >
-          <Users size={48} className="mb-2" />
-          <span className="text-lg font-semibold">User Account List</span>
-          <span className="text-sm text-gray-500 mt-2">
-            View and manage all users
-          </span>
-        </button>
-        <button
-          className={`flex flex-col items-center justify-center p-8 border-2 rounded-lg transition-colors ${
-            isAdmin
-              ? "bg-[#023E8A] text-white border-[#023E8A]"
-              : "bg-white text-[#023E8A] border-[#023E8A]"
-          }`}
-          onClick={() => navigate("/admin/accounts/admins")}
-        >
-          <ShieldCheck size={48} className="mb-2" />
-          <span className="text-lg font-semibold">Admin Account List</span>
-          <span className="text-sm text-gray-500 mt-2">
-            View and manage all admins
-          </span>
-        </button>
+    <div className="w-full">
+      {/* Header */}
+      <div className="flex items-center mb-2 mt-0">
+        <Users className="mr-3 text-indigo-900" size={30} />
+        <h1 className="text-3xl font-bold text-indigo-900">
+          Account Management
+        </h1>
+      </div>
+      <p className="text-gray-500 mb-6">
+        Manage user accounts and administrative accounts
+      </p>
+
+      {/* Card Container with Border */}
+      <div className="border border-gray-200 rounded-lg shadow-sm p-6">
+        {/* Select Account Type Section */}
+        <div className="border-l-4 border-indigo-600 pl-4 mb-6">
+          <div className="flex items-center">
+            <Target className="text-indigo-600 mr-2" size={24} />
+            <h2 className="text-xl font-bold text-indigo-900">
+              Select Account Type
+            </h2>
+          </div>
+        </div>
+
+        {/* Account Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* User Accounts Card */}
+          <div
+            className="bg-[#0077B6] text-white p-8 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:shadow-lg transition-shadow border border-[#0066a0]"
+            onClick={() => navigate("/admin/accounts/users")}
+          >
+            <div className="text-center">
+              <Users size={56} className="mx-auto mb-4" />
+              <h3 className="text-xl font-bold mb-2">User Accounts</h3>
+              <p className="text-gray-200">Manage customer accounts</p>
+            </div>
+          </div>
+
+          {/* Admin Accounts Card */}
+          <div
+            className="bg-[#48CAE4] text-white p-8 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:shadow-lg transition-shadow border border-[#3bb9d3]"
+            onClick={() => navigate("/admin/accounts/admins")}
+          >
+            <div className="text-center">
+              <ShieldCheck size={56} className="mx-auto mb-4" />
+              <h3 className="text-xl font-bold mb-2">Admin Accounts</h3>
+              <p className="text-gray-100">Manage administrator accounts</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

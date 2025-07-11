@@ -4,8 +4,8 @@ export interface AdminUser {
   email: string;
   fullName: string;
   adminId: string;
-  role: "admin" | "head_admin";
-  status: "active" | "inactive";
+  role: "admin" | "head_admin" | "moderator";
+  status: "active" | "inactive" | "suspended";
   createdAt: Date;
   updatedAt: Date;
 }

@@ -17,7 +17,7 @@ import IncidentReports from "./pages/ParkingLotOwner/IncidentReports/IncidentRep
 import ParkingHistory from "./pages/ParkingLotOwner/ParkingHistory/HistoryManagement/ParkingHistory";
 import StaffManagement from "./pages/ParkingLotOwner/StaffManagement/StaffManagement";
 import ParkingLotInfo from "./pages/ParkingLotOwner/ParkingInfo/ParkingLotInfo";
-import AdminAccountList from "./pages/Admin/AdminAccounts/AdminAccountList";
+import AdminAccountList from "./pages/Admin/Accounts/AdminAccounts/AdminAccountList";
 import AdminParkingLotOwnerList from "./pages/Admin/ParkingLotOwnerAccounts/AdminParkingLotOwnerList";
 import AdminRequestList from "./pages/Admin/Requests/AdminRequestList";
 import { ADMIN_ROLE, OWNER_ROLE } from "./config/base";
@@ -26,6 +26,7 @@ import AccountListSelector from "./pages/Admin/Accounts/AccountListSelector";
 import UserAccountList from "./pages/Admin/Accounts/UserAccounts/UserAccountList";
 import AdminAccountDetails from "./pages/Admin/Accounts/AdminAccounts/AdminAccountDetails";
 import StaffDetailScreen from "./pages/ParkingLotOwner/StaffManagement/StaffDetail";
+import ParkingLotOwnerList from "./pages/Admin/ParkingLotOwner/ParkingLotOwnerList";
 
 // Protected Route Component
 interface ProtectedRouteProps {

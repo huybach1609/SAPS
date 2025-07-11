@@ -50,9 +50,7 @@ export default function DefaultLayout({
         </div>
 
         {/* Main Content */}
-        <main className="container mx-auto max-w-7xl px-6 flex-grow overflow-auto ">
-          {children}
-        </main>
+        <main className="w-full flex-grow overflow-auto p-4">{children}</main>
 
         {/* Footer */}
         {/* <footer className="w-full flex items-center justify-center py-3 border-t border-divider">
