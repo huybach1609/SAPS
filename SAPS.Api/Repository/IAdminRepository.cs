@@ -6,9 +6,11 @@ namespace SAPS.Api.Repository
     {
         Task<IEnumerable<User>> GetAllAdminsAsync();
         Task<User?> GetAdminByIdAsync(string id);
-        Task<User> CreateAdminAsync(User user, string adminId, int roleId = 2);
+        Task<User> CreateAdminAsync(User user, int roleId = 1);
+        Task<bool> DeleteAdminAsync(string id);
+        Task<(bool Exists, string FieldName)> CheckUserExistsByEmailOrPhoneAsync(string email, string phone);
         
-        // Ph??ng th?c m?i ?? qu?n lý Role và Permission
+        // Ph??ng th?c qu?n lý Role và Permission
         Task<User?> AssignRolesToUserAsync(string userId, List<int> roleIds);
         Task<User?> RemoveRolesFromUserAsync(string userId, List<int> roleIds);
         Task<List<Role>> GetAllRolesAsync();

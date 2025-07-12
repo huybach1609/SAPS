@@ -24,17 +24,32 @@ namespace SAPS.Api.Service {
         }
 
         public async Task<AdminResponseDto> CreateAdminAsync(AdminCreateDto adminDto) {
+            // Check if user with this email or phone already exists
+            var (exists, fieldName) = await _adminRepository.CheckUserExistsByEmailOrPhoneAsync(adminDto.Email, adminDto.Phone);
+            if (exists)
+            {
+                throw new InvalidOperationException($"User with this {fieldName} already exists.");
+            }
+            
             // Map DTO to user entity
             var user = _mapper.Map<User>(adminDto);
 
-            // Generate a unique admin ID
-            string adminId = "ADM" + DateTime.Now.ToString("yyyyMMddHHmmss");
-
-            // Create admin with default password "admin" and role ID 2 (Admin)
-            var createdAdmin = await _adminRepository.CreateAdminAsync(user, adminId, 2);
+            // Create admin with role ID 1 (Admin) instead of 2 (HeadAdmin)
+            var createdAdmin = await _adminRepository.CreateAdminAsync(user, roleId: 1);
 
             // Map the created admin back to DTO
             return _mapper.Map<AdminResponseDto>(createdAdmin);
+        }
+
+        public async Task<bool> DeleteAdminAsync(string id) {
+            // Validate that the ID is not empty
+            if (string.IsNullOrEmpty(id))
+            {
+                throw new ArgumentException("Admin ID cannot be empty", nameof(id));
+            }
+            
+            // Call the repository to delete the admin
+            return await _adminRepository.DeleteAdminAsync(id);
         }
 
         public async Task<AdminResponseDto> AssignRolesToAdminAsync(string adminId, List<int> roleIds) {

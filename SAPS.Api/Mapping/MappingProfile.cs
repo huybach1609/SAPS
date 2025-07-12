@@ -13,8 +13,8 @@ namespace SAPS.Api.Mapping
                 .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => 
                     src.Roles.Select(r => r.Name).ToList()))
                 .ForMember(dest => dest.ProfileType, opt => opt.MapFrom(src => 
-                    src.Roles.Any(r => r.Name == "HeadAdmin") ? "HeadAdmin" :
-                    src.Roles.Any(r => r.Name == "Admin") ? "Admin" :
+                    src.Roles.Any(r => r.Name == "HeadAdmin" || r.Id == 2) ? "HeadAdmin" :
+                    src.Roles.Any(r => r.Name == "Admin" || r.Id == 1) ? "Admin" :
                     src.ClientProfile != null ? "Client" :
                     src.StaffProfile != null ? "Staff" :
                     src.ParkingLotOwnerProfile != null ? "ParkingLotOwner" : null));
@@ -29,10 +29,9 @@ namespace SAPS.Api.Mapping
                 .ForMember(dest => dest.IsActive, opt => opt.MapFrom(src => src.IsActive))
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt))
                 .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => src.UpdatedAt))
-                // These were previously from AdminProfile, now we have default values or derive from roles
-                .ForMember(dest => dest.AdminId, opt => opt.MapFrom(src => src.Id.Substring(0, Math.Min(8, src.Id.Length))))
+                // Set role based on user's roles
                 .ForMember(dest => dest.Role, opt => opt.MapFrom(src => 
-                    src.Roles.Any(r => r.Name.Equals("HeadAdmin", StringComparison.OrdinalIgnoreCase)) ? "head_admin" : "admin"))
+                    src.Roles.Any(r => r.Name.Equals("HeadAdmin", StringComparison.OrdinalIgnoreCase) || r.Id == 2) ? "head_admin" : "admin"))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.IsActive ? "active" : "suspended"))
                 // Map roles and permissions
                 .ForMember(dest => dest.Roles, opt => opt.MapFrom(src => 

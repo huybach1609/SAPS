@@ -23,7 +23,7 @@ const AdminAccountList: React.FC = () => {
   const [tempSearchQuery, setTempSearchQuery] = useState(searchQuery);
   const [tempStatusFilter, setTempStatusFilter] = useState(statusFilter);
   const [tempRoleFilter, setTempRoleFilter] = useState(roleFilter);
-  
+
   // Fetch admins from API
   useEffect(() => {
     const fetchAdmins = async () => {
@@ -32,10 +32,10 @@ const AdminAccountList: React.FC = () => {
         const response = await adminService.getAllAdmins();
         if (response.success && response.data) {
           // Convert string dates to Date objects
-          const formattedAdmins = response.data.map(admin => ({
+          const formattedAdmins = response.data.map((admin) => ({
             ...admin,
             createdAt: new Date(admin.createdAt),
-            updatedAt: new Date(admin.updatedAt)
+            updatedAt: new Date(admin.updatedAt),
           }));
           setAdmins(formattedAdmins);
           setError(null);
@@ -59,7 +59,8 @@ const AdminAccountList: React.FC = () => {
       searchQuery === "" ||
       admin.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       admin.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (admin.adminId && admin.adminId.toLowerCase().includes(searchQuery.toLowerCase()));
+      (admin.adminId &&
+        admin.adminId.toLowerCase().includes(searchQuery.toLowerCase()));
 
     const matchesStatus = statusFilter === "" || admin.status === statusFilter;
     const matchesRole = roleFilter === "" || admin.role === roleFilter;
@@ -72,7 +73,7 @@ const AdminAccountList: React.FC = () => {
     (page - 1) * rowsPerPage,
     page * rowsPerPage
   );
-  
+
   // Handle admin creation success
   const handleAdminCreationSuccess = async () => {
     try {
@@ -80,10 +81,10 @@ const AdminAccountList: React.FC = () => {
       const response = await adminService.getAllAdmins();
       if (response.success && response.data) {
         // Convert string dates to Date objects
-        const formattedAdmins = response.data.map(admin => ({
+        const formattedAdmins = response.data.map((admin) => ({
           ...admin,
           createdAt: new Date(admin.createdAt),
-          updatedAt: new Date(admin.updatedAt)
+          updatedAt: new Date(admin.updatedAt),
         }));
         setAdmins(formattedAdmins);
         // Show success message
@@ -125,18 +126,30 @@ const AdminAccountList: React.FC = () => {
           Back to Account List
         </button>
       </div>
-      
+
       {/* Error message */}
       {error && (
         <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
           <div className="flex">
             <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                className="h-5 w-5 text-red-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
             </div>
             <div className="ml-3">
-              <h3 className="text-sm font-medium text-red-800">Error loading admin data</h3>
+              <h3 className="text-sm font-medium text-red-800">
+                Error loading admin data
+              </h3>
               <div className="mt-2 text-sm text-red-700">
                 <p>{error}</p>
               </div>
@@ -153,14 +166,24 @@ const AdminAccountList: React.FC = () => {
           </div>
         </div>
       )}
-      
+
       {/* Success message */}
       {successMessage && (
         <div className="bg-green-50 border-l-4 border-green-500 p-4 mb-4">
           <div className="flex">
             <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+              <svg
+                className="h-5 w-5 text-green-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M5 13l4 4L19 7"
+                />
               </svg>
             </div>
             <div className="ml-3">
@@ -383,7 +406,7 @@ const AdminAccountList: React.FC = () => {
                 strokeLinejoin="round"
                 strokeWidth={2}
                 d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
-              /> 
+              />
             </svg>
             <h2 className="text-xl font-bold text-gray-800">
               Admin Account List
@@ -398,13 +421,26 @@ const AdminAccountList: React.FC = () => {
           </div>
         ) : items.length === 0 ? (
           <div className="text-center py-12">
-            <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            <svg
+              className="mx-auto h-12 w-12 text-gray-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+              />
             </svg>
-            <h3 className="mt-2 text-sm font-medium text-gray-900">No admin accounts found</h3>
+            <h3 className="mt-2 text-sm font-medium text-gray-900">
+              No admin accounts found
+            </h3>
             <p className="mt-1 text-sm text-gray-500">
-              {searchQuery || statusFilter || roleFilter 
-                ? "Try adjusting your search or filter criteria" 
+              {searchQuery || statusFilter || roleFilter
+                ? "Try adjusting your search or filter criteria"
                 : "Get started by creating a new admin account."}
             </p>
           </div>
@@ -438,160 +474,53 @@ const AdminAccountList: React.FC = () => {
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {items.map((admin) => (
-                <tr className="hover:bg-gray-50">
-                  <td className="px-4 py-3 text-sm font-medium text-blue-600">
-                    {(page - 1) * rowsPerPage + items.indexOf(admin) + 1}
-                  </td>
-                  <td className="px-4 py-3 text-sm font-medium">
-                    {admin.fullName}
-                    <div className="text-xs text-gray-500">
-                      ID: {admin.adminId}
-                    </div>
-                  </td>
-                  <td className="px-4 py-3 text-sm">{admin.email}</td>
-                  <td className="px-4 py-3 text-sm">
-                    <span
-                      className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${
-                        admin.role === "head_admin"
-                          ? "bg-yellow-200 text-yellow-800"
-                          : admin.role === "admin"
-                            ? "bg-blue-200 text-blue-800"
-                            : "bg-gray-200 text-gray-800"
-                      }`}
-                    >
-                      {admin.role === "head_admin"
-                        ? "Head Admin"
-                        : "Admin"}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-sm">
-                    {admin.createdAt.toLocaleDateString()}
-                  </td>
-                  <td className="px-4 py-3 text-sm">
-                    <span
-                      className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${
-                        admin.status === "active"
-                          ? "bg-green-200 text-green-800"
-                          : "bg-red-200 text-red-800"
-                      }`}
-                    >
-                      {admin.status.charAt(0).toUpperCase() +
-                        admin.status.slice(1)}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-sm">
-                    <div className="flex gap-1">
-                      <button
-                        className="px-2 py-1 text-xs font-medium bg-blue-600 text-white rounded-full flex items-center"
-                        onClick={() =>
-                          navigate(`/admin/accounts/admins/${admin.id}`)
-                        }
+                  <tr className="hover:bg-gray-50">
+                    <td className="px-4 py-3 text-sm font-medium text-blue-600">
+                      {(page - 1) * rowsPerPage + items.indexOf(admin) + 1}
+                    </td>
+                    <td className="px-4 py-3 text-sm font-medium">
+                      {admin.fullName}
+                      <div className="text-xs text-gray-500"></div>
+                    </td>
+                    <td className="px-4 py-3 text-sm">{admin.email}</td>
+                    <td className="px-4 py-3 text-sm">
+                      <span
+                        className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${
+                          admin.role === "head_admin"
+                            ? "bg-yellow-200 text-yellow-800"
+                            : admin.role === "admin"
+                              ? "bg-blue-200 text-blue-800"
+                              : "bg-gray-200 text-gray-800"
+                        }`}
                       >
-                        <svg
-                          className="w-3 h-3 mr-1"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          xmlns="http://www.w3.org/2000/svg"
+                        {admin.role === "head_admin" ? "Head Admin" : "Admin"}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-sm">
+                      {admin.createdAt.toLocaleDateString()}
+                    </td>
+                    <td className="px-4 py-3 text-sm">
+                      <span
+                        className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${
+                          admin.status === "active"
+                            ? "bg-green-200 text-green-800"
+                            : "bg-red-200 text-red-800"
+                        }`}
+                      >
+                        {admin.status.charAt(0).toUpperCase() +
+                          admin.status.slice(1)}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-sm">
+                      <div className="flex gap-1">
+                        <button
+                          className="px-2 py-1 text-xs font-medium bg-blue-600 text-white rounded-full flex items-center"
+                          onClick={() =>
+                            navigate(`/admin/accounts/admins/${admin.id}`, {
+                              state: { admin: admin },
+                            })
+                          }
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                          />
-                        </svg>
-                        View
-                      </button>
-
-                      {admin.role !== "head_admin" ? (
-                        admin.status === "active" ? (
-                          <button
-                            className="px-2 py-1 text-xs font-medium bg-red-600 text-white rounded-full flex items-center"
-                            onClick={async () => {
-                              if (window.confirm(`Are you sure you want to suspend ${admin.fullName}?`)) {
-                                try {
-                                  setLoading(true);
-                                  const result = await adminService.updateAdminStatus(admin.id, "suspended");
-                                  if (result.success) {
-                                    // Refresh admin list
-                                    await handleAdminCreationSuccess();
-                                  } else {
-                                    alert(result.error || "Failed to suspend admin");
-                                  }
-                                } catch (err) {
-                                  console.error("Error suspending admin:", err);
-                                  alert("An error occurred while suspending admin");
-                                } finally {
-                                  setLoading(false);
-                                }
-                              }
-                            }}
-                          >
-                            <svg
-                              className="w-3 h-3 mr-1"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
-                              />
-                            </svg>
-                            Ban
-                          </button>
-                        ) : (
-                          <button
-                            className="px-2 py-1 text-xs font-medium bg-green-600 text-white rounded-full flex items-center"
-                            onClick={async () => {
-                              if (window.confirm(`Are you sure you want to reactivate ${admin.fullName}?`)) {
-                                try {
-                                  setLoading(true);
-                                  const result = await adminService.updateAdminStatus(admin.id, "active");
-                                  if (result.success) {
-                                    // Refresh admin list
-                                    await handleAdminCreationSuccess();
-                                  } else {
-                                    alert(result.error || "Failed to reactivate admin");
-                                  }
-                                } catch (err) {
-                                  console.error("Error reactivating admin:", err);
-                                  alert("An error occurred while reactivating admin");
-                                } finally {
-                                  setLoading(false);
-                                }
-                              }
-                            }}
-                          >
-                            <svg
-                              className="w-3 h-3 mr-1"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                              />
-                            </svg>
-                            Unban
-                          </button>
-                        )
-                      ) : (
-                        <span className="px-2 py-1 text-xs text-gray-500 flex items-center">
                           <svg
                             className="w-3 h-3 mr-1"
                             fill="none"
@@ -603,30 +532,37 @@ const AdminAccountList: React.FC = () => {
                               strokeLinecap="round"
                               strokeLinejoin="round"
                               strokeWidth={2}
-                              d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                             />
                           </svg>
-                          Protected
-                        </span>
-                      )}
+                          View
+                        </button>
 
-                      {/* Edit button removed as requested */}
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          
-          {/* Permission Note */}
-          <div className="mt-4 p-3 bg-blue-50 text-blue-800 rounded-md">
-            <p>
-              <span className="font-semibold">Permission Note:</span> Only Head
-              Administrators can ban/unban other admin accounts. Head Admin
-              accounts are protected and cannot be modified or banned.
-            </p>
+                        {/* Status change functionality removed as per request */}
+
+                        {/* Edit button removed as requested */}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            {/* Permission Note */}
+            <div className="mt-4 p-3 bg-blue-50 text-blue-800 rounded-md">
+              <p>
+                <span className="font-semibold">Permission Note:</span> Only
+                Head Administrators have full system access. Head Admin accounts
+                are protected and cannot be modified.
+              </p>
+            </div>
           </div>
-        </div>
         )}
 
         {/* Pagination */}
