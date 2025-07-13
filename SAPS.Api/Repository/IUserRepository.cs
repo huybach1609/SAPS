@@ -9,5 +9,6 @@ namespace SAPS.Api.Repository
         Task<User> GetByGoogleIdAsync(string googleId);
         Task<User> CreateAsync(User user);
         Task<User> UpdateAsync(User user);
+        Task<IEnumerable<User>> GetUsersByRoleAsync(string roleName);
     }
 }

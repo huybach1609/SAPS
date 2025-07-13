@@ -94,21 +94,21 @@ builder.Services.AddCors(options =>
         });
 });
 
-// C?u hình DbContext v?i connection string t? appsettings.json
+// Cấu hình DbContext với connection string từ appsettings.json
 builder.Services.AddDbContext<SapsContext>(options => 
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default"));
 });
 
-// ??ng ký AutoMapper
+// Đăng ký AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-// C?p nh?t authorization policy ?? s? d?ng roles t? database
+// Cập nhật authorization policy để sử dụng roles từ database
 builder.Services.AddAuthorizationBuilder()
     .AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"))
     .AddPolicy("StaffAccess", policy => policy.RequireRole("Staff"));
 
-// C?u hình JWT authentication
+// Cấu hình JWT authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -125,22 +125,25 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.MapInboundClaims = true;
     });
 
-// ??ng ký các service
+// Đăng ký các service
 builder.Services.AddTransient<JwtService>();
 builder.Services.AddTransient<AuthService>();
 builder.Services.AddTransient<GoogleAuthService>();
 builder.Services.AddTransient<IUserRepository, UserRepository>();
 
-// ??ng ký các service cho Admin
+// Đăng ký các service cho Admin
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IAdminService, AdminService>();
+
+// Đăng ký service cho UserClient
+builder.Services.AddScoped<IUserClientService, UserClientService>();
 
 // Make the jsonOptions available through DI if needed
 builder.Services.AddSingleton(jsonOptions);
 
 var app = builder.Build();
 
-// C?u hình pipeline
+// Cấu hình pipeline
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();

@@ -45,6 +45,15 @@ namespace SAPS.Api.Repository
                 .FirstOrDefaultAsync(u => u.Email == username);
         }
 
+        public async Task<IEnumerable<User>> GetUsersByRoleAsync(string roleName)
+        {
+            // Get all users with the specified role
+            return await _context.Users
+                .Include(u => u.Roles)
+                .Where(u => u.Roles.Any(r => r.Name == roleName))
+                .ToListAsync();
+        }
+
         public async Task<User> UpdateAsync(User user)
         {
             var existingUser = await _context.Users.FindAsync(user.Id);

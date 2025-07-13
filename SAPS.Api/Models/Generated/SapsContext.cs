@@ -72,7 +72,6 @@ public partial class SapsContext : DbContext
             entity.Property(e => e.PlaceOfOrigin).HasMaxLength(255);
             entity.Property(e => e.PlaceOfResidence).HasMaxLength(255);
             entity.Property(e => e.Sex).HasDefaultValue(true);
-            entity.Property(e => e.Status).HasMaxLength(20);
 
             entity.HasOne(d => d.User).WithOne(p => p.ClientProfile)
                 .HasForeignKey<ClientProfile>(d => d.UserId)

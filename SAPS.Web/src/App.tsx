@@ -25,6 +25,7 @@ import ParkingFeeManagement from "./pages/ParkingLotOwner/ParkingFee/ParkingFeeM
 import AccountListSelector from "./pages/Admin/Accounts/AccountListSelector";
 import UserAccountList from "./pages/Admin/Accounts/UserAccounts/UserAccountList";
 import AdminAccountDetails from "./pages/Admin/Accounts/AdminAccounts/AdminAccountDetails";
+import UserDetail from "./pages/Admin/Accounts/UserAccounts/UserDetail";
 import StaffDetailScreen from "./pages/ParkingLotOwner/StaffManagement/StaffDetail";
 import ParkingLotOwnerList from "./pages/Admin/ParkingLotOwner/ParkingLotOwnerList";
 
@@ -141,9 +142,10 @@ function App() {
           {/* Account Management Routes */}
           <Route path="accounts" element={<AccountListSelector />} />
           <Route path="accounts/users" element={<UserAccountList />} />
+          <Route path="accounts/users/:id" element={<UserDetail />} />
           <Route path="accounts/admins" element={<AdminAccountList />} />
           <Route path="accounts/admins/:id" element={<AdminAccountDetails />} />
-          <Route path="parking-owners" element={<AdminParkingLotOwnerList />} />
+          <Route path="parking-owners" element={<ParkingLotOwnerList />} />
           <Route path="requests" element={<AdminRequestList />} />
         </Route>
 

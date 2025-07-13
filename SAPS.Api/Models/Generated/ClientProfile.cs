@@ -19,8 +19,6 @@ public partial class ClientProfile
 
     public string PlaceOfResidence { get; set; } = null!;
 
-    public string Status { get; set; } = null!;
-
     public virtual ICollection<SharedVehicleRequest> SharedVehicleRequests { get; set; } = new List<SharedVehicleRequest>();
 
     public virtual User User { get; set; } = null!;

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Input, Button, Pagination, Spinner } from "@heroui/react";
-import { Plus } from "lucide-react";
 import { userService, ClientUser } from "@/services/user/userService";
 
 const UserAccountList: React.FC = () => {
@@ -13,7 +12,7 @@ const UserAccountList: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState("");
   const [page, setPage] = useState(1);
   const rowsPerPage = 5; // Hiển thị 5 người dùng mỗi trang
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [successMessage] = useState<string | null>(null);
 
   // Temporary state for input fields
   const [tempSearchQuery, setTempSearchQuery] = useState(searchQuery);
@@ -317,18 +316,6 @@ const UserAccountList: React.FC = () => {
               Clear Filters
             </Button>
           </div>
-
-          <Button
-            color="primary"
-            startContent={<Plus size={18} />}
-            className="bg-blue-600 rounded-full text-black"
-            onPress={() => {
-              // Add User functionality can be added later
-              alert("Add User functionality will be implemented later");
-            }}
-          >
-            Add User
-          </Button>
         </div>
       </div>
 
@@ -438,11 +425,12 @@ const UserAccountList: React.FC = () => {
                       <div className="flex gap-1">
                         <button
                           className="px-2 py-1 text-xs font-medium bg-blue-600 text-white rounded-full flex items-center"
-                          onClick={() =>
+                          onClick={() => {
+                            console.log("Navigating to user detail:", user);
                             navigate(`/admin/accounts/users/${user.id}`, {
                               state: { user },
-                            })
-                          }
+                            });
+                          }}
                         >
                           <svg
                             className="w-3 h-3 mr-1"

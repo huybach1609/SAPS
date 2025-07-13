@@ -7,6 +7,7 @@ namespace SAPS.Api.Service
         Task<IEnumerable<AdminResponseDto>> GetAllAdminsAsync();
         Task<AdminResponseDto?> GetAdminByIdAsync(string id);
         Task<AdminResponseDto> CreateAdminAsync(AdminCreateDto adminDto);
+        Task<bool> DeleteAdminAsync(string id);
         
         // Ph??ng th?c m?i ?? qu?n lý Role và Permission
         Task<AdminResponseDto> AssignRolesToAdminAsync(string adminId, List<int> roleIds);

@@ -85,4 +85,32 @@ export const adminService = {
       };
     }
   },
+
+  // Delete an admin
+  async deleteAdmin(id: string): Promise<ApiResponse<void>> {
+    try {
+      await api.delete(`/api/Admin/${id}`);
+      return { success: true };
+    } catch (error: any) {
+      return {
+        success: false,
+        error:
+          error.response?.data?.message || "Failed to delete admin account",
+      };
+    }
+  },
+
+  // Reset admin password
+  async resetAdminPassword(id: string): Promise<ApiResponse<void>> {
+    try {
+      await api.post(`/api/Admin/${id}/reset-password`);
+      return { success: true };
+    } catch (error: any) {
+      return {
+        success: false,
+        error:
+          error.response?.data?.message || "Failed to reset admin password",
+      };
+    }
+  },
 };
