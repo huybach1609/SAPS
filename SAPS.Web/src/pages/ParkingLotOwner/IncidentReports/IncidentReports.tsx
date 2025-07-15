@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import DefaultLayout from "@/layouts/default";
 import { Card, CardHeader, CardBody, Input, Select, SelectItem, Button, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Spinner, Pagination, RangeValue, DateValue, DateRangePicker } from '@heroui/react';
 import { IncidentReport, IncidentStatus, IncidentPriority } from '@/types/IncidentReport';
@@ -8,7 +8,6 @@ import { useParkingLot } from '../ParkingLotContext';
 import { fetchIncidents, fetchIncidentStatistics, IncidentReportStatistics } from '@/services/parkinglot/incidentService';
 import { PaginationInfo } from '@/types/Whitelist';
 import { useNavigate } from 'react-router-dom';
-import { s } from 'framer-motion/client';
 
 const statusOptions = [
     { key: '', label: 'All Status' },
@@ -57,7 +56,7 @@ const getPriorityColor = (priority: IncidentPriority) => {
 };
 
 export default function IncidentReports() {
-    const { parkingLot, loading: parkingLotLoading } = useParkingLot();
+    const { selectedParkingLot, loading: parkingLotLoading } = useParkingLot();
     const [search, setSearch] = useState('');
     const [status, setStatus] = useState('');
     const [priority, setPriority] = useState('');
@@ -76,13 +75,13 @@ export default function IncidentReports() {
 
     // Fetch incidents from API
     useEffect(() => {
-        if (!parkingLot?.id) return;
+        if (!selectedParkingLot?.id) return;
         setLoading(true);
         console.log(status, priority, date, search);
         const dateRangeStart = dateRange?.start ? new Date(dateRange.start.year, dateRange.start.month - 1, dateRange.start.day).toISOString() : undefined;
         const dateRangeEnd = dateRange?.end ? new Date(dateRange.end.year, dateRange.end.month - 1, dateRange.end.day).toISOString() : undefined;
         fetchIncidents(
-            parkingLot.id,
+            selectedParkingLot.id,
             pageSize,
             currentPage,
             search,
@@ -100,11 +99,11 @@ export default function IncidentReports() {
                 setPagination(null);
             })
             .finally(() => setLoading(false));
-    }, [parkingLot?.id, search, status, priority, date, currentPage, dateRange]);
+    }, [selectedParkingLot?.id, search, status, priority, date, currentPage, dateRange]);
 
     return (
         <DefaultLayout title="Incident Reports">
-            <IncidentReportStatisticsCard parkingLotId={parkingLot?.id ?? ''} loading={parkingLotLoading} />
+            <IncidentReportStatisticsCard parkingLotId={selectedParkingLot?.id ?? ''} loading={parkingLotLoading} />
             <Card className="bg-background-100/20 mb-6 ">
                 <CardHeader className="flex items-center gap-2">
                     <span role="img" aria-label="search">🔍</span>
@@ -215,7 +214,7 @@ export default function IncidentReports() {
                                             </TableCell>
                                             <TableCell>
                                                 <Button isIconOnly color="secondary" className="text-background" onPress={() => {
-                                                    navigate(`/owner/incidents/${parkingLot?.id}/${inc.id}`);
+                                                    navigate(`/owner/incidents/${selectedParkingLot?.id}/${inc.id}`);
                                                 }}>
                                                     <Eye className="w-4 h-4 cursor-pointer" />
                                                 </Button>
@@ -254,7 +253,7 @@ export default function IncidentReports() {
                             className=""
                         >
                             Next
-                        </Button>
+                        </Button>   
                     </div>
                 </div>
             )}

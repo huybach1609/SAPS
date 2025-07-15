@@ -15,7 +15,7 @@ export enum ParkingSessionStatus {
 }
 
 const ParkingHistory: React.FC = () => {
-    const { parkingLot, loading: parkingLotLoading } = useParkingLot();
+    const { selectedParkingLot, loading: parkingLotLoading } = useParkingLot();
 
     const [parkingSessions, setParkingSessions] = useState<ParkingSession[]>([]);
 
@@ -60,7 +60,7 @@ const ParkingHistory: React.FC = () => {
 
     // hiện thị ở bãi,các id thì để theo thứ tự và các trạng mặc định là đang đỗ.
     const loadParkingSessions = async () => {
-        if (!parkingLot?.id) return;
+        if (!selectedParkingLot?.id) return;
 
         setLoading(true);
         try {
@@ -70,11 +70,11 @@ const ParkingHistory: React.FC = () => {
             const statusValue = status || undefined;
 
             if (tableSearch != null && tableSearch.trim() !== '') {
-                const response = await fetchParkingHistory(parkingLot.id, 6, currentPage, tableSearch, dateRangeStart, dateRangeEnd, statusValue);
+                const response = await fetchParkingHistory(selectedParkingLot.id, 6, currentPage, tableSearch, dateRangeStart, dateRangeEnd, statusValue);
                 setParkingSessions(response.data);
                 setPagination(response.pagination);
             } else {
-                const response = await fetchParkingHistory(parkingLot.id, 6, currentPage, undefined, dateRangeStart, dateRangeEnd, statusValue);
+                const response = await fetchParkingHistory(selectedParkingLot.id, 6, currentPage, undefined, dateRangeStart, dateRangeEnd, statusValue);
                 setParkingSessions(response.data);
                 setPagination(response.pagination);
             }
@@ -98,18 +98,18 @@ const ParkingHistory: React.FC = () => {
 
     // View session details
     const handleViewSessionDetails = async (sessionId: string) => {
-        if (!parkingLot?.id) return;
+        if (!selectedParkingLot?.id) return;
 
         try {
             // Navigate to session details page or open modal
-            navigate(`/owner/history/${parkingLot.id}/${sessionId}`);
+            navigate(`/owner/history/${selectedParkingLot.id}/${sessionId}`);
         } catch (error) {
             console.error('Failed to view session details:', error);
         }
     };
 
     const handleUpdateEntry = async (onClose?: () => void) => {
-        if (!editingEntry || !parkingLot?.id) return;
+        if (!editingEntry || !selectedParkingLot?.id) return;
 
         try {
             if (onClose) onClose();
@@ -123,7 +123,7 @@ const ParkingHistory: React.FC = () => {
 
     useEffect(() => {
         loadParkingSessions();
-    }, [parkingLot?.id, currentPage, dateRange, status]);
+    }, [selectedParkingLot?.id, currentPage, dateRange, status]);
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
@@ -151,7 +151,7 @@ const ParkingHistory: React.FC = () => {
     return (
         <DefaultLayout title="Parking History">
 
-            <ParkingHistoryStatistics parkingLotId={parkingLot?.id || ''} />
+            <ParkingHistoryStatistics parkingLotId={selectedParkingLot?.id || ''} />
 
             {/* Search & Filter */}
             <Card className="bg-background-100/20 mb-6">

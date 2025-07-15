@@ -108,7 +108,7 @@ function App() {
     <AuthProvider>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<IndexPage />} />
+        <Route path="/" element={<RoleBasedRedirect />} />
         <Route path="/docs" element={<DocsPage />} />
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/blog" element={<BlogPage />} />
@@ -120,6 +120,16 @@ function App() {
           element={
             <PublicRoute>
               <LoginPage />
+            </PublicRoute>
+          }
+        />
+
+        {/* Public landing page - only for unauthenticated users */}
+        <Route
+          path="/landing"
+          element={
+            <PublicRoute>
+              <IndexPage />
             </PublicRoute>
           }
         />

@@ -18,9 +18,10 @@ import { AlertCircle, BarChart, Check, Download, Edit2, FileText, FolderSearch, 
 import { apiUrl } from '@/config/base';
 
 export default function Whitelist() {
-    const { parkingLot, loading: parkingLotLoading } = useParkingLot();
+    const { selectedParkingLot, loading: parkingLotLoading } = useParkingLot();
     const [whitelist, setWhitelist] = useState<Whitelist[]>([]);
     const [loading, setLoading] = useState(true);
+    // searchTerm for add user
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState<User[]>([]);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -40,16 +41,16 @@ export default function Whitelist() {
 
     // Fetch whitelist data
     const loadWhitelist = async () => {
-        if (!parkingLot?.id) return;
+        if (!selectedParkingLot?.id) return;
 
         setLoading(true);
         try {
             if (tableSearch != null && tableSearch.trim() !== '') {
-                const response = await fetchWhitelist(parkingLot.id, 6, currentPage, tableSearch);
+                const response = await fetchWhitelist(selectedParkingLot.id, 6, currentPage, tableSearch);
                 setWhitelist(response.data);
                 setPagination(response.pagination);
             } else {
-                const response = await fetchWhitelist(parkingLot.id, 6, currentPage);
+                const response = await fetchWhitelist(selectedParkingLot.id, 6, currentPage);
                 setWhitelist(response.data);
                 setPagination(response.pagination);
             }
@@ -65,7 +66,8 @@ export default function Whitelist() {
     // Search users
     const handleSearch = async (term: string) => {
         try {
-            loadWhitelist();
+            const response = await SearchWhitelist(term);
+            setSearchResults(response as unknown as User[]);
         } catch (error) {
             console.error('Failed to search users:', error);
         }
@@ -73,10 +75,10 @@ export default function Whitelist() {
 
     // Add user to whitelist
     const handleAddToWhitelist = async (onClose?: () => void) => {
-        if (!selectedUser || !parkingLot?.id) return;
+        if (!selectedUser || !selectedParkingLot?.id) return;
 
         try {
-            await addToWhitelist(parkingLot.id, selectedUser.id, expiryDate || undefined);
+            await addToWhitelist(selectedParkingLot.id, selectedUser.id, expiryDate || undefined);
             if (onClose) onClose();
             setSelectedUser(null);
             setExpiryDate('');
@@ -90,11 +92,11 @@ export default function Whitelist() {
 
     // Remove user from whitelist
     const handleRemoveFromWhitelist = async (clientId: string) => {
-        if (!parkingLot?.id) return;
+        if (!selectedParkingLot?.id) return;
 
         if (window.confirm('Are you sure you want to remove this user from the whitelist?')) {
             try {
-                await removeFromWhitelist(parkingLot.id, clientId);
+                await removeFromWhitelist(selectedParkingLot.id, clientId);
                 loadWhitelist(); // Refresh the list
             } catch (error) {
                 console.error('Failed to remove from whitelist:', error);
@@ -104,10 +106,10 @@ export default function Whitelist() {
 
     // Update whitelist entry
     const handleUpdateEntry = async (onClose?: () => void) => {
-        if (!editingEntry || !parkingLot?.id) return;
+        if (!editingEntry || !selectedParkingLot?.id) return;
 
         try {
-            await updateWhitelistEntry(parkingLot.id, editingEntry.clientId, {
+            await updateWhitelistEntry(selectedParkingLot.id, editingEntry.clientId, {
                 expiredDate: expiryDate || undefined
             });
             if (onClose) onClose();
@@ -128,7 +130,7 @@ export default function Whitelist() {
 
     useEffect(() => {
         loadWhitelist();
-    }, [parkingLot?.id, currentPage]);
+    }, [selectedParkingLot?.id, currentPage]);
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
@@ -152,7 +154,7 @@ export default function Whitelist() {
     return (
         <DefaultLayout title="Whitelist">
             <div className="max-w-7xl mx-auto p-6">
-                <WhitelistStatusComponent parkingLotId={parkingLot?.id || ''} loadparking={parkingLotLoading} />
+                <WhitelistStatusComponent parkingLotId={selectedParkingLot?.id || ''} loadparking={parkingLotLoading} />
 
 
                 {/* Search & add */}
@@ -421,7 +423,7 @@ export default function Whitelist() {
                 </Modal>
 
                 {/* Add File Modal */}
-                <AddFileModal addFileModalDisclosure={addFileModalDisclosure} parkingLotId={parkingLot?.id || ''} />
+                <AddFileModal addFileModalDisclosure={addFileModalDisclosure} parkingLotId={selectedParkingLot?.id || ''} />
             </div>
         </DefaultLayout>
     );

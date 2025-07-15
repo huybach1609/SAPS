@@ -13,7 +13,7 @@ import { formatPhoneNumber } from '@/components/utils/stringUtils';
 
 // thiếu dateof birth
 export default function StaffManagement() {
-    const { parkingLot, loading: parkingLotLoading } = useParkingLot();
+    const { selectedParkingLot, loading: parkingLotLoading } = useParkingLot();
 
     const [stafflist, setStafflist] = useState<User[]>([]);
 
@@ -50,7 +50,7 @@ export default function StaffManagement() {
     const updateModalDisclosure = useDisclosure();
 
     const loadStaffList = async () => {
-        if (!parkingLot?.id) return;
+        if (!selectedParkingLot?.id) return;
 
         setLoading(true);
         try {
@@ -58,9 +58,9 @@ export default function StaffManagement() {
             const statusParam = statusFilter === '' ? undefined : Number(statusFilter);
             
             if (tableSearch != null && tableSearch.trim() !== '') {
-                response = await fetchStaffList(parkingLot.id, 6, currentPage, tableSearch, statusParam);
+                response = await fetchStaffList(selectedParkingLot.id, 6, currentPage, tableSearch, statusParam);
             } else {
-                response = await fetchStaffList(parkingLot.id, 6, currentPage, undefined, statusParam);
+                response = await fetchStaffList(selectedParkingLot.id, 6, currentPage, undefined, statusParam);
             }
             setStafflist(response.data);
             setPagination(response.pagination);
@@ -82,11 +82,11 @@ export default function StaffManagement() {
 
     // Remove user from 
     const handleRemoveFromStaffList = async (staffId: string) => {
-        if (!parkingLot?.id) return;
+        if (!selectedParkingLot?.id) return;
 
         if (window.confirm('Are you sure you want to remove this user ?')) {
             try {
-                await removeStaff(parkingLot.id, staffId);
+                await removeStaff(selectedParkingLot.id, staffId);
                 loadStaffList(); // Refresh the list
             } catch (error) {
                 console.error('Failed to remove from stafflist:', error);
@@ -95,7 +95,7 @@ export default function StaffManagement() {
     };
 
     const handleUpdateEntry = async (onClose?: () => void) => {
-        if (!editingEntry || !parkingLot?.id) return;
+        if (!editingEntry || !selectedParkingLot?.id) return;
 
         try {
             if (onClose) onClose();
@@ -109,7 +109,7 @@ export default function StaffManagement() {
 
     useEffect(() => {
         loadStaffList();
-    }, [parkingLot?.id, currentPage, statusFilter]);
+    }, [selectedParkingLot?.id, currentPage, statusFilter]);
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
@@ -136,7 +136,7 @@ export default function StaffManagement() {
 
     return (
         <DefaultLayout title="Staff List">
-            <StaffListStatusComponent parkingLotId={parkingLot?.id || ''} loadparking={parkingLotLoading} />
+            <StaffListStatusComponent parkingLotId={selectedParkingLot?.id || ''} loadparking={parkingLotLoading} />
             {/* Search & add */}
             <Card className="bg-background-100/20 mb-6">
                 <CardHeader className="flex items-center gap-2">
@@ -246,7 +246,7 @@ export default function StaffManagement() {
                         staffList={stafflist}
                         selectUser={selectedUser}
                         setSelectUser={setSelectedUser}
-                        parkingLot={parkingLot}
+                        parkingLot={selectedParkingLot}
                         updateModalDisclosure={updateModalDisclosure}
                         handleRemoveFromStaffList={handleRemoveFromStaffList}
                     />
@@ -284,8 +284,8 @@ export default function StaffManagement() {
                 </div>
             )}
 
-            <AddStaffModal addModalDisclosure={addModalDisclosure} parkingLotId={parkingLot?.id || ''} />
-            <UpdateStaffModal updateModalDisclosure={updateModalDisclosure} parkingLotId={parkingLot?.id || ''} user={selectedUser || null} />
+            <AddStaffModal addModalDisclosure={addModalDisclosure} parkingLotId={selectedParkingLot?.id || ''} />
+            <UpdateStaffModal updateModalDisclosure={updateModalDisclosure} parkingLotId={selectedParkingLot?.id || ''} user={selectedUser || null} />
             {/* Edit Entry Modal */}
             <Modal isOpen={editModalDisclosure.isOpen && !!editingEntry} onOpenChange={editModalDisclosure.onOpenChange}>
                 <ModalContent>

@@ -66,11 +66,11 @@ const adminItems: NavigationItem[] = [
 ];
 
 const parkingLotOwnerItems: NavigationItem[] = [
-    {
-        icon: <Home size={20} />,
-        title: "Home",
-        path: "/owner/home"
-    },
+    // {
+    //     icon: <Home size={20} />,
+    //     title: "Home",
+    //     path: "/owner/home"
+    // },
     {
         icon: <Building2 size={20} />,
         title: "Parking Lot Information",
@@ -101,11 +101,12 @@ const parkingLotOwnerItems: NavigationItem[] = [
         title: "Whitelist",
         path: "/owner/whitelist"
     },
-    {
-        icon: <FileText size={20} />,
-        title: "Upload File",
-        path: "/owner/upload-file"
-    }
+    // {
+    //     icon: <FileText size={20} />,
+    //     title: "Upload File",
+    //     path: "/owner/upload-file"
+    // }
+
 
 ];
 
