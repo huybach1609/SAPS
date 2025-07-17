@@ -1,6 +1,7 @@
 import { Button, Card, Input, Pagination } from "@heroui/react";
 import { Building2, UserPlus, Eye } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import AddParkingLotOwner from "./AddParkingLotOwner";
 
 // Fake data for demonstration
@@ -160,6 +161,7 @@ const statusOptions = [
 ];
 
 export default function AdminParkingLotOwnerList() {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
@@ -232,20 +234,28 @@ export default function AdminParkingLotOwnerList() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
         <Card className="p-4 bg-[#00B4D8] text-white">
-          <div className="text-4xl font-bold">{totalOwners}</div>
-          <div className="text-sm">Total Owners</div>
+          <div className="text-center">
+            <div className="text-4xl font-bold mb-1">{totalOwners}</div>
+            <div className="text-sm">Total Owners</div>
+          </div>
         </Card>
         <Card className="p-4 bg-[#00B4D8] text-white">
-          <div className="text-4xl font-bold">{activeOwners}</div>
-          <div className="text-sm">Active Owners</div>
+          <div className="text-center">
+            <div className="text-4xl font-bold mb-1">{activeOwners}</div>
+            <div className="text-sm">Active Owners</div>
+          </div>
         </Card>
         <Card className="p-4 bg-[#00B4D8] text-white">
-          <div className="text-4xl font-bold">{pendingApproval}</div>
-          <div className="text-sm">Pending Approval</div>
+          <div className="text-center">
+            <div className="text-4xl font-bold mb-1">{pendingApproval}</div>
+            <div className="text-sm">Pending Approval</div>
+          </div>
         </Card>
         <Card className="p-4 bg-[#00B4D8] text-white">
-          <div className="text-4xl font-bold">{totalParkingLots}</div>
-          <div className="text-sm">Total Parking Lots</div>
+          <div className="text-center">
+            <div className="text-4xl font-bold mb-1">{totalParkingLots}</div>
+            <div className="text-sm">Total Parking Lots</div>
+          </div>
         </Card>
       </div>
 
@@ -311,7 +321,7 @@ export default function AdminParkingLotOwnerList() {
           <div className="flex gap-2">
             <Button
               color="primary"
-              className="bg-blue-600 rounded-full text-black"
+              className="bg-blue-600 rounded-full text-white"
               startContent={
                 <svg
                   className="w-4 h-4"
@@ -354,7 +364,7 @@ export default function AdminParkingLotOwnerList() {
           <Button
             color="primary"
             startContent={<UserPlus size={18} />}
-            className="bg-blue-600 rounded-full text-black"
+            className="bg-blue-600 rounded-full text-white"
             onPress={() => setShowAddOwner(true)}
           >
             Add Owner
@@ -486,6 +496,9 @@ export default function AdminParkingLotOwnerList() {
                         color="primary"
                         className="rounded-full bg-blue-100 hover:bg-blue-200"
                         startContent={<Eye size={16} />}
+                        onPress={() =>
+                          navigate(`/admin/parking-owners/${owner.id}`)
+                        }
                       >
                         View
                       </Button>
@@ -522,7 +535,7 @@ export default function AdminParkingLotOwnerList() {
               onPress={() => setCurrentPage(Math.max(1, currentPage - 1))}
             >
               <svg
-                className="w-4 h-4 mr-1"
+                className="w-4 h-4 ml-1"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -532,7 +545,7 @@ export default function AdminParkingLotOwnerList() {
                   strokeLinecap="round"
                   strokeLinejoin="round"
                   strokeWidth={2}
-                  d="M15 19l-7-7m0 0l7-7m-7 7h18"
+                  d="M15 5l-7 7 7 7"
                 />
               </svg>
               Previous

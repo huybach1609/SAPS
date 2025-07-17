@@ -1,67 +1,155 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Card, Button, Divider } from "@heroui/react";
-import { ArrowLeft, Building2, CreditCard, Ban } from "lucide-react";
+import {
+  ArrowLeft,
+  Building2,
+  CreditCard,
+  CheckCircle2,
+  Save,
+  FileText,
+} from "lucide-react";
 
 interface ParkingLot {
   id: string;
   name: string;
   address: string;
   totalSlots: number;
-  status: "active" | "inactive";
+  status: "Active" | "Maintenance" | "Closed";
+  description: string;
 }
 
-interface PaymentSource {
+interface ParkingLotOwner {
   id: string;
-  bankName: string;
-  accountName: string;
-  accountNumber: string;
-  lastUpdated: Date;
-}
-
-interface ParkingLotOwnerDetails {
-  id: string;
-  fullName: string;
+  ownerName: string;
   email: string;
   phone: string;
-  status: "active" | "inactive" | "pending";
-  createdAt: Date;
-  totalRevenue: number;
+  status: "Active" | "Pending" | "Suspended";
+  joinDate: string;
+  lastActivity: string;
+  parkingLot: {
+    name: string;
+    address: string;
+    totalSlots: number;
+    operatingHours: string;
+    hourlyRate: number;
+    dailyRate: number;
+  };
+  paymentSource: {
+    bank: string;
+    accountNumber: string;
+    accountName: string;
+    branch: string;
+    swiftCode: string;
+    isVerified: boolean;
+  };
+  requests: {
+    id: string;
+    type: string;
+    description: string;
+    sentDate: string;
+    status: "Pending" | "Approved" | "Rejected";
+  }[];
   parkingLots: ParkingLot[];
-  paymentSources: PaymentSource[];
 }
 
-const mockOwnerDetails: ParkingLotOwnerDetails = {
-  id: "1",
-  fullName: "John Owner",
-  email: "owner@example.com",
-  phone: "+1234567890",
-  status: "active",
-  createdAt: new Date("2023-01-01"),
-  totalRevenue: 15000000,
+// Mock data based on the image
+const mockOwnerData: ParkingLotOwner = {
+  id: "PO001",
+  ownerName: "Downtown Mall Corporation",
+  email: "owner@downtownmall.com",
+  phone: "+1 (555) 123-4567",
+  status: "Active",
+  joinDate: "March 15, 2024",
+  lastActivity: "June 3, 2025 - 14:30 PM",
+  parkingLot: {
+    name: "Downtown Mall Parking",
+    address: "123 Main Street, Downtown District, City Center, 10001",
+    totalSlots: 150,
+    operatingHours: "24/7 Operation",
+    hourlyRate: 5.0,
+    dailyRate: 25.0,
+  },
+  paymentSource: {
+    bank: "Vietcombank",
+    accountNumber: "12345678901234",
+    accountName: "Downtown Mall Corporation",
+    branch: "Downtown Branch",
+    swiftCode: "BFTVVNVX",
+    isVerified: true,
+  },
+  requests: [
+    {
+      id: "REQ004",
+      type: "Payment Source Update",
+      description: "Update bank account information",
+      sentDate: "Jun 3, 2025",
+      status: "Pending",
+    },
+    {
+      id: "REQ003",
+      type: "Staff Account Creation",
+      description: "Add new staff member: John Smith",
+      sentDate: "Jun 2, 2025",
+      status: "Pending",
+    },
+    {
+      id: "REQ002",
+      type: "Parking Lot Information Update",
+      description: "Update operating hours and rates",
+      sentDate: "May 28, 2025",
+      status: "Approved",
+    },
+    {
+      id: "REQ001",
+      type: "Contact Information Update",
+      description: "Update email and phone number",
+      sentDate: "May 15, 2025",
+      status: "Approved",
+    },
+  ],
   parkingLots: [
     {
       id: "PL001",
-      name: "Central Parking",
-      address: "123 Main St, City",
-      totalSlots: 100,
-      status: "active",
+      name: "Downtown Mall Main Parking",
+      address: "123 Main Street, Downtown District, City Center, 10001",
+      totalSlots: 150,
+      status: "Active",
+      description:
+        "Main parking facility for Downtown Mall with 24/7 operation",
     },
     {
       id: "PL002",
-      name: "West Side Parking",
-      address: "456 West St, City",
-      totalSlots: 80,
-      status: "active",
+      name: "Downtown Mall VIP Parking",
+      address: "125 Main Street, Downtown District, City Center, 10001",
+      totalSlots: 50,
+      status: "Active",
+      description: "Premium parking area for VIP customers with valet service",
     },
-  ],
-  paymentSources: [
     {
-      id: "PS001",
-      bankName: "VietcomBank",
-      accountName: "John Owner",
-      accountNumber: "•••••789",
-      lastUpdated: new Date("2023-06-01"),
+      id: "PL003",
+      name: "Downtown Mall Staff Parking",
+      address: "130 Side Street, Downtown District, City Center, 10001",
+      totalSlots: 75,
+      status: "Active",
+      description: "Dedicated parking area for mall staff and employees",
+    },
+    {
+      id: "PL004",
+      name: "Downtown Mall Outdoor Parking",
+      address: "140 Rear Avenue, Downtown District, City Center, 10001",
+      totalSlots: 120,
+      status: "Maintenance",
+      description: "Outdoor parking area currently under renovation",
+    },
+    {
+      id: "PL005",
+      name: "Downtown Mall Event Parking",
+      address: "150 Event Square, Downtown District, City Center, 10001",
+      totalSlots: 200,
+      status: "Closed",
+      description:
+        "Special event parking area, currently closed until next event",
     },
   ],
 };
@@ -69,92 +157,65 @@ const mockOwnerDetails: ParkingLotOwnerDetails = {
 const ParkingLotOwnerDetails: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  // Trong thực tế, id sẽ được sử dụng để fetch dữ liệu từ API
-  const [owner] = useState<ParkingLotOwnerDetails>(mockOwnerDetails);
-  const [showConfirmBan, setShowConfirmBan] = useState(false);
-
-  const handleBanOwner = () => {
-    // Implement ban owner logic here
-    setShowConfirmBan(false);
-  };
-
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(amount);
-  };
+  // In real implementation, id would be used to fetch data from API
+  console.log("Owner ID:", id); // Using the id parameter to avoid lint error
 
   return (
     <div className="space-y-6">
-      {/* Back button */}
-      <div>
-        <div
-          onClick={() => navigate("/admin/parking-owners")}
-          className="flex items-center text-blue-600 hover:underline cursor-pointer"
+      {/* Back button and Header */}
+      <div className="flex items-start gap-2">
+        <Button
+          isIconOnly
+          variant="light"
+          onPress={() => navigate("/admin/parking-owners")}
+          className="text-primary mt-1"
         >
-          <ArrowLeft size={18} className="mr-1" /> Back to Parking Lot Owner
-          List
-        </div>
-      </div>
-
-      {/* Header Section */}
-      <div className="flex flex-col">
-        <div className="flex items-center mb-2">
-          <Building2 size={32} className="mr-2 text-blue-900" />
-          <h1 className="text-2xl font-bold text-blue-900">
-            Parking Lot Owner Details
+          <ArrowLeft size={20} />
+        </Button>
+        <div>
+          <h1 className="text-2xl font-bold text-primary">
+            Parking Owner Details
           </h1>
+          <p className="text-sm text-gray-500">
+            View comprehensive information about parking lot owner and their
+            requests
+          </p>
         </div>
-        <p className="text-gray-500">
-          View and manage parking lot owner account information
-        </p>
       </div>
 
       {/* Owner Overview */}
-      <Card className="p-6 bg-blue-50">
-        <h2 className="text-lg font-semibold mb-4 flex items-center">
-          <Building2 size={20} className="mr-2 text-blue-600" /> Owner Overview
+      <Card className="p-6">
+        <h2 className="flex items-center text-lg font-semibold mb-4">
+          <Building2 size={20} className="mr-2 text-primary" />
+          Owner Overview
         </h2>
-        <div className="flex flex-col md:flex-row">
-          <div className="md:w-1/4 flex justify-center md:justify-start">
-            <div className="w-24 h-24 bg-blue-600 rounded-md flex items-center justify-center text-white text-3xl font-bold">
-              {owner.fullName
-                .split(" ")
-                .map((n) => n[0])
-                .join("")}
+        <div className="bg-blue-50 p-4 rounded-lg">
+          <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
+            <div className="flex items-center">
+              <div className="bg-primary w-16 h-16 rounded-md flex items-center justify-center">
+                <Building2 size={32} className="text-white" />
+              </div>
             </div>
-          </div>
-          <div className="md:w-3/4 mt-4 md:mt-0 md:pl-4 flex flex-col md:flex-row">
-            <div className="flex-1">
-              <h3 className="text-xl font-bold">{owner.fullName}</h3>
-              <div className="mt-2 grid grid-cols-2 gap-y-4">
-                <div>
-                  <div className="text-sm text-gray-500">Owner ID</div>
-                  <div className="font-medium">{owner.id}</div>
+            <div className="flex flex-col md:flex-row justify-between w-full">
+              <div>
+                <h3 className="text-xl font-bold">{mockOwnerData.ownerName}</h3>
+                <div className="grid grid-cols-2 gap-y-2 gap-x-8 mt-1">
+                  <div>
+                    <div className="text-sm text-gray-500">Owner ID</div>
+                    <div className="font-medium">{mockOwnerData.id}</div>
+                  </div>
+                  <div>
+                    <div className="text-sm text-gray-500">Status</div>
+                    <div className="inline-flex items-center px-2 py-1 rounded bg-green-100 text-green-800 text-sm">
+                      {mockOwnerData.status}
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <div className="text-sm text-gray-500">Status</div>
-                  <span
-                    className={`px-2 py-1 rounded-md text-sm ${
-                      owner.status === "active"
-                        ? "bg-green-100 text-green-600"
-                        : owner.status === "pending"
-                          ? "bg-yellow-100 text-yellow-600"
-                          : "bg-red-100 text-red-600"
-                    }`}
-                  >
-                    {owner.status.charAt(0).toUpperCase() +
-                      owner.status.slice(1)}
-                  </span>
-                </div>
-                <div>
-                  <div className="text-sm text-gray-500">Email</div>
-                  <div className="font-medium">{owner.email}</div>
-                </div>
-                <div>
-                  <div className="text-sm text-gray-500">Phone</div>
-                  <div className="font-medium">{owner.phone}</div>
+                <div className="mt-2">
+                  <div className="text-sm text-gray-500">Parking Lot Name</div>
+                  <div className="font-medium">
+                    {mockOwnerData.parkingLot.name}
+                  </div>
                 </div>
               </div>
             </div>
@@ -162,201 +223,259 @@ const ParkingLotOwnerDetails: React.FC = () => {
         </div>
       </Card>
 
-      {/* Main Content */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Financial Summary Card */}
-        <Card className="p-6">
-          <h2 className="text-lg font-semibold mb-4 flex items-center">
-            <CreditCard size={20} className="mr-2" />
-            Financial Summary
-          </h2>
-
-          <div className="space-y-4">
-            <div>
-              <div className="text-sm text-gray-500">Total Revenue</div>
-              <div className="p-2 bg-gray-50 rounded border text-xl font-bold text-blue-600">
-                {formatCurrency(owner.totalRevenue)}
-              </div>
-            </div>
-
-            <Divider />
-
-            <div>
-              <div className="text-sm text-gray-500 mb-2">Payment Sources</div>
-
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-full border-collapse">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">
-                        BANK
-                      </th>
-                      <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">
-                        ACCOUNT
-                      </th>
-                      <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">
-                        UPDATED
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200">
-                    {owner.paymentSources.map((source) => (
-                      <tr key={source.id} className="hover:bg-gray-50">
-                        <td className="px-4 py-2 text-sm">{source.bankName}</td>
-                        <td className="px-4 py-2 text-sm">
-                          {source.accountName} • {source.accountNumber}
-                        </td>
-                        <td className="px-4 py-2 text-sm">
-                          {source.lastUpdated.toLocaleDateString()}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </Card>
-
-        {/* Parking Lots Card */}
-        <Card className="p-6">
-          <h2 className="text-lg font-semibold mb-4 flex items-center">
-            <Building2 size={20} className="mr-2" />
-            Parking Lots
-          </h2>
-
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-full border-collapse">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">
-                    NAME
-                  </th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">
-                    SLOTS
-                  </th>
-                  <th className="px-4 py-2 text-left text-sm font-medium text-gray-500">
-                    STATUS
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {owner.parkingLots.map((lot) => (
-                  <tr key={lot.id} className="hover:bg-gray-50">
-                    <td className="px-4 py-2">
-                      <div>
-                        <p className="font-medium">{lot.name}</p>
-                        <p className="text-xs text-gray-400">{lot.address}</p>
-                      </div>
-                    </td>
-                    <td className="px-4 py-2 text-sm">{lot.totalSlots}</td>
-                    <td className="px-4 py-2">
-                      <span
-                        className={`inline-block px-2 py-1 rounded-md text-xs ${
-                          lot.status === "active"
-                            ? "bg-green-100 text-green-600"
-                            : "bg-red-100 text-red-600"
-                        }`}
-                      >
-                        {lot.status.charAt(0).toUpperCase() +
-                          lot.status.slice(1)}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </Card>
-      </div>
-
-      {/* Account Management */}
-      <Card className="p-6 col-span-1 md:col-span-2">
-        <h2 className="text-lg font-semibold mb-4 flex items-center">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-5 w-5 mr-2"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
+      {/* System Information */}
+      <Card className="p-6">
+        <h2 className="flex items-center text-lg font-semibold mb-4">
+          <FileText size={20} className="mr-2 text-primary" />
+          System Information
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div>
+            <div className="text-sm text-gray-500 mb-1">Contact Email</div>
+            <input
+              type="text"
+              value={mockOwnerData.email}
+              readOnly
+              className="w-full p-2 border border-gray-200 rounded-md bg-gray-50"
             />
-          </svg>
-          Account Management
-        </h2>
-        <div className="flex flex-col md:flex-row gap-4">
-          <Button
-            color={owner.status === "active" ? "warning" : "success"}
-            startContent={
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d={
-                    owner.status === "active"
-                      ? "M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"
-                      : "M5 13l4 4L19 7"
-                  }
-                />
-              </svg>
-            }
-          >
-            {owner.status === "active" ? "Suspend Account" : "Activate Account"}
-          </Button>
-
-          <Button
-            color="danger"
-            startContent={<Ban size={20} />}
-            onPress={() => setShowConfirmBan(true)}
-            isDisabled={owner.status === "inactive"}
-          >
-            Ban Account
-          </Button>
+          </div>
+          <div>
+            <div className="text-sm text-gray-500 mb-1">Phone Number</div>
+            <input
+              type="text"
+              value={mockOwnerData.phone}
+              readOnly
+              className="w-full p-2 border border-gray-200 rounded-md bg-gray-50"
+            />
+          </div>
         </div>
 
-        {/* Permission Note */}
-        <div className="mt-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-md">
-          <p className="font-semibold">Management Note:</p>
-          <p>
-            Banning an owner account will permanently remove their access to the
-            system and suspend all their parking lots. Suspended accounts can be
-            reactivated later if needed.
-          </p>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div>
+            <div className="text-sm text-gray-500 mb-1">Join Date</div>
+            <input
+              type="text"
+              value={mockOwnerData.joinDate}
+              readOnly
+              className="w-full p-2 border border-gray-200 rounded-md bg-gray-50"
+            />
+          </div>
+          <div>
+            <div className="text-sm text-gray-500 mb-1">Last Activity</div>
+            <input
+              type="text"
+              value={mockOwnerData.lastActivity}
+              readOnly
+              className="w-full p-2 border border-gray-200 rounded-md bg-gray-50"
+            />
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <div className="text-sm text-gray-500 mb-1">Parking Lot Address</div>
+          <input
+            type="text"
+            value={mockOwnerData.parkingLot.address}
+            readOnly
+            className="w-full p-2 border border-gray-200 rounded-md bg-gray-50"
+          />
+          <div className="text-xs text-gray-400 mt-1">
+            This field can be modified by administrators
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+          <div>
+            <div className="text-sm text-gray-500 mb-1">
+              Total Parking Slots
+            </div>
+            <input
+              type="text"
+              value={mockOwnerData.parkingLot.totalSlots}
+              readOnly
+              className="w-full p-2 border border-gray-200 rounded-md bg-gray-50"
+            />
+          </div>
+          <div>
+            <div className="text-sm text-gray-500 mb-1">Operating Hours</div>
+            <input
+              type="text"
+              value={mockOwnerData.parkingLot.operatingHours}
+              readOnly
+              className="w-full p-2 border border-gray-200 rounded-md bg-gray-50"
+            />
+          </div>
+          <div>
+            <div className="text-sm text-gray-500 mb-1">Hourly Rate</div>
+            <input
+              type="text"
+              value={`$${mockOwnerData.parkingLot.hourlyRate.toFixed(2)}`}
+              readOnly
+              className="w-full p-2 border border-gray-200 rounded-md bg-gray-50"
+            />
+          </div>
+          <div>
+            <div className="text-sm text-gray-500 mb-1">Daily Rate</div>
+            <input
+              type="text"
+              value={`$${mockOwnerData.parkingLot.dailyRate.toFixed(2)}`}
+              readOnly
+              className="w-full p-2 border border-gray-200 rounded-md bg-gray-50"
+            />
+          </div>
+        </div>
+
+        <Button
+          color="primary"
+          startContent={<Save size={16} />}
+          className="mt-4 text-white"
+        >
+          Save Address Changes
+        </Button>
+      </Card>
+
+      {/* Current Payment Source */}
+      <Card className="p-6">
+        <h2
+          className="flex items-center tex
+        6+
+        6t-lg font-semibold mb-4"
+        >
+          <CreditCard size={20} className="mr-2 text-primary" />
+          Current Payment Source
+        </h2>
+        <div className="mb-4">
+          <h3 className="text-xl font-semibold text-center mb-6">
+            {mockOwnerData.paymentSource.bank}
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 mb-4">
+            <div className="flex items-start gap-4">
+              <div className="bg-primary w-14 h-14 rounded-md flex items-center justify-center flex-shrink-0">
+                <CreditCard size={28} className="text-white" />
+              </div>
+              <div>
+                <div className="text-sm text-gray-500 mb-1">Account Number</div>
+                <div className="font-medium text-lg">
+                  {mockOwnerData.paymentSource.accountNumber}
+                </div>
+              </div>
+            </div>
+            <div>
+              <div className="text-sm text-gray-500 mb-1">Account Name</div>
+              <div className="font-medium text-lg">
+                {mockOwnerData.paymentSource.accountName}
+              </div>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
+            <div>
+              <div className="text-sm text-gray-500 mb-1">Branch</div>
+              <div className="font-medium text-primary">
+                {mockOwnerData.paymentSource.branch}
+              </div>
+            </div>
+            <div>
+              <div className="text-sm text-gray-500 mb-1">Swift Code</div>
+              <div className="font-medium">
+                {mockOwnerData.paymentSource.swiftCode}
+              </div>
+            </div>
+          </div>
+        </div>
+        <Divider className="my-4" />
+        <div className="bg-blue-50 p-4 rounded-md flex items-center">
+          <div className="w-6 h-6 rounded-full bg-green-500 flex items-center justify-center mr-3 flex-shrink-0">
+            <CheckCircle2 size={16} className="text-white" />
+          </div>
+          <div className="text-sm">
+            <span className="font-medium">Payment Account Status:</span> Active
+            and verified for payment processing
+          </div>
+          <div className="ml-auto">
+            <span className="px-3 py-1 rounded-full bg-green-100 text-green-800 text-xs font-medium">
+              Active
+            </span>
+          </div>
         </div>
       </Card>
 
-      {/* Ban Confirmation Modal */}
-      {showConfirmBan && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <Card className="w-full max-w-md mx-4 p-6">
-            <h3 className="text-xl font-bold mb-4">Ban Owner Account</h3>
-            <p className="text-gray-600 mb-6">
-              Are you sure you want to ban this parking lot owner? This will
-              also suspend all their parking lots.
+      {/* Parking Lot List */}
+      <Card className="p-6">
+        <h2 className="flex items-center text-lg font-semibold mb-4">
+          <Building2 size={20} className="mr-2 text-primary" />
+          Parking Lot List
+        </h2>
+        <div className="overflow-x-auto w-full max-w-full">
+          <table className="w-full min-w-full table-fixed border-collapse">
+            <thead className="bg-blue-900 text-white">
+              <tr>
+                <th className="px-4 py-3 text-left text-sm font-medium w-[5%]">
+                  #
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium w-[25%]">
+                  Name
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium w-[25%]">
+                  Address
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium w-[15%]">
+                  Total Parking Slots
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium w-[10%]">
+                  Status
+                </th>
+                <th className="px-4 py-3 text-left text-sm font-medium w-[20%]">
+                  Description
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {mockOwnerData.parkingLots.map((parkingLot, index) => (
+                <tr key={parkingLot.id} className="hover:bg-gray-50">
+                  <td className="px-4 py-3 text-sm font-medium text-blue-600">
+                    {index + 1}
+                  </td>
+                  <td className="px-4 py-3 text-sm font-medium">
+                    <div className="flex items-center">
+                      <div className="bg-primary p-2 rounded mr-2">
+                        <Building2 size={20} className="text-white" />
+                      </div>
+                      <div>{parkingLot.name}</div>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 text-sm">{parkingLot.address}</td>
+                  <td className="px-4 py-3 text-sm">{parkingLot.totalSlots}</td>
+                  <td className="px-4 py-3 text-sm">
+                    <span
+                      className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${
+                        parkingLot.status === "Active"
+                          ? "bg-green-200 text-green-800"
+                          : parkingLot.status === "Maintenance"
+                            ? "bg-yellow-200 text-yellow-800"
+                            : "bg-red-200 text-red-800"
+                      }`}
+                    >
+                      {parkingLot.status}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-sm text-gray-600">
+                    {parkingLot.description}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          {/* Note */}
+          <div className="mt-4 p-3 bg-blue-50 text-blue-800 rounded-md">
+            <p>
+              <span className="font-semibold">Note:</span> The parking lot owner
+              can manage multiple parking facilities. All facilities share the
+              same payment account.
             </p>
-            <div className="flex justify-end gap-3">
-              <Button variant="flat" onPress={() => setShowConfirmBan(false)}>
-                Cancel
-              </Button>
-              <Button color="danger" onPress={handleBanOwner}>
-                Ban Owner
-              </Button>
-            </div>
-          </Card>
+          </div>
         </div>
-      )}
+      </Card>
     </div>
   );
 };

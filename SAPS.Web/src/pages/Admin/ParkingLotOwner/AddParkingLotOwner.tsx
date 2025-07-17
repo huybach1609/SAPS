@@ -62,7 +62,7 @@ const AddParkingLotOwner: React.FC<{
   ];
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto py-10">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto mt-">
       <div className="w-full max-w-3xl mx-4 my-8">
         <Card className="p-6 max-h-[80vh] overflow-y-auto">
           <div className="flex justify-between items-center mb-6">
@@ -429,6 +429,7 @@ const AddParkingLotOwner: React.FC<{
               <Button
                 color="primary"
                 type="submit"
+                variant="flat"
                 className="rounded-full"
                 isLoading={isSubmitting}
                 startContent={<Check size={16} />}

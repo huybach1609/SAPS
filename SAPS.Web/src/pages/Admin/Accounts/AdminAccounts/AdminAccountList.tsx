@@ -332,7 +332,7 @@ const AdminAccountList: React.FC = () => {
           <div className="flex gap-2">
             <Button
               color="primary"
-              className="bg-blue-600 rounded-full text-black"
+              className="bg-blue-600 rounded-full text-white"
               startContent={
                 <svg
                   className="w-4 h-4"
@@ -382,7 +382,7 @@ const AdminAccountList: React.FC = () => {
           <Button
             color="primary"
             startContent={<Plus size={18} />}
-            className="bg-blue-600 rounded-full text-black"
+            className="bg-blue-600 rounded-full text-white"
             onPress={() => setIsAddModalOpen(true)}
           >
             Add Admin

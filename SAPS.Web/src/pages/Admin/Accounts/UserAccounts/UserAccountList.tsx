@@ -273,7 +273,7 @@ const UserAccountList: React.FC = () => {
           <div className="flex gap-3 w-full md:w-auto">
             <Button
               color="primary"
-              className="bg-blue-600 rounded-full text-black"
+              className="bg-blue-600 rounded-full text-white"
               startContent={
                 <svg
                   className="w-4 h-4"

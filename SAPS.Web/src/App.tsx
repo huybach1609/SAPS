@@ -18,7 +18,6 @@ import ParkingHistory from "./pages/ParkingLotOwner/ParkingHistory/HistoryManage
 import StaffManagement from "./pages/ParkingLotOwner/StaffManagement/StaffManagement";
 import ParkingLotInfo from "./pages/ParkingLotOwner/ParkingInfo/ParkingLotInfo";
 import AdminAccountList from "./pages/Admin/Accounts/AdminAccounts/AdminAccountList";
-import AdminParkingLotOwnerList from "./pages/Admin/ParkingLotOwnerAccounts/AdminParkingLotOwnerList";
 import AdminRequestList from "./pages/Admin/Requests/AdminRequestList";
 import { ADMIN_ROLE, OWNER_ROLE } from "./config/base";
 import ParkingFeeManagement from "./pages/ParkingLotOwner/ParkingFee/ParkingFeeManagement";
@@ -28,6 +27,8 @@ import AdminAccountDetails from "./pages/Admin/Accounts/AdminAccounts/AdminAccou
 import UserDetail from "./pages/Admin/Accounts/UserAccounts/UserDetail";
 import StaffDetailScreen from "./pages/ParkingLotOwner/StaffManagement/StaffDetail";
 import ParkingLotOwnerList from "./pages/Admin/ParkingLotOwner/ParkingLotOwnerList";
+import ParkingLotOwnerDetails from "./pages/Admin/ParkingLotOwner/ParkingLotOwnerDetails";
+import RequestDetails from "./pages/Admin/Requests/RequestDetails";
 
 // Protected Route Component
 interface ProtectedRouteProps {
@@ -146,7 +147,12 @@ function App() {
           <Route path="accounts/admins" element={<AdminAccountList />} />
           <Route path="accounts/admins/:id" element={<AdminAccountDetails />} />
           <Route path="parking-owners" element={<ParkingLotOwnerList />} />
+          <Route
+            path="parking-owners/:id"
+            element={<ParkingLotOwnerDetails />}
+          />
           <Route path="requests" element={<AdminRequestList />} />
+          <Route path="requests/details/:id" element={<RequestDetails />} />
         </Route>
 
         {/* Owner Routes */}
