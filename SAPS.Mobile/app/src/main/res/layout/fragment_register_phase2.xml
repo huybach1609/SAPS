@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp"
+    android:background="#f8f9fa">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📧 Account Setup"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#2c3e50"
+            android:gravity="center"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Create your account credentials"
+            android:textSize="14sp"
+            android:textColor="#7f8c8d"
+            android:gravity="center"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Progress Indicator (Fake for now, can replace with real Stepper) -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="○ ● ○"
+            android:textSize="20sp"
+            android:textColor="#0077B6"
+            android:gravity="center"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Auto-filled fields -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#e8f5e9"
+            android:padding="10dp"
+            android:layout_marginBottom="20dp"
+            android:gravity="center">
+
+            <EditText
+                android:id="@+id/input_full_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Full Name"
+                android:enabled="false" />
+
+            <EditText
+                android:id="@+id/input_id_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="ID Number"
+                android:enabled="false" />
+
+            <EditText
+                android:id="@+id/input_dob"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Date of Birth"
+                android:enabled="false" />
+
+            <EditText
+                android:id="@+id/input_sex"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Sex"
+                android:enabled="false" />
+
+            <EditText
+                android:id="@+id/input_nationality"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Nationality"
+                android:enabled="false" />
+
+            <EditText
+                android:id="@+id/input_place_origin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Place of Origin"
+                android:enabled="false" />
+
+            <EditText
+                android:id="@+id/input_place_residence"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Place of Residence"
+                android:enabled="false" />
+            <EditText
+                android:id="@+id/input_issue_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Issue Date"
+                android:enabled="false" />
+
+            <EditText
+                android:id="@+id/input_issue_place"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Issue Place"
+                android:enabled="false" />
+
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="✓ Auto-extracted from ID card"
+                android:textColor="#388e3c"
+                android:textSize="12sp"
+                android:gravity="end"
+                android:layout_marginTop="5dp" />
+            <!-- Auto-filled OCR fields -->
+
+
+        </LinearLayout>
+
+        <!-- User Input Fields -->
+        <EditText
+            android:id="@+id/edit_text_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email Address" />
+
+        <EditText
+            android:id="@+id/edit_text_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:inputType="textPassword" />
+
+        <EditText
+            android:id="@+id/edit_text_confirm_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Confirm Password"
+            android:inputType="textPassword" />
+
+        <!-- Password Requirements -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="⚠️ Password Requirements:\n• At least 8 characters\n• Uppercase &amp; lowercase letters\n• Numbers &amp; symbols\n• No spaces"
+            android:textSize="12sp"
+            android:textColor="#7f8c8d"
+            android:background="#CAF0F8"
+            android:padding="10dp"
+            android:layout_marginTop="15dp" />
+
+        <!-- Next Button -->
+        <Button
+            android:id="@+id/button_next_phase"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Next Step →"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="#0077B6"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+</ScrollView>
