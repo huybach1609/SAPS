@@ -4,13 +4,11 @@ import { Code } from "@heroui/code";
 import { button as buttonStyles } from "@heroui/theme";
 
 import { siteConfig } from "@/config/site";
-import { title, subtitle } from "@/components/primitives";
-import { GithubIcon } from "@/components/icons";
 import DefaultLayout from "@/layouts/default";
 
 export default function IndexPage() {
   return (
-    <DefaultLayout>
+    <DefaultLayout title="Home">
 
       <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
      
@@ -27,14 +25,7 @@ export default function IndexPage() {
           >
             Documentation
           </Link>
-          <Link
-            isExternal
-            className={buttonStyles({ variant: "bordered", radius: "full" })}
-            href={siteConfig.links.github}
-          >
-            <GithubIcon size={20} />
-            GitHub
-          </Link>
+  
         </div>
 
         <div className="mt-8">
