@@ -1,2 +1,0 @@
-# layout, navbar, sidebar, footer
-

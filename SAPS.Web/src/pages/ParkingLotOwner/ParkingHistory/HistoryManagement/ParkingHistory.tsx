@@ -1,39 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Car, Calendar, Clock, DollarSign, Eye, Filter, FolderSearch, RefreshCcw, PlusIcon, ClipboardList, Edit2, Trash2, CheckCircle, EraserIcon } from 'lucide-react';
+import { Eye, FolderSearch, RefreshCcw } from 'lucide-react';
 import DefaultLayout from '@/layouts/default';
 import { useParkingLot } from '../../ParkingLotContext';
 import { Button, ButtonGroup, Card, CardBody, CardHeader, DateRangePicker, DateValue, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Pagination, RangeValue, SelectItem, Select, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure } from '@heroui/react';
 import { PaginationInfo } from '@/types/Whitelist';
 import { useNavigate } from 'react-router-dom';
-import { fetchParkingHistory, ParkingSession, PaginatedParkingHistoryResponse } from '@/services/parkinglot/parkingHistoryService';
+import { fetchParkingHistory, ParkingSession } from '@/services/parkinglot/parkingHistoryService';
 import ParkingHistoryStatistics from './ParkingHistoryStatistics';
-
-export enum ParkingSessionStatus {
-    COMPLETED = 0,
-    CURRENTLY_PARKED = 1,
-    PAYMENT_PENDING = 2,
-}
+import { formatDate, formatTime } from '@/components/utils/stringUtils';
+import { ParkingSessionStatus } from '@/types/ParkingSession';
 
 const ParkingHistory: React.FC = () => {
     const { selectedParkingLot, loading: parkingLotLoading } = useParkingLot();
-
     const [parkingSessions, setParkingSessions] = useState<ParkingSession[]>([]);
-
     // loading for parking sessions list
     const [loading, setLoading] = useState(true);
-    // search for parking sessions 
-    const [searchTerm, setSearchTerm] = useState('');
-    // search results for add parking sessions
-    const [searchResults, setSearchResults] = useState<ParkingSession[]>([]);
 
     // session selected for viewing details
     const [selectedSession, setSelectedSession] = useState<ParkingSession | null>(null);
 
-    // expiry date for input modal
-    const [expiryDate, setExpiryDate] = useState('');
-
-    // edit for update 
-    const [editingEntry, setEditingEntry] = useState<ParkingSession | null>(null);
     // pagination for parking sessions list
     const [pagination, setPagination] = useState<PaginationInfo | null>(null);
     // pagination for parking sessions list
@@ -43,22 +28,11 @@ const ParkingHistory: React.FC = () => {
     const [tableSearch, setTableSearch] = useState('');
     // filter by date range (entryDateTime, exitDateTime)
     const [dateRange, setDateRange] = useState<RangeValue<DateValue> | null>(null);
-
-
     // filter by status
     const [status, setStatus] = useState<string>(ParkingSessionStatus.CURRENTLY_PARKED.toString());
 
-
-
-
     const navigate = useNavigate();
 
-    // Modal disclosure hooks
-    const addModalDisclosure = useDisclosure();
-    const editModalDisclosure = useDisclosure();
-    const updateModalDisclosure = useDisclosure();
-
-    // hiện thị ở bãi,các id thì để theo thứ tự và các trạng mặc định là đang đỗ.
     const loadParkingSessions = async () => {
         if (!selectedParkingLot?.id) return;
 
@@ -108,35 +82,10 @@ const ParkingHistory: React.FC = () => {
         }
     };
 
-    const handleUpdateEntry = async (onClose?: () => void) => {
-        if (!editingEntry || !selectedParkingLot?.id) return;
-
-        try {
-            if (onClose) onClose();
-            setEditingEntry(null);
-            setExpiryDate('');
-            loadParkingSessions(); // Refresh the list
-        } catch (error) {
-            console.error('Failed to update parking session entry:', error);
-        }
-    };
-
     useEffect(() => {
         loadParkingSessions();
     }, [selectedParkingLot?.id, currentPage, dateRange, status]);
 
-    useEffect(() => {
-        const timeoutId = setTimeout(() => {
-            handleSearch(searchTerm);
-        }, 300);
-
-        return () => clearTimeout(timeoutId);
-    }, [searchTerm]);
-
-    const formatDateForInput = (isoString: string) => {
-        if (!isoString) return '';
-        return isoString.split('T')[0]; // Gets just the yyyy-MM-dd part
-    };
 
     function handleReset() {
         setTableSearch('');
@@ -145,7 +94,6 @@ const ParkingHistory: React.FC = () => {
         setCurrentPage(1);
         loadParkingSessions();
     }
-
 
 
     return (
@@ -226,14 +174,9 @@ const ParkingHistory: React.FC = () => {
 
                         </div>
 
-
-
                         <ButtonGroup isDisabled={selectedSession === null}>
                             <Button color='primary' className='text-background' size='sm' startContent={<Eye size={16} />}
                                 onPress={() => handleViewSessionDetails(selectedSession?.id || '')}>View Details</Button>
-                            {/* <Button color='secondary' className='text-background' size='sm'
-                                onPress={() => updateModalDisclosure.onOpen()}
-                                startContent={<Edit2 size={16} />}>Edit</Button> */}
                         </ButtonGroup>
                     </div>
                 </CardBody>
@@ -289,55 +232,6 @@ const ParkingHistory: React.FC = () => {
                 </div>
             )}
 
-            {/* Edit Entry Modal */}
-            <Modal isOpen={editModalDisclosure.isOpen && !!editingEntry} onOpenChange={editModalDisclosure.onOpenChange}>
-                <ModalContent>
-                    {(onClose) => (
-                        editingEntry && (
-                            <>
-                                <ModalHeader className="flex flex-col gap-1">Edit Parking Session</ModalHeader>
-                                <ModalBody>
-                                    <div className="mb-4">
-                                        <div className="font-medium">Session ID: {editingEntry.id}</div>
-                                        <div className="text-sm text-gray-600">Vehicle: {editingEntry.vehicle?.licensePlate || 'Unknown'}</div>
-                                    </div>
-                                    <div className="mb-4">
-                                        <label className="block text-sm font-medium text-primary-900/90 mb-2">
-                                            Entry Date
-                                        </label>
-                                        <input
-                                            type="date"
-                                            value={formatDateForInput(editingEntry.entryDateTime)}
-                                            onChange={(e) => setExpiryDate(e.target.value)}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        />
-                                    </div>
-                                </ModalBody>
-                                <ModalFooter>
-                                    <Button
-                                        color="danger"
-                                        variant="light"
-                                        onPress={() => {
-                                            onClose();
-                                            setEditingEntry(null);
-                                            setExpiryDate('');
-                                        }}
-                                    >
-                                        Cancel
-                                    </Button>
-                                    <Button
-                                        color="primary"
-                                        className='text-background'
-                                        onPress={() => handleUpdateEntry(onClose)}
-                                    >
-                                        Update
-                                    </Button>
-                                </ModalFooter>
-                            </>
-                        )
-                    )}
-                </ModalContent>
-            </Modal>
         </DefaultLayout>
     );
 };
@@ -349,25 +243,6 @@ type ParkingHistoryTableProps = {
 };
 
 function ParkingHistoryTable({ parkingSessions, selectedSession, setSelectedSession }: ParkingHistoryTableProps) {
-
-    const formatDate = (dateTime: string): string => {
-        const date = new Date(dateTime);
-        return date.toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric'
-        });
-    };
-
-    const formatTime = (dateTime: string | null): string => {
-        if (!dateTime) return '-';
-        const date = new Date(dateTime);
-        return date.toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-        });
-    };
 
     const getStatusBadge = (status: ParkingSessionStatus) => {
         const baseClasses = "px-3 py-1 rounded-full text-sm font-medium";

@@ -4,12 +4,16 @@ import { useParkingLot } from '../ParkingLotContext';
 
 import { StaffStatus, User } from '@/types/User';
 import type { PaginationInfo } from '@/types/Whitelist';
-import { Accordion, AccordionItem, addToast, Button, ButtonGroup, Card, CardBody, CardHeader, DropdownMenu, DropdownTrigger, DropdownItem, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Pagination, PressEvent, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure, UseDisclosureProps, Dropdown } from '@heroui/react';
-import { BarChart, Calendar, ClipboardList, Edit2, EllipsisVertical, FolderSearch, InfoIcon, PlusIcon, RefreshCcw, Trash2, Users } from 'lucide-react';
-import { addStaff, fetchStaffList, fetchStaffListStatus, removeStaff, updateStaff } from './StaffService';
+import { Button, Card, CardBody, CardHeader, DropdownMenu, DropdownTrigger, DropdownItem, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Pagination, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure, UseDisclosureProps, Dropdown } from '@heroui/react';
+import { BarChart, EllipsisVertical, FolderSearch, PlusIcon, RefreshCcw } from 'lucide-react';
+// import { fetchStaffList, fetchStaffListStatus, removeStaff } from '../../../services/parkinglot/StaffService';
 import { useNavigate } from 'react-router-dom';
 import { ParkingLot } from '@/types/ParkingLot';
 import { formatPhoneNumber } from '@/components/utils/stringUtils';
+import { StaffStatusBadge } from '@/components/utils/staffUtils';
+import { AddStaffModal, UpdateStaffModal } from './StaffModal';
+import { fetchStaffList, fetchStaffListStatus, removeStaff } from '@/services/parkinglot/staffService';
+// import { fetchStaffList, fetchStaffListStatus, removeStaff } from '@/services/parkinglot/StaffService';
 
 // thiếu dateof birth
 export default function StaffManagement() {
@@ -20,9 +24,9 @@ export default function StaffManagement() {
     // loading for staff list
     const [loading, setLoading] = useState(true);
     // search for staff 
-    const [searchTerm, setSearchTerm] = useState('');
+    // const [searchTerm, setSearchTerm] = useState('');
     // search results for add staff
-    const [searchResults, setSearchResults] = useState<User[]>([]);
+    // const [searchResults, setSearchResults] = useState<User[]>([]);
 
     // user selected for add to 
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -42,7 +46,7 @@ export default function StaffManagement() {
     // status filter for staff
     const [statusFilter, setStatusFilter] = useState<string>('');
 
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     // Modal disclosure hooks
     const addModalDisclosure = useDisclosure();
@@ -56,7 +60,7 @@ export default function StaffManagement() {
         try {
             let response;
             const statusParam = statusFilter === '' ? undefined : Number(statusFilter);
-            
+
             if (tableSearch != null && tableSearch.trim() !== '') {
                 response = await fetchStaffList(selectedParkingLot.id, 6, currentPage, tableSearch, statusParam);
             } else {
@@ -72,7 +76,7 @@ export default function StaffManagement() {
     };
 
     // Search users
-    const handleSearch = async (term: string) => {
+    const handleSearch = async () => {
         try {
             loadStaffList();
         } catch (error) {
@@ -111,13 +115,13 @@ export default function StaffManagement() {
         loadStaffList();
     }, [selectedParkingLot?.id, currentPage, statusFilter]);
 
-    useEffect(() => {
-        const timeoutId = setTimeout(() => {
-            handleSearch(searchTerm);
-        }, 300);
+    // useEffect(() => {
+    //     const timeoutId = setTimeout(() => {
+    //         handleSearch(searchTerm);
+    //     }, 300);
 
-        return () => clearTimeout(timeoutId);
-    }, [searchTerm]);
+    //     return () => clearTimeout(timeoutId);
+    // }, [searchTerm]);
 
     const formatDateForInput = (isoString: string) => {
         if (!isoString) return '';
@@ -156,7 +160,7 @@ export default function StaffManagement() {
                                 color='primary'
                                 onKeyDown={e => {
                                     if (e.key === 'Enter') {
-                                        handleSearch(tableSearch);
+                                        handleSearch();
                                     }
                                 }}
                             />
@@ -184,7 +188,7 @@ export default function StaffManagement() {
                             </Select>
                             <Button
                                 size="sm"
-                                onPress={() => handleSearch(tableSearch)}
+                                onPress={() => handleSearch()}
                                 color='primary'
                                 className="text-background"
                             >
@@ -349,61 +353,7 @@ type StaffListTableProps = {
     handleRemoveFromStaffList: (staffId: string) => void;
 };
 
-// Status display configuration
-export const staffStatusConfig = {
-    [StaffStatus.ACTIVE]: {
-        label: 'Active',
-        color: 'text-green-600 bg-green-100',
-        dotColor: 'bg-green-600'
-    },
-    [StaffStatus.ON_LEAVE]: {
-        label: 'On Leave',
-        color: 'text-yellow-600 bg-yellow-100',
-        dotColor: 'bg-yellow-600'
-    },
-    [StaffStatus.SUSPENDED]: {
-        label: 'Suspended',
-        color: 'text-orange-600 bg-orange-100',
-        dotColor: 'bg-orange-600'
-    },
-    [StaffStatus.TERMINATED]: {
-        label: 'Terminated',
-        color: 'text-red-600 bg-red-100',
-        dotColor: 'bg-red-600'
-    }
-};
-// Helper function to get status display info
-export const getStaffStatusDisplay = (status: number) => {
-    const config = staffStatusConfig[status as StaffStatus];
-    return config || {
-        label: 'Unknown',
-        color: 'text-gray-600 bg-gray-100',
-        dotColor: 'bg-gray-600'
-    };
-};
 
-// Component to render status with color
-export const StaffStatusBadge = ({ status }: { status: number }) => {
-    const statusDisplay = getStaffStatusDisplay(status);
-
-    return (
-        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusDisplay.color}`}>
-            <span className={`w-2 h-2 rounded-full mr-1.5 ${statusDisplay.dotColor}`}></span>
-            {statusDisplay.label}
-        </span>
-    );
-};
-
-// Alternative simple version without badge styling
-export const StaffStatusSimple = ({ status }: { status: number }) => {
-    const statusDisplay = getStaffStatusDisplay(status);
-
-    return (
-        <span className={`font-medium ${statusDisplay.color.split(' ')[0]}`}>
-            {statusDisplay.label}
-        </span>
-    );
-};
 
 
 function StaffListTable({ staffList, selectUser, setSelectUser, parkingLot, updateModalDisclosure, handleRemoveFromStaffList }: StaffListTableProps) {
@@ -579,376 +529,10 @@ export interface AddStaffFormRequest {
 }
 
 // Status options for the select dropdown
-const statusOptions = [
+export const statusOptions = [
     { key: StaffStatus.ACTIVE.toString(), label: 'Active' },
     { key: StaffStatus.ON_LEAVE.toString(), label: 'On Leave' },
     { key: StaffStatus.SUSPENDED.toString(), label: 'Suspended' },
     { key: StaffStatus.TERMINATED.toString(), label: 'Terminated' }
 ];
-function AddStaffModal({ addModalDisclosure, parkingLotId }: { addModalDisclosure: UseDisclosureProps, parkingLotId: string }) {
-
-    const [formData, setFormData] = useState<AddStaffFormRequest>({
-        fullName: '',
-        email: 'staff@downtownmall.com',
-        phone: '+1 (555) 123-4567',
-        employeeId: 'EMP-2025-XXX',
-        dateOfBirth: '',
-        status: StaffStatus.ACTIVE
-    });
-
-    const handleInputChange = (field: string, value: string) => {
-        setFormData(prev => ({
-            ...prev,
-            [field]: value
-        }));
-    };
-    async function handleAddUser(e: PressEvent): Promise<void> {
-        try {
-            const response = await addStaff(parkingLotId, formData);
-            console.log("succces", response);
-            addModalDisclosure.onClose?.();
-
-        } catch (error) {
-            console.error('Error adding staff:', error);
-            // Handle error (show toast notification, etc.)
-            addToast({
-                title: 'Error',
-                description: 'Failed to add staff',
-                color: 'danger',
-            });
-        }
-    }
-
-    return (
-        <Modal size='xl' isOpen={addModalDisclosure.isOpen}>
-            <ModalContent>
-                {() => (
-                    <>
-                        <ModalHeader className="flex items-center gap-2">
-                            <Users className="w-5 h-5 text-primary-900" />
-                            <h3 className="text-xl font-semibold text-primary-900">Personal Information</h3>
-                        </ModalHeader>
-                        <ModalBody>
-                            <div className="p-2">
-                                {/* Personal Information Section */}
-                                <div className="">
-                                    {/* Full Name */}
-                                    <div className="mb-6">
-                                        <label className="block text-sm font-medium text-primary-900/90 mb-2">
-                                            Full Name <span className="text-red-500">*</span>
-                                        </label>
-                                        <Input
-                                            type="text"
-                                            value={formData.fullName}
-                                            onChange={(e) => handleInputChange('fullName', e.target.value)}
-                                            placeholder="Enter staff member's full name"
-                                            className=""
-                                        />
-                                    </div>
-
-                                    {/* Email and Phone */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                                        <div>
-                                            <label className="block text-sm font-medium text-primary-900/90 mb-2">
-                                                Email Address <span className="text-red-500">*</span>
-                                            </label>
-                                            <Input
-                                                type="email"
-                                                value={formData.email}
-                                                onChange={(e) => handleInputChange('email', e.target.value)}
-                                                className=""
-                                            />
-                                            <p className="text-xs text-gray-500 mt-1">Will be used for login and notifications</p>
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-medium text-primary-900/90 mb-2">
-                                                Phone Number <span className="text-red-500">*</span>
-                                            </label>
-                                            <Input
-                                                type="tel"
-                                                value={formData.phone}
-                                                onChange={(e) => handleInputChange('phone', e.target.value)}
-                                                className=""
-                                            />
-                                        </div>
-                                    </div>
-
-                                    {/* Employee ID and Date of Birth */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                                        <div>
-                                            <label className="block text-sm font-medium text-primary-900/90 mb-2">
-                                                Employee ID
-                                            </label>
-                                            <Input
-                                                type="text"
-                                                value={formData.employeeId}
-                                                onChange={(e) => handleInputChange('employeeId', e.target.value)}
-                                                className=""
-                                            />
-                                            <p className="text-xs text-gray-500 mt-1">Optional - auto-generated if empty</p>
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-medium text-primary-900/90 mb-2">
-                                                Date of Birth
-                                            </label>
-                                            <div className="relative">
-                                                <Input
-                                                    type="date"
-                                                    value={formData.dateOfBirth}
-                                                    onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
-                                                    className=""
-                                                />
-                                                <Calendar className="absolute right-3 top-2.5 w-4 h-4 text-gray-400 pointer-events-none" />
-                                            </div>
-                                            <p className="text-xs text-gray-500 mt-1">Optional - for HR records</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Account Setup Info */}
-                                <Accordion>
-                                    <AccordionItem key="1" aria-label="account-setup" title="Account Setup" startContent={<InfoIcon className='w-4 h-4 text-primary-900' />}>
-                                        <div className="bg-cyan-50 border bordeir-cyan-200 rounded-lg p-4 ">
-                                            <ul className=" text-sm text-primary-900/90">
-                                                <li className="flex items-center gap-2">
-                                                    <span className="text-primary-600">•</span>
-                                                    <span className='text-xs'>System will auto-generate a secure temporary password</span>
-                                                </li>
-                                                <li className="flex items-center gap-2">
-                                                    <span className="text-primary-600">•</span>
-                                                    <span className='text-xs'>Login credentials will be sent to the staff's email address</span>
-                                                </li>
-                                                <li className="flex items-center gap-2">
-                                                    <span className="text-primary-600">•</span>
-                                                    <span className='text-xs'>Staff will be required to change password on first login</span>
-                                                </li>
-                                                <li className="flex items-center gap-2">
-                                                    <span className="text-primary-600">•</span>
-                                                    <span className='text-xs'>Email will include desktop application download link and instructions</span>
-                                                </li>
-                                                <li className="flex items-center gap-2">
-                                                    <span className="text-primary-600">•</span>
-                                                    <span className='text-xs'>Additional employment details can be configured after account creation</span>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </AccordionItem>
-
-                                </Accordion>
-                            </div>
-
-                        </ModalBody>
-                        <ModalFooter>
-                            <Button color='danger' variant='light' className='' onPress={addModalDisclosure.onClose}>
-                                Cancel
-                            </Button>
-                            <Button color='primary' className='text-background' onPress={handleAddUser}>
-                                Add
-                            </Button>
-                        </ModalFooter>
-                    </>
-                )}
-            </ModalContent>
-        </Modal>
-
-
-    )
-}
-function UpdateStaffModal({ updateModalDisclosure, parkingLotId, user }
-    : { updateModalDisclosure: UseDisclosureProps, parkingLotId: string, user: User | null }) {
-
-    const [selectedStatus, setSelectedStatus] = useState(new Set([user?.staffProfile?.status?.toString() || '0']));
-
-    const [formData, setFormData] = useState<AddStaffFormRequest>({
-        fullName: user?.fullName || '',
-        email: user?.email || '',
-        phone: user?.phone || '',
-        employeeId: user?.staffProfile?.staffId || '',
-        dateOfBirth: '',
-        status: user?.staffProfile?.status || 0
-    });
-    useEffect(() => {
-        if (user) {
-            setFormData({
-                fullName: user?.fullName || '',
-                email: user?.email || '',
-                phone: user?.phone || '',
-                employeeId: user?.staffProfile?.staffId || '',
-                dateOfBirth: '',
-                status: user?.staffProfile?.status || 0
-            });
-            setSelectedStatus(new Set([user?.staffProfile?.status?.toString() || '0']));
-        }
-    }, [user]);
-
-    const handleInputChange = (field: string, value: string) => {
-        setFormData(prev => ({
-            ...prev,
-            [field]: value
-        }));
-    };
-
-    const handleStatusChange = (keys: any) => {
-        setSelectedStatus(keys);
-        const statusValue = Array.from(keys)[0] as string;
-        setFormData(prev => ({
-            ...prev,
-            status: parseInt(statusValue)
-        }));
-    };
-
-    async function handleUpdateUser(e: PressEvent): Promise<void> {
-        try {
-            const response = await updateStaff(parkingLotId, formData);
-            console.log("succces", response);
-            updateModalDisclosure.onClose?.();
-
-        } catch (error) {
-            console.error('Error adding staff:', error);
-            // Handle error (show toast notification, etc.)
-            addToast({
-                title: 'Error',
-                description: 'Failed to add staff',
-                color: 'danger',
-            });
-        }
-    }
-
-    return (
-        <Modal size='xl' isOpen={updateModalDisclosure.isOpen}>
-            <ModalContent>
-                {() => (
-                    <>
-                        <ModalHeader className="flex items-center gap-2">
-                            <Users className="w-5 h-5 text-primary-900" />
-                            <h3 className="text-xl font-semibold text-primary-900">Personal Information</h3>
-                        </ModalHeader>
-                        <ModalBody>
-                            <div className="p-2">
-                                {/* Personal Information Section */}
-                                <div className="">
-                                    {/* Full Name */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
-
-                                        <div className="mb-6">
-                                            <label className="block text-sm font-medium text-primary-900/90 mb-2">
-                                                Full Name <span className="text-red-500">*</span>
-                                            </label>
-                                            <Input
-                                                type="text"
-                                                value={formData.fullName}
-                                                onChange={(e) => handleInputChange('fullName', e.target.value)}
-                                                placeholder="Enter staff member's full name"
-                                                className=""
-                                            />
-
-
-                                        </div>
-
-                                        {/* Status */}
-                                        <div className="mb-6">
-                                            <label className="block text-sm font-medium text-primary-900/90 mb-2">
-                                                Status <span className="text-red-500">*</span>
-                                            </label>
-                                            <Select
-                                                aria-label="Select Status"
-                                                placeholder="Choose staff status"
-                                                selectedKeys={selectedStatus}
-                                                onSelectionChange={handleStatusChange}
-                                                className="w-full"
-                                            >
-                                                {statusOptions.map((status) => (
-                                                    <SelectItem key={status.key}>
-                                                        {status.label}
-                                                    </SelectItem>
-                                                ))}
-                                            </Select>
-                                        </div>
-
-
-                                    </div>
-                                    {/* Email and Phone */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                                        <div>
-                                            <label className="block text-sm font-medium text-primary-900/90 mb-2">
-                                                Email Address <span className="text-red-500">*</span>
-                                            </label>
-                                            <Input
-                                                type="email"
-                                                value={formData.email}
-                                                onChange={(e) => handleInputChange('email', e.target.value)}
-                                                className=""
-                                            />
-                                            <p className="text-xs text-gray-500 mt-1">Will be used for login and notifications</p>
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-medium text-primary-900/90 mb-2">
-                                                Phone Number <span className="text-red-500">*</span>
-                                            </label>
-                                            <Input
-                                                type="tel"
-                                                value={formData.phone}
-                                                onChange={(e) => handleInputChange('phone', e.target.value)}
-                                                className=""
-                                            />
-                                        </div>
-                                    </div>
-
-                                    {/* Employee ID and Date of Birth */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                                        <div>
-                                            <label className="block text-sm font-medium text-primary-900/90 mb-2">
-                                                Employee ID
-                                            </label>
-                                            <Input
-                                                isDisabled
-                                                readOnly
-                                                type="text"
-                                                value={formData.employeeId}
-                                                onChange={(e) => handleInputChange('employeeId', e.target.value)}
-                                                className=""
-                                            />
-                                            {/* <p className="text-xs text-gray-500 mt-1">Optional - auto-generated if empty</p> */}
-                                        </div>
-                                        <div>
-                                            <label className="block text-sm font-medium text-primary-900/90 mb-2">
-                                                Date of Birth
-                                            </label>
-                                            <div className="relative">
-                                                <Input
-                                                    type="date"
-                                                    value={formData.dateOfBirth}
-                                                    onChange={(e) => handleInputChange('dateOfBirth', e.target.value)}
-                                                    className=""
-                                                />
-                                                <Calendar className="absolute right-3 top-2.5 w-4 h-4 text-gray-400 pointer-events-none" />
-                                            </div>
-                                            <p className="text-xs text-gray-500 mt-1">Optional - for HR records</p>
-                                        </div>
-                                    </div>
-
-
-                                </div>
-
-                            </div>
-
-                        </ModalBody>
-                        <ModalFooter>
-                            <Button color='danger' variant='light' className='' onPress={updateModalDisclosure.onClose}>
-                                Cancel
-                            </Button>
-                            <Button color='primary' className='text-background' onPress={handleUpdateUser}>
-                                Add
-                            </Button>
-                        </ModalFooter>
-                    </>
-                )}
-            </ModalContent>
-        </Modal>
-
-
-    )
-}
-
-
 

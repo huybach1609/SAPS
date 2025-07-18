@@ -1,5 +1,5 @@
 import { apiUrl } from '@/config/base';
-import { ParkingSessionStatus } from '@/pages/ParkingLotOwner/ParkingHistory/HistoryManagement/ParkingHistory';
+import { ParkingSessionStatus } from '@/types/ParkingSession';
 import { PaginationInfo } from '@/types/Whitelist';
 import axios from 'axios';
 

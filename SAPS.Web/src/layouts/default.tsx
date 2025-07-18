@@ -1,11 +1,10 @@
 import { useState, useEffect } from "react";
-import { Link } from "@heroui/link";
-import { Button, Select, SelectItem } from "@heroui/react";
+import { Button, Select, SelectItem, Spinner } from "@heroui/react";
 import { Menu, Building2 } from "lucide-react";
 import { SideBar } from "@/components/layout/sidebar";
 import { useParkingLot } from "@/pages/ParkingLotOwner/ParkingLotContext";
 import { useAuth } from "@/services/auth/AuthContext";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 export default function DefaultLayout({
   children,
@@ -17,7 +16,7 @@ export default function DefaultLayout({
   className?: string;
 }) {
 
-  var navigate = useNavigate();
+  // var navigate = useNavigate();
 
   // Initialize state from localStorage
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
@@ -27,47 +26,57 @@ export default function DefaultLayout({
 
   const { user } = useAuth();
 
-
-
   // Only use parking lot context if user is a parking lot owner
   const isParkingLotOwner = user?.role === 'parkinglotowner';
 
-  // Create a component that safely uses the parking lot context
-  const ParkingLotSelector = () => {
-    if (!isParkingLotOwner) return null;
-    
-    try {
-      const parkingLotContext = useParkingLot();
-      const { parkingLots, selectedParkingLotId, setSelectedParkingLotId, loading } = parkingLotContext;
-      
-      return (
-        <div className="flex items-center gap-2">
-          <Select
-            aria-label="Select parking lot"
-            placeholder="Select parking lot"
-            selectedKeys={selectedParkingLotId ? [selectedParkingLotId] : []}
-            onSelectionChange={(keys) => {
-              const selectedKey = Array.from(keys)[0] as string;
-              if (selectedKey) {
-                setSelectedParkingLotId(selectedKey);
-              }
-            }}
-            className="w-64"
-            isDisabled={loading}
-            startContent={<Building2 size={16} />}
-          >
-            {parkingLots.map((parkingLot) => (
-              <SelectItem key={parkingLot.id}>
-                {parkingLot.name}
-              </SelectItem>
-            ))}
-          </Select>
-        </div>
-      );
-    } catch (error) {
-      // If ParkingLotProvider is not available, don't render the selector
-      return null;
+  // Conditionally use the parking lot hook
+  let parkingLotData = null;
+  let parkingLotError = false;
+
+  try {
+    // Only call the hook if the user is a parking lot owner
+    if (isParkingLotOwner) {
+      parkingLotData = useParkingLot();
     }
+  } catch (error) {
+    console.error('Error accessing parking lot context:', error);
+    parkingLotError = true;
+  }
+
+  // Extract parking lot data safely
+  const parkingLots = parkingLotData?.parkingLots || [];
+  const selectedParkingLotId = parkingLotData?.selectedParkingLotId || null;
+  const setSelectedParkingLotId = parkingLotData?.setSelectedParkingLotId || (() => {});
+  const parkingLotLoading = parkingLotData?.loading || false;
+
+  // Create a component that safely renders the parking lot selector
+  const ParkingLotSelector = () => {
+    if (!isParkingLotOwner || parkingLotError) return null;
+    
+    return (
+      <div className="flex items-center gap-2">
+        <Select
+          aria-label="Select parking lot"
+          placeholder="Select parking lot"
+          selectedKeys={selectedParkingLotId ? [selectedParkingLotId] : []}
+          onSelectionChange={(keys) => {
+            const selectedKey = Array.from(keys)[0] as string;
+            if (selectedKey) {
+              setSelectedParkingLotId(selectedKey);
+            }
+          }}
+          className="w-64"
+          isDisabled={parkingLotLoading}
+          startContent={<Building2 size={16} />}
+        >
+          {parkingLots.map((parkingLot) => (
+            <SelectItem key={parkingLot.id}>
+              {parkingLot.name}
+            </SelectItem>
+          ))}
+        </Select>
+      </div>
+    );
   };
 
   // Save state to localStorage whenever it changes
@@ -79,12 +88,11 @@ export default function DefaultLayout({
     setIsSidebarOpen(!isSidebarOpen);
   }
 
-
-
   return (
     <div className="relative flex h-screen">
       {/* Sidebar */}
       <SideBar isOpen={isSidebarOpen} />
+      
       {/* Main Content Area */}
       <div className="flex flex-col flex-1">
         {/* Top Bar with Toggle Button */}
@@ -131,6 +139,17 @@ export default function DefaultLayout({
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
+
+      {/* Full Screen Loading Overlay for Parking Lot Owner */}
+      {isParkingLotOwner && parkingLotLoading && !parkingLotError && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="flex flex-col items-center">
+            <Spinner size="lg" />
+            <span className="mt-4 text-white text-lg font-semibold">Loading...</span>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

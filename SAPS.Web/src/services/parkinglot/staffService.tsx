@@ -2,7 +2,7 @@ import { apiUrl } from '@/config/base';
 import { User } from '@/types/User';
 import { PaginationInfo } from '@/types/Whitelist';
 import axios from 'axios';
-import { AddStaffFormRequest } from './StaffManagement';
+import { AddStaffFormRequest } from '../../pages/ParkingLotOwner/StaffManagement/StaffManagement';
 
 
 // Helper function to get auth headers
@@ -22,6 +22,7 @@ export async function fetchStaffListStatus(parkingLotId: string) {
         throw new Error('Failed to fetch staff list status');
     }
 }
+
 export interface PaginatedStafflistResponse {
     data: User[];
     pagination: PaginationInfo;
@@ -96,3 +97,16 @@ export const fetchStaffList = async (
         throw error;
     }
 };
+
+// Fetch staff detail by parkingLotId and staffId
+export async function fetchStaffDetail(parkingLotId: string, staffId: string) {
+    if (!staffId || !parkingLotId) throw new Error('Staff ID and Parking Lot ID are required');
+    try {
+        const response = await axios.get(`${apiUrl}/api/Staff/${parkingLotId}/${staffId}`, {
+            headers: getAuthHeaders()
+        });
+        return response.data;
+    } catch (error) {
+        throw new Error('Error fetching staff details');
+    }
+}

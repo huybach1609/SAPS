@@ -11,7 +11,7 @@ import ErrorPage from "@/pages/ErrorPage";
 import LoginPage from "./pages/Auth/Login";
 import OwnerDashboard from "./pages/ParkingLotOwner/Home/OwnerDashboard";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
-import Whitelist from "./pages/ParkingLotOwner/Whitelist/WhiteList";
+import Whitelist from "./pages/ParkingLotOwner/Whitelist/WhiteListManagement";
 import IncidentReports from "./pages/ParkingLotOwner/IncidentReports/IncidentReports";
 import ParkingHistory from "./pages/ParkingLotOwner/ParkingHistory/HistoryManagement/ParkingHistory";
 import StaffManagement from "./pages/ParkingLotOwner/StaffManagement/StaffManagement";
