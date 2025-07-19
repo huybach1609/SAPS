@@ -23,14 +23,8 @@ export default function StaffManagement() {
 
     // loading for staff list
     const [loading, setLoading] = useState(true);
-    // search for staff 
-    // const [searchTerm, setSearchTerm] = useState('');
-    // search results for add staff
-    // const [searchResults, setSearchResults] = useState<User[]>([]);
-
     // user selected for add to 
-    const [selectedUser, setSelectedUser] = useState<User | null>(null);
-
+    const [selectedUser, setSelectedUser] = useState<User | null>(null)
     // expiry date for input modal
     const [expiryDate, setExpiryDate] = useState('');
 
@@ -115,14 +109,6 @@ export default function StaffManagement() {
         loadStaffList();
     }, [selectedParkingLot?.id, currentPage, statusFilter]);
 
-    // useEffect(() => {
-    //     const timeoutId = setTimeout(() => {
-    //         handleSearch(searchTerm);
-    //     }, 300);
-
-    //     return () => clearTimeout(timeoutId);
-    // }, [searchTerm]);
-
     const formatDateForInput = (isoString: string) => {
         if (!isoString) return '';
         return isoString.split('T')[0]; // Gets just the yyyy-MM-dd part
@@ -134,9 +120,7 @@ export default function StaffManagement() {
         setCurrentPage(1);
         loadStaffList();
     }
-    useEffect(() => {
-        console.log(selectedUser);
-    }, [selectedUser]);
+
 
     return (
         <DefaultLayout title="Staff List">
@@ -215,21 +199,6 @@ export default function StaffManagement() {
                         >
                             Add Staff
                         </Button>
-
-                        {/* 
-                        <ButtonGroup isDisabled={selectedUser === null}>
-                            <Button color='primary' className='text-background' size='sm' startContent={<ClipboardList size={16} />}
-                                onPress={() => navigate(`/owner/staff/${parkingLot?.id}/${selectedUser?.staffProfile?.staffId}`)}>Detail</Button>
-                            <Button color='secondary' className='text-background' size='sm'
-                                onPress={() => updateModalDisclosure.onOpen()}
-                                startContent={<Edit2 size={16} />}>Edit</Button>
-                            <Button color='danger' className='text-background' size='sm' startContent={
-                                <Trash2 size={16} />
-                            }
-                                onPress={() => handleRemoveFromStaffList(selectedUser?.staffProfile?.staffId || '')}
-                            >Deactivate</Button>
-                        </ButtonGroup> */}
-
                     </div>
 
                 </CardBody>
@@ -353,9 +322,6 @@ type StaffListTableProps = {
     handleRemoveFromStaffList: (staffId: string) => void;
 };
 
-
-
-
 function StaffListTable({ staffList, selectUser, setSelectUser, parkingLot, updateModalDisclosure, handleRemoveFromStaffList }: StaffListTableProps) {
     // Example: useEffect to do something when selectUser changes
     const navigate = useNavigate();
@@ -390,7 +356,7 @@ function StaffListTable({ staffList, selectUser, setSelectUser, parkingLot, upda
                         Email & Phone
                     </TableColumn>
                     <TableColumn key="createdAt" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Created Date
+                        Start Date
                     </TableColumn>
                     <TableColumn key="status" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Status

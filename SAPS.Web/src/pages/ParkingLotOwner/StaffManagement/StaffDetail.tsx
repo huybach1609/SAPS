@@ -132,7 +132,7 @@ const StaffDetailScreen = () => {
                             <div className="flex items-center space-x-3">
                                 <Calendar className="w-4 h-4 text-gray-400" />
                                 <div>
-                                    <p className="text-sm text-gray-500">Created At</p>
+                                    <p className="text-sm text-gray-500">Start Date</p>
                                     <p className="text-gray-900 font-medium">{formatDate((staffData?.createdAt) ? staffData?.createdAt : "")}</p>
                                 </div>
                             </div>
