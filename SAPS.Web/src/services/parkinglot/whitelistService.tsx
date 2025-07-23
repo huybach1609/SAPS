@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { apiUrl } from '@/config/base';
 import type { Whitelist, PaginatedWhitelistResponse, WhitelistStatus } from '@/types/Whitelist';
+import { User } from '@/types/User';
 
 // Helper function to get auth headers
 const getAuthHeaders = () => ({
@@ -119,7 +120,7 @@ export const fetchWhitelistStatus = async (parkingLotId: string): Promise<Whitel
 };
 
 // Search whitelist entries by user info
-export const searchWhitelist = async (searchTerm: string, parkingLotId?: string): Promise<Whitelist[]> => {
+export const searchUser = async (searchTerm: string, parkingLotId?: string): Promise<User[]> => {
     try {
         const url =
             `${apiUrl}/api/whitelist/${parkingLotId}/search?q=${encodeURIComponent(searchTerm)}`;

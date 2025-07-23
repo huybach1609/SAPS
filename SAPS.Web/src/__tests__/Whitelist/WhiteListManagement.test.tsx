@@ -1,61 +1,120 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { vi, describe, it, expect, beforeEach } from "vitest";
-import { MemoryRouter, Route, Routes } from "react-router-dom";
-import { ToastProvider } from "@heroui/react";
+// __tests__/WhiteListManagement.test.tsx
+import { render, screen, waitFor } from '@testing-library/react';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { WhitelistManagement } from '@/pages/ParkingLotOwner/Whitelist/WhiteListManagement';
+import * as ParkingLotContext from '../../pages/ParkingLotOwner/ParkingLotContext';
+import * as whitelistService from '@/services/parkinglot/whitelistService';
+import { ParkingLot } from '@/types/ParkingLot';
+import { PaginatedWhitelistResponse } from '@/types/Whitelist';
 
-import Whitelist from "@/pages/ParkingLotOwner/Whitelist/WhiteListManagement";
-import * as whitelistService from "@/services/parkinglot/whitelistService";
-import { useParkingLot } from "@/pages/ParkingLotOwner/ParkingLotContext";
-import { AuthProvider } from "@/services/auth/AuthContext";
-// import { useToast } from "@heroui/react";
-
-// Mock the useParkingLot hook
-vi.mock("@/pages/ParkingLotOwner/ParkingLotContext", () => ({
-  useParkingLot: vi.fn(),
+vi.mock('../../pages/ParkingLotOwner/ParkingLotContext');
+vi.mock('@/services/parkinglot/whitelistService');
+vi.mock('./WhiteListStatus', () => ({
+  default: () => <div>Whitelist Status</div>
+}));
+vi.mock('./WhiteListModal', () => ({
+  default: () => <div>Add File Modal</div>
+}));
+vi.mock('./AddUserModal', () => ({
+  default: () => <div>Add User Modal</div>
+}));
+vi.mock('./EditEntryModal', () => ({
+  default: () => <div>Edit Entry Modal</div>
 }));
 
-// Mock the service functions
-vi.mock("@/services/parkinglot/whitelistService", () => ({
-  fetchWhitelist: vi.fn(),
-  addToWhitelist: vi.fn(),
-  removeFromWhitelist: vi.fn(),
-  updateWhitelistEntry: vi.fn(),
-  fetchWhitelistStatus: vi.fn(),
-  searchWhitelist: vi.fn(),
-}));
+vi.mock('@/layouts/default', () => {
+  return {
+    default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>
+  }
+})
 
-vi.mock("@/hooks/useToast", () => ({
-  addToast: vi.fn(),
-}));
 
-describe("Whitelist Management", () => {
-  const mockParkingLot = { id: "lot1" };
+
+
+
+const mockParkingLotContext = vi.mocked(ParkingLotContext);
+const mockWhitelistService = vi.mocked(whitelistService);
+
+describe('WhitelistManagement', () => {
+  const mockParkingLot: ParkingLot = {
+    id: 'parking-lot-123',
+    name: 'Test Parking Lot',
+    address: '123 Main St',
+    totalParkingSlot: 100,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    parkingLotOwnerId: 'parking-lot-owner-123',
+    status: 'Active'
+  };
 
   beforeEach(() => {
-    // @ts-ignore
-    useParkingLot.mockReturnValue({
+    vi.clearAllMocks();
+
+    mockParkingLotContext.useParkingLot.mockReturnValue({
       selectedParkingLot: mockParkingLot,
       loading: false,
+      parkingLots: [],
+      selectedParkingLotId: null,
+      setSelectedParkingLotId: vi.fn(),
+      refresh: vi.fn()
     });
 
-    // Reset all mocks before each test
-    vi.clearAllMocks();
+    mockWhitelistService.fetchWhitelist.mockResolvedValue({
+      data: [],
+      pagination: {
+        pageSize: 10,
+        currentPage: 1,
+        totalPages: 1,
+        totalItems: 0,
+        hasPreviousPage: false,
+        hasNextPage: false
+      }
+    });
   });
 
-  it("renders Whitelist table and controls", async () => {
-    (whitelistService.fetchWhitelist as any).mockResolvedValue({
+  it('should render main components', async () => {
+    render(
+      <WhitelistManagement />
+    );
+
+    expect(screen.getByText('Whitelist Status')).toBeInTheDocument();
+    expect(screen.getByText('Search & Add User')).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByText('No users in whitelist yet.')).toBeInTheDocument();
+    });
+  });
+
+  it('should show loading spinner while data is being fetched', () => {
+    mockWhitelistService.fetchWhitelist.mockImplementation(() =>
+      new Promise(() => { }) // Never resolves
+    );
+
+    render(<WhitelistManagement />);
+
+    expect(screen.getByTestId('spinner')).toBeInTheDocument();
+  });
+
+  it('should display whitelist table when data is available', async () => {
+    const mockData: PaginatedWhitelistResponse = {
       data: [
         {
-          parkingLotId: "lot1",
-          clientId: "user1",
+          clientId: 'user-1',
+          parkingLotId: 'parking-lot-123',
+          addedDate: '2023-01-01T00:00:00Z',
           client: {
-            fullName: "John Doe",
-            email: "john@example.com",
-            profileImageUrl: "",
-          },
-          addedDate: new Date().toISOString(),
-          expiredDate: null,
-        },
+            id: 'client-123',
+            fullName: 'John Doe',
+            email: 'john.doe@example.com',
+            role: 'admin',
+            phone: '1234567890',
+            address: '123 Main St',
+            profileImageUrl: 'https://example.com/profile.jpg',
+            isActive: true,
+            createdAt: '2024-01-01T00:00:00.000Z',
+            updatedAt: '2024-01-01T00:00:00.000Z',
+          }
+        }
       ],
       pagination: {
         currentPage: 1,
@@ -63,53 +122,46 @@ describe("Whitelist Management", () => {
         totalItems: 1,
         hasPreviousPage: false,
         hasNextPage: false,
-      },
-    });
+        pageSize: 10
+      }
+    };
+
+    mockWhitelistService.fetchWhitelist.mockResolvedValue(mockData);
 
     render(
-      <AuthProvider>
-        <MemoryRouter initialEntries={["/owner/whitelist"]}>
-          <Routes>
-            <Route element={<Whitelist />} path="/owner/whitelist" />
-          </Routes>
-        </MemoryRouter>
-      </AuthProvider>,
+      <WhitelistManagement />
     );
 
-    // Wait for table to appear
-    expect(await screen.findByText("Whitelist")).toBeInTheDocument();
-    expect(await screen.findByText("John Doe")).toBeInTheDocument();
-    expect(screen.getByText("Add User")).toBeInTheDocument();
-    expect(screen.getByText("Add File")).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(screen.getByText('John Doe')).toBeInTheDocument();
+      expect(screen.getByText('john.doe@example.com')).toBeInTheDocument();
+    });
   });
 
-  it("calls fetchWhitelist on mount", async () => {
-    (whitelistService.fetchWhitelist as any).mockResolvedValue({
+  it('should handle pagination correctly', async () => {
+    const mockDataWithPagination: PaginatedWhitelistResponse = {
       data: [],
       pagination: {
         currentPage: 1,
-        totalPages: 1,
-        totalItems: 0,
+        pageSize: 10,
+        totalPages: 3,
+        totalItems: 18,
         hasPreviousPage: false,
-        hasNextPage: false,
-      },
-    });
+        hasNextPage: true
+      }
+    };
+
+    mockWhitelistService.fetchWhitelist.mockResolvedValue(mockDataWithPagination);
 
     render(
-      <AuthProvider>
-        <MemoryRouter initialEntries={["/owner/whitelist"]}>
-          <Routes>
-            <Route element={<Whitelist />} path="/owner/whitelist" />
-          </Routes>
-        </MemoryRouter>
-      </AuthProvider>,
+      <WhitelistManagement />
     );
+
     await waitFor(() => {
-      expect(whitelistService.fetchWhitelist).toHaveBeenCalledWith(
-        "lot1",
-        6,
-        1,
-      );
+      expect(screen.getByText('Showing page 1 of 3 (18 total items)')).toBeInTheDocument();
+      expect(screen.getByText('Previous')).toBeInTheDocument();
+      expect(screen.getByText('Next')).toBeInTheDocument();
     });
   });
 });

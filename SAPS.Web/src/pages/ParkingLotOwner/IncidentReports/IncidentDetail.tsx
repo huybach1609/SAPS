@@ -7,10 +7,7 @@ import {
   User,
   Calendar,
   Clock,
-  FileImage,
-  File,
-  Video,
-  HelpCircle,
+
   FolderOpen,
   FileSearch,
   CheckCircle,
@@ -38,11 +35,7 @@ import {
 import { formatDate, formatTime } from "@/components/utils/stringUtils";
 
 const IncidentDetail: React.FC = () => {
-  // /owner/incidents/${parkingLot?.id}/${inc.id}
-
   const { parkingLotId, incidentId } = useParams();
-
-  console.log(parkingLotId, incidentId);
 
   const [incident, setIncident] = useState<IncidentReport | null>(null);
   const [loading, setLoading] = useState(true);
@@ -153,18 +146,7 @@ const IncidentDetail: React.FC = () => {
     }
   };
 
-  const getFileTypeIcon = (fileType: FileType) => {
-    switch (fileType) {
-      case FileType.Image:
-        return <FileImage className="w-5 h-5" />;
-      case FileType.Document:
-        return <File className="w-5 h-5" />;
-      case FileType.Video:
-        return <Video className="w-5 h-5" />;
-      default:
-        return <HelpCircle className="w-5 h-5" />;
-    }
-  };
+  
 
   const formatFileSize = (bytes: number): string => {
     if (bytes < 1024) return bytes + " B";
@@ -203,7 +185,6 @@ const IncidentDetail: React.FC = () => {
       console.log(`Status changed to: ${getStatusText(newStatus)}`);
     } catch (error) {
       console.error("Error updating incident status:", error);
-      // You might want to show a toast notification here
     }
   };
 

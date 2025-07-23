@@ -11,7 +11,7 @@ import ErrorPage from "@/pages/ErrorPage";
 import LoginPage from "./pages/Auth/Login";
 import OwnerDashboard from "./pages/ParkingLotOwner/Home/OwnerDashboard";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
-import Whitelist from "./pages/ParkingLotOwner/Whitelist/WhiteListManagement";
+import { WhitelistManagement } from "./pages/ParkingLotOwner/Whitelist/WhiteListManagement";
 import IncidentReports from "./pages/ParkingLotOwner/IncidentReports/IncidentReports";
 import ParkingHistory from "./pages/ParkingLotOwner/ParkingHistory/HistoryManagement/ParkingHistory";
 import StaffManagement from "./pages/ParkingLotOwner/StaffManagement/StaffManagement";
@@ -169,7 +169,7 @@ function App() {
           <Route path="history/:parkingLotId/:sessionId" element={<ParkingHistoryDetail />} />
           <Route path="incidents" element={<IncidentReports />} />
           <Route path="incidents/:parkingLotId/:incidentId" element={<IncidentDetail />} />
-          <Route path="whitelist" element={<Whitelist />} />
+          <Route path="whitelist" element={<WhitelistManagement />} />
           <Route path="parking-fee" element={<ParkingFeeManagement />} />
           <Route path="upload-file" element={<UploadFile />} />
         </Route>

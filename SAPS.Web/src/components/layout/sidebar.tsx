@@ -188,12 +188,16 @@ export const SideBar: React.FC<SidebarProps> = ({isOpen}) => {
             animate={{
                 width: isOpen ? 300 : 0,
                 opacity: isOpen ? 1 : 0,
+                // maxWidth: isOpen ? 300: 0,
+                minWidth: isOpen ? 250 : 0,
+
             }}
             transition={{duration: 0.3, ease: 'easeInOut'}}
             className=" 
             bg-foreground text-background border-r border-divider h-full flex flex-col
             p-5 shadow-lg overflow-hidden z-50
             "
+           
         >
             <HeadingBar/>
             <Divider className="bg-border my-4"/>

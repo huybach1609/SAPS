@@ -1,6 +1,6 @@
 import { apiUrl } from "@/config/base";
-import { Modal, ModalBody, ModalContent, ModalHeader, useDisclosure, UseDisclosureProps } from "@heroui/react";
-import { AlertCircle, Check, Download, FileText, Upload } from "lucide-react";
+import { Button, Modal, ModalBody, ModalContent, ModalHeader, useDisclosure, UseDisclosureProps } from "@heroui/react";
+import { AlertCircle, Check, Cross, Download, FileText, Upload } from "lucide-react";
 import { useRef, useState } from "react";
 
 type UploadStatus = 'idle' | 'uploading' | 'success' | 'error';
@@ -114,13 +114,22 @@ export default function AddFileModal({ addFileModalDisclosure, parkingLotId }: {
     };
 
     return (
-        <Modal isOpen={addFileModalDisclosure.isOpen} 
+        <Modal isOpen={addFileModalDisclosure.isOpen} onOpenChange={addFileModalDisclosure.onChange}
             size="4xl"
         >
             <ModalContent>
                 {(onClose) => (
                     <>
-                        <ModalHeader className="flex flex-col gap-1"></ModalHeader>
+                        <ModalHeader className="flex flex-col gap-1">
+                            <Button isIconOnly variant="light" size="sm" onPress={addFileModalDisclosure.onClose}>
+                               <Cross size={16} /> 
+                            </Button>
+                            <h2 className="text-xl font-bold text-gray-900">Upload Whitelist</h2>
+                            <p className="text-gray-600">
+                                Upload a CSV or Excel file containing Citizen IDs to add users to the whitelist.
+                            </p>
+
+                        </ModalHeader>
                         <ModalBody>
                             <div className="border-2 border-dashed border-blue-200 rounded-2xl py-8  mb-2 bg-blue-50/50 transition-all duration-300">
                                 <div

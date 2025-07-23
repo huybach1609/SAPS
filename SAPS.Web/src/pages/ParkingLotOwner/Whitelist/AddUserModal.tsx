@@ -1,7 +1,7 @@
-import { Input, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Spinner } from "@heroui/react";
+import { Input, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Spinner, useDisclosure } from "@heroui/react";
 import { User } from "@/types/User";
 import React, { useState, useEffect } from "react";
-import { searchWhitelist } from "@/services/parkinglot/whitelistService";
+import { searchUser } from "@/services/parkinglot/whitelistService";
 
 interface AddUserModalProps {
   isOpen: boolean;
@@ -19,7 +19,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
   isOpen,
   onOpenChange,
   onAddToWhitelist,
-  parkingLotId,
+  parkingLotId = '',
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState<User[]>([]);
@@ -35,7 +35,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
     const handleSearchUser = async (term: string) => {
       setLoading(true);
       try {
-        const response = await searchWhitelist(term, parkingLotId);
+        const response = await searchUser(term, parkingLotId);
         setSearchResults(response as unknown as User[]);
       } catch (error) {
         console.error("Failed to search users:", error);
@@ -49,15 +49,19 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
       }
     }, 300);
     return () => clearTimeout(timeoutId);
-  }, [searchTerm]);
+  }, [searchTerm, parkingLotId]);
+
+
 
   const handleAdd = async (onClose: () => void) => {
     setError("");
     if (!selectedUser) return;
     const result = await onAddToWhitelist(selectedUser, expiryDate);
+
     if (result) {
       setError(result);
     } else {
+      onOpenChange(false);
       onClose();
       setSearchTerm("");
       setSearchResults([]);
@@ -67,15 +71,15 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
     }
   };
 
-  const handleCancel = (onClose: () => void) => {
-    onClose();
+  const handleCancel = () => {
+    onOpenChange(false);
+    // onClose();
     setSearchTerm("");
     setSearchResults([]);
     setSelectedUser(null);
     setExpiryDate("");
     setError("");
   };
-
   return (
     <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
       <ModalContent>
@@ -98,6 +102,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
                   Search Users
                 </label>
                 <Input
+                  data-testid="input-name-or-email"
                   placeholder="Search by name or email..."
                   type="text"
                   value={searchTerm}
@@ -106,6 +111,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
               </div>
               {/* Search Results */}
               {loading ? (
+                // if loading
                 <div className="flex justify-center items-center mb-4"><Spinner size="sm" /></div>
               ) : searchResults.length > 0 ? (
                 <div className="mb-4 max-h-40 overflow-y-auto border border-gray-200 rounded-md">
@@ -134,10 +140,11 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
               )}
               {/* Expiry Date */}
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="expiryDate" className="block text-sm font-medium text-gray-700 mb-2">
                   Expiry Date (Optional)
                 </label>
                 <Input
+                  id="expiryDate"
                   type="date"
                   value={formatDateForInput(expiryDate)}
                   onChange={(e) => setExpiryDate(e.target.value)}
@@ -146,13 +153,15 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
             </ModalBody>
             <ModalFooter>
               <Button
+                data-testid="button-cancel"
                 color="danger"
                 variant="light"
-                onPress={() => handleCancel(onClose)}
+                onPress={() => handleCancel()}
               >
                 Cancel
               </Button>
               <Button
+                data-testid="button-add-to-whitelist"
                 className="text-background"
                 color="primary"
                 disabled={!selectedUser}
@@ -164,7 +173,7 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
           </>
         )}
       </ModalContent>
-    </Modal>
+    </Modal >
   );
 };
 

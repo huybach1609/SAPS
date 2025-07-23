@@ -12,6 +12,7 @@ interface EditEntryModalProps {
 const formatDateForInput = (isoString: string) => {
   if (!isoString) return "";
   const date = new Date(isoString);
+  if (isNaN(date.getTime())) return ""; 
   return date.toISOString().split("T")[0];
 };
 
@@ -57,6 +58,7 @@ const EditEntryModal: React.FC<EditEntryModalProps> = ({
                     Expiry Date
                   </label>
                   <input
+                    aria-label="Expiry Date"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     type="date"
                     value={expiryDate}
@@ -69,6 +71,7 @@ const EditEntryModal: React.FC<EditEntryModalProps> = ({
                   color="danger"
                   variant="light"
                   onPress={() => {
+                    onOpenChange(false);
                     onClose();
                     setEditingEntry(null);
                     setExpiryDate("");

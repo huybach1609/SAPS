@@ -108,14 +108,14 @@ const ParkingHistory: React.FC = () => {
                     <h2 className=" font-bold">Search & Filter Parking Sessions</h2>
                 </CardHeader>
                 <CardBody className="">
-                    <div className="flex gap-2 items-center justify-between w-full ">
-                        <div className="flex gap-2 items-center w-full">
+                    <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between w-full">
+                        <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center w-full">
                             <Input
                                 type="text"
                                 value={tableSearch}
                                 onChange={e => setTableSearch(e.target.value)}
                                 placeholder="Search by license plate, session ID, or vehicle info..."
-                                className="w-1/2"
+                                className="w-full sm:w-48 lg:w-64"
                                 size="sm"
                                 color='primary'
                                 onKeyDown={e => {
@@ -125,11 +125,10 @@ const ParkingHistory: React.FC = () => {
                                 }}
                             />
                             <DateRangePicker aria-label="date range picker" value={dateRange} onChange={setDateRange}
-                                size="sm" color='primary' className='w-1/2 text-primary-900' />
-
+                                size="sm" color='primary' className='w-full sm:w-48 lg:w-64 text-primary-900' />
 
                             <Select
-                                className="w-1/2"
+                                className="w-full sm:w-48 lg:w-48"
                                 color='primary'
                                 size="sm"
                                 label=""
@@ -153,37 +152,38 @@ const ParkingHistory: React.FC = () => {
                                 </SelectItem>
                             </Select>
 
-                            <Button
-                                size="sm"
-                                onPress={() => handleSearch(tableSearch)}
-                                color='primary'
-                                className="text-background"
-                            >
-                                Search
-                            </Button>
+                            <div className="flex gap-2">
+                                <Button
+                                    size="sm"
+                                    onPress={() => handleSearch(tableSearch)}
+                                    color='primary'
+                                    className="text-background"
+                                >
+                                    Search
+                                </Button>
 
-                            <Button
-                                size="sm"
-                                onPress={() => handleReset()}
-                                color='primary'
-                                className="text-background"
-                                isIconOnly
-                            >
-                                <RefreshCcw size={16} />
-                            </Button>
-
+                                <Button
+                                    size="sm"
+                                    onPress={() => handleReset()}
+                                    color='primary'
+                                    className="text-background"
+                                    isIconOnly
+                                >
+                                    <RefreshCcw size={16} />
+                                </Button>
+                            </div>
                         </div>
 
-                        <ButtonGroup isDisabled={selectedSession === null}>
+                        {/* <ButtonGroup isDisabled={selectedSession === null}>
                             <Button color='primary' className='text-background' size='sm' startContent={<Eye size={16} />}
                                 onPress={() => handleViewSessionDetails(selectedSession?.id || '')}>View Details</Button>
-                        </ButtonGroup>
+                        </ButtonGroup> */}
                     </div>
                 </CardBody>
             </Card>
 
             {/*  Table */}
-            <div className="min-h-[70vh]">
+            <div className="min-h-[70vh] w-full">
                 {(parkingLotLoading || loading) ? (
                     <div className="flex justify-center items-center h-64">
                         <Spinner />
@@ -197,18 +197,19 @@ const ParkingHistory: React.FC = () => {
                         parkingSessions={parkingSessions}
                         selectedSession={selectedSession}
                         setSelectedSession={setSelectedSession}
+                        handleViewSessionDetails={handleViewSessionDetails}
                     />
                 )}
             </div>
 
             {/* Pagination Controls */}
             {pagination && pagination.totalPages > 1 && (
-                <div className="mt-6 flex items-center justify-between">
-                    <div className="text-sm ">
+                <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="text-sm text-center sm:text-left">
                         Showing page {pagination.currentPage} of {pagination.totalPages}
                         ({pagination.totalItems} total items)
                     </div>
-                    <div className="flex space-x-2">
+                    <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
                         <Button
                             onPress={() => {
                                 setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))
@@ -240,9 +241,10 @@ type ParkingHistoryTableProps = {
     parkingSessions: ParkingSession[];
     selectedSession: ParkingSession | null;
     setSelectedSession: React.Dispatch<React.SetStateAction<ParkingSession | null>>;
+    handleViewSessionDetails: (sessionId: string) => void;
 };
 
-function ParkingHistoryTable({ parkingSessions, selectedSession, setSelectedSession }: ParkingHistoryTableProps) {
+function ParkingHistoryTable({ parkingSessions, selectedSession, setSelectedSession, handleViewSessionDetails }: ParkingHistoryTableProps) {
 
     const getStatusBadge = (status: ParkingSessionStatus) => {
         const baseClasses = "px-3 py-1 rounded-full text-sm font-medium";
@@ -259,23 +261,23 @@ function ParkingHistoryTable({ parkingSessions, selectedSession, setSelectedSess
     };
 
     return (
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto w-full">
             <div className="flex justify-between mb-4">
                 <div className='text-lg font-bold'></div>
             </div>
-            <Table aria-label="Parking History Table" className=""
+            <Table aria-label="Parking History Table" className="w-full"
                 color='secondary'
-                selectedKeys={selectedSession ? [selectedSession.id] : []}
-                onSelectionChange={(keys: any) => {
-                    if (typeof keys === 'string') { // Handle "all" selection
-                        setSelectedSession(null);
-                        return;
-                    }
-                    const [selectedId] = keys;
-                    const session = parkingSessions.find((s) => s.id === selectedId);
-                    setSelectedSession(session || null);
-                }}
-                selectionMode="single"
+            // selectedKeys={selectedSession ? [selectedSession.id] : []}
+            // onSelectionChange={(keys: any) => {
+            //     if (typeof keys === 'string') { // Handle "all" selection
+            //         setSelectedSession(null);
+            //         return;
+            //     }
+            //     const [selectedId] = keys;
+            //     const session = parkingSessions.find((s) => s.id === selectedId);
+            //     setSelectedSession(session || null);
+            // }}
+            // selectionMode="single"
             >
                 <TableHeader className="">
                     <TableColumn key="sessionId" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -299,9 +301,13 @@ function ParkingHistoryTable({ parkingSessions, selectedSession, setSelectedSess
                     <TableColumn key="status" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Status
                     </TableColumn>
+                    <TableColumn key="action" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Action
+                    </TableColumn>
                 </TableHeader>
                 <TableBody>
                     {parkingSessions.map((session, index) => {
+
                         return (
                             <TableRow key={`${session.id}`}>
                                 {/* session id */}
@@ -354,6 +360,11 @@ function ParkingHistoryTable({ parkingSessions, selectedSession, setSelectedSess
                                     <span className={getStatusBadge(session.status)}>
                                         {session.status === ParkingSessionStatus.CURRENTLY_PARKED ? 'Currently Parked' : session.status === ParkingSessionStatus.COMPLETED ? 'Completed' : 'Payment Pending'}
                                     </span>
+                                </TableCell>
+                                {/* action */}
+                                <TableCell className="px-6 py-4 whitespace-nowrap">
+                                    <Button aria-label='view details' color='secondary' className='text-background' size='sm'
+                                        onPress={() => handleViewSessionDetails(session.id)} isIconOnly><Eye size={16} /></Button>
                                 </TableCell>
                             </TableRow>
                         );
