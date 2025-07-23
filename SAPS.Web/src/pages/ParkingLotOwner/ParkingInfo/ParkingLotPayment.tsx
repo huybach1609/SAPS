@@ -30,11 +30,11 @@ export default function ParkingLotPayment() {
   const [paymentStatistics, setPaymentStatistics] = useState<PaymentStatistics | null>(null);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
-  const { parkingLot } = useParkingLot();
+  const { selectedParkingLot } = useParkingLot();
 
   useEffect(() => {
     const fetchPaymentData = async () => {
-      if (!user?.id || !parkingLot?.id) return;
+      if (!user?.id || !selectedParkingLot?.id) return;
 
       try {
         setLoading(true);
@@ -55,7 +55,7 @@ export default function ParkingLotPayment() {
     };
 
     fetchPaymentData();
-  }, [user?.id, parkingLot?.id]);
+      }, [user?.id, selectedParkingLot?.id]);
 
   if (loading) {
     return (

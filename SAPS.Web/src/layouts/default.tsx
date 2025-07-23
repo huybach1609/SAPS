@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
-import { Link } from "@heroui/link";
-import { Button } from "@heroui/react";
-import { Menu } from "lucide-react";
+import { Button, Select, SelectItem, Spinner } from "@heroui/react";
+import { Menu, Building2 } from "lucide-react";
 import { SideBar } from "@/components/layout/sidebar";
+import { useParkingLot } from "@/pages/ParkingLotOwner/ParkingLotContext";
+import { useAuth } from "@/services/auth/AuthContext";
+// import { useNavigate } from "react-router-dom";
 
 interface DefaultLayoutProps {
   children: React.ReactNode;
@@ -21,6 +23,61 @@ export default function DefaultLayout({
     return saved ? JSON.parse(saved) : false;
   });
 
+  const { user } = useAuth();
+
+  // Only use parking lot context if user is a parking lot owner
+  const isParkingLotOwner = user?.role === 'parkinglotowner';
+
+  // Conditionally use the parking lot hook
+  let parkingLotData = null;
+  let parkingLotError = false;
+
+  try {
+    // Only call the hook if the user is a parking lot owner
+    if (isParkingLotOwner) {
+      parkingLotData = useParkingLot();
+    }
+  } catch (error) {
+    console.error('Error accessing parking lot context:', error);
+    parkingLotError = true;
+  }
+
+  // Extract parking lot data safely
+  const parkingLots = parkingLotData?.parkingLots || [];
+  const selectedParkingLotId = parkingLotData?.selectedParkingLotId || null;
+  const setSelectedParkingLotId = parkingLotData?.setSelectedParkingLotId || (() => {});
+  const parkingLotLoading = parkingLotData?.loading || false;
+
+  // Create a component that safely renders the parking lot selector
+  const ParkingLotSelector = () => {
+    if (!isParkingLotOwner || parkingLotError) return null;
+    
+    return (
+      <div className="flex items-center gap-2">
+        <Select
+          aria-label="Select parking lot"
+          placeholder="Select parking lot"
+          selectedKeys={selectedParkingLotId ? [selectedParkingLotId] : []}
+          onSelectionChange={(keys) => {
+            const selectedKey = Array.from(keys)[0] as string;
+            if (selectedKey) {
+              setSelectedParkingLotId(selectedKey);
+            }
+          }}
+          className="w-64"
+          isDisabled={parkingLotLoading}
+          startContent={<Building2 size={16} />}
+        >
+          {parkingLots.map((parkingLot) => (
+            <SelectItem key={parkingLot.id}>
+              {parkingLot.name}
+            </SelectItem>
+          ))}
+        </Select>
+      </div>
+    );
+  };
+
   // Save state to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem("sidebarOpen", JSON.stringify(isSidebarOpen));
@@ -37,16 +94,21 @@ export default function DefaultLayout({
       {/* Main Content Area */}
       <div className="flex flex-col flex-1">
         {/* Top Bar with Toggle Button */}
-        <div className="flex items-center p-4 border-b border-divider">
-          <Button
-            isIconOnly
-            variant="light"
-            onPress={toggleSidebar}
-            aria-label="Toggle sidebar"
-          >
-            <Menu size={20} />
-          </Button>
-          <h1 className="ml-4 text-lg font-semibold">{title}</h1>
+        <div className="flex items-center justify-between p-4 border-b border-divider">
+          <div className="flex items-center">
+            <Button
+              isIconOnly
+              variant="light"
+              onPress={toggleSidebar}
+              aria-label="Toggle sidebar"
+            >
+              <Menu size={20} />
+            </Button>
+            <h1 className="ml-4 text-lg font-semibold">{title}</h1>
+          </div>
+
+          {/* Parking Lot Selector - Only show for parking lot owners */}
+          <ParkingLotSelector />
         </div>
 
         {/* Main Content */}
@@ -73,6 +135,17 @@ export default function DefaultLayout({
           onClick={() => setIsSidebarOpen(false)}
         />
       )}
+
+      {/* Full Screen Loading Overlay for Parking Lot Owner */}
+      {isParkingLotOwner && parkingLotLoading && !parkingLotError && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+          <div className="flex flex-col items-center">
+            <Spinner size="lg" />
+            <span className="mt-4 text-white text-lg font-semibold">Loading...</span>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

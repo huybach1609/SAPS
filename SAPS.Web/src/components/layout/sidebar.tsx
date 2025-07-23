@@ -123,18 +123,49 @@ const parkingLotOwnerItems: NavigationItem[] = [
 ];
 
 const HeadingBar: React.FC = () => {
-  const { user, logout } = useAuth();
-  return (
-    <div className="flex justify-between items-center my-4">
-      <div className="flex items-center gap-2">
-        <img
-          src={blankProfile}
-          alt="Profile"
-          className="w-12 h-12 rounded-full m-2"
-        />
-        <div>
-          <h2 className="text-medium font-bold ">{user?.fullName}</h2>
-          <h2 className="text-xs ">Head Administrator</h2>
+    const {user, logout} = useAuth();
+    return (
+        <div className="flex justify-between items-center my-4">
+            <div className="flex items-center gap-2">
+                <img src={blankProfile} alt="Profile" className="w-12 h-12 rounded-full m-2"/>
+                <div>
+                    <h2 className="text-medium font-bold ">{user?.fullName}</h2>
+                    <h2 className="text-xs ">Head Administrator</h2>
+                </div>
+            </div>
+
+            <Dropdown>
+                <DropdownTrigger>
+                    <Button className="bg-transparent text-background " isIconOnly><EllipsisVertical/></Button>
+                </DropdownTrigger>
+                <DropdownMenu className="dark">
+                    <DropdownItem key="settings" textValue="Settings ">
+
+                        <button
+                            className="flex items-center gap-2 w-full text-left transition-opacity hover:opacity-80 "
+                        ><Settings size={16}/>Settings
+                        </button>
+
+
+                    </DropdownItem>
+
+
+                    <DropdownItem textValue="Change Themes" key="changeThemes">
+                        <ThemeSwitch
+                            variant="button"
+                            showLabel={true}
+                            className="w-full"
+                        />
+                    </DropdownItem>
+                    <DropdownItem textValue="Logout" key="logout">
+                        <button
+                            className="flex items-center gap-2 w-full text-left transition-opacity hover:opacity-80 "
+                            onClick={logout}
+                        ><LogOut size={16}/>Logout
+                        </button>
+                    </DropdownItem>
+                </DropdownMenu>
+            </Dropdown>
         </div>
       </div>
 
@@ -170,30 +201,33 @@ const HeadingBar: React.FC = () => {
   );
 };
 
-export const SideBar: React.FC<SidebarProps> = ({ isOpen, role }) => {
-  const { user } = useAuth();
-  // Ưu tiên prop role, fallback user.role
-  const currentRole = role || user?.role;
-  return (
-    <motion.div
-      initial={false}
-      animate={{
-        width: isOpen ? 300 : 0,
-        opacity: isOpen ? 1 : 0,
-      }}
-      transition={{ duration: 0.3, ease: "easeInOut" }}
-      className=" 
+export const SideBar: React.FC<SidebarProps> = ({isOpen}) => {
+    const {user} = useAuth();
+    return (
+        <motion.div
+            initial={false}
+            animate={{
+                width: isOpen ? 300 : 0,
+                opacity: isOpen ? 1 : 0,
+                // maxWidth: isOpen ? 300: 0,
+                minWidth: isOpen ? 250 : 0,
+
+            }}
+            transition={{duration: 0.3, ease: 'easeInOut'}}
+            className=" 
             bg-foreground text-background border-r border-divider h-full flex flex-col
-            p-5 shadow-lg overflow-hidden
+            p-5 shadow-lg overflow-hidden z-50
             "
-    >
-      <HeadingBar />
-      <Divider className="bg-border my-4" />
-      {currentRole === "parkinglotowner" ? (
-        <NavigationList items={parkingLotOwnerItems} />
-      ) : (
-        <NavigationList items={adminItems} />
-      )}
-    </motion.div>
-  );
+           
+        >
+            <HeadingBar/>
+            <Divider className="bg-border my-4"/>
+            {user?.role === OWNER_ROLE ?
+                <NavigationList items={parkingLotOwnerItems}/> :
+                <NavigationList items={adminItems}/>
+            }
+            {/* // {role === 'parkinglotowner' ? <ParkingLotOwnerList /> : <AdminList />} */}
+        </motion.div>
+
+    );
 };

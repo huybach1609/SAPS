@@ -10,6 +10,8 @@ import AboutPage from "@/pages/about";
 import ErrorPage from "@/pages/ErrorPage";
 import LoginPage from "./pages/Auth/Login";
 import OwnerDashboard from "./pages/ParkingLotOwner/Home/OwnerDashboard";
+import AdminDashboard from "./pages/Admin/AdminDashboard";
+import { WhitelistManagement } from "./pages/ParkingLotOwner/Whitelist/WhiteListManagement";
 import DefaultLayout from "./layouts/default";
 import AdminDashboardPage from "./pages/Admin/AdminDashboardPage";
 import Whitelist from "./pages/ParkingLotOwner/Whitelist/WhiteList";
@@ -29,6 +31,9 @@ import StaffDetailScreen from "./pages/ParkingLotOwner/StaffManagement/StaffDeta
 import ParkingLotOwnerList from "./pages/Admin/ParkingLotOwner/ParkingLotOwnerList";
 import ParkingLotOwnerDetails from "./pages/Admin/ParkingLotOwner/ParkingLotOwnerDetails";
 import RequestDetails from "./pages/Admin/Requests/RequestDetails";
+import UploadFile from "./pages/ParkingLotOwner/UploadFile";
+import ParkingHistoryDetail from "./pages/ParkingLotOwner/ParkingHistory/HistoryManagement/ParkingHistoryDetail";
+import IncidentDetail from "./pages/ParkingLotOwner/IncidentReports/IncidentDetail";
 
 // Protected Route Component
 interface ProtectedRouteProps {
@@ -111,7 +116,7 @@ function App() {
     <AuthProvider>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<IndexPage />} />
+        <Route path="/" element={<RoleBasedRedirect />} />
         <Route path="/docs" element={<DocsPage />} />
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/blog" element={<BlogPage />} />
@@ -127,6 +132,17 @@ function App() {
           }
         />
 
+        {/* Public landing page - only for unauthenticated users */}
+        <Route
+          path="/landing"
+          element={
+            <PublicRoute>
+              <IndexPage />
+            </PublicRoute>
+          }
+        />
+
+        {/* Protected Routes */}
         {/* Admin Routes */}
         <Route
           path="/admin"
@@ -174,9 +190,12 @@ function App() {
             element={<StaffDetailScreen />}
           />
           <Route path="history" element={<ParkingHistory />} />
+          <Route path="history/:parkingLotId/:sessionId" element={<ParkingHistoryDetail />} />
           <Route path="incidents" element={<IncidentReports />} />
-          <Route path="whitelist" element={<Whitelist />} />
+          <Route path="incidents/:parkingLotId/:incidentId" element={<IncidentDetail />} />
+          <Route path="whitelist" element={<WhitelistManagement />} />
           <Route path="parking-fee" element={<ParkingFeeManagement />} />
+          <Route path="upload-file" element={<UploadFile />} />
         </Route>
 
         {/* Dashboard redirect route */}

@@ -8,6 +8,12 @@ export interface Whitelist {
     client?: User; // Optional client details
 }
 
+export interface WhitelistStatus {
+    tottalWhitelistUsers: number;
+    activeUser: number;
+    expiringThisWeek: number;
+}
+
 export interface PaginationInfo {
     currentPage: number;
     pageSize: number;
