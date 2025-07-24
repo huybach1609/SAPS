@@ -7,7 +7,6 @@ import {
   User,
   Calendar,
   Clock,
-
   FolderOpen,
   FileSearch,
   CheckCircle,
@@ -27,7 +26,7 @@ import {
   IncidentPriority,
   FileType,
 } from "@/types/IncidentReport";
-import DefaultLayout from "@/layouts/default";
+
 import {
   fetchIncidentById,
   updateIncidentStatus,
@@ -41,7 +40,7 @@ const IncidentDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentStatus, setCurrentStatus] = useState<IncidentStatus | null>(
-    null,
+    null
   );
   const [modalImageInfo, setModalImageInfo] =
     useState<ModalImageInfoContent | null>(null);
@@ -75,21 +74,21 @@ const IncidentDetail: React.FC = () => {
   // Show loading state
   if (loading) {
     return (
-      <DefaultLayout className="m-2">
+      <>
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4" />
             <p className="text-gray-600">Loading incident details...</p>
           </div>
         </div>
-      </DefaultLayout>
+      </>
     );
   }
 
   // Show error state
   if (error || !incident) {
     return (
-      <DefaultLayout className="m-2">
+      <>
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
@@ -99,7 +98,7 @@ const IncidentDetail: React.FC = () => {
             <p className="text-gray-600">{error || "Incident not found"}</p>
           </div>
         </div>
-      </DefaultLayout>
+      </>
     );
   }
 
@@ -146,8 +145,6 @@ const IncidentDetail: React.FC = () => {
     }
   };
 
-  
-
   const formatFileSize = (bytes: number): string => {
     if (bytes < 1024) return bytes + " B";
     if (bytes < 1024 * 1024) return Math.round(bytes / 1024) + " KB";
@@ -177,7 +174,7 @@ const IncidentDetail: React.FC = () => {
       const updatedIncident = await updateIncidentStatus(
         parkingLotId,
         incidentId,
-        newStatus,
+        newStatus
       );
 
       setCurrentStatus(newStatus);
@@ -193,14 +190,11 @@ const IncidentDetail: React.FC = () => {
     [];
   const documentFiles =
     incident.incidentEvidences?.filter(
-      (e) => e.fileType === FileType.Document,
+      (e) => e.fileType === FileType.Document
     ) ?? [];
 
   return (
-    <DefaultLayout
-      className="m-2"
-      title={`Incident Details - ${incident.header}`}
-    >
+    <>
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
@@ -528,7 +522,7 @@ const IncidentDetail: React.FC = () => {
         time={modalImageInfo?.time || ""}
         onClose={() => setModalImageInfo(null)}
       />
-    </DefaultLayout>
+    </>
   );
 };
 

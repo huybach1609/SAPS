@@ -10,11 +10,9 @@ import AboutPage from "@/pages/about";
 import ErrorPage from "@/pages/ErrorPage";
 import LoginPage from "./pages/Auth/Login";
 import OwnerDashboard from "./pages/ParkingLotOwner/Home/OwnerDashboard";
-import AdminDashboard from "./pages/Admin/AdminDashboard";
 import { WhitelistManagement } from "./pages/ParkingLotOwner/Whitelist/WhiteListManagement";
 import DefaultLayout from "./layouts/default";
 import AdminDashboardPage from "./pages/Admin/AdminDashboardPage";
-import Whitelist from "./pages/ParkingLotOwner/Whitelist/WhiteList";
 import IncidentReports from "./pages/ParkingLotOwner/IncidentReports/IncidentReports";
 import ParkingHistory from "./pages/ParkingLotOwner/ParkingHistory/HistoryManagement/ParkingHistory";
 import StaffManagement from "./pages/ParkingLotOwner/StaffManagement/StaffManagement";
@@ -69,15 +67,19 @@ const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     return <div>Loading...</div>; // Or your loading component
   }
 
-  switch (user?.role) {
-    case "admin":
-      return <Navigate to="/admin/home" replace />;
-    case "parkinglotowner":
-      return <Navigate to="/owner/parking-info" replace />;
-    default:
-      return <Navigate to="/unauthorized" replace />;
+  // If authenticated, redirect based on role
+  if (isAuthenticated) {
+    switch (user?.role) {
+      case "admin":
+        return <Navigate to="/admin/home" replace />;
+      case "parkinglotowner":
+        return <Navigate to="/owner/parking-info" replace />;
+      default:
+        return <Navigate to="/unauthorized" replace />;
+    }
   }
 
+  // If not authenticated, show the public content
   return <>{children}</>;
 };
 
@@ -177,7 +179,12 @@ function App() {
           element={
             <ProtectedRoute requiredRole={OWNER_ROLE}>
               <OwnerParkingLotProviderWrapper>
-                <Outlet />
+                <DefaultLayout
+                  role="parkinglotowner"
+                  title="SAPLS Parking Lot Owner Dashboard"
+                >
+                  <Outlet />
+                </DefaultLayout>
               </OwnerParkingLotProviderWrapper>
             </ProtectedRoute>
           }
@@ -190,9 +197,15 @@ function App() {
             element={<StaffDetailScreen />}
           />
           <Route path="history" element={<ParkingHistory />} />
-          <Route path="history/:parkingLotId/:sessionId" element={<ParkingHistoryDetail />} />
+          <Route
+            path="history/:parkingLotId/:sessionId"
+            element={<ParkingHistoryDetail />}
+          />
           <Route path="incidents" element={<IncidentReports />} />
-          <Route path="incidents/:parkingLotId/:incidentId" element={<IncidentDetail />} />
+          <Route
+            path="incidents/:parkingLotId/:incidentId"
+            element={<IncidentDetail />}
+          />
           <Route path="whitelist" element={<WhitelistManagement />} />
           <Route path="parking-fee" element={<ParkingFeeManagement />} />
           <Route path="upload-file" element={<UploadFile />} />
