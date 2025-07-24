@@ -22,14 +22,16 @@ import vn.edu.fpt.sapsmobile.models.AuthResponse;
 import vn.edu.fpt.sapsmobile.models.GoogleTokenRequest;
 import vn.edu.fpt.sapsmobile.models.User;
 import vn.edu.fpt.sapsmobile.utils.TokenManager;
-
+import vn.edu.fpt.sapsmobile.API.ApiClient;
+import vn.edu.fpt.sapsmobile.models.LoginRequest;
+import vn.edu.fpt.sapsmobile.models.LoginResponse;
+import vn.edu.fpt.sapsmobile.models.RegisterRequest;
+import vn.edu.fpt.sapsmobile.models.RegisterResponse;
 
 public class AuthenticationService {
     private static final String TAG = "AuthenticationService";
     private static final String SERVER_CLIENT_ID = BuildConfig.SERVER_CLIENT_ID;
-//    private static final String SERVER_CLIENT_ID = "";
     private static final String SERVER_BASE_URL = BuildConfig.SERVER_BASE_URL;
-//    private static final String SERVER_BASE_URL = "";
 
     private Context context;
     private GoogleSignInClient mGoogleSignInClient;
@@ -42,11 +44,22 @@ public class AuthenticationService {
         void onAuthFailure(String error);
     }
 
+    public interface RegisterCallback {
+        void onSuccess(String message);
+        void onFailure(String error);
+    }
+
     public AuthenticationService(Context context, AuthCallback callback) {
         this.context = context;
         this.authCallback = callback;
         this.tokenManager = new TokenManager(context);
         setupGoogleSignIn();
+        setupRetrofit();
+    }
+
+    public AuthenticationService(Context context) {
+        this.context = context;
+        this.tokenManager = new TokenManager(context);
         setupRetrofit();
     }
 
@@ -73,7 +86,6 @@ public class AuthenticationService {
     }
 
     public void handleSignInResult(Intent data) {
-
         Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
         try {
             GoogleSignInAccount account = task.getResult(ApiException.class);
@@ -143,6 +155,192 @@ public class AuthenticationService {
                         onComplete.run();
                     }
                 });
+    }
+
+    // Đăng nhập bằng tài khoản thường - FIXED VERSION
+    public void loginWithEmail(String email, String password, AuthCallback callback) {
+        // Validate input
+        if (email == null || email.trim().isEmpty() || password == null || password.trim().isEmpty()) {
+            callback.onAuthFailure("Email and password cannot be empty");
+            return;
+        }
+
+        // Tạo request từ thông tin người dùng nhập
+        LoginRequest request = new LoginRequest(email.trim(), password);
+
+        // Dùng Retrofit để gọi API login - SỬ DỤNG MOCK_BASE_URL để test
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BuildConfig.MOCK_BASE_URL) // <-- Dùng MOCK_BASE_URL để test
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        AuthService authService = retrofit.create(AuthService.class);
+
+        Log.d(TAG, "Attempting login with email: " + email);
+
+        authService.login(request).enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
+                Log.d(TAG, "Login response code: " + response.code());
+                Log.d(TAG, "Login response message: " + response.message());
+
+                if (response.isSuccessful() && response.body() != null) {
+                    LoginResponse loginResponse = response.body();
+
+                    Log.d(TAG, "Access token received: " + (loginResponse.getAccessToken() != null));
+                    Log.d(TAG, "User data received: " + (loginResponse.getUser() != null));
+
+                    // Kiểm tra kỹ càng response data
+                    if (isValidLoginResponse(loginResponse)) {
+                        // Lưu token và user data vào TokenManager
+                        tokenManager.saveTokens(loginResponse.getAccessToken(), loginResponse.getRefreshToken());
+                        tokenManager.saveUserData(loginResponse.getUser());
+
+                        Log.d(TAG, "Login successful for user: " + loginResponse.getUser().getEmail());
+                        // Gọi callback thành công
+                        callback.onAuthSuccess(loginResponse.getUser());
+                    } else {
+                        Log.e(TAG, "Invalid login response data");
+                        callback.onAuthFailure("Invalid response from server");
+                    }
+                } else {
+                    // Xử lý các mã lỗi HTTP cụ thể
+                    String errorMessage = getErrorMessage(response.code());
+                    Log.e(TAG, "Login failed with code: " + response.code() + ", message: " + errorMessage);
+                    callback.onAuthFailure(errorMessage);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<LoginResponse> call, Throwable t) {
+                Log.e(TAG, "Login network error: " + t.getMessage());
+                callback.onAuthFailure("Network error: " + t.getMessage());
+            }
+        });
+    }
+
+    // Kiểm tra response có hợp lệ không
+    private boolean isValidLoginResponse(LoginResponse loginResponse) {
+        if (loginResponse == null) {
+            Log.e(TAG, "LoginResponse is null");
+            return false;
+        }
+
+        if (loginResponse.getAccessToken() == null || loginResponse.getAccessToken().trim().isEmpty()) {
+            Log.e(TAG, "Access token is null or empty");
+            return false;
+        }
+
+        if (loginResponse.getUser() == null) {
+            Log.e(TAG, "User data is null");
+            return false;
+        }
+
+        User user = loginResponse.getUser();
+        if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
+            Log.e(TAG, "User email is null or empty");
+            return false;
+        }
+
+        if (user.getName() == null || user.getName().trim().isEmpty()) {
+            Log.e(TAG, "User name is null or empty");
+            return false;
+        }
+
+        return true;
+    }
+
+    // Lấy thông điệp lỗi dựa trên HTTP status code
+    private String getErrorMessage(int statusCode) {
+        switch (statusCode) {
+            case 400:
+                return "Bad request. Please check your input.";
+            case 401:
+                return "Invalid email or password";
+            case 403:
+                return "Access forbidden";
+            case 404:
+                return "Service not found";
+            case 422:
+                return "Invalid data provided";
+            case 500:
+                return "Server error. Please try again later.";
+            case 503:
+                return "Service unavailable. Please try again later.";
+            default:
+                return "Login failed. Please try again.";
+        }
+    }
+
+    // Đăng ký tài khoản mới - FIXED VERSION
+    public void register(String name, String email, String password, RegisterCallback callback) {
+        // Validate input
+        if (name == null || name.trim().isEmpty() ||
+                email == null || email.trim().isEmpty() ||
+                password == null || password.trim().isEmpty()) {
+            callback.onFailure("All fields are required");
+            return;
+        }
+
+        RegisterRequest request = new RegisterRequest(name.trim(), email.trim(), password);
+
+        // Sử dụng MOCK_BASE_URL để test
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BuildConfig.MOCK_BASE_URL) // <-- Dùng MOCK_BASE_URL để test
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        AuthService authService = retrofit.create(AuthService.class);
+
+        Log.d(TAG, "Attempting registration with email: " + email);
+
+        authService.register(request).enqueue(new Callback<RegisterResponse>() {
+            @Override
+            public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
+                Log.d(TAG, "Register response code: " + response.code());
+                Log.d(TAG, "Register response message: " + response.message());
+
+                if (response.isSuccessful() && response.body() != null) {
+                    RegisterResponse registerResponse = response.body();
+
+                    if (registerResponse.getMessage() != null && !registerResponse.getMessage().trim().isEmpty()) {
+                        Log.d(TAG, "Registration successful: " + registerResponse.getMessage());
+                        callback.onSuccess(registerResponse.getMessage());
+                    } else {
+                        Log.e(TAG, "Registration response message is empty");
+                        callback.onFailure("Registration completed but no confirmation message received");
+                    }
+                } else {
+                    String errorMessage = getRegisterErrorMessage(response.code());
+                    Log.e(TAG, "Registration failed with code: " + response.code() + ", message: " + errorMessage);
+                    callback.onFailure(errorMessage);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RegisterResponse> call, Throwable t) {
+                Log.e(TAG, "Register network error: " + t.getMessage());
+                callback.onFailure("Network error: " + t.getMessage());
+            }
+        });
+    }
+
+    // Lấy thông điệp lỗi đăng ký dựa trên HTTP status code
+    private String getRegisterErrorMessage(int statusCode) {
+        switch (statusCode) {
+            case 400:
+                return "Bad request. Please check your input.";
+            case 409:
+                return "Email already exists. Please use a different email.";
+            case 422:
+                return "Invalid data provided. Please check your information.";
+            case 500:
+                return "Server error. Please try again later.";
+            case 503:
+                return "Service unavailable. Please try again later.";
+            default:
+                return "Registration failed. Please try again.";
+        }
     }
 
     public boolean isLoggedIn() {

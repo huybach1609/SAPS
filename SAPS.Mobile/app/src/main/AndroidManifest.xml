@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -18,7 +17,33 @@
         android:theme="@style/Theme.SAPSMobile"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".activities.CheckoutActivity"
+            android:exported="false" />
         <activity android:name=".activities.auth.LoginActivity" />
+        <activity android:name=".activities.auth.RegisterActivity" />
+        <activity android:name=".activities.auth.EditProfileActivity"/>
+        <activity android:name=".activities.auth.NotificationsListActivity"
+            android:label="Notifications List Screen"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity android:name=".activities.auth.ChangePasswordActivity"
+            android:label="Change Password Screen"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+
+
+
+
         <activity
             android:name=".activities.main.MainActivity"
             android:exported="true">
@@ -29,4 +54,5 @@
             </intent-filter>
         </activity>
     </application>
+
 </manifest>

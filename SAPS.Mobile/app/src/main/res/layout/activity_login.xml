@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="horizontal"
-            android:paddingTop="20dp"
+            android:paddingTop="50dp"
             >
 
             <Button
@@ -66,6 +66,7 @@
             android:hint="Enter Email or Citizen ID">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/email_input_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/margin_horizon" />
@@ -87,6 +88,7 @@
             app:endIconMode="password_toggle">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/password_input_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginVertical="@dimen/margin_horizon"
@@ -100,8 +102,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/margin_horizon"
-            android:backgroundTint="@color/bg2"
-            android:text="Sign in" />
+            android:backgroundTint="@color/colorPrimary"
+            android:text="Sign in"
+            android:textColor="@android:color/white" />
 
         <TextView
             android:layout_width="match_parent"
@@ -116,9 +119,23 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginVertical="@dimen/margin_horizon"
-            android:backgroundTint="@color/bg0_h"
+            android:backgroundTint="@color/redBright"
             android:text="Sign in with google"
+            android:textColor="@android:color/white"
             app:icon="@drawable/google_icon_28" />
+
+        <Button
+            android:id="@+id/register"
+            style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="@dimen/margin_horizon"
+            android:backgroundTint="@color/blueBright"
+            android:text="Register New Account"
+            android:textColor="@android:color/white"
+            app:icon="@drawable/how_to_reg_24dp_e3e3e3_fill0_wght400_grad0_opsz24" />
+
+
 
         <TextView
             android:layout_width="wrap_content"
