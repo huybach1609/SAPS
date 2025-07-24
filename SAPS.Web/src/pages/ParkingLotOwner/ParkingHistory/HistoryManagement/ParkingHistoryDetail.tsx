@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Car, Camera, CreditCard, Clock, MapPin, User, Calendar } from 'lucide-react';
 import { ParkingSession } from '@/services/parkinglot/parkingHistoryService';
-import { ParkingSessionStatus } from './ParkingHistory';
+import { ParkingSessionStatus } from '@/types/ParkingSession';
 import DefaultLayout from '@/layouts/default';
 import { Card, CardFooter, CardBody, Button, Image, Modal, ModalContent, ModalBody, ModalFooter, ModalHeader } from '@heroui/react';
 import axios from 'axios';

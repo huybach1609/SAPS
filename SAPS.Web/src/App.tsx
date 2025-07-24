@@ -11,7 +11,7 @@ import ErrorPage from "@/pages/ErrorPage";
 import LoginPage from "./pages/Auth/Login";
 import OwnerDashboard from "./pages/ParkingLotOwner/Home/OwnerDashboard";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
-import Whitelist from "./pages/ParkingLotOwner/Whitelist/WhiteList";
+import { WhitelistManagement } from "./pages/ParkingLotOwner/Whitelist/WhiteListManagement";
 import IncidentReports from "./pages/ParkingLotOwner/IncidentReports/IncidentReports";
 import ParkingHistory from "./pages/ParkingLotOwner/ParkingHistory/HistoryManagement/ParkingHistory";
 import StaffManagement from "./pages/ParkingLotOwner/StaffManagement/StaffManagement";
@@ -25,6 +25,7 @@ import StaffDetailScreen from "./pages/ParkingLotOwner/StaffManagement/StaffDeta
 import UploadFile from "./pages/ParkingLotOwner/UploadFile";
 import ParkingHistoryDetail from "./pages/ParkingLotOwner/ParkingHistory/HistoryManagement/ParkingHistoryDetail";
 import IncidentDetail from "./pages/ParkingLotOwner/IncidentReports/IncidentDetail";
+import SubscriptionPricingSelect from "./pages/ParkingLotOwner/Subscription/SubscriptionPricingSelect";
 
 // Protected Route Component
 interface ProtectedRouteProps {
@@ -108,7 +109,7 @@ function App() {
     <AuthProvider>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<IndexPage />} />
+        <Route path="/" element={<RoleBasedRedirect />} />
         <Route path="/docs" element={<DocsPage />} />
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/blog" element={<BlogPage />} />
@@ -120,6 +121,16 @@ function App() {
           element={
             <PublicRoute>
               <LoginPage />
+            </PublicRoute>
+          }
+        />
+
+        {/* Public landing page - only for unauthenticated users */}
+        <Route
+          path="/landing"
+          element={
+            <PublicRoute>
+              <IndexPage />
             </PublicRoute>
           }
         />
@@ -159,9 +170,10 @@ function App() {
           <Route path="history/:parkingLotId/:sessionId" element={<ParkingHistoryDetail />} />
           <Route path="incidents" element={<IncidentReports />} />
           <Route path="incidents/:parkingLotId/:incidentId" element={<IncidentDetail />} />
-          <Route path="whitelist" element={<Whitelist />} />
+          <Route path="whitelist" element={<WhitelistManagement />} />
           <Route path="parking-fee" element={<ParkingFeeManagement />} />
           <Route path="upload-file" element={<UploadFile />} />
+          <Route path="subscription" element={<SubscriptionPricingSelect />} />
         </Route>
 
         {/* Dashboard redirect route */}
