@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Accordion, AccordionItem, addToast, Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, PressEvent, Select, SelectItem,  UseDisclosureProps } from '@heroui/react';
 import { Calendar, InfoIcon, Users } from 'lucide-react';
-// import { addStaff, updateStaff } from '../../../services/parkinglot/StaffService';
-import { AddStaffFormRequest, statusOptions } from './StaffManagement';
+import { AddStaffFormRequest, statusOptions } from '@/components/utils/staffUtils';
 import { StaffStatus, User } from '@/types/User';
 import { addStaff, updateStaff } from '@/services/parkinglot/staffService';
 
@@ -379,7 +378,7 @@ export const UpdateStaffModal = ({ updateModalDisclosure, parkingLotId, user }: 
                                 Cancel
                             </Button>
                             <Button color='primary' className='text-background' onPress={handleUpdateUser}>
-                                Add
+                                Update
                             </Button>
                         </ModalFooter>
                     </>
@@ -388,5 +387,3 @@ export const UpdateStaffModal = ({ updateModalDisclosure, parkingLotId, user }: 
         </Modal>
     )
 }
-
-

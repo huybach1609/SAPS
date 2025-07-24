@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">99.22% </span>
+                <span class="strong">99.24% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>128/129</span>
+                <span class='fraction'>131/132</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">40% </span>
+                <span class="strong">36.36% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>4/10</span>
+                <span class='fraction'>4/11</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">99.22% </span>
+                <span class="strong">99.24% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>128/129</span>
+                <span class='fraction'>131/132</span>
             </div>
         
             
@@ -275,7 +275,12 @@
 <a name='L210'></a><a href='#L210'>210</a>
 <a name='L211'></a><a href='#L211'>211</a>
 <a name='L212'></a><a href='#L212'>212</a>
-<a name='L213'></a><a href='#L213'>213</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L213'></a><a href='#L213'>213</a>
+<a name='L214'></a><a href='#L214'>214</a>
+<a name='L215'></a><a href='#L215'>215</a>
+<a name='L216'></a><a href='#L216'>216</a>
+<a name='L217'></a><a href='#L217'>217</a>
+<a name='L218'></a><a href='#L218'>218</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -322,17 +327,22 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -487,7 +497,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import {motion} from "framer-motion";
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { motion } from "framer-motion";
 import {
     Button,
     Divider,
@@ -510,11 +520,11 @@ import {
     ClipboardList,
     DollarSign
 } from "lucide-react";
-import {useNavigate} from "react-router-dom";
-import {ThemeSwitch} from "../theme-switch";
+import { useLocation, useNavigate } from "react-router-dom";
+import { ThemeSwitch } from "../theme-switch";
 import blankProfile from "../../assets/Default/blank-profile-picture.webp"
-import {useAuth} from "@/services/auth/AuthContext";
-import {OWNER_ROLE} from "@/config/base";
+import { useAuth } from "@/services/auth/AuthContext";
+import { OWNER_ROLE } from "@/config/base";
 &nbsp;
 interface SidebarProps {
     isOpen: boolean;
@@ -532,19 +542,24 @@ interface NavigationListProps {
     items: NavigationItem[];
 }
 &nbsp;
-const NavigationList: React.FC&lt;NavigationListProps&gt; = ({items}) =&gt; {
+const NavigationList: React.FC&lt;NavigationListProps&gt; = ({ items }) =&gt; {
     const navigate = useNavigate();
+    const location = useLocation();
 &nbsp;
     return (
         &lt;Listbox aria-label="Navigation List" className="flex flex-col gap-2"&gt;
             {items.map((item, index) =&gt; (
                 &lt;ListboxItem
+                    color="secondary"
                     key={index}
-&nbsp;
                     startContent={item.icon}
                     title={item.title}
                     onClick={<span class="fstat-no" title="function not covered" >() =&gt; navigate(item.path)}</span>
-                    className="p-3"
+                    className={`p-3 
+                         ${location.pathname === item.<span class="branch-0 cbranch-no" title="branch not covered" >path ? 'bg-primary text-background' : '</span>'}
+                         hover:bg-primary hover:text-background
+                         `}
+&nbsp;
                 /&gt;
             ))}
         &lt;/Listbox&gt;
@@ -554,22 +569,22 @@ const NavigationList: React.FC&lt;NavigationListProps&gt; = ({items}) =&gt; {
 // Configuration for different user roles
 const adminItems: NavigationItem[] = [
     {
-        icon: &lt;Home size={20}/&gt;,
+        icon: &lt;Home size={20} /&gt;,
         title: "Home",
         path: "/admin/home"
     },
     {
-        icon: &lt;Users size={20}/&gt;,
+        icon: &lt;Users size={20} /&gt;,
         title: "Account List",
         path: "/admin/accounts"
     },
     {
-        icon: &lt;Building2 size={20}/&gt;,
+        icon: &lt;Building2 size={20} /&gt;,
         title: "Parking Lot Owner List",
         path: "/admin/parking-owners"
     },
     {
-        icon: &lt;FileText size={20}/&gt;,
+        icon: &lt;FileText size={20} /&gt;,
         title: "Request List",
         path: "/admin/requests"
     }
@@ -582,32 +597,32 @@ const parkingLotOwnerItems: NavigationItem[] = [
     //     path: "/owner/home"
     // },
     {
-        icon: &lt;Building2 size={20}/&gt;,
+        icon: &lt;Building2 size={20} /&gt;,
         title: "Parking Lot Information",
         path: "/owner/parking-info"
     },
     {
-        icon: &lt;Users size={20}/&gt;,
+        icon: &lt;Users size={20} /&gt;,
         title: "Staff List",
         path: "/owner/staff"
     },
     {
-        icon: &lt;ClipboardList size={20}/&gt;,
+        icon: &lt;ClipboardList size={20} /&gt;,
         title: "Parking History",
         path: "/owner/history"
     },
     {
-        icon: &lt;DollarSign size={20}/&gt;,
+        icon: &lt;DollarSign size={20} /&gt;,
         title: "Parking Fee Management",
         path: "/owner/parking-fee"
     },
     {
-        icon: &lt;AlertTriangle size={20}/&gt;,
+        icon: &lt;AlertTriangle size={20} /&gt;,
         title: "Incident Reports",
         path: "/owner/incidents"
     },
     {
-        icon: &lt;FileText size={20}/&gt;,
+        icon: &lt;FileText size={20} /&gt;,
         title: "Whitelist",
         path: "/owner/whitelist"
     },
@@ -622,11 +637,11 @@ const parkingLotOwnerItems: NavigationItem[] = [
 &nbsp;
 &nbsp;
 const HeadingBar: React.FC = () =&gt; {
-    const {user, logout} = useAuth();
+    const { user, logout } = useAuth();
     return (
         &lt;div className="flex justify-between items-center my-4"&gt;
             &lt;div className="flex items-center gap-2"&gt;
-                &lt;img src={blankProfile} alt="Profile" className="w-12 h-12 rounded-full m-2"/&gt;
+                &lt;img src={blankProfile} alt="Profile" className="w-12 h-12 rounded-full m-2" /&gt;
                 &lt;div&gt;
                     &lt;h2 className="text-medium font-bold "&gt;{<span class="branch-0 cbranch-no" title="branch not covered" >user?.fullName}&lt;</span>/h2&gt;
                     &lt;h2 className="text-xs "&gt;Head Administrator&lt;/h2&gt;
@@ -635,14 +650,14 @@ const HeadingBar: React.FC = () =&gt; {
 &nbsp;
             &lt;Dropdown&gt;
                 &lt;DropdownTrigger&gt;
-                    &lt;Button className="bg-transparent text-background " isIconOnly&gt;&lt;EllipsisVertical/&gt;&lt;/Button&gt;
+                    &lt;Button className="bg-transparent text-background " isIconOnly&gt;&lt;EllipsisVertical /&gt;&lt;/Button&gt;
                 &lt;/DropdownTrigger&gt;
                 &lt;DropdownMenu className="dark"&gt;
                     &lt;DropdownItem key="settings" textValue="Settings "&gt;
 &nbsp;
                         &lt;button
                             className="flex items-center gap-2 w-full text-left transition-opacity hover:opacity-80 "
-                        &gt;&lt;Settings size={16}/&gt;Settings
+                        &gt;&lt;Settings size={16} /&gt;Settings
                         &lt;/button&gt;
 &nbsp;
 &nbsp;
@@ -660,7 +675,7 @@ const HeadingBar: React.FC = () =&gt; {
                         &lt;button
                             className="flex items-center gap-2 w-full text-left transition-opacity hover:opacity-80 "
                             onClick={logout}
-                        &gt;&lt;LogOut size={16}/&gt;Logout
+                        &gt;&lt;LogOut size={16} /&gt;Logout
                         &lt;/button&gt;
                     &lt;/DropdownItem&gt;
                 &lt;/DropdownMenu&gt;
@@ -669,8 +684,8 @@ const HeadingBar: React.FC = () =&gt; {
     );
 };
 &nbsp;
-export const SideBar: React.FC&lt;SidebarProps&gt; = ({isOpen}) =&gt; {
-    const {user} = useAuth();
+export const SideBar: React.FC&lt;SidebarProps&gt; = ({ isOpen }) =&gt; {
+    const { user } = useAuth();
     return (
         &lt;motion.div
             initial={false}
@@ -681,18 +696,18 @@ export const SideBar: React.FC&lt;SidebarProps&gt; = ({isOpen}) =&gt; {
                 minWidth: <span class="branch-0 cbranch-no" title="branch not covered" >isOpen ? 250 : 0</span>,
 &nbsp;
             }}
-            transition={{duration: 0.3, ease: 'easeInOut'}}
+            transition={{ duration: 0.3, ease: 'easeInOut' }}
             className=" 
             bg-foreground text-background border-r border-divider h-full flex flex-col
             p-5 shadow-lg overflow-hidden z-50
             "
-           
+&nbsp;
         &gt;
-            &lt;HeadingBar/&gt;
-            &lt;Divider className="bg-border my-4"/&gt;
+            &lt;HeadingBar /&gt;
+            &lt;Divider className="bg-border my-4" /&gt;
             {<span class="branch-0 cbranch-no" title="branch not covered" >user?.role === <span class="branch-0 cbranch-no" title="branch not covered" >O</span>WNER_ROLE ?</span>
-<span class="cstat-no" title="statement not covered" >                &lt;NavigationList items={parkingLotOwnerItems}/&gt; :</span>
-                &lt;NavigationList items={adminItems}/&gt;
+<span class="cstat-no" title="statement not covered" >                &lt;NavigationList items={parkingLotOwnerItems} /&gt; :</span>
+                &lt;NavigationList items={adminItems} /&gt;
             }
             {/* // {role === 'parkinglotowner' ? &lt;ParkingLotOwnerList /&gt; : &lt;AdminList /&gt;} */}
         &lt;/motion.div&gt;
@@ -706,7 +721,7 @@ export const SideBar: React.FC&lt;SidebarProps&gt; = ({isOpen}) =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-07-22T11:58:06.650Z
+                at 2025-07-23T10:10:18.559Z
             </div>
         <script src="../../../../prettify.js"></script>
         <script>

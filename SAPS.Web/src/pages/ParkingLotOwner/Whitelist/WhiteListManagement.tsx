@@ -40,7 +40,6 @@ export function WhitelistManagement() {
     loading,
     pagination,
     tableSearch,
-    currentPage,
     setTableSearch,
     setCurrentPage,
     handleAddToWhitelist,

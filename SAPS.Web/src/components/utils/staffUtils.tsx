@@ -56,3 +56,27 @@ export const StaffStatusSimple = ({ status }: { status: number }) => {
         </span>
     );
 }; 
+
+// format date for input
+export const formatDateForInput = (isoString: string) => {
+  if (!isoString) return '';
+  return isoString.split('T')[0];
+};
+
+// status options for dropdown
+export const statusOptions = [
+  { key: StaffStatus.ACTIVE.toString(), label: 'Active' },
+  { key: StaffStatus.ON_LEAVE.toString(), label: 'On Leave' },
+  { key: StaffStatus.SUSPENDED.toString(), label: 'Suspended' },
+  { key: StaffStatus.TERMINATED.toString(), label: 'Terminated' }
+];
+
+// interface for add staff form request
+export interface AddStaffFormRequest {
+  fullName: string;
+  email: string;
+  phone: string;
+  employeeId: string;
+  dateOfBirth: string;
+  status: number;
+}

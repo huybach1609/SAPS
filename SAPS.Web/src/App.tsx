@@ -25,6 +25,7 @@ import StaffDetailScreen from "./pages/ParkingLotOwner/StaffManagement/StaffDeta
 import UploadFile from "./pages/ParkingLotOwner/UploadFile";
 import ParkingHistoryDetail from "./pages/ParkingLotOwner/ParkingHistory/HistoryManagement/ParkingHistoryDetail";
 import IncidentDetail from "./pages/ParkingLotOwner/IncidentReports/IncidentDetail";
+import SubscriptionPricingSelect from "./pages/ParkingLotOwner/Subscription/SubscriptionPricingSelect";
 
 // Protected Route Component
 interface ProtectedRouteProps {
@@ -172,6 +173,7 @@ function App() {
           <Route path="whitelist" element={<WhitelistManagement />} />
           <Route path="parking-fee" element={<ParkingFeeManagement />} />
           <Route path="upload-file" element={<UploadFile />} />
+          <Route path="subscription" element={<SubscriptionPricingSelect />} />
         </Route>
 
         {/* Dashboard redirect route */}
