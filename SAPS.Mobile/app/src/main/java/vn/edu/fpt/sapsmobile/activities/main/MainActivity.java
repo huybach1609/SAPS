@@ -26,32 +26,68 @@ import vn.edu.fpt.sapsmobile.utils.TokenManager;
 
 public class MainActivity extends AppCompatActivity implements AuthenticationService.AuthCallback {
     private TokenManager tokenManager;
-
     private BottomNavigationView bottomNavigation;
     private AuthenticationService authService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Enable edge-to-edge display
+        EdgeToEdge.enable(this);
+
         setContentView(R.layout.activity_main);
 
-//         check login info
+        // Setup window insets for safe zone
+        setupWindowInsets();
+
+        // Check login info
         tokenManager = new TokenManager(this);
         if (!tokenManager.isLoggedIn()) {
             Intent loginIntent = new Intent(this, LoginActivity.class);
             startActivity(loginIntent);
+            finish(); // Prevent going back to MainActivity without login
+            return;
         }
 
-
         authService = new AuthenticationService(this, this);
-
         initializeBottomNavigation();
+    }
 
+    private void setupWindowInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_container), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            Insets navigationBars = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
+            Insets statusBars = insets.getInsets(WindowInsetsCompat.Type.statusBars());
+            Insets displayCutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout());
+
+            // Combine cutout and status bar insets
+            int topInset = Math.max(statusBars.top, displayCutout.top);
+            int leftInset = Math.max(systemBars.left, displayCutout.left);
+            int rightInset = Math.max(systemBars.right, displayCutout.right);
+
+            // Apply padding for status bar and display cutout
+            v.setPadding(leftInset, topInset, rightInset, 0);
+
+            // Apply bottom padding to BottomNavigation for navigation bar
+            BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+            if (bottomNav != null) {
+                bottomNav.setPadding(
+                        leftInset, // Also apply left cutout padding to bottom nav
+                        bottomNav.getPaddingTop(),
+                        rightInset, // Also apply right cutout padding to bottom nav
+                        navigationBars.bottom
+                );
+            }
+
+            return insets;
+        });
     }
 
     public void logoutProgress() {
         Intent loginIntent = new Intent(this, LoginActivity.class);
         startActivity(loginIntent);
+        finish();
     }
 
     public AuthenticationService getAuthService() {
@@ -105,7 +141,6 @@ public class MainActivity extends AppCompatActivity implements AuthenticationSer
         }
     }
 
-
     private Fragment currentFragment;
 
     private void loadFragment(Fragment fragment) {
@@ -117,12 +152,9 @@ public class MainActivity extends AppCompatActivity implements AuthenticationSer
         }
     }
 
-
     public TokenManager getTokenManager() {
         return tokenManager;
     }
-
-    ;
 
     // Method to programmatically change navigation
     public void navigateToTab(int tabId) {
@@ -139,14 +171,14 @@ public class MainActivity extends AppCompatActivity implements AuthenticationSer
         bottomNavigation.removeBadge(menuItemId);
     }
 
-
     @Override
     public void onAuthSuccess(User user) {
-
+        // Handle successful authentication
     }
 
     @Override
     public void onAuthFailure(String error) {
-
+        // Handle authentication failure
+        logoutProgress();
     }
 }

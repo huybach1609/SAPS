@@ -129,7 +129,7 @@ public class RegisterPhase3Fragment extends Fragment {
                     .build();
 
             Request request = new Request.Builder()
-                    .url("http://10.35.88.3:8080/api/vehicle-ocr")
+                    .url("http://10.35.88.16:8080/api/vehicle-ocr")
                     .post(requestBody)
                     .build();
 
