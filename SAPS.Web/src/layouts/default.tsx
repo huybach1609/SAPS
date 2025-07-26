@@ -8,7 +8,7 @@ import { useAuth } from "@/services/auth/AuthContext";
 
 export default function DefaultLayout({
   children,
-  title = "Page Title",
+  title = "",
   className = ""
 }: {
   children: React.ReactNode;
