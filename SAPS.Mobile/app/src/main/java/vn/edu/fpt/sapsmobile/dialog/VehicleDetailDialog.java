@@ -6,14 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import vn.edu.fpt.sapsmobile.R;
-import vn.edu.fpt.sapsmobile.listener.VehicleActionListener;
+import vn.edu.fpt.sapsmobile.listener.VehicleFragmentListener;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
 
 public class VehicleDetailDialog {
-    public static void show(Context context, Vehicle vehicle, VehicleActionListener listener) {
+    public static void show(Context context, Vehicle vehicle, VehicleFragmentListener listener) {
         View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_vehicle_detail, null);
 
         TextView tvLicense = dialogView.findViewById(R.id.tvDetailLicense);
@@ -34,7 +33,7 @@ public class VehicleDetailDialog {
                 .create();
 
         btnCheckout.setOnClickListener(v -> {
-            // ✅ Đúng: gọi qua biến instance listener
+            //gọi qua biến instance listener
             listener.onCheckout(vehicle, dialog);
         });
 

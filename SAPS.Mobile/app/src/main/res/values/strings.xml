@@ -5,4 +5,9 @@
     <string name="nav_vehicle">Vehicle</string>
     <string name="nav_history">History</string>
     <string name="nav_profile">Profile</string>
+    <string-array name="payment_methods">
+        <item>Chuyển khoản</item>
+        <item>Tiền mặt</item>
+    </string-array>
+
 </resources>

@@ -1,67 +1,93 @@
-package vn.edu.fpt.sapsmobile.fragments;
+    package vn.edu.fpt.sapsmobile.fragments;
 
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+    import androidx.fragment.app.Fragment;
+    import androidx.recyclerview.widget.LinearLayoutManager;
+    import androidx.recyclerview.widget.RecyclerView;
 
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-
-import java.util.ArrayList;
-import java.util.List;
-
-import vn.edu.fpt.sapsmobile.R;
-import vn.edu.fpt.sapsmobile.actionhandler.VehicleActionHandler;
-import vn.edu.fpt.sapsmobile.adapter.VehicleAdapter;
-import vn.edu.fpt.sapsmobile.models.Vehicle;
+    import android.content.ClipData;
+    import android.content.ClipboardManager;
+    import android.content.Context;
+    import android.os.Bundle;
+    import android.view.LayoutInflater;
+    import android.view.View;
+    import android.view.ViewGroup;
+    import android.widget.Button;
+    import android.widget.TextView;
+    import android.widget.Toast;
 
 
-public class VehicleFragment extends Fragment {
-    private RecyclerView rvVehicles;
-    private VehicleAdapter vehicleAdapter;
-    private List<Vehicle> vehicleList;
-    private TextView tv_share_code;
+    import java.util.List;
 
-    public VehicleFragment() {
-        // Required empty public constructor
+    import retrofit2.Call;
+    import retrofit2.Callback;
+    import retrofit2.Response;
+    import vn.edu.fpt.sapsmobile.API.ApiTest;
+    import vn.edu.fpt.sapsmobile.API.apiinterface.VehicleApiService;
+    import vn.edu.fpt.sapsmobile.R;
+    import vn.edu.fpt.sapsmobile.actionhandler.VehicleFragmentHandler;
+    import vn.edu.fpt.sapsmobile.adapter.VehicleAdapter;
+    import vn.edu.fpt.sapsmobile.models.Vehicle;
+
+
+    public class VehicleFragment extends Fragment {
+        private RecyclerView rvVehicles;
+        private VehicleAdapter vehicleAdapter;
+        private List<Vehicle> vehicleList;
+        private TextView tv_share_code;
+        private Button btn_copy_code;
+
+        public VehicleFragment() {
+            // Required empty public constructor
+        }
+
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View view = inflater.inflate(R.layout.fragment_vehicle, container, false);
+            rvVehicles = view.findViewById(R.id.rvVehicles);
+            rvVehicles.setLayoutManager(new LinearLayoutManager(getContext()));
+            tv_share_code = view.findViewById(R.id.tv_share_code);
+            btn_copy_code = view.findViewById(R.id.btn_copy_code);
+
+            btn_copy_code.setOnClickListener(v -> {
+                String code = tv_share_code.getText().toString();
+
+                ClipboardManager clipboard = (ClipboardManager) requireContext()
+                        .getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("Copied Code", code);
+                clipboard.setPrimaryClip(clip);
+
+                Toast.makeText(requireContext(), "Đã sao chép mã vào bộ nhớ tạm!", Toast.LENGTH_SHORT).show();
+            });
+
+            return view;
+        }
+
+        @Override
+        public void onViewCreated(View view, Bundle savedInstanceState) {
+            super.onViewCreated(view, savedInstanceState);
+            tv_share_code.setText("Đang tải dữ liệu...");
+
+            VehicleApiService vehicleApi = ApiTest.getService(requireContext()).create(VehicleApiService.class);
+
+            vehicleApi.getListVehicles().enqueue(new Callback<List<Vehicle>>() {
+                @Override
+                public void onResponse(Call<List<Vehicle>> call, Response<List<Vehicle>> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        vehicleList = response.body();
+                        vehicleAdapter = new VehicleAdapter(vehicleList, new VehicleFragmentHandler(requireContext()));
+                        rvVehicles.setAdapter(vehicleAdapter);
+                        tv_share_code.setText("ASSX1-adsa-XLM");
+                    } else {
+                        tv_share_code.setText("Lỗi: " + response.code());
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<List<Vehicle>> call, Throwable t) {
+                    tv_share_code.setText("Lỗi kết nối: " + t.getMessage());
+                }
+            });
+        }
     }
 
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_vehicle, container, false);
-        rvVehicles = view.findViewById(R.id.rvVehicles);
-        rvVehicles.setLayoutManager(new LinearLayoutManager(getContext()));
-        tv_share_code = view.findViewById(R.id.tv_share_code);
-        return view;
-    }
-    private List<Vehicle> getFakeVehicles() {
-        List<Vehicle> list = new ArrayList<>();
-        Vehicle v = new Vehicle();
-        v.setLicensePlate("30A-12345");
-        v.setBrand("Toyota");
-        v.setModel("Vios");
-        Vehicle y = new Vehicle();
-        y.setLicensePlate("36A-4953");
-        y.setBrand("Mer");
-        y.setModel("GLC200");
-        list.add(v);
-        list.add(y);
-        return list;
-    }
 
-
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        // Initialize vehicle-related views and functionality
-        tv_share_code.setText("code_share_get_by_api"); // Có thể thay bằng gọi API
-        vehicleList = getFakeVehicles(); // Có thể thay bằng gọi API
-        vehicleAdapter = new VehicleAdapter(vehicleList, new VehicleActionHandler(requireContext()));
-        rvVehicles.setAdapter(vehicleAdapter);
-    }
-}
