@@ -1,5 +1,12 @@
 import { Divider } from "@heroui/react";
-import { User, ShieldCheck, Building2, FileText, Settings } from "lucide-react";
+import {
+  User,
+  ShieldCheck,
+  Building2,
+  FileText,
+  Settings,
+  Package,
+} from "lucide-react";
 
 export type MenuItem = {
   label: string;
@@ -35,6 +42,11 @@ export const adminMenuItems: MenuItem[] = [
     label: "Requests",
     path: "/admin/requests",
     icon: <FileText size={20} />,
+  },
+  {
+    label: "Subscriptions",
+    path: "/admin/subscriptions",
+    icon: <Package size={20} />,
   },
   {
     label: "Settings",

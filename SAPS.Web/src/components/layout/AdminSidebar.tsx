@@ -14,6 +14,7 @@ import {
   Home,
   FileText,
   Building2,
+  Package,
 } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import { ThemeSwitch } from "../theme-switch";
@@ -111,6 +112,11 @@ export const AdminSidebar: React.FC<SidebarProps> = ({ isOpen }) => {
           to="/admin/parking-owners"
         />
         <MenuItem icon={FileText} label="Requests" to="/admin/requests" />
+        <MenuItem
+          icon={Package}
+          label="Subscriptions"
+          to="/admin/subscriptions"
+        />
       </nav>
     </motion.div>
   );

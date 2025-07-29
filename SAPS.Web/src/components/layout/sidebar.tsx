@@ -20,6 +20,7 @@ import {
   AlertTriangle,
   ClipboardList,
   DollarSign,
+  Package,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { ThemeSwitch } from "../theme-switch";
@@ -81,6 +82,11 @@ const adminItems: NavigationItem[] = [
     icon: <FileText size={20} />,
     title: "Request List",
     path: "/admin/requests",
+  },
+  {
+    icon: <Package size={20} />,
+    title: "Subscriptions",
+    path: "/admin/subscriptions",
   },
 ];
 

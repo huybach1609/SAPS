@@ -1,5 +1,6 @@
 using AutoMapper;
 using SAPS.Api.Dtos;
+using SAPS.Api.Dtos.Subscription;
 using SAPS.Api.Models.Generated;
 
 namespace SAPS.Api.Mapping
@@ -55,6 +56,11 @@ namespace SAPS.Api.Mapping
                 
             // Permission -> PermissionDto
             CreateMap<Permission, PermissionDto>();
+
+            // Subscription mappings
+            CreateMap<Subscription, SubscriptionResponseDto>();
+            CreateMap<CreateSubscriptionDto, Subscription>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
         }
     }
 }

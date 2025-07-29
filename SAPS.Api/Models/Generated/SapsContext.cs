@@ -45,6 +45,8 @@ public partial class SapsContext : DbContext
 
     public virtual DbSet<StaffProfile> StaffProfiles { get; set; }
 
+    public virtual DbSet<Subscription> Subscriptions { get; set; }
+
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<Vehicle> Vehicles { get; set; }
@@ -386,6 +388,18 @@ public partial class SapsContext : DbContext
                 .HasForeignKey<StaffProfile>(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("StaffProfile_fk0");
+        });
+
+        modelBuilder.Entity<Subscription>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Subscrip__3214EC07CA950E4F");
+
+            entity.ToTable("Subscription");
+
+            entity.Property(e => e.Id).HasMaxLength(36);
+            entity.Property(e => e.Description).HasMaxLength(500);
+            entity.Property(e => e.Name).HasMaxLength(255);
+            entity.Property(e => e.Status).HasMaxLength(50);
         });
 
         modelBuilder.Entity<User>(entity =>

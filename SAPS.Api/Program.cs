@@ -138,6 +138,10 @@ builder.Services.AddScoped<IAdminService, AdminService>();
 // Đăng ký service cho UserClient
 builder.Services.AddScoped<IUserClientService, UserClientService>();
 
+// Đăng ký service cho Subscription
+builder.Services.AddScoped<ISubscriptionRepository, SubscriptionRepository>();
+builder.Services.AddScoped<ISubscriptionService, SubscriptionService>();
+
 // Make the jsonOptions available through DI if needed
 builder.Services.AddSingleton(jsonOptions);
 

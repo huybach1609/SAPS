@@ -28,6 +28,7 @@ import UserDetail from "./pages/Admin/Accounts/UserAccounts/UserDetail";
 import StaffDetailScreen from "./pages/ParkingLotOwner/StaffManagement/StaffDetail";
 import ParkingLotOwnerList from "./pages/Admin/ParkingLotOwner/ParkingLotOwnerList";
 import ParkingLotOwnerDetails from "./pages/Admin/ParkingLotOwner/ParkingLotOwnerDetails";
+import SubscriptionList from "./pages/Admin/Subscriptions/SubscriptionList";
 import RequestDetails from "./pages/Admin/Requests/RequestDetails";
 import UploadFile from "./pages/ParkingLotOwner/UploadFile";
 import ParkingHistoryDetail from "./pages/ParkingLotOwner/ParkingHistory/HistoryManagement/ParkingHistoryDetail";
@@ -171,6 +172,7 @@ function App() {
           />
           <Route path="requests" element={<AdminRequestList />} />
           <Route path="requests/details/:id" element={<RequestDetails />} />
+          <Route path="subscriptions" element={<SubscriptionList />} />
         </Route>
 
         {/* Owner Routes */}
