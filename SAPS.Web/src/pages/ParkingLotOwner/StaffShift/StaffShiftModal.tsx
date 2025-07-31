@@ -430,7 +430,6 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
                         </div>
  */}
                         <div className='flex-row gap-4 hidden'>
-
                             {/* Shift Type */}
                             <div className="flex-1">
                                 <label className="block text-sm font-medium mb-1">

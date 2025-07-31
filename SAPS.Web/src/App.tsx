@@ -16,9 +16,11 @@ import IncidentReports from "./pages/ParkingLotOwner/IncidentReports/IncidentRep
 import ParkingHistory from "./pages/ParkingLotOwner/ParkingHistory/HistoryManagement/ParkingHistory";
 import StaffManagement from "./pages/ParkingLotOwner/StaffManagement/StaffManagement";
 import ParkingLotInfo from "./pages/ParkingLotOwner/ParkingInfo/ParkingLotInfo";
-import AdminAccountList from "./pages/Admin/AdminAccounts/AdminAccountList";
-import AdminParkingLotOwnerList from "./pages/Admin/ParkingLotOwnerAccounts/AdminParkingLotOwnerList";
-import AdminRequestList from "./pages/Admin/Requests/AdminRequestList";
+import AdminAccountList from "./pages/Admin/Accounts/AdminAccounts/AdminAccountList";
+// import AdminAccountList from "./pages/Admin/Auth/AdminAccountList";
+import AdminParkingLotOwnerList from "./pages/Admin/ParkingLotOwner/ParkingLotOwnerList";
+// import AdminParkingLotOwnerList from "./pages/Admin/Auth/AdminParkingLotOwnerList";
+// import AdminRequestList from "./pages/Admin/Auth/AdminRequestList";
 import { ADMIN_ROLE, OWNER_ROLE } from "./config/base";
 import ParkingFeeManagement from "./pages/ParkingLotOwner/ParkingFee/ParkingFeeManagement";
 import StaffDetailScreen from "./pages/ParkingLotOwner/StaffManagement/StaffDetail";
