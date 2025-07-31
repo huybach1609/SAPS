@@ -68,14 +68,16 @@
             tv_share_code.setText("Đang tải dữ liệu...");
 
             VehicleApiService vehicleApi = ApiTest.getService(requireContext()).create(VehicleApiService.class);
-
             vehicleApi.getListVehicles().enqueue(new Callback<List<Vehicle>>() {
                 @Override
                 public void onResponse(Call<List<Vehicle>> call, Response<List<Vehicle>> response) {
+                    if (!isAdded() || getContext() == null) return;
                     if (response.isSuccessful() && response.body() != null) {
                         vehicleList = response.body();
                         vehicleAdapter = new VehicleAdapter(vehicleList, new VehicleFragmentHandler(requireContext()));
                         rvVehicles.setAdapter(vehicleAdapter);
+
+
                         tv_share_code.setText("ASSX1-adsa-XLM");
                     } else {
                         tv_share_code.setText("Lỗi: " + response.code());
@@ -84,6 +86,7 @@
 
                 @Override
                 public void onFailure(Call<List<Vehicle>> call, Throwable t) {
+                    if (!isAdded() || getContext() == null) return;
                     tv_share_code.setText("Lỗi kết nối: " + t.getMessage());
                 }
             });

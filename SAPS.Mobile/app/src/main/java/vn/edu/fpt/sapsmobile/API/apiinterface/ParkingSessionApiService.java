@@ -13,4 +13,10 @@ public interface ParkingSessionApiService {
     Call<ParkingSession> getParkingSessionToCheckOut(@Path("vehicleID") String vehicleID);
     @GET("/parkingsession")
     Call<List<ParkingSession>> getParkingSessionList();
+
+    @GET("/parkingsessionOfVehicleParkingList")
+    Call<List<ParkingSession>> getParkingSessionOfVehicleParkingList();
+    @GET("/parkingsessionLastestVehicleParking")
+    Call<ParkingSession> getParkingSessionLastestVehicleParking();
+
 }
