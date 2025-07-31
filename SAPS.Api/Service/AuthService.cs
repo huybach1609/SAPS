@@ -1,5 +1,6 @@
-﻿
+﻿using AutoMapper;
 using SAPS.Api.Dtos;
+using SAPS.Api.Models.Generated;
 using SAPS.Api.Repository;
 
 namespace SAPS.Api.Service
@@ -8,9 +9,13 @@ namespace SAPS.Api.Service
     {
         private readonly IUserRepository _userRepository;
         private readonly JwtService _jwtService;
-        public AuthService(IUserRepository userRepository)
+        private readonly IMapper _mapper;
+        
+        public AuthService(IUserRepository userRepository, JwtService jwtService, IMapper mapper)
         {
             _userRepository = userRepository;
+            _jwtService = jwtService;
+            _mapper = mapper;
         }
 
         public async Task<AuthResponse> Login(UserLoginDto dto)
@@ -20,25 +25,31 @@ namespace SAPS.Api.Service
             {
                 return new AuthResponse
                 {
-                    User = null,
+                    User = null!,
+                    AccessToken = null!
                 };
             }
+            
             if (dto.Password.Equals(existingUser.Password))
             {
                 var token = _jwtService.GenerateToken(existingUser);
+                
+                // Map User entity to UserResponseDto to avoid circular references
+                var userDto = _mapper.Map<UserResponseDto>(existingUser);
+                
                 return new AuthResponse
                 {
                     AccessToken = token,
-                    User = existingUser,
+                    User = userDto,
                     ExpiresAt = DateTime.UtcNow.AddHours(24)
                 };
             }
 
             return new AuthResponse
             {
-                User = null,
+                User = null!,
+                AccessToken = null!
             };
-
         }
     }
 }

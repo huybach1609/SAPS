@@ -28,7 +28,6 @@ import {
 } from "../ParkingHistory/HistoryManagement/ParkingHistoryDetail";
 import { useParkingLot } from "../ParkingLotContext";
 
-import DefaultLayout from "@/layouts/default";
 import {
   IncidentReport,
   IncidentStatus,
@@ -101,7 +100,7 @@ export default function IncidentReports() {
 
   // filter by date range (entryDateTime, exitDateTime)
   const [dateRange, setDateRange] = useState<RangeValue<DateValue> | null>(
-    null,
+    null
   );
 
   const navigate = useNavigate();
@@ -115,14 +114,14 @@ export default function IncidentReports() {
       ? new Date(
           dateRange.start.year,
           dateRange.start.month - 1,
-          dateRange.start.day,
+          dateRange.start.day
         ).toISOString()
       : undefined;
     const dateRangeEnd = dateRange?.end
       ? new Date(
           dateRange.end.year,
           dateRange.end.month - 1,
-          dateRange.end.day,
+          dateRange.end.day
         ).toISOString()
       : undefined;
 
@@ -134,7 +133,7 @@ export default function IncidentReports() {
       dateRangeStart,
       dateRangeEnd,
       status !== "" ? Number(status) : undefined,
-      priority !== "" ? Number(priority) : undefined,
+      priority !== "" ? Number(priority) : undefined
     )
       .then((res) => {
         setIncidents(res.data);
@@ -156,7 +155,7 @@ export default function IncidentReports() {
   ]);
 
   return (
-    <DefaultLayout title="Incident Reports">
+    <>
       <IncidentReportStatisticsCard
         loading={parkingLotLoading}
         parkingLotId={selectedParkingLot?.id ?? ""}
@@ -308,7 +307,7 @@ export default function IncidentReports() {
                           color="secondary"
                           onPress={() => {
                             navigate(
-                              `/owner/incidents/${selectedParkingLot?.id}/${inc.id}`,
+                              `/owner/incidents/${selectedParkingLot?.id}/${inc.id}`
                             );
                           }}
                         >
@@ -353,7 +352,7 @@ export default function IncidentReports() {
               disabled={!pagination.hasNextPage || parkingLotLoading}
               onPress={() => {
                 setCurrentPage((prev) =>
-                  prev < pagination.totalPages ? prev + 1 : prev,
+                  prev < pagination.totalPages ? prev + 1 : prev
                 );
               }}
             >
@@ -362,7 +361,7 @@ export default function IncidentReports() {
           </div>
         </div>
       )}
-    </DefaultLayout>
+    </>
   );
 }
 const IncidentReportStatisticsCard = ({
