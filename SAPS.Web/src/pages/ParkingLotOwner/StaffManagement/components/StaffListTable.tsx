@@ -13,7 +13,7 @@ interface StaffListTableProps {
   setSelectUser: React.Dispatch<React.SetStateAction<User | null>>;
   parkingLot: ParkingLot | null;
   updateModalDisclosure: UseDisclosureProps;
-  handleRemoveFromStaffList: (staffId: string) => void;
+  handleDeactivateStaff: (staffId: string, user: User) => void;
 }
 
 export const StaffListTable: React.FC<StaffListTableProps> = ({
@@ -22,7 +22,7 @@ export const StaffListTable: React.FC<StaffListTableProps> = ({
   setSelectUser,
   parkingLot,
   updateModalDisclosure,
-  handleRemoveFromStaffList,
+  handleDeactivateStaff,
 }) => {
   const navigate = useNavigate();
 
@@ -116,7 +116,7 @@ export const StaffListTable: React.FC<StaffListTableProps> = ({
                       key="delete"
                       className="text-danger"
                       color="danger"
-                      onPress={() => handleRemoveFromStaffList(entry?.staffProfile?.staffId || '')}
+                      onPress={() => handleDeactivateStaff(entry?.staffProfile?.staffId || '', entry)}
                     >
                       Deactivate
                     </DropdownItem>
