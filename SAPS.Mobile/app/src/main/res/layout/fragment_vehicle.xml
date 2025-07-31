@@ -47,61 +47,68 @@
         </LinearLayout>
 
         <!-- Share Code Card -->
+
         <LinearLayout
             android:id="@+id/share_code_card"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#D8F1FF"
-            android:orientation="vertical"
-            android:padding="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="8dp"
-            android:elevation="4dp"
+            android:background="#D8F1FF"
             android:backgroundTint="#E0F4FF"
             android:backgroundTintMode="src_in"
-            android:clipToOutline="true">
+            android:clipToOutline="true"
+            android:elevation="4dp"
+            android:orientation="vertical"
+            android:padding="16dp">
 
             <TextView
                 android:id="@+id/label_share_code"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="🔑 Your Share Code"
-                android:textStyle="bold"
-                android:textColor="#333333"
-                android:textSize="16sp" />
+                android:textColor="#0D47A1"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tv_share_code"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="USER-JOHN2025"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#0066CC"
-                android:gravity="center"
-                android:layout_marginVertical="8dp" />
+                android:background="#FFFFFF">
+
+                <TextView
+                    android:id="@+id/tv_share_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginVertical="8dp"
+                    android:gravity="center"
+                    android:text="USER-JOHN2025"
+                    android:textColor="#BBDEFB"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tv_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
                 android:text="Give this code to vehicle owners to grant you access to their vehicles."
-                android:textSize="14sp"
-                android:textColor="#444444"
-                android:layout_marginBottom="12dp" />
+                android:textColor="#0D47A1"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <Button
                 android:id="@+id/btn_copy_code"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="📋 Copy My Share Code"
-                android:backgroundTint="#0066CC"
-                android:textColor="#FFFFFF"
                 android:layout_gravity="center_horizontal"
-                android:textAllCaps="false" />
+                android:backgroundTint="#0066CC"
+                android:text="📋 Copy My Share Code"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF" />
         </LinearLayout>
 
-        <!-- RecyclerView -->
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvVehicles"
             android:layout_width="match_parent"

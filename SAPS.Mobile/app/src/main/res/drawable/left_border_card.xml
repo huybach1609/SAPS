@@ -3,7 +3,7 @@
     <!-- Lớp 1: viền xanh bên trái -->
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="#007BFF" />
+            <solid android:color="#00008B" />
             <corners
                 android:topLeftRadius="12dp"
                 android:bottomLeftRadius="12dp"
