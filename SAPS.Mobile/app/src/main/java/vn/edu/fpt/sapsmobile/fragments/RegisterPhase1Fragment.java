@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -42,6 +43,7 @@ public class RegisterPhase1Fragment extends Fragment {
 
     private ImageView previewFront, previewBack;
     private Button btnPickFront, btnPickBack, nextButton;
+    private EditText emailInput, passwordInput, confirmPasswordInput;
     private Uri frontImageUri, backImageUri;
     private LoadingDialog loadingDialog;
 
@@ -55,6 +57,11 @@ public class RegisterPhase1Fragment extends Fragment {
         btnPickFront = view.findViewById(R.id.btn_pick_front);
         btnPickBack = view.findViewById(R.id.btn_pick_back);
         nextButton = view.findViewById(R.id.button_next_phase);
+
+        // User input fields
+        emailInput = view.findViewById(R.id.edit_text_email);
+        passwordInput = view.findViewById(R.id.edit_text_password);
+        confirmPasswordInput = view.findViewById(R.id.edit_text_confirm_password);
 
         loadingDialog = new LoadingDialog(requireActivity());
 
@@ -74,17 +81,42 @@ public class RegisterPhase1Fragment extends Fragment {
         nextButton.setEnabled(true); // Cho phép nhấn Next ngay từ đầu
 
         nextButton.setOnClickListener(v -> {
+            // Validate user input fields
+            String email = emailInput.getText().toString().trim();
+            String password = passwordInput.getText().toString();
+            String confirmPassword = confirmPasswordInput.getText().toString();
+
+            if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+                Toast.makeText(requireContext(), "Please fill in all required fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (!password.equals(confirmPassword)) {
+                Toast.makeText(requireContext(), "Passwords do not match", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (password.length() < 8) {
+                Toast.makeText(requireContext(), "Password must be at least 8 characters", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Save user input data
+            RegisterActivity activity = (RegisterActivity) requireActivity();
+            activity.registerData.setEmail(email);
+            activity.registerData.setPassword(password);
+
             if (frontImageUri == null || backImageUri == null) {
                 new AlertDialog.Builder(requireContext())
                         .setTitle("Skip ID Verification?")
                         .setMessage("You haven't uploaded both front and back of your ID. Do you want to skip this step?")
                         .setPositiveButton("Yes, skip", (dialog, which) -> {
-                            ((RegisterActivity) requireActivity()).nextPhase();
+                            activity.nextPhase();
                         })
                         .setNegativeButton("Cancel", null)
                         .show();
             } else {
-                ((RegisterActivity) requireActivity()).nextPhase();
+                activity.nextPhase();
             }
         });
 
