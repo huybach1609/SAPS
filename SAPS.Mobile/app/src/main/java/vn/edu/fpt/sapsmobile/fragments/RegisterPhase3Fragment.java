@@ -1,11 +1,8 @@
 package vn.edu.fpt.sapsmobile.fragments;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,15 +16,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -45,39 +38,51 @@ import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
 
 public class RegisterPhase3Fragment extends Fragment {
 
-    private static final int REQUEST_TAKE_PHOTO = 2001;
-    private static final int REQUEST_PICK_PHOTO = 2002;
+    private static final int REQUEST_PICK_FRONT = 2001;
+    private static final int REQUEST_PICK_BACK = 2002;
 
-    private ImageView previewImage;
-    private Button btnTakePhoto, btnFromGallery, completeButton, skipButton;
-    private EditText ownerInput, plateInput, modelInput, colorInput;
-    private Uri imageUri;
-    private File capturedImageFile;
+    private ImageView previewImageFront, previewImageBack;
+    private Button btnTakePhoto, btnPickFront, btnPickBack, completeButton, skipButton;
+    private EditText ownerInput, plateInput, modelInput, colorInput, certificateTitleInput;
 
-    private LoadingDialog loadingDialog; // ✅
+    private Uri frontImageUri;
+    private Uri backImageUri;
+
+    private LoadingDialog loadingDialog;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_register_phase3, container, false);
 
-        previewImage = view.findViewById(R.id.preview_vehicle_image);
+        previewImageFront = view.findViewById(R.id.preview_vehicle_image_front);
+        previewImageBack = view.findViewById(R.id.preview_vehicle_image_back);
         btnTakePhoto = view.findViewById(R.id.btn_take_photo_vehicle);
-        btnFromGallery = view.findViewById(R.id.btn_from_gallery_vehicle);
+        btnPickFront = view.findViewById(R.id.btn_pick_front_vehicle);
+        btnPickBack = view.findViewById(R.id.btn_pick_back_vehicle);
         completeButton = view.findViewById(R.id.button_complete_registration);
         skipButton = view.findViewById(R.id.button_skip_phase);
+
         ownerInput = view.findViewById(R.id.input_owner_name);
         plateInput = view.findViewById(R.id.input_license_plate);
         modelInput = view.findViewById(R.id.input_vehicle_model);
         colorInput = view.findViewById(R.id.input_vehicle_color);
+        certificateTitleInput = view.findViewById(R.id.input_certificate_title);
 
-        loadingDialog = new LoadingDialog(requireActivity()); // ✅ Khởi tạo
+        loadingDialog = new LoadingDialog(requireActivity());
 
-        btnTakePhoto.setOnClickListener(v -> dispatchTakePictureIntent());
+        btnTakePhoto.setOnClickListener(v -> {
+            Toast.makeText(requireContext(), "Chức năng này chưa hỗ trợ nhận dạng cả 2 mặt từ ảnh chụp.", Toast.LENGTH_SHORT).show();
+        });
 
-        btnFromGallery.setOnClickListener(v -> {
+        btnPickFront.setOnClickListener(v -> {
             Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(pickPhoto, REQUEST_PICK_PHOTO);
+            startActivityForResult(pickPhoto, REQUEST_PICK_FRONT);
+        });
+
+        btnPickBack.setOnClickListener(v -> {
+            Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(pickPhoto, REQUEST_PICK_BACK);
         });
 
         completeButton.setOnClickListener(v -> {
@@ -92,44 +97,55 @@ public class RegisterPhase3Fragment extends Fragment {
         return view;
     }
 
-    private void dispatchTakePictureIntent() {
-        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        if (takePictureIntent.resolveActivity(requireActivity().getPackageManager()) != null) {
-            try {
-                capturedImageFile = File.createTempFile(
-                        "vehicle_image",
-                        ".jpg",
-                        requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                );
-                imageUri = FileProvider.getUriForFile(requireContext(), requireContext().getPackageName() + ".fileprovider", capturedImageFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-                startActivityForResult(takePictureIntent, REQUEST_TAKE_PHOTO);
-            } catch (IOException e) {
-                e.printStackTrace();
-                Toast.makeText(requireContext(), "Failed to create image file", Toast.LENGTH_SHORT).show();
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == AppCompatActivity.RESULT_OK && data != null && data.getData() != null) {
+            Uri imageUri = data.getData();
+
+            if (requestCode == REQUEST_PICK_FRONT) {
+                frontImageUri = imageUri;
+                previewImageFront.setImageURI(frontImageUri);
+                previewImageFront.setVisibility(View.VISIBLE);
+            } else if (requestCode == REQUEST_PICK_BACK) {
+                backImageUri = imageUri;
+                previewImageBack.setImageURI(backImageUri);
+                previewImageBack.setVisibility(View.VISIBLE);
             }
+
+            if (frontImageUri != null && backImageUri != null) {
+                uploadBothImagesToServer(frontImageUri, backImageUri);
+            } else {
+                Toast.makeText(requireContext(), "Vui lòng chọn cả 2 mặt trước và sau của giấy đăng ký xe", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(requireContext(), "Không chọn ảnh", Toast.LENGTH_SHORT).show();
         }
     }
 
-    private void uploadImageToServer(Uri imageUri) {
+    private void uploadBothImagesToServer(Uri frontUri, Uri backUri) {
         try {
-            loadingDialog.show("Uploading vehicle image..."); // ✅ Hiển thị
+            loadingDialog.show("Uploading vehicle registration images...");
 
-            Bitmap bitmap = BitmapFactory.decodeStream(requireActivity().getContentResolver().openInputStream(imageUri));
-            Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 1024, 1024, true);
+            InputStream frontStream = requireActivity().getContentResolver().openInputStream(frontUri);
+            byte[] frontBytes = new byte[frontStream.available()];
+            frontStream.read(frontBytes);
+            frontStream.close();
 
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos);
-            byte[] imageBytes = baos.toByteArray();
+            InputStream backStream = requireActivity().getContentResolver().openInputStream(backUri);
+            byte[] backBytes = new byte[backStream.available()];
+            backStream.read(backBytes);
+            backStream.close();
 
             RequestBody requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
-                    .addFormDataPart("file", "vehicle_id.jpg",
-                            RequestBody.create(imageBytes, MediaType.parse("image/jpeg")))
+                    .addFormDataPart("front", "front.jpg", RequestBody.create(frontBytes, MediaType.parse("image/jpeg")))
+                    .addFormDataPart("back", "back.jpg", RequestBody.create(backBytes, MediaType.parse("image/jpeg")))
                     .build();
 
             Request request = new Request.Builder()
-                    .url("http://10.35.88.3:8080/api/vehicle-ocr")
+                    .url("http://10.35.88.16:8080/api/vehicle-ocr/full")
                     .post(requestBody)
                     .build();
 
@@ -139,70 +155,45 @@ public class RegisterPhase3Fragment extends Fragment {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     requireActivity().runOnUiThread(() -> {
-                        loadingDialog.hide(); // ✅ Ẩn dialog
-                        Toast.makeText(requireContext(), "Network error during OCR", Toast.LENGTH_SHORT).show();
+                        loadingDialog.hide();
+                        Toast.makeText(requireContext(), "Upload failed", Toast.LENGTH_SHORT).show();
+                        Log.e("VEHICLE_OCR_UPLOAD_ERROR", "Error uploading images: " + e.getMessage());
                     });
                 }
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
-                    requireActivity().runOnUiThread(() -> loadingDialog.hide()); // ✅ Ẩn dialog
+                    requireActivity().runOnUiThread(() -> loadingDialog.hide());
 
                     if (response.isSuccessful()) {
                         String json = response.body().string();
                         try {
                             JSONObject obj = new JSONObject(json);
-                            String owner = obj.optString("owner_name");
-                            String plate = obj.optString("license_plate");
-                            String model = obj.optString("vehicle_model");
-                            String color = obj.optString("color");
-
                             requireActivity().runOnUiThread(() -> {
-                                ownerInput.setText(owner);
-                                plateInput.setText(plate);
-                                modelInput.setText(model);
-                                colorInput.setText(color);
-                                Toast.makeText(requireContext(), "Auto-filled from vehicle document", Toast.LENGTH_SHORT).show();
+                                ownerInput.setText(obj.optString("owner_name"));
+                                plateInput.setText(obj.optString("license_plate"));
+                                modelInput.setText(obj.optString("vehicle_model"));
+                                colorInput.setText(obj.optString("color"));
+                                certificateTitleInput.setText(obj.optString("certificate_title"));
+                                Toast.makeText(requireContext(), "Auto-filled from vehicle registration", Toast.LENGTH_SHORT).show();
                             });
-
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            requireActivity().runOnUiThread(() ->
-                                    Toast.makeText(requireContext(), "JSON Parsing Error", Toast.LENGTH_SHORT).show());
                         }
-
                     } else {
                         String errorBody = response.body() != null ? response.body().string() : "null";
-                        Log.e("VehicleOCR", "❌ OCR Failed - HTTP " + response.code() + "\nBody:\n" + errorBody);
-
-                        requireActivity().runOnUiThread(() ->
-                                Toast.makeText(requireContext(), "OCR failed", Toast.LENGTH_SHORT).show());
+                        requireActivity().runOnUiThread(() -> {
+                            Toast.makeText(requireContext(), "OCR failed", Toast.LENGTH_SHORT).show();
+                            Log.e("VEHICLE_OCR_RESPONSE_ERROR", "Code: " + response.code() + " | Body: " + errorBody);
+                        });
                     }
                 }
             });
 
         } catch (IOException e) {
             e.printStackTrace();
-            loadingDialog.hide(); // ✅ Ẩn dialog nếu lỗi
-            Toast.makeText(requireContext(), "Error reading image", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == AppCompatActivity.RESULT_OK) {
-            if (requestCode == REQUEST_PICK_PHOTO && data != null && data.getData() != null) {
-                imageUri = data.getData();
-                previewImage.setVisibility(View.VISIBLE);
-                previewImage.setImageURI(imageUri);
-                uploadImageToServer(imageUri);
-            } else if (requestCode == REQUEST_TAKE_PHOTO && capturedImageFile != null && capturedImageFile.exists()) {
-                imageUri = Uri.fromFile(capturedImageFile);
-                previewImage.setVisibility(View.VISIBLE);
-                previewImage.setImageURI(imageUri);
-                uploadImageToServer(imageUri);
-            }
+            Toast.makeText(requireContext(), "Error reading images", Toast.LENGTH_SHORT).show();
+            loadingDialog.hide();
         }
     }
 }

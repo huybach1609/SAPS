@@ -17,8 +17,7 @@ import vn.edu.fpt.sapsmobile.activities.auth.RegisterActivity;
 public class RegisterPhase2Fragment extends Fragment {
 
     private EditText fullNameInput, idNumberInput, dobInput, sexInput, nationalityInput, placeOriginInput, placeResidenceInput;
-    private EditText issueDateInput, issuePlaceInput; // ✅ Thêm mới
-    private EditText emailInput, passwordInput, confirmPasswordInput;
+    private EditText issueDateInput, issuePlaceInput;
     private Button nextButton;
 
     @Nullable
@@ -33,12 +32,8 @@ public class RegisterPhase2Fragment extends Fragment {
         nationalityInput = view.findViewById(R.id.input_nationality);
         placeOriginInput = view.findViewById(R.id.input_place_origin);
         placeResidenceInput = view.findViewById(R.id.input_place_residence);
-        issueDateInput = view.findViewById(R.id.input_issue_date);     // ✅ Ánh xạ
-        issuePlaceInput = view.findViewById(R.id.input_issue_place);   // ✅ Ánh xạ
-
-        emailInput = view.findViewById(R.id.edit_text_email);
-        passwordInput = view.findViewById(R.id.edit_text_password);
-        confirmPasswordInput = view.findViewById(R.id.edit_text_confirm_password);
+        issueDateInput = view.findViewById(R.id.input_issue_date);
+        issuePlaceInput = view.findViewById(R.id.input_issue_place);
         nextButton = view.findViewById(R.id.button_next_phase);
 
         // Auto-fill data từ Phase 1
@@ -50,8 +45,8 @@ public class RegisterPhase2Fragment extends Fragment {
         nationalityInput.setText(activity.registerData.getNationality());
         placeOriginInput.setText(activity.registerData.getPlaceOfOrigin());
         placeResidenceInput.setText(activity.registerData.getPlaceOfResidence());
-        issueDateInput.setText(activity.registerData.getIssueDate());     // ✅ Set text
-        issuePlaceInput.setText(activity.registerData.getIssuePlace());   // ✅ Set text
+        issueDateInput.setText(activity.registerData.getIssueDate());
+        issuePlaceInput.setText(activity.registerData.getIssuePlace());
 
         // Disable auto-filled fields
         fullNameInput.setEnabled(false);
@@ -61,12 +56,10 @@ public class RegisterPhase2Fragment extends Fragment {
         nationalityInput.setEnabled(false);
         placeOriginInput.setEnabled(false);
         placeResidenceInput.setEnabled(false);
-        issueDateInput.setEnabled(false);       // ✅ Disable
-        issuePlaceInput.setEnabled(false);      // ✅ Disable
+        issueDateInput.setEnabled(false);
+        issuePlaceInput.setEnabled(false);
 
         nextButton.setOnClickListener(v -> {
-            activity.registerData.setEmail(emailInput.getText().toString());
-            activity.registerData.setPassword(passwordInput.getText().toString());
             activity.nextPhase();
         });
 

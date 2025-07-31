@@ -9,13 +9,18 @@ android {
     buildFeatures{
         buildConfig = true
     }
-    buildTypes{
+    buildTypes {
         debug {
-            buildConfigField("String", "SERVER_CLIENT_ID","\"275429573503-526ri9oq1obai6d1qmj4qd07njuhahtk.apps.googleusercontent.com\"")
-            buildConfigField("String", "SERVER_BASE_URL","\"http://192.168.1.21:5093/\"")
+            buildConfigField("String", "SERVER_CLIENT_ID", "\"275429573503-526ri9oq1obai6d1qmj4qd07njuhahtk.apps.googleusercontent.com\"")
+            buildConfigField("String", "SERVER_BASE_URL", "\"http://10.35.88.3:5093/\"")
+            buildConfigField("String", "MOCK_BASE_URL", "\"https://48073b2d-bd5d-43d0-adbd-e5e9713061aa.mock.pstmn.io/\"")
         }
         release {
-            buildConfigField("String", "SERVER_CLIENT_ID","\"275429573503-526ri9oq1obai6d1qmj4qd07njuhahtk.apps.googleusercontent.com\"")
+            isMinifyEnabled = false
+
+            buildConfigField("String", "SERVER_CLIENT_ID", "\"275429573503-526ri9oq1obai6d1qmj4qd07njuhahtk.apps.googleusercontent.com\"")
+            buildConfigField("String", "SERVER_BASE_URL", "\"http://10.35.88.3:5093/\"")
+            buildConfigField("String", "MOCK_BASE_URL", "\"https://48073b2d-bd5d-43d0-adbd-e5e9713061aa.mock.pstmn.io/\"")
         }
     }
 

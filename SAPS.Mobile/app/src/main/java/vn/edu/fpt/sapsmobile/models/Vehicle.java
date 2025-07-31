@@ -11,6 +11,7 @@ public class Vehicle implements Serializable {
     private String chassisNumber;
     private String color;
     private String ownerVehicleFullName;
+    private String certificateTitle; // Thêm trường mới từ mặt sau giấy đăng ký
     private String status;
     private String sharingStatus;
     private String createdAt;
@@ -42,6 +43,9 @@ public class Vehicle implements Serializable {
     public String getOwnerVehicleFullName() { return ownerVehicleFullName; }
     public void setOwnerVehicleFullName(String ownerVehicleFullName) { this.ownerVehicleFullName = ownerVehicleFullName; }
 
+    public String getCertificateTitle() { return certificateTitle; }
+    public void setCertificateTitle(String certificateTitle) { this.certificateTitle = certificateTitle; }
+
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
 
@@ -68,6 +72,7 @@ public class Vehicle implements Serializable {
                 ", chassisNumber='" + chassisNumber + '\'' +
                 ", color='" + color + '\'' +
                 ", ownerVehicleFullName='" + ownerVehicleFullName + '\'' +
+                ", certificateTitle='" + certificateTitle + '\'' +
                 ", status='" + status + '\'' +
                 ", sharingStatus='" + sharingStatus + '\'' +
                 ", createdAt='" + createdAt + '\'' +

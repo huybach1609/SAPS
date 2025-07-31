@@ -46,22 +46,41 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="#CAF0F8"
-            android:padding="15dp"
+            android:padding="20dp"
             android:layout_marginBottom="20dp"
             android:gravity="center">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="📄 Upload Vehicle Document"
-                android:textSize="16sp"
+                android:text="📄"
+                android:textSize="40sp"
+                android:textColor="#0077B6"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Upload Vehicle Registration"
                 android:textColor="#023E8A"
-                android:layout_marginBottom="10dp" />
+                android:textSize="16sp"
+                android:layout_marginTop="10dp"
+                android:gravity="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Take a photo or select from gallery to update your information"
+                android:textSize="13sp"
+                android:textColor="#0077B6"
+                android:layout_marginTop="5dp"
+                android:gravity="center" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp">
 
                 <Button
                     android:id="@+id/btn_take_photo_vehicle"
@@ -74,27 +93,71 @@
 
                 <Space
                     android:layout_width="10dp"
-                    android:layout_height="0dp" />
+                    android:layout_height="0dp"/>
 
                 <Button
-                    android:id="@+id/btn_from_gallery_vehicle"
+                    android:id="@+id/btn_pick_front_vehicle"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="🖼️ From Gallery"
+                    android:text="🖼️ Front Side"
                     android:backgroundTint="#0096C7"
                     android:textColor="@android:color/white" />
+
+                <Space
+                    android:layout_width="10dp"
+                    android:layout_height="0dp"/>
+
+                <Button
+                    android:id="@+id/btn_pick_back_vehicle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="🖼️ Back Side"
+                    android:backgroundTint="#00B4D8"
+                    android:textColor="@android:color/white" />
+
             </LinearLayout>
 
-            <ImageView
-                android:id="@+id/preview_vehicle_image"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:layout_marginTop="15dp"
-                android:scaleType="centerCrop"
-                android:visibility="gone"
-                android:background="#e0e0e0" />
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/preview_vehicle_image_front"
+                    android:layout_width="0dp"
+                    android:layout_height="180dp"
+                    android:layout_weight="1"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone"
+                    android:layout_marginEnd="5dp"
+                    android:background="#e0e0e0" />
+
+                <ImageView
+                    android:id="@+id/preview_vehicle_image_back"
+                    android:layout_width="0dp"
+                    android:layout_height="180dp"
+                    android:layout_weight="1"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone"
+                    android:layout_marginStart="5dp"
+                    android:background="#e0e0e0" />
+            </LinearLayout>
+
         </LinearLayout>
+
+        <!-- Auto-fill Fields -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📋 Information will be auto-filled after vehicle registration upload"
+            android:textSize="12sp"
+            android:textColor="#7f8c8d"
+            android:gravity="center"
+            android:layout_marginBottom="10dp"/>
 
         <!-- Auto-filled fields -->
         <LinearLayout
@@ -133,10 +196,17 @@
                 android:hint="Color"
                 android:enabled="false" />
 
+            <EditText
+                android:id="@+id/input_certificate_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Certificate Title"
+                android:enabled="false" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="✓ Auto-extracted from vehicle document"
+                android:text="✓ Auto-extracted from vehicle registration"
                 android:textColor="#388e3c"
                 android:textSize="12sp"
                 android:gravity="end"

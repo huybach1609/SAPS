@@ -18,6 +18,7 @@ import vn.edu.fpt.sapsmobile.activities.main.MainActivity;
 import vn.edu.fpt.sapsmobile.models.User;
 import vn.edu.fpt.sapsmobile.services.AuthenticationService;
 import vn.edu.fpt.sapsmobile.utils.TokenManager;
+import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
 
 public class LoginActivity extends AppCompatActivity implements AuthenticationService.AuthCallback {
 
@@ -29,31 +30,25 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationSe
     private TextView userInfoText;
     private TokenManager tokenManager;
     private EditText emailInput, passwordInput;
+    private LoadingDialog loadingDialog; // ✅ Loading dialog
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Hide ActionBar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().hide();
-        }
+        if (getSupportActionBar() != null) getSupportActionBar().hide();
         setContentView(R.layout.activity_login);
 
-        // Initialize TokenManager to check if the user is already logged in
         tokenManager = new TokenManager(this);
         if (tokenManager.isLoggedIn()) {
-            Log.d(TAG, "User already logged in, redirecting to MainActivity");
-            // If the user is already logged in, redirect to MainActivity
-            Intent mainIntent = new Intent(this, MainActivity.class);
-            startActivity(mainIntent);
-            finish(); // Close LoginActivity
-            return; // Exit early
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+            return;
         }
 
-        // Initialize views
         initializeViews();
         initializeAuthService();
+        loadingDialog = new LoadingDialog(this); // ✅ Init here
         checkLoginStatus();
     }
 
@@ -68,72 +63,43 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationSe
         emailInput = findViewById(R.id.email_input_edit_text);
         passwordInput = findViewById(R.id.password_input_edit_text);
 
-        // Button clicks
         signInGoogleButton.setOnClickListener(v -> handleSignInClick());
         signOutButton.setOnClickListener(v -> handleSignOutClick());
 
         registerButton.setOnClickListener(v -> {
-            // Redirect to RegisterActivity
-            Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
         });
 
         signInButton.setOnClickListener(v -> handleEmailLogin());
     }
 
     private void handleEmailLogin() {
-        // Get email and password from input fields
         String email = emailInput.getText().toString().trim();
         String password = passwordInput.getText().toString().trim();
 
-        // Validate input fields
-        if (!validateLoginInput(email, password)) {
-            return;
-        }
+        if (!validateLoginInput(email, password)) return;
 
-        // Disable login button to prevent multiple requests
-        signInButton.setEnabled(false);
-        signInButton.setText("Signing in...");
+        loadingDialog.show("Signing in...");
 
-        Log.d(TAG, "Attempting login with email: " + email);
-
-        // Call loginWithEmail method to send login request
         authenticationService.loginWithEmail(email, password, new AuthenticationService.AuthCallback() {
             @Override
             public void onAuthSuccess(User user) {
-                Log.d(TAG, "Login successful for user: " + user.getEmail());
                 runOnUiThread(() -> {
-                    // Re-enable login button
-                    signInButton.setEnabled(true);
-                    signInButton.setText("Sign In");
-
+                    loadingDialog.hide();
                     Toast.makeText(LoginActivity.this, "Login successful! Welcome " + user.getName(), Toast.LENGTH_SHORT).show();
-
-                    // Update UI with user info and redirect to MainActivity
                     updateUI(user);
-
-                    // Clear input fields
                     emailInput.setText("");
                     passwordInput.setText("");
-
-                    // Redirect to MainActivity
-                    Intent mainIntent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(mainIntent);
-                    finish();  // Close LoginActivity
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    finish();
                 });
             }
 
             @Override
             public void onAuthFailure(String error) {
-                Log.e(TAG, "Login failed: " + error);
                 runOnUiThread(() -> {
-                    // Re-enable login button
-                    signInButton.setEnabled(true);
-                    signInButton.setText("Sign In");
-
+                    loadingDialog.hide();
                     Toast.makeText(LoginActivity.this, "Login failed: " + error, Toast.LENGTH_LONG).show();
-
-                    // Clear password field for security
                     passwordInput.setText("");
                 });
             }
@@ -141,75 +107,54 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationSe
     }
 
     private boolean validateLoginInput(String email, String password) {
-        // Check if email is empty
         if (TextUtils.isEmpty(email)) {
             emailInput.setError("Email is required");
             emailInput.requestFocus();
             return false;
         }
-
-        // Check if email format is valid
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             emailInput.setError("Please enter a valid email address");
             emailInput.requestFocus();
             return false;
         }
-
-        // Check if password is empty
         if (TextUtils.isEmpty(password)) {
             passwordInput.setError("Password is required");
             passwordInput.requestFocus();
             return false;
         }
-
-        // Check minimum password length
         if (password.length() < 6) {
             passwordInput.setError("Password must be at least 6 characters");
             passwordInput.requestFocus();
             return false;
         }
 
-        // Clear any previous errors
         emailInput.setError(null);
         passwordInput.setError(null);
-
         return true;
     }
 
     private void initializeAuthService() {
-        // Initialize AuthenticationService
         authenticationService = new AuthenticationService(this, this);
     }
 
     private void checkLoginStatus() {
-        // If the user is already logged in, update the UI with their info
         if (authenticationService.isLoggedIn()) {
             User currentUser = authenticationService.getCurrentUser();
-            if (currentUser != null) {
-                Log.d(TAG, "Found existing user session: " + currentUser.getEmail());
-                updateUI(currentUser);
-            } else {
-                Log.d(TAG, "No existing user session found");
-                updateUI(null);
-            }
+            updateUI(currentUser);
         } else {
-            Log.d(TAG, "User not logged in");
             updateUI(null);
         }
     }
 
     private void handleSignInClick() {
-        // Trigger Google Sign-In if you are using Google Authentication
+        loadingDialog.show("Signing in with Google...");
         Intent signInIntent = authenticationService.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
     private void handleSignOutClick() {
-        // Handle Google Sign-Out
         authenticationService.signOut(() -> {
-            Log.d(TAG, "User signed out successfully");
             updateUI(null);
-            // Clear input fields
             emailInput.setText("");
             passwordInput.setText("");
             Toast.makeText(LoginActivity.this, "Signed out successfully", Toast.LENGTH_SHORT).show();
@@ -219,46 +164,38 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationSe
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == RC_SIGN_IN && data != null) {
-            Log.d(TAG, "Google Sign-In result received");
             authenticationService.handleSignInResult(data);
         }
     }
 
     @Override
     public void onAuthSuccess(User user) {
-        // When Google authentication is successful, update the UI and show welcome message
-        Log.d(TAG, "Google authentication successful for user: " + user.getEmail());
         runOnUiThread(() -> {
+            loadingDialog.hide();
             updateUI(user);
             Toast.makeText(this, "Welcome, " + user.getName() + "!", Toast.LENGTH_SHORT).show();
-            Intent mainIntent = new Intent(this, MainActivity.class);
-            startActivity(mainIntent);
+            startActivity(new Intent(this, MainActivity.class));
             finish();
         });
     }
 
     @Override
     public void onAuthFailure(String error) {
-        // Show error message if Google authentication fails
-        Log.e(TAG, "Google authentication failed: " + error);
         runOnUiThread(() -> {
+            loadingDialog.hide();
             updateUI(null);
             Toast.makeText(this, "Authentication failed: " + error, Toast.LENGTH_LONG).show();
         });
     }
 
     private void updateUI(User user) {
-        // Update the UI based on the user's login status
         if (user != null) {
-            Log.d(TAG, "Updating UI for logged in user: " + user.getName());
             signInGoogleButton.setVisibility(View.GONE);
             signOutButton.setVisibility(View.VISIBLE);
             userInfoText.setText("Welcome, " + user.getName() + "\nEmail: " + user.getEmail());
             userInfoText.setVisibility(View.VISIBLE);
         } else {
-            Log.d(TAG, "Updating UI for logged out state");
             signInGoogleButton.setVisibility(View.VISIBLE);
             signOutButton.setVisibility(View.GONE);
             userInfoText.setVisibility(View.GONE);

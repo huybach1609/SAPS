@@ -13,7 +13,7 @@ import vn.edu.fpt.sapsmobile.models.RegisterResponse;
 
 
 public interface AuthService {
-    @POST("api/auth/google/verify")
+    @POST("api/auth/goo gle/verify")
     Call<AuthResponse> verifyGoogleToken(@Body GoogleTokenRequest request);
 
     @POST("api/auth/refresh")

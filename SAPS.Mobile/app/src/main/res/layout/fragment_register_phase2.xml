@@ -14,7 +14,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="📧 Account Setup"
+            android:text="📋 Review Information"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="#2c3e50"
@@ -24,13 +24,13 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Create your account credentials"
+            android:text="Review your auto-filled information"
             android:textSize="14sp"
             android:textColor="#7f8c8d"
             android:gravity="center"
             android:layout_marginBottom="20dp" />
 
-        <!-- Progress Indicator (Fake for now, can replace with real Stepper) -->
+        <!-- Progress Indicator -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -46,9 +46,17 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:background="#e8f5e9"
-            android:padding="10dp"
-            android:layout_marginBottom="20dp"
-            android:gravity="center">
+            android:padding="15dp"
+            android:layout_marginBottom="20dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="📄 Information from ID Card"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#2e7d32"
+                android:layout_marginBottom="10dp" />
 
             <EditText
                 android:id="@+id/input_full_name"
@@ -98,6 +106,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Place of Residence"
                 android:enabled="false" />
+
             <EditText
                 android:id="@+id/input_issue_date"
                 android:layout_width="match_parent"
@@ -112,8 +121,6 @@
                 android:hint="Issue Place"
                 android:enabled="false" />
 
-
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -121,52 +128,29 @@
                 android:textColor="#388e3c"
                 android:textSize="12sp"
                 android:gravity="end"
-                android:layout_marginTop="5dp" />
-            <!-- Auto-filled OCR fields -->
-
+                android:layout_marginTop="10dp" />
 
         </LinearLayout>
 
-        <!-- User Input Fields -->
-        <EditText
-            android:id="@+id/edit_text_email"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Email Address" />
-
-        <EditText
-            android:id="@+id/edit_text_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Password"
-            android:inputType="textPassword" />
-
-        <EditText
-            android:id="@+id/edit_text_confirm_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Confirm Password"
-            android:inputType="textPassword" />
-
-        <!-- Password Requirements -->
+        <!-- Info Alert -->
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="⚠️ Password Requirements:\n• At least 8 characters\n• Uppercase &amp; lowercase letters\n• Numbers &amp; symbols\n• No spaces"
+            android:text="ℹ️ This information was automatically extracted from your ID card. Please verify it's correct before proceeding."
             android:textSize="12sp"
-            android:textColor="#7f8c8d"
+            android:textColor="#0077B6"
             android:background="#CAF0F8"
             android:padding="10dp"
-            android:layout_marginTop="15dp" />
+            android:layout_marginBottom="20dp" />
 
         <!-- Next Button -->
         <Button
             android:id="@+id/button_next_phase"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Next Step →"
-            android:layout_marginTop="20dp"
+            android:text="Continue to Vehicle Registration →"
             android:backgroundTint="#0077B6"
             android:textColor="@android:color/white" />
+
     </LinearLayout>
 </ScrollView>

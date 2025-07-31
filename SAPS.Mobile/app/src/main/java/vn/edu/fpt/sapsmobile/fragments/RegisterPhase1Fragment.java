@@ -1,5 +1,6 @@
 package vn.edu.fpt.sapsmobile.fragments;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -41,8 +43,9 @@ public class RegisterPhase1Fragment extends Fragment {
 
     private ImageView previewFront, previewBack;
     private Button btnPickFront, btnPickBack, nextButton;
+    private EditText emailInput, passwordInput, confirmPasswordInput;
     private Uri frontImageUri, backImageUri;
-    private LoadingDialog loadingDialog; // ✅ Thêm LoadingDialog
+    private LoadingDialog loadingDialog;
 
     @Nullable
     @Override
@@ -55,8 +58,12 @@ public class RegisterPhase1Fragment extends Fragment {
         btnPickBack = view.findViewById(R.id.btn_pick_back);
         nextButton = view.findViewById(R.id.button_next_phase);
 
-        loadingDialog = new LoadingDialog(requireActivity()); // ✅ An toàn, chắc chắn context đã attach
+        // User input fields
+        emailInput = view.findViewById(R.id.edit_text_email);
+        passwordInput = view.findViewById(R.id.edit_text_password);
+        confirmPasswordInput = view.findViewById(R.id.edit_text_confirm_password);
 
+        loadingDialog = new LoadingDialog(requireActivity());
 
         btnPickFront.setText("🖼️ Front Side");
         btnPickBack.setText("🖼️ Back Side");
@@ -71,8 +78,46 @@ public class RegisterPhase1Fragment extends Fragment {
             startActivityForResult(pickPhoto, REQUEST_PICK_BACK);
         });
 
+        nextButton.setEnabled(true); // Cho phép nhấn Next ngay từ đầu
+
         nextButton.setOnClickListener(v -> {
-            ((RegisterActivity) requireActivity()).nextPhase();
+            // Validate user input fields
+            String email = emailInput.getText().toString().trim();
+            String password = passwordInput.getText().toString();
+            String confirmPassword = confirmPasswordInput.getText().toString();
+
+            if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
+                Toast.makeText(requireContext(), "Please fill in all required fields", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (!password.equals(confirmPassword)) {
+                Toast.makeText(requireContext(), "Passwords do not match", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (password.length() < 8) {
+                Toast.makeText(requireContext(), "Password must be at least 8 characters", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Save user input data
+            RegisterActivity activity = (RegisterActivity) requireActivity();
+            activity.registerData.setEmail(email);
+            activity.registerData.setPassword(password);
+
+            if (frontImageUri == null || backImageUri == null) {
+                new AlertDialog.Builder(requireContext())
+                        .setTitle("Skip ID Verification?")
+                        .setMessage("You haven't uploaded both front and back of your ID. Do you want to skip this step?")
+                        .setPositiveButton("Yes, skip", (dialog, which) -> {
+                            activity.nextPhase();
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+            } else {
+                activity.nextPhase();
+            }
         });
 
         return view;
@@ -81,14 +126,12 @@ public class RegisterPhase1Fragment extends Fragment {
     private void tryUploadIfBothSelected() {
         if (frontImageUri != null && backImageUri != null) {
             uploadBothImagesToServer(frontImageUri, backImageUri);
-        } else {
-            Toast.makeText(requireContext(), "Please select both front and back of ID card", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void uploadBothImagesToServer(Uri frontUri, Uri backUri) {
         try {
-            loadingDialog.show("Uploading ID card images..."); // ✅ Hiển thị dialog
+            loadingDialog.show("Uploading ID card images...");
 
             InputStream frontStream = requireActivity().getContentResolver().openInputStream(frontUri);
             byte[] frontBytes = new byte[frontStream.available()];
@@ -107,7 +150,7 @@ public class RegisterPhase1Fragment extends Fragment {
                     .build();
 
             Request request = new Request.Builder()
-                    .url("http://10.35.88.3:8080/api/ocr/full")
+                    .url("http://10.35.88.16:8080/api/ocr/full")
                     .post(requestBody)
                     .build();
 
@@ -117,14 +160,14 @@ public class RegisterPhase1Fragment extends Fragment {
                 @Override
                 public void onFailure(Call call, IOException e) {
                     requireActivity().runOnUiThread(() -> {
-                        loadingDialog.hide(); // ✅ Ẩn dialog
+                        loadingDialog.hide();
                         Toast.makeText(requireContext(), "Upload failed", Toast.LENGTH_SHORT).show();
                     });
                 }
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
-                    requireActivity().runOnUiThread(() -> loadingDialog.hide()); // ✅ Ẩn dialog
+                    requireActivity().runOnUiThread(() -> loadingDialog.hide());
 
                     if (response.isSuccessful()) {
                         String json = response.body().string();
@@ -142,9 +185,7 @@ public class RegisterPhase1Fragment extends Fragment {
                             activity.registerData.setIssuePlace(obj.optString("issue_place"));
 
                             requireActivity().runOnUiThread(() -> {
-                                nextButton.setEnabled(true);
                                 Toast.makeText(requireContext(), "Auto-filled from ID card", Toast.LENGTH_SHORT).show();
-                                ((RegisterActivity) requireActivity()).nextPhase();
                             });
 
                         } catch (JSONException e) {
@@ -159,7 +200,7 @@ public class RegisterPhase1Fragment extends Fragment {
 
         } catch (IOException e) {
             e.printStackTrace();
-            loadingDialog.hide(); // ✅ Đảm bảo dialog được ẩn nếu có lỗi
+            loadingDialog.hide();
             Toast.makeText(requireContext(), "Error reading images", Toast.LENGTH_SHORT).show();
         }
     }

@@ -136,6 +136,42 @@
             </LinearLayout>
         </LinearLayout>
 
+        <!-- User Input Fields -->
+        <EditText
+            android:id="@+id/edit_text_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Email Address"
+            android:inputType="textEmailAddress"
+            android:layout_marginBottom="10dp" />
+
+        <EditText
+            android:id="@+id/edit_text_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:layout_marginBottom="10dp" />
+
+        <EditText
+            android:id="@+id/edit_text_confirm_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Confirm Password"
+            android:inputType="textPassword"
+            android:layout_marginBottom="15dp" />
+
+        <!-- Password Requirements -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="⚠️ Password Requirements:\n• At least 8 characters\n• Uppercase &amp; lowercase letters\n• Numbers &amp; symbols\n• No spaces"
+            android:textSize="12sp"
+            android:textColor="#7f8c8d"
+            android:background="#CAF0F8"
+            android:padding="10dp"
+            android:layout_marginBottom="15dp" />
+
         <!-- Alert -->
         <TextView
             android:layout_width="match_parent"
@@ -153,7 +189,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Next Step →"
-            android:enabled="false"
             android:backgroundTint="#0077B6"
             android:textColor="@android:color/white" />
     </LinearLayout>
