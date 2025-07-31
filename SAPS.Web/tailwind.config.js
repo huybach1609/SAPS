@@ -61,7 +61,7 @@ export default {
           danger_light: "#FF0000",
           success: "#606c38",
           success_light: "#dad7cd",
-          warning: "#c1121f",
+          warning: "#e85d04",
           warning_light: "#fdf0d5",
           info: "#457b9d",
           info_light: "#f1faee",
