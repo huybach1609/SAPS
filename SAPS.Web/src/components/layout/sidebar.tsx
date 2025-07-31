@@ -7,7 +7,8 @@ import {
     DropdownMenu,
     DropdownTrigger,
     Listbox,
-    ListboxItem
+    ListboxItem,
+    Tooltip
 } from "@heroui/react";
 import {
     EllipsisVertical,
@@ -20,13 +21,16 @@ import {
     AlertTriangle,
     ClipboardList,
     DollarSign,
-    CreditCard
+    CreditCard,
+    CircleAlert,
+    Clock
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { ThemeSwitch } from "../theme-switch";
 import blankProfile from "../../assets/Default/blank-profile-picture.webp"
 import { useAuth } from "@/services/auth/AuthContext";
 import { OWNER_ROLE } from "@/config/base";
+import { useParkingLot } from "@/pages/ParkingLotOwner/ParkingLotContext";
 
 interface SidebarProps {
     isOpen: boolean;
@@ -38,6 +42,7 @@ interface NavigationItem {
     icon: React.ReactNode;
     title: string;
     path: string;
+    isActive?: boolean;
 }
 
 interface NavigationListProps {
@@ -47,23 +52,48 @@ interface NavigationListProps {
 const NavigationList: React.FC<NavigationListProps> = ({ items }) => {
     const navigate = useNavigate();
     const location = useLocation();
+    const { selectedParkingLot } = useParkingLot();
 
     return (
         <Listbox aria-label="Navigation List" className="flex flex-col gap-2">
-            {items.map((item, index) => (
-                <ListboxItem
-                    color="secondary"
-                    key={index}
-                    startContent={item.icon}
-                    title={item.title}
-                    onClick={() => navigate(item.path)}
-                    className={`p-3 
-                         ${location.pathname === item.path ? 'bg-primary text-background' : ''}
-                         hover:bg-primary hover:text-background
-                         `}
+            {items.map((item, index) => {
+                // Check if item should be disabled based on isActive prop and parking lot status
+                const isDisabled = item.isActive !== undefined &&
+                    (selectedParkingLot?.status === 'Active' ? !item.isActive : item.isActive);
 
-                />
-            ))}
+                const listboxItem = (
+                    <>
+                        <ListboxItem
+                            color="secondary"
+                            key={index}
+                            startContent={item.icon}
+                            endContent={isDisabled ?
+                                <Tooltip
+                                    key={index}
+                                    content="Renew your subscription to access this feature"
+                                    placement="right"
+                                    color="warning"
+                                    className="text-background"
+                                >
+                                    <CircleAlert size={16} />
+                                </Tooltip>
+                                : null}
+                            title={item.title}
+                            isReadOnly={isDisabled}
+                            onClick={() => navigate(item.path)}
+                            className={`p-3 
+                             ${location.pathname === item.path ? 'bg-primary text-background' : ''}
+                             hover:bg-primary hover:text-background
+                             ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}
+                             `}
+                        />
+                    </>
+
+                );
+
+
+                return listboxItem;
+            })}
         </Listbox>
     );
 };
@@ -116,17 +146,26 @@ const parkingLotOwnerItems: NavigationItem[] = [
     {
         icon: <DollarSign size={20} />,
         title: "Parking Fee Management",
-        path: "/owner/parking-fee"
+        path: "/owner/parking-fee",
+        isActive: true
     },
     {
         icon: <AlertTriangle size={20} />,
         title: "Incident Reports",
-        path: "/owner/incidents"
+        path: "/owner/incidents",
+        isActive: true
     },
     {
         icon: <FileText size={20} />,
         title: "Whitelist",
-        path: "/owner/whitelist"
+        path: "/owner/whitelist",
+        isActive: true
+    },
+    {
+        icon: <Clock size={20} />,
+        title: "Staff Shift Management",
+        path: "/owner/staff-shift",
+        isActive: true
     },
     // {
     //     icon: <FileText size={20} />,
@@ -178,14 +217,14 @@ const HeadingBar: React.FC = () => {
                         />
                     </DropdownItem>
                     {user?.role === OWNER_ROLE ? (
-                    <DropdownItem textValue="Subscription" key="subscription"
-                    >
-                        <button
-                            className="flex items-center gap-2 w-full text-left transition-opacity hover:opacity-80 "
-                            onClick={() => navigate("/owner/subscription")}
+                        <DropdownItem textValue="Subscription" key="subscription"
                         >
-                            <CreditCard size={16} /> Subscription
-                        </button>
+                            <button
+                                className="flex items-center gap-2 w-full text-left transition-opacity hover:opacity-80 "
+                                onClick={() => navigate("/owner/subscription")}
+                            >
+                                <CreditCard size={16} /> Subscription
+                            </button>
                         </DropdownItem>
                     ) : null}
                     <DropdownItem textValue="Logout" key="logout">
@@ -228,6 +267,5 @@ export const SideBar: React.FC<SidebarProps> = ({ isOpen }) => {
             }
             {/* // {role === 'parkinglotowner' ? <ParkingLotOwnerList /> : <AdminList />} */}
         </motion.div>
-
     );
 };
