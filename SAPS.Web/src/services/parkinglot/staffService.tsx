@@ -1,8 +1,9 @@
+import { AddStaffFormRequest } from '@/components/utils/staffUtils';
 import { apiUrl } from '@/config/base';
 import { User } from '@/types/User';
 import { PaginationInfo } from '@/types/Whitelist';
 import axios from 'axios';
-import { AddStaffFormRequest } from '../../pages/ParkingLotOwner/StaffManagement/StaffManagement';
+// import { AddStaffFormRequest } from '../../pages/ParkingLotOwner/StaffManagement/StaffManagement';
 
 
 // Helper function to get auth headers
@@ -37,6 +38,20 @@ export async function removeStaff(parkingLotid: string, staffId: string) {
         return response.data;
     } catch (error) {
         throw new Error('Failed to remove staff');
+    }
+}
+
+export async function deactivateStaff(parkingLotid: string, staffId: string) {
+    try {
+        const response = await axios.patch(`${apiUrl}/api/Staff/${parkingLotid}/${staffId}/deactivate`, {
+            status: 'deactive'
+        }, {
+            headers: getAuthHeaders()
+        });
+        
+        return response.data;
+    } catch (error) {
+        throw new Error('Failed to deactivate staff');
     }
 }
 
@@ -108,5 +123,27 @@ export async function fetchStaffDetail(parkingLotId: string, staffId: string) {
         return response.data;
     } catch (error) {
         throw new Error('Error fetching staff details');
+    }
+}
+
+export async function fetchStaffShiftList(parkingLotId: string) {
+    try {
+        const response = await axios.get(`${apiUrl}/api/StaffShift/${parkingLotId}`, {
+            headers: getAuthHeaders()
+        });
+        return response.data;
+    } catch (error) {
+        throw new Error('Error fetching staff shift list');
+    }
+}
+export async function searchStaff(keySearch: string, parkingLotId: string) {
+    try {
+        console.log(`${apiUrl}/api/StaffShift/${parkingLotId}/search?keySearch=${keySearch}`);
+        const response = await axios.get(`${apiUrl}/api/StaffShift/${parkingLotId}/search?keySearch=${keySearch}`, {
+            headers: getAuthHeaders()
+        });
+        return response.data;
+    } catch (error) {
+        throw new Error('Error searching staff');
     }
 }

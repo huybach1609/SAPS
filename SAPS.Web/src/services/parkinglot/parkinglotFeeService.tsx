@@ -47,8 +47,6 @@ export interface ParkingFeeSchedule {
     updatedAt: string;
     forVehicleType: VehicleType;
     parkingLotId: string;
-    // validFrom: Date;
-    // validTo: Date;
     initialFeeMinutes: number;
 }
 
