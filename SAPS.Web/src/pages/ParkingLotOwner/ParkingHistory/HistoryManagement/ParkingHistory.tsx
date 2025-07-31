@@ -1,39 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { Search, Car, Calendar, Clock, DollarSign, Eye, Filter, FolderSearch, RefreshCcw, PlusIcon, ClipboardList, Edit2, Trash2, CheckCircle, EraserIcon } from 'lucide-react';
+import { Eye, FolderSearch, RefreshCcw } from 'lucide-react';
 import DefaultLayout from '@/layouts/default';
 import { useParkingLot } from '../../ParkingLotContext';
 import { Button, ButtonGroup, Card, CardBody, CardHeader, DateRangePicker, DateValue, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Pagination, RangeValue, SelectItem, Select, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, useDisclosure } from '@heroui/react';
 import { PaginationInfo } from '@/types/Whitelist';
 import { useNavigate } from 'react-router-dom';
-import { fetchParkingHistory, ParkingSession, PaginatedParkingHistoryResponse } from '@/services/parkinglot/parkingHistoryService';
+import { fetchParkingHistory, ParkingSession } from '@/services/parkinglot/parkingHistoryService';
 import ParkingHistoryStatistics from './ParkingHistoryStatistics';
-
-export enum ParkingSessionStatus {
-    COMPLETED = 0,
-    CURRENTLY_PARKED = 1,
-    PAYMENT_PENDING = 2,
-}
+import { formatDate, formatTime } from '@/components/utils/stringUtils';
+import { ParkingSessionStatus } from '@/types/ParkingSession';
 
 const ParkingHistory: React.FC = () => {
-    const { parkingLot, loading: parkingLotLoading } = useParkingLot();
-
+    const { selectedParkingLot, loading: parkingLotLoading } = useParkingLot();
     const [parkingSessions, setParkingSessions] = useState<ParkingSession[]>([]);
-
     // loading for parking sessions list
     const [loading, setLoading] = useState(true);
-    // search for parking sessions 
-    const [searchTerm, setSearchTerm] = useState('');
-    // search results for add parking sessions
-    const [searchResults, setSearchResults] = useState<ParkingSession[]>([]);
 
     // session selected for viewing details
     const [selectedSession, setSelectedSession] = useState<ParkingSession | null>(null);
 
-    // expiry date for input modal
-    const [expiryDate, setExpiryDate] = useState('');
-
-    // edit for update 
-    const [editingEntry, setEditingEntry] = useState<ParkingSession | null>(null);
     // pagination for parking sessions list
     const [pagination, setPagination] = useState<PaginationInfo | null>(null);
     // pagination for parking sessions list
@@ -43,24 +28,13 @@ const ParkingHistory: React.FC = () => {
     const [tableSearch, setTableSearch] = useState('');
     // filter by date range (entryDateTime, exitDateTime)
     const [dateRange, setDateRange] = useState<RangeValue<DateValue> | null>(null);
-
-
     // filter by status
     const [status, setStatus] = useState<string>(ParkingSessionStatus.CURRENTLY_PARKED.toString());
 
-
-
-
     const navigate = useNavigate();
 
-    // Modal disclosure hooks
-    const addModalDisclosure = useDisclosure();
-    const editModalDisclosure = useDisclosure();
-    const updateModalDisclosure = useDisclosure();
-
-    // hiện thị ở bãi,các id thì để theo thứ tự và các trạng mặc định là đang đỗ.
     const loadParkingSessions = async () => {
-        if (!parkingLot?.id) return;
+        if (!selectedParkingLot?.id) return;
 
         setLoading(true);
         try {
@@ -70,11 +44,11 @@ const ParkingHistory: React.FC = () => {
             const statusValue = status || undefined;
 
             if (tableSearch != null && tableSearch.trim() !== '') {
-                const response = await fetchParkingHistory(parkingLot.id, 6, currentPage, tableSearch, dateRangeStart, dateRangeEnd, statusValue);
+                const response = await fetchParkingHistory(selectedParkingLot.id, 6, currentPage, tableSearch, dateRangeStart, dateRangeEnd, statusValue);
                 setParkingSessions(response.data);
                 setPagination(response.pagination);
             } else {
-                const response = await fetchParkingHistory(parkingLot.id, 6, currentPage, undefined, dateRangeStart, dateRangeEnd, statusValue);
+                const response = await fetchParkingHistory(selectedParkingLot.id, 6, currentPage, undefined, dateRangeStart, dateRangeEnd, statusValue);
                 setParkingSessions(response.data);
                 setPagination(response.pagination);
             }
@@ -98,45 +72,20 @@ const ParkingHistory: React.FC = () => {
 
     // View session details
     const handleViewSessionDetails = async (sessionId: string) => {
-        if (!parkingLot?.id) return;
+        if (!selectedParkingLot?.id) return;
 
         try {
             // Navigate to session details page or open modal
-            navigate(`/owner/history/${parkingLot.id}/${sessionId}`);
+            navigate(`/owner/history/${selectedParkingLot.id}/${sessionId}`);
         } catch (error) {
             console.error('Failed to view session details:', error);
         }
     };
 
-    const handleUpdateEntry = async (onClose?: () => void) => {
-        if (!editingEntry || !parkingLot?.id) return;
-
-        try {
-            if (onClose) onClose();
-            setEditingEntry(null);
-            setExpiryDate('');
-            loadParkingSessions(); // Refresh the list
-        } catch (error) {
-            console.error('Failed to update parking session entry:', error);
-        }
-    };
-
     useEffect(() => {
         loadParkingSessions();
-    }, [parkingLot?.id, currentPage, dateRange, status]);
+    }, [selectedParkingLot?.id, currentPage, dateRange, status]);
 
-    useEffect(() => {
-        const timeoutId = setTimeout(() => {
-            handleSearch(searchTerm);
-        }, 300);
-
-        return () => clearTimeout(timeoutId);
-    }, [searchTerm]);
-
-    const formatDateForInput = (isoString: string) => {
-        if (!isoString) return '';
-        return isoString.split('T')[0]; // Gets just the yyyy-MM-dd part
-    };
 
     function handleReset() {
         setTableSearch('');
@@ -147,11 +96,10 @@ const ParkingHistory: React.FC = () => {
     }
 
 
-
     return (
         <DefaultLayout title="Parking History">
 
-            <ParkingHistoryStatistics parkingLotId={parkingLot?.id || ''} />
+            <ParkingHistoryStatistics parkingLotId={selectedParkingLot?.id || ''} />
 
             {/* Search & Filter */}
             <Card className="bg-background-100/20 mb-6">
@@ -160,14 +108,14 @@ const ParkingHistory: React.FC = () => {
                     <h2 className=" font-bold">Search & Filter Parking Sessions</h2>
                 </CardHeader>
                 <CardBody className="">
-                    <div className="flex gap-2 items-center justify-between w-full ">
-                        <div className="flex gap-2 items-center w-full">
+                    <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between w-full">
+                        <div className="flex flex-col sm:flex-row gap-2 items-start sm:items-center w-full">
                             <Input
                                 type="text"
                                 value={tableSearch}
                                 onChange={e => setTableSearch(e.target.value)}
                                 placeholder="Search by license plate, session ID, or vehicle info..."
-                                className="w-1/2"
+                                className="w-full sm:w-48 lg:w-64"
                                 size="sm"
                                 color='primary'
                                 onKeyDown={e => {
@@ -177,11 +125,10 @@ const ParkingHistory: React.FC = () => {
                                 }}
                             />
                             <DateRangePicker aria-label="date range picker" value={dateRange} onChange={setDateRange}
-                                size="sm" color='primary' className='w-1/2 text-primary-900' />
-
+                                size="sm" color='primary' className='w-full sm:w-48 lg:w-64 text-primary-900' />
 
                             <Select
-                                className="w-1/2"
+                                className="w-full sm:w-48 lg:w-48"
                                 color='primary'
                                 size="sm"
                                 label=""
@@ -205,42 +152,38 @@ const ParkingHistory: React.FC = () => {
                                 </SelectItem>
                             </Select>
 
-                            <Button
-                                size="sm"
-                                onPress={() => handleSearch(tableSearch)}
-                                color='primary'
-                                className="text-background"
-                            >
-                                Search
-                            </Button>
+                            <div className="flex gap-2">
+                                <Button
+                                    size="sm"
+                                    onPress={() => handleSearch(tableSearch)}
+                                    color='primary'
+                                    className="text-background"
+                                >
+                                    Search
+                                </Button>
 
-                            <Button
-                                size="sm"
-                                onPress={() => handleReset()}
-                                color='primary'
-                                className="text-background"
-                                isIconOnly
-                            >
-                                <RefreshCcw size={16} />
-                            </Button>
-
+                                <Button
+                                    size="sm"
+                                    onPress={() => handleReset()}
+                                    color='primary'
+                                    className="text-background"
+                                    isIconOnly
+                                >
+                                    <RefreshCcw size={16} />
+                                </Button>
+                            </div>
                         </div>
 
-
-
-                        <ButtonGroup isDisabled={selectedSession === null}>
+                        {/* <ButtonGroup isDisabled={selectedSession === null}>
                             <Button color='primary' className='text-background' size='sm' startContent={<Eye size={16} />}
                                 onPress={() => handleViewSessionDetails(selectedSession?.id || '')}>View Details</Button>
-                            {/* <Button color='secondary' className='text-background' size='sm'
-                                onPress={() => updateModalDisclosure.onOpen()}
-                                startContent={<Edit2 size={16} />}>Edit</Button> */}
-                        </ButtonGroup>
+                        </ButtonGroup> */}
                     </div>
                 </CardBody>
             </Card>
 
             {/*  Table */}
-            <div className="min-h-[70vh]">
+            <div className="min-h-[70vh] w-full">
                 {(parkingLotLoading || loading) ? (
                     <div className="flex justify-center items-center h-64">
                         <Spinner />
@@ -254,18 +197,19 @@ const ParkingHistory: React.FC = () => {
                         parkingSessions={parkingSessions}
                         selectedSession={selectedSession}
                         setSelectedSession={setSelectedSession}
+                        handleViewSessionDetails={handleViewSessionDetails}
                     />
                 )}
             </div>
 
             {/* Pagination Controls */}
             {pagination && pagination.totalPages > 1 && (
-                <div className="mt-6 flex items-center justify-between">
-                    <div className="text-sm ">
+                <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="text-sm text-center sm:text-left">
                         Showing page {pagination.currentPage} of {pagination.totalPages}
                         ({pagination.totalItems} total items)
                     </div>
-                    <div className="flex space-x-2">
+                    <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
                         <Button
                             onPress={() => {
                                 setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev))
@@ -289,55 +233,6 @@ const ParkingHistory: React.FC = () => {
                 </div>
             )}
 
-            {/* Edit Entry Modal */}
-            <Modal isOpen={editModalDisclosure.isOpen && !!editingEntry} onOpenChange={editModalDisclosure.onOpenChange}>
-                <ModalContent>
-                    {(onClose) => (
-                        editingEntry && (
-                            <>
-                                <ModalHeader className="flex flex-col gap-1">Edit Parking Session</ModalHeader>
-                                <ModalBody>
-                                    <div className="mb-4">
-                                        <div className="font-medium">Session ID: {editingEntry.id}</div>
-                                        <div className="text-sm text-gray-600">Vehicle: {editingEntry.vehicle?.licensePlate || 'Unknown'}</div>
-                                    </div>
-                                    <div className="mb-4">
-                                        <label className="block text-sm font-medium text-primary-900/90 mb-2">
-                                            Entry Date
-                                        </label>
-                                        <input
-                                            type="date"
-                                            value={formatDateForInput(editingEntry.entryDateTime)}
-                                            onChange={(e) => setExpiryDate(e.target.value)}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                        />
-                                    </div>
-                                </ModalBody>
-                                <ModalFooter>
-                                    <Button
-                                        color="danger"
-                                        variant="light"
-                                        onPress={() => {
-                                            onClose();
-                                            setEditingEntry(null);
-                                            setExpiryDate('');
-                                        }}
-                                    >
-                                        Cancel
-                                    </Button>
-                                    <Button
-                                        color="primary"
-                                        className='text-background'
-                                        onPress={() => handleUpdateEntry(onClose)}
-                                    >
-                                        Update
-                                    </Button>
-                                </ModalFooter>
-                            </>
-                        )
-                    )}
-                </ModalContent>
-            </Modal>
         </DefaultLayout>
     );
 };
@@ -346,28 +241,10 @@ type ParkingHistoryTableProps = {
     parkingSessions: ParkingSession[];
     selectedSession: ParkingSession | null;
     setSelectedSession: React.Dispatch<React.SetStateAction<ParkingSession | null>>;
+    handleViewSessionDetails: (sessionId: string) => void;
 };
 
-function ParkingHistoryTable({ parkingSessions, selectedSession, setSelectedSession }: ParkingHistoryTableProps) {
-
-    const formatDate = (dateTime: string): string => {
-        const date = new Date(dateTime);
-        return date.toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric'
-        });
-    };
-
-    const formatTime = (dateTime: string | null): string => {
-        if (!dateTime) return '-';
-        const date = new Date(dateTime);
-        return date.toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-        });
-    };
+function ParkingHistoryTable({ parkingSessions, selectedSession, setSelectedSession, handleViewSessionDetails }: ParkingHistoryTableProps) {
 
     const getStatusBadge = (status: ParkingSessionStatus) => {
         const baseClasses = "px-3 py-1 rounded-full text-sm font-medium";
@@ -384,23 +261,23 @@ function ParkingHistoryTable({ parkingSessions, selectedSession, setSelectedSess
     };
 
     return (
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto w-full">
             <div className="flex justify-between mb-4">
                 <div className='text-lg font-bold'></div>
             </div>
-            <Table aria-label="Parking History Table" className=""
+            <Table aria-label="Parking History Table" className="w-full"
                 color='secondary'
-                selectedKeys={selectedSession ? [selectedSession.id] : []}
-                onSelectionChange={(keys: any) => {
-                    if (typeof keys === 'string') { // Handle "all" selection
-                        setSelectedSession(null);
-                        return;
-                    }
-                    const [selectedId] = keys;
-                    const session = parkingSessions.find((s) => s.id === selectedId);
-                    setSelectedSession(session || null);
-                }}
-                selectionMode="single"
+            // selectedKeys={selectedSession ? [selectedSession.id] : []}
+            // onSelectionChange={(keys: any) => {
+            //     if (typeof keys === 'string') { // Handle "all" selection
+            //         setSelectedSession(null);
+            //         return;
+            //     }
+            //     const [selectedId] = keys;
+            //     const session = parkingSessions.find((s) => s.id === selectedId);
+            //     setSelectedSession(session || null);
+            // }}
+            // selectionMode="single"
             >
                 <TableHeader className="">
                     <TableColumn key="sessionId" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -424,9 +301,13 @@ function ParkingHistoryTable({ parkingSessions, selectedSession, setSelectedSess
                     <TableColumn key="status" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                         Status
                     </TableColumn>
+                    <TableColumn key="action" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Action
+                    </TableColumn>
                 </TableHeader>
                 <TableBody>
                     {parkingSessions.map((session, index) => {
+
                         return (
                             <TableRow key={`${session.id}`}>
                                 {/* session id */}
@@ -479,6 +360,11 @@ function ParkingHistoryTable({ parkingSessions, selectedSession, setSelectedSess
                                     <span className={getStatusBadge(session.status)}>
                                         {session.status === ParkingSessionStatus.CURRENTLY_PARKED ? 'Currently Parked' : session.status === ParkingSessionStatus.COMPLETED ? 'Completed' : 'Payment Pending'}
                                     </span>
+                                </TableCell>
+                                {/* action */}
+                                <TableCell className="px-6 py-4 whitespace-nowrap">
+                                    <Button aria-label='view details' color='secondary' className='text-background' size='sm'
+                                        onPress={() => handleViewSessionDetails(session.id)} isIconOnly><Eye size={16} /></Button>
                                 </TableCell>
                             </TableRow>
                         );

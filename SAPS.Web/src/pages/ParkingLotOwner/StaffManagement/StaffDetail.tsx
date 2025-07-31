@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { User, MapPin, Phone, Mail, Calendar, Badge, Building, Clock, CornerUpLeft } from 'lucide-react';
 
 
-import { useNavigate, useParams } from 'react-router-dom';
+import {  useParams } from 'react-router-dom';
 import DefaultLayout from '@/layouts/default';
 import { Link } from '@heroui/link';
-import axios from 'axios';
-import { apiUrl } from '@/config/base';
+import { fetchStaffDetail } from '@/services/parkinglot/staffService';
 
 export interface StaffDetail {
     userId: string,
@@ -25,43 +24,21 @@ export interface StaffDetail {
 }
 const StaffDetailScreen = () => {
     const { parkingLotId, staffId } = useParams<{ parkingLotId: string; staffId: string; }>();
-    // const [staffData] = useState({
-    //     userId: "1123",
-    //     fullName: "John Smith",
-    //     email: "john.smith@parkingco.com",
-    //     phone: "+1 (555) 123-4567",
-    //     profileImageUrl: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face",
-    //     userStatus: "Active",
-    //     createdAt: "2023-01-15T08:30:00Z",
-    //     updatedAt: "2024-06-20T14:22:00Z",
-    //     staffId: "ST-001",
-    //     parkingLotId: "123",
-    //     parkingLotName: "Downtown Central Parking",
-    //     parkingLotAddress: "123 Main Street, Downtown, City 12345",
-    //     parkingLotStatus: "Operational"
-    // });    // Sample data based on your SQL query structure
-
     const [staffData, setStafData] = useState<StaffDetail | null>(null);
 
-    const navigate = useNavigate();
-
     useEffect(() => {
-        const fetchStaffDetail = async () => {
+
+        const getStaffDetail = async () => {
             if (!staffId || !parkingLotId) return;
-
             try {
-                const response = await axios.get(`${apiUrl}/api/staff/${parkingLotId}/${staffId}`);
-
-                setStafData(response.data);
-                // Handle the fetched data here
-                console.log('Staff details:', response.data);
-
+                const data = await fetchStaffDetail(parkingLotId, staffId);
+                setStafData(data);
+                console.log('Staff details:', data);
             } catch (error) {
                 console.error('Error fetching staff details:', error);
             }
         };
-
-        fetchStaffDetail();
+        getStaffDetail();
 
     }, [staffId, parkingLotId]);
 
@@ -155,7 +132,7 @@ const StaffDetailScreen = () => {
                             <div className="flex items-center space-x-3">
                                 <Calendar className="w-4 h-4 text-gray-400" />
                                 <div>
-                                    <p className="text-sm text-gray-500">Created At</p>
+                                    <p className="text-sm text-gray-500">Start Date</p>
                                     <p className="text-gray-900 font-medium">{formatDate((staffData?.createdAt) ? staffData?.createdAt : "")}</p>
                                 </div>
                             </div>

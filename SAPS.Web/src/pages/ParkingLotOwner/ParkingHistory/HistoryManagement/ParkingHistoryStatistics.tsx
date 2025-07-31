@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart3, Clock, DollarSign, Users, Car, Activity } from 'lucide-react';
+import { BarChart3, Clock, DollarSign,  Car, Activity } from 'lucide-react';
 import { apiUrl } from '@/config/base';
 
 // Types for the API responses
@@ -153,25 +153,7 @@ const ParkingHistoryStatistics: React.FC<{ parkingLotId: string }> = ({ parkingL
     return (
         <div className="py-4">
             <div className="max-w-7xl mx-auto">
-                {/* Header */}
                 <div className="mb-8">
-                    {/* <h1 className="text-3xl font-bold text-gray-900 mb-4">Parking Management Dashboard</h1> */}
-
-                    {/* Parking Lot Selector */}
-                    {/* <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Parking Lot ID
-            </label>
-            <input
-              type="text"
-              value={parkingLotId}
-              onChange={(e) => setParkingLotId(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-2 w-48 focus:outline-none focus:ring-2 focus:ring-cyan-500"
-              placeholder="Enter parking lot ID"
-            />
-          </div>
- */}
-                    {/* Today's Overview */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                         <StatCard
                             title="Total Sessions Today"

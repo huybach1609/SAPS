@@ -15,16 +15,16 @@ const ParkingLotInfoContainer: React.FC = () => {
     const [editFormData, setEditFormData] = useState<Partial<ParkingLot>>({});
     const [useWhitelist, setUseWhitelist] = useState(false);
 
-    const { parkingLot, loading, refresh } = useParkingLot();
+    const { selectedParkingLot, loading, refresh } = useParkingLot();
     const { user } = useAuth();
 
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     const handleEditClick = () => {
         setEditFormData({
-            name: parkingLot?.name || '',
-            description: parkingLot?.description || '',
-            totalParkingSlot: parkingLot?.totalParkingSlot || 0
+            name: selectedParkingLot?.name || '',
+            description: selectedParkingLot?.description || '',
+            totalParkingSlot: selectedParkingLot?.totalParkingSlot || 0
         });
 
         onOpen();
@@ -35,7 +35,7 @@ const ParkingLotInfoContainer: React.FC = () => {
     const handleSaveChanges = async () => {
         try {
             const response = await axios.put(
-                `${apiUrl}/api/ParkingLot/${user?.id}/${parkingLot?.id}`,
+                `${apiUrl}/api/ParkingLot/${user?.id}/${selectedParkingLot?.id}`,
                 editFormData,
                 {
                     headers: {
@@ -82,7 +82,7 @@ const ParkingLotInfoContainer: React.FC = () => {
         );
     }
 
-    if (!parkingLot) {
+    if (!selectedParkingLot) {
         return (
             <div className="text-center py-12">
                 <Building2 className="mx-auto h-12 w-12 text-gray-400" />
@@ -123,7 +123,7 @@ const ParkingLotInfoContainer: React.FC = () => {
                                 <div className="flex items-start space-x-3">
                                     <MapPin className="h-5 w-5  mt-0.5" />
                                     <div>
-                                        <p className="">{parkingLot.address}</p>
+                                        <p className="">{selectedParkingLot.address}</p>
                                         <p className="text-sm text-background-900/50 mt-1">Cannot be modified - Contact support to update</p>
                                     </div>
                                 </div>
@@ -136,7 +136,7 @@ const ParkingLotInfoContainer: React.FC = () => {
                                 <div className="flex items-center space-x-3">
                                     <Calendar className="h-5 w-5 " />
                                     <div>
-                                        <p className="">{formatDate(parkingLot.createdAt)}</p>
+                                            <p className="">{formatDate(selectedParkingLot.createdAt)}</p>
                                         <p className="text-sm text-background-900/50 mt-1">Registration date in SAPLS system</p>
                                     </div>
                                 </div>

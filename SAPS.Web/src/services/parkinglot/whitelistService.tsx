@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { apiUrl } from '@/config/base';
-import type { Whitelist, PaginatedWhitelistResponse } from '@/types/Whitelist';
+import type { Whitelist, PaginatedWhitelistResponse, WhitelistStatus } from '@/types/Whitelist';
+import { User } from '@/types/User';
 
 // Helper function to get auth headers
 const getAuthHeaders = () => ({
@@ -11,9 +12,9 @@ const getAuthHeaders = () => ({
 
 // Fetch all whitelist entries for a parking lot
 export const fetchWhitelist = async (
-    parkingLotId: string, 
-    pageSize: number = 10, 
-    currentPage: number = 1, 
+    parkingLotId: string,
+    pageSize: number = 10,
+    currentPage: number = 1,
     searchKey?: string
 ): Promise<PaginatedWhitelistResponse> => {
     try {
@@ -22,16 +23,17 @@ export const fetchWhitelist = async (
             pageSize: pageSize.toString(),
             currentPage: currentPage.toString()
         });
-        
+
         // Only add searchKey if it's provided and not empty
         if (searchKey && searchKey.trim()) {
             params.append('searchKey', searchKey.trim());
         }
-        
+
+        console.log(`${apiUrl}/api/Whitelist/${parkingLotId}?${params.toString()}`);
         const response = await axios.get(`${apiUrl}/api/Whitelist/${parkingLotId}?${params.toString()}`, {
             headers: getAuthHeaders()
         });
-        
+
         // Return the complete paginated response
         return response.data;
     } catch (error) {
@@ -102,30 +104,12 @@ export const updateWhitelistEntry = async (
     }
 };
 
-// Search users for adding to whitelist
-export const SearchWhitelist = async (searchTerm: string): Promise<Whitelist[]> => {
-    try {
-        console.log('Searching users with term:', encodeURIComponent(searchTerm));
-        const response = await axios.get(`${apiUrl}/api/Users/Whitelist/search?q=${encodeURIComponent(searchTerm)}`, {
-            headers: getAuthHeaders()
-        });
-        return response.data;
-    } catch (error) {
-        console.error('Error searching users:', error);
-        throw error;
-    }
-};
-
-export interface WhitelistStatus {
-    tottalWhitelistUsers: number;
-    activeUser: number;
-    expiringThisWeek: number;
-}
 
 // Fetch whitelist status for a parking lot
 export const fetchWhitelistStatus = async (parkingLotId: string): Promise<WhitelistStatus> => {
     try {
-        const response = await axios.get(`${apiUrl}/api/whitelist/${parkingLotId}/status`, {
+        console.log(`${apiUrl}/api/Whitelist/${parkingLotId}/status`);
+        const response = await axios.get(`${apiUrl}/api/Whitelist/${parkingLotId}/status`, {
             headers: getAuthHeaders()
         });
         return response.data;
@@ -136,7 +120,7 @@ export const fetchWhitelistStatus = async (parkingLotId: string): Promise<Whitel
 };
 
 // Search whitelist entries by user info
-export const searchWhitelist = async (searchTerm: string, parkingLotId?: string): Promise<Whitelist[]> => {
+export const searchUser = async (searchTerm: string, parkingLotId?: string): Promise<User[]> => {
     try {
         const url =
             `${apiUrl}/api/whitelist/${parkingLotId}/search?q=${encodeURIComponent(searchTerm)}`;

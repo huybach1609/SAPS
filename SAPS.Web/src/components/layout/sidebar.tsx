@@ -1,7 +1,28 @@
 import { motion } from "framer-motion";
-import { Button, Divider, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Listbox, ListboxItem } from "@heroui/react";
-import { EllipsisVertical, LogOut, Settings, Home, Users, Building2, FileText, AlertTriangle, ClipboardList, DollarSign } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import {
+    Button,
+    Divider,
+    Dropdown,
+    DropdownItem,
+    DropdownMenu,
+    DropdownTrigger,
+    Listbox,
+    ListboxItem
+} from "@heroui/react";
+import {
+    EllipsisVertical,
+    LogOut,
+    Settings,
+    Home,
+    Users,
+    Building2,
+    FileText,
+    AlertTriangle,
+    ClipboardList,
+    DollarSign,
+    CreditCard
+} from "lucide-react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { ThemeSwitch } from "../theme-switch";
 import blankProfile from "../../assets/Default/blank-profile-picture.webp"
 import { useAuth } from "@/services/auth/AuthContext";
@@ -10,6 +31,7 @@ import { OWNER_ROLE } from "@/config/base";
 interface SidebarProps {
     isOpen: boolean;
     role?: 'admin' | 'parkinglotowner';
+
 }
 
 interface NavigationItem {
@@ -24,17 +46,22 @@ interface NavigationListProps {
 
 const NavigationList: React.FC<NavigationListProps> = ({ items }) => {
     const navigate = useNavigate();
+    const location = useLocation();
 
     return (
         <Listbox aria-label="Navigation List" className="flex flex-col gap-2">
             {items.map((item, index) => (
                 <ListboxItem
+                    color="secondary"
                     key={index}
-
                     startContent={item.icon}
                     title={item.title}
                     onClick={() => navigate(item.path)}
-                    className="p-3"
+                    className={`p-3 
+                         ${location.pathname === item.path ? 'bg-primary text-background' : ''}
+                         hover:bg-primary hover:text-background
+                         `}
+
                 />
             ))}
         </Listbox>
@@ -66,11 +93,11 @@ const adminItems: NavigationItem[] = [
 ];
 
 const parkingLotOwnerItems: NavigationItem[] = [
-    {
-        icon: <Home size={20} />,
-        title: "Home",
-        path: "/owner/home"
-    },
+    // {
+    //     icon: <Home size={20} />,
+    //     title: "Home",
+    //     path: "/owner/home"
+    // },
     {
         icon: <Building2 size={20} />,
         title: "Parking Lot Information",
@@ -101,17 +128,22 @@ const parkingLotOwnerItems: NavigationItem[] = [
         title: "Whitelist",
         path: "/owner/whitelist"
     },
-    {
-        icon: <FileText size={20} />,
-        title: "Upload File",
-        path: "/owner/upload-file"
-    }
-
+    // {
+    //     icon: <FileText size={20} />,
+    //     title: "Subscription",
+    //     path: "/owner/subscription"
+    // },
+    // {
+    //     icon: <FileText size={20} />,
+    //     title: "Upload File",
+    //     path: "/owner/upload-file"
+    // }
 ];
 
 
 const HeadingBar: React.FC = () => {
     const { user, logout } = useAuth();
+    const navigate = useNavigate();
     return (
         <div className="flex justify-between items-center my-4">
             <div className="flex items-center gap-2">
@@ -129,8 +161,10 @@ const HeadingBar: React.FC = () => {
                 <DropdownMenu className="dark">
                     <DropdownItem key="settings" textValue="Settings ">
 
-                        <button className="flex items-center gap-2 w-full text-left transition-opacity hover:opacity-80 "
-                        ><Settings size={16} />Settings</button>
+                        <button
+                            className="flex items-center gap-2 w-full text-left transition-opacity hover:opacity-80 "
+                        ><Settings size={16} />Settings
+                        </button>
 
 
                     </DropdownItem>
@@ -143,10 +177,23 @@ const HeadingBar: React.FC = () => {
                             className="w-full"
                         />
                     </DropdownItem>
+                    {user?.role === OWNER_ROLE ? (
+                    <DropdownItem textValue="Subscription" key="subscription"
+                    >
+                        <button
+                            className="flex items-center gap-2 w-full text-left transition-opacity hover:opacity-80 "
+                            onClick={() => navigate("/owner/subscription")}
+                        >
+                            <CreditCard size={16} /> Subscription
+                        </button>
+                        </DropdownItem>
+                    ) : null}
                     <DropdownItem textValue="Logout" key="logout">
-                        <button className="flex items-center gap-2 w-full text-left transition-opacity hover:opacity-80 "
+                        <button
+                            className="flex items-center gap-2 w-full text-left transition-opacity hover:opacity-80 "
                             onClick={logout}
-                        ><LogOut size={16} />Logout</button>
+                        ><LogOut size={16} />Logout
+                        </button>
                     </DropdownItem>
                 </DropdownMenu>
             </Dropdown>
@@ -162,12 +209,16 @@ export const SideBar: React.FC<SidebarProps> = ({ isOpen }) => {
             animate={{
                 width: isOpen ? 300 : 0,
                 opacity: isOpen ? 1 : 0,
+                // maxWidth: isOpen ? 300: 0,
+                minWidth: isOpen ? 250 : 0,
+
             }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
             className=" 
             bg-foreground text-background border-r border-divider h-full flex flex-col
-            p-5 shadow-lg overflow-hidden
+            p-5 shadow-lg overflow-hidden z-50
             "
+
         >
             <HeadingBar />
             <Divider className="bg-border my-4" />

@@ -22,3 +22,22 @@ export const formatPhoneNumber = (phone: string): string => {
   // Return original if it doesn't match common patterns
   return phone;
 };
+
+export const formatDate = (dateTime: string): string => {
+        const date = new Date(dateTime);
+        return date.toLocaleDateString('en-US', {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+        });
+    };
+
+export const formatTime = (dateTime: string | null): string => {
+        if (!dateTime) return '-';
+        const date = new Date(dateTime);
+        return date.toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true
+        });
+    };
