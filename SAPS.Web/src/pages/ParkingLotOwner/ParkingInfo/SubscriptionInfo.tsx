@@ -96,6 +96,11 @@ const SubscriptionInfo: React.FC<{ selectedParkingLot: ParkingLot, user: User, p
       return daysRemaining < 7;
    }
 
+   const returnProgressColor = (remainingDays: number) => {
+      if (remainingDays <= 0) return 'danger';
+      if (0 < remainingDays && remainingDays <= 7) return 'warning';
+      return 'primary';
+   }
 
    const currentProgress = calcProgress(parkingLotSubscriptionInfo?.startedDate, parkingLotSubscriptionInfo?.subscription?.duration);
    const remainingDays = calcRemainingDays(parkingLotSubscriptionInfo?.startedDate, parkingLotSubscriptionInfo?.subscription?.duration);
@@ -201,6 +206,7 @@ const SubscriptionInfo: React.FC<{ selectedParkingLot: ParkingLot, user: User, p
                      <Progress
                         value={currentProgress}
                         className="h-2"
+                        color={returnProgressColor(remainingDays)}
                      />
                      <div className="flex justify-between text-xs text-gray-500 mt-1">
                         <span>Start</span>
@@ -262,6 +268,7 @@ const SubscriptionInfo: React.FC<{ selectedParkingLot: ParkingLot, user: User, p
                                  <Progress
                                     className="h-1.5"
                                     value={progress}
+                                    color={returnProgressColor(remaining)}
                                  />
                                  <div className="flex justify-between text-xs text-gray-400 mt-1">
                                     <span>{Math.round(progress)}% </span>
