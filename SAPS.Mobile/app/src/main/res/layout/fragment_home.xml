@@ -1,16 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <TextView
-        android:layout_width="wrap_content"
+    android:padding="16dp"
+    android:fillViewport="true"
+    android:background="#F5F5F5"
+    >
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="home"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:gravity="center_horizontal"
+        android:background="#F5F5F5">
 
+        <!-- Thông tin phiên đỗ xe -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:layout_margin="8dp"
+            android:elevation="4dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp"
+            android:backgroundTintMode="src_in"
+            android:backgroundTint="#D4F1F9"
+            android:clipToPadding="false"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/bg_card_corner">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:text="Vehicle:"
+                android:textStyle="bold"
+                android:textColor="#01579B"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tvVehicle"
+                android:text=""
+                android:textColor="#0277BD"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:text="Location:"
+                android:textStyle="bold"
+                android:textColor="#01579B"
+                android:layout_marginTop="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tvLocation"
+                android:text=""
+                android:textStyle="bold"
+                android:textColor="#0277BD"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:text="Entry Time:"
+                android:textStyle="bold"
+                android:textColor="#01579B"
+                android:layout_marginTop="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tvEntryTime"
+                android:text=""
+                android:textStyle="bold"
+                android:textColor="#0277BD"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:text="Duration:"
+                android:textStyle="bold"
+                android:textColor="#01579B"
+                android:layout_marginTop="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/tvDuration"
+                android:text=""
+                android:textStyle="bold"
+                android:textColor="#0277BD"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <!-- Nút tròn "Check Out" -->
+        <Button
+            android:id="@+id/btnCheckOut"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:text="Check Out"
+            android:textColor="@android:color/white"
+            android:background="@drawable/button_circle"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:padding="0dp"/>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvParkingHistory"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="12dp" />
+    </LinearLayout>
+</ScrollView>

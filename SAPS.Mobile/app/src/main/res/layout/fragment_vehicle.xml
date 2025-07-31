@@ -1,107 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layout_my_vehicles"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
+    android:layout_height="match_parent"
     android:padding="16dp"
-    android:background="#F8F9FD">
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="end"
-        android:weightSum="1"
-        >
-    <!-- Title -->
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="🚗 My Vehicles"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:drawablePadding="8dp"
-        android:gravity="start"
-        android:textColor="#000000"
-        android:layout_weight="0.5"/>
+    android:fillViewport="true"
+    android:background="#F5F5F5">
 
-    <!-- Add Button -->
-    <Button
-        android:id="@+id/btn_add_vehicle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="+ Add Vehicle"
-        android:textAllCaps="false"
-        android:layout_marginTop="8dp"
-        android:backgroundTint="#0066CC"
-        android:textColor="#FFFFFF"
-        android:layout_weight="0.5"/>
-    </LinearLayout>
-    <!-- Share Code Card -->
+    <!-- ✅ View duy nhất bên trong ScrollView -->
     <LinearLayout
-        android:id="@+id/share_code_card"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#D8F1FF"
         android:orientation="vertical"
-        android:padding="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="8dp"
-        android:elevation="4dp"
-        android:backgroundTint="#E0F4FF"
-        android:backgroundTintMode="src_in"
-        android:clipToOutline="true">
-
-        <!-- Sub-title -->
-        <TextView
-            android:id="@+id/label_share_code"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="🔑 Your Share Code"
-            android:textStyle="bold"
-            android:textColor="#333333"
-            android:textSize="16sp" />
-
-        <!-- Code Text -->
-        <TextView
-            android:id="@+id/tv_share_code"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="USER-JOHN2025"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="#0066CC"
-            android:gravity="center"
-            android:layout_marginVertical="8dp" />
-
-        <!-- Hint Text -->
-        <TextView
-            android:id="@+id/tv_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Give this code to vehicle owners to grant you access to their vehicles."
-            android:textSize="14sp"
-            android:textColor="#444444"
-            android:layout_marginBottom="12dp" />
-
-        <!-- Copy Button -->
-        <Button
-            android:id="@+id/btn_copy_code"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="📋 Copy My Share Code"
-            android:backgroundTint="#0066CC"
-            android:textColor="#FFFFFF"
-            android:layout_gravity="center_horizontal"
-            android:textAllCaps="false" />
-    </LinearLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvVehicles"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="8dp"
-        android:clipToPadding="false"/>
-</LinearLayout>
+        android:layout_height="wrap_content">
+
+        <!-- Header: Title + Add button -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:weightSum="1">
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🚗 My Vehicles"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:drawablePadding="8dp"
+                android:gravity="start"
+                android:textColor="#000000"
+                android:layout_weight="0.5" />
+
+            <Button
+                android:id="@+id/btn_add_vehicle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="+ Add Vehicle"
+                android:textAllCaps="false"
+                android:layout_marginTop="8dp"
+                android:backgroundTint="#0066CC"
+                android:textColor="#FFFFFF"
+                android:layout_weight="0.5" />
+        </LinearLayout>
+
+        <!-- Share Code Card -->
+        <LinearLayout
+            android:id="@+id/share_code_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#D8F1FF"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:elevation="4dp"
+            android:backgroundTint="#E0F4FF"
+            android:backgroundTintMode="src_in"
+            android:clipToOutline="true">
+
+            <TextView
+                android:id="@+id/label_share_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🔑 Your Share Code"
+                android:textStyle="bold"
+                android:textColor="#333333"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/tv_share_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="USER-JOHN2025"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#0066CC"
+                android:gravity="center"
+                android:layout_marginVertical="8dp" />
+
+            <TextView
+                android:id="@+id/tv_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Give this code to vehicle owners to grant you access to their vehicles."
+                android:textSize="14sp"
+                android:textColor="#444444"
+                android:layout_marginBottom="12dp" />
+
+            <Button
+                android:id="@+id/btn_copy_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📋 Copy My Share Code"
+                android:backgroundTint="#0066CC"
+                android:textColor="#FFFFFF"
+                android:layout_gravity="center_horizontal"
+                android:textAllCaps="false" />
+        </LinearLayout>
+
+        <!-- RecyclerView -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvVehicles"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:clipToPadding="false" />
+    </LinearLayout>
+</ScrollView>

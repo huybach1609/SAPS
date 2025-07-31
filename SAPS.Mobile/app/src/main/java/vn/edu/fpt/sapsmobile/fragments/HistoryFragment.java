@@ -50,8 +50,9 @@ public class HistoryFragment extends Fragment {
             @Override
             public void onResponse(Call<List<ParkingSession>> call, Response<List<ParkingSession>> response) {
                 if (response.isSuccessful() && response.body() != null) {
+                    if (!isAdded() || getContext() == null) return;
                     parkingSessionList = response.body();
-                    parkingSessionAdapter = new ParkingSessionAdapter(parkingSessionList, new HistoryFragmentHandler(requireContext()));
+                    parkingSessionAdapter = new ParkingSessionAdapter(parkingSessionList, new HistoryFragmentHandler(requireContext()), requireContext(),"historyFragment");
                     rvParkingHistory.setAdapter(parkingSessionAdapter);
                 } else {
                 }

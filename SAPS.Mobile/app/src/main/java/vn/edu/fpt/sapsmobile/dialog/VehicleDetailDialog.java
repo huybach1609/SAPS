@@ -8,11 +8,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import vn.edu.fpt.sapsmobile.R;
+import vn.edu.fpt.sapsmobile.listener.Listener;
 import vn.edu.fpt.sapsmobile.listener.VehicleFragmentListener;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
 
 public class VehicleDetailDialog {
-    public static void show(Context context, Vehicle vehicle, VehicleFragmentListener listener) {
+    public static void show(Context context, Vehicle vehicle,Listener listener) {
         View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_vehicle_detail, null);
 
         TextView tvLicense = dialogView.findViewById(R.id.tvDetailLicense);
