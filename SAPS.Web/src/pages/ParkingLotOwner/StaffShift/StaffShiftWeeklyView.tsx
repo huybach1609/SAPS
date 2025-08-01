@@ -96,7 +96,7 @@ const StaffShiftWeeklyView: React.FC<StaffShiftWeeklyViewProps> = ({
                     <h2 className="text-lg font-semibold text-gray-900">Weekly Staff Schedule</h2>
 
                     {/* Shift Type Filter */}
-                    <div className="flex items-center gap-2">
+                    {/* <div className="flex items-center gap-2">
                         <span className="text-sm text-gray-600">Shift Type:</span>
                         <Select
                             aria-label="Shift Type"
@@ -109,7 +109,7 @@ const StaffShiftWeeklyView: React.FC<StaffShiftWeeklyViewProps> = ({
                                 <SelectItem key={item.key} aria-label={item.label}>{item.label}</SelectItem>
                             )}
                         </Select>
-                    </div>
+                    </div> */}
                 </div>
 
                 <div className="flex gap-2">
@@ -135,7 +135,7 @@ const StaffShiftWeeklyView: React.FC<StaffShiftWeeklyViewProps> = ({
             </div>
 
             {/* Time Header */}
-            <div className="mb-4 pr-10 mr-10">
+            {/* <div className="mb-4 pr-10 mr-10">
                 <div className="grid grid-cols-[120px_1fr] gap-2">
                     <div></div>
                     <div className="relative">
@@ -152,108 +152,140 @@ const StaffShiftWeeklyView: React.FC<StaffShiftWeeklyViewProps> = ({
                         <div className="h-px bg-gray-300"></div>
                     </div>
                 </div>
-            </div>
+            </div> */}
 
             {/* Weekly Grid */}
-            <div className="space-y-2  pr-10 mr-10">
-                {daysOfWeek.map((day, dayIndex) => {
-                    const dayShifts = getShiftsForDay(dayIndex);
+
+
+            {/* Weekly Grid - Horizontal Days, Vertical Time Slots */}
+            <div className="space-y-2 ">
+                {/* Time Slots Configuration */}
+                {(() => {
+                    const timeSlots = [
+                        { label: '6:00 AM - 10:00 AM', start: 360, end: 600 },    // 6:00-10:00
+                        { label: '10:00 AM - 2:00 PM', start: 600, end: 840 },   // 10:00-14:00
+                        { label: '2:00 PM - 6:00 PM', start: 840, end: 1080 },   // 14:00-18:00
+                        { label: '6:00 PM - 10:00 PM', start: 1080, end: 1320 }, // 18:00-22:00
+                        { label: '10:00 PM - 2:00 AM', start: 1320, end: 1560 }, // 22:00-02:00 (next day)
+                        { label: '2:00 AM - 6:00 AM', start: 120, end: 360 }     // 02:00-06:00
+                    ];
 
                     return (
-                        <div key={day} className="grid grid-cols-[120px_1fr] gap-2">
-                            <div className="flex items-center py-3 px-2 bg-gray-50 rounded-l-md">
-                                <span className="font-medium text-gray-700">{day}</span>
-                            </div>
-
-                            <div className="relative min-h-20 bg-gray-50 rounded-r-md border border-gray-200">
-                                {/* Hour Grid Lines */}
-                                {[0, 3, 6, 9, 12, 15, 18, 21, 24].map(hour => (
-                                    <div
-                                        key={hour}
-                                        className="absolute top-0 bottom-0 w-px bg-gray-200"
-                                        style={{ left: `${(hour / 24) * 100}%` }}
-                                    />
-                                ))}
-
-                                {/* Staff Shifts */}
-                                {dayShifts.map((shift, index) => {
-                                    const left = getTimePosition(shift.startTime);
-                                    const width = getShiftWidth(shift.startTime, shift.endTime);
-
-                                    return (
-                                        <div
-                                            key={shift.id}
-                                            className={`absolute top-1 bottom-1 p-2 rounded-md border-2 cursor-pointer transition-all duration-200 ${hoveredShift === shift.id ? 'z-10 scale-105 shadow-lg' : ''}`}
-                                            style={{
-                                                height: 'auto',
-                                                minHeight: '56px',
-                                                left: `${left}%`,
-                                                width: `${width}%`,
-                                                minWidth: '60px',
-                                                ...getShiftStyle(shift)
-                                            }}
-                                            onMouseEnter={() => setHoveredShift(shift.id)}
-                                            onMouseLeave={() => setHoveredShift(null)}
-                                        >
-                                            <div className="h-full p-1 flex flex-col justify-center">
-                                                <div className="text-xs font-medium truncate flex items-center gap-1">
-                                                    {shift.shiftType === 'Emergency' ? (
-                                                        <AlertTriangle className="w-3 h-3" />
-                                                    ) : (
-                                                        <User className="w-3 h-3" />
-                                                    )}
-                                                    <span>{shift.staff?.user?.fullName || 'staff shift'}</span>
-                                                </div>
-                                                <div className="text-xs opacity-75 flex items-center gap-1">
-                                                    <Clock className="w-3 h-3" />
-                                                    <span className="whitespace-nowrap">
-                                                        {minutesToTime(shift.startTime)} - {minutesToTime(shift.endTime)}
-                                                    </span>
-                                                </div>
-                                                <div className="text-xs opacity-75">
-                                                    {shift.status}
-                                                </div>
-                                            </div>
-
-                                            {/* Hover Actions */}
-                                            {hoveredShift === shift.id && (
-                                                <div className="absolute top-0 right-0 transform translate-x-full -translate-y-1 flex gap-1 z-20">
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            onEdit(shift);
-                                                        }}
-                                                        className="p-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                                                    >
-                                                        <Edit2 className="w-3 h-3" />
-                                                    </button>
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            onDelete(shift.id);
-                                                        }}
-                                                        className="p-1 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
-                                                    >
-                                                        <Trash2 className="w-3 h-3" />
-                                                    </button>
-                                                </div>
-                                            )}
-                                        </div>
-                                    );
-                                })}
-
-                                {/* Empty State */}
-                                {dayShifts.length === 0 && (
-                                    <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm">
-                                        No shifts
+                        <div className="overflow-x-auto">
+                            <div className="min-w-max">
+                                {/* Header Row - Days of Week */}
+                                <div className="grid gap-2 mb-2" style={{ gridTemplateColumns: '150px repeat(7, 140px)' }}>
+                                    <div className="flex items-center justify-center py-3 px-2 bg-gray-100 rounded-md font-medium text-gray-700">
+                                        Time Slots
                                     </div>
-                                )}
+                                    {daysOfWeek.map((day) => (
+                                        <div key={day} className="flex items-center justify-center py-3 px-2 bg-gray-50 rounded-md">
+                                            <span className="font-medium text-gray-700">{day}</span>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Time Slot Rows */}
+                                {timeSlots.map((timeSlot, slotIndex) => (
+                                    <div key={slotIndex} className="grid gap-2 mb-2" style={{ gridTemplateColumns: '150px repeat(7, 140px)' }}>
+                                        {/* Time Slot Label */}
+                                        <div className="flex items-center justify-center py-4 px-2 bg-gray-100 rounded-md">
+                                            <span className="text-xs font-medium text-gray-700 text-center leading-tight">
+                                                {timeSlot.label}
+                                            </span>
+                                        </div>
+
+                                        {/* Day Columns */}
+                                        {daysOfWeek.map((day, dayIndex) => {
+                                            // Get shifts for this day that fall within this time slot
+                                            const dayShifts = getShiftsForDay(dayIndex);
+                                            const timeSlotShifts = dayShifts.filter(shift => {
+                                                // Handle overnight shifts (cross midnight)
+                                                if (timeSlot.start > timeSlot.end) {
+                                                    return (shift.startTime >= timeSlot.start || shift.endTime <= timeSlot.end) ||
+                                                        (shift.startTime < timeSlot.end && shift.endTime > timeSlot.start);
+                                                }
+                                                // Regular shifts (same day)
+                                                return (shift.startTime < timeSlot.end && shift.endTime > timeSlot.start);
+                                            });
+
+                                            return (
+                                                <div key={`${day}-${slotIndex}`} className="relative min-h-16 bg-gray-50 rounded-md border border-gray-200 p-1">
+                                                    {/* Shifts in this time slot */}
+                                                    {timeSlotShifts.map((shift, shiftIndex) => (
+                                                        <div
+                                                            key={shift.id}
+                                                            className={`relative w-full mb-1 p-2 rounded-md border-2 cursor-pointer transition-all duration-200 ${hoveredShift === shift.id ? 'z-10 scale-105 shadow-lg' : ''
+                                                                }`}
+                                                            style={{
+                                                                minHeight: '48px',
+                                                                ...getShiftStyle(shift)
+                                                            }}
+                                                            onMouseEnter={() => setHoveredShift(shift.id)}
+                                                            onMouseLeave={() => setHoveredShift(null)}
+                                                        >
+                                                            <div className="h-full flex flex-col justify-center">
+                                                                <div className="text-xs font-medium truncate flex items-center gap-1 mb-1">
+                                                                    {shift.shiftType === 'Emergency' ? (
+                                                                        <AlertTriangle className="w-3 h-3 flex-shrink-0" />
+                                                                    ) : (
+                                                                        <User className="w-3 h-3 flex-shrink-0" />
+                                                                    )}
+                                                                    <span className="truncate">{shift.staff?.user?.fullName || 'staff shift'}</span>
+                                                                </div>
+                                                                <div className="text-xs opacity-75 flex items-center gap-1 mb-1">
+                                                                    <Clock className="w-3 h-3 flex-shrink-0" />
+                                                                    <span className="truncate">
+                                                                        {minutesToTime(shift.startTime)} - {minutesToTime(shift.endTime)}
+                                                                    </span>
+                                                                </div>
+                                                                <div className="text-xs opacity-75 truncate">
+                                                                    {shift.status}
+                                                                </div>
+                                                            </div>
+
+                                                            {/* Hover Actions */}
+                                                            {hoveredShift === shift.id && (
+                                                                <div className="absolute top-0 right-0 transform translate-x-full -translate-y-1 flex gap-1 z-20">
+                                                                    <button
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            onEdit(shift);
+                                                                        }}
+                                                                        className="p-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                                                                    >
+                                                                        <Edit2 className="w-3 h-3" />
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={(e) => {
+                                                                            e.stopPropagation();
+                                                                            onDelete(shift.id);
+                                                                        }}
+                                                                        className="p-1 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+                                                                    >
+                                                                        <Trash2 className="w-3 h-3" />
+                                                                    </button>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    ))}
+
+                                                    {/* Empty State */}
+                                                    {timeSlotShifts.length === 0 && (
+                                                        <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-xs">
+                                                            No shifts
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                ))}
                             </div>
                         </div>
                     );
-                })}
+                })()}
             </div>
-
             {/* Legend */}
             <div className="mt-6 p-4 bg-gray-50 rounded-lg">
                 <h3 className="text-sm font-medium text-gray-700 mb-2">Shift Details</h3>
