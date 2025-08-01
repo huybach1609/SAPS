@@ -10,27 +10,33 @@ import AboutPage from "@/pages/about";
 import ErrorPage from "@/pages/ErrorPage";
 import LoginPage from "./pages/Auth/Login";
 import OwnerDashboard from "./pages/ParkingLotOwner/Home/OwnerDashboard";
-import AdminDashboard from "./pages/Admin/AdminDashboard";
 import { WhitelistManagement } from "./pages/ParkingLotOwner/Whitelist/WhiteListManagement";
+import DefaultLayout from "./layouts/default";
+import AdminDashboardPage from "./pages/Admin/AdminDashboardPage";
 import IncidentReports from "./pages/ParkingLotOwner/IncidentReports/IncidentReports";
 import ParkingHistory from "./pages/ParkingLotOwner/ParkingHistory/HistoryManagement/ParkingHistory";
 import StaffManagement from "./pages/ParkingLotOwner/StaffManagement/StaffManagement";
 import ParkingLotInfo from "./pages/ParkingLotOwner/ParkingInfo/ParkingLotInfo";
 import AdminAccountList from "./pages/Admin/Accounts/AdminAccounts/AdminAccountList";
-// import AdminAccountList from "./pages/Admin/Auth/AdminAccountList";
-import AdminParkingLotOwnerList from "./pages/Admin/ParkingLotOwner/ParkingLotOwnerList";
-// import AdminParkingLotOwnerList from "./pages/Admin/Auth/AdminParkingLotOwnerList";
-// import AdminRequestList from "./pages/Admin/Auth/AdminRequestList";
+import AdminRequestList from "./pages/Admin/Requests/AdminRequestList";
 import { ADMIN_ROLE, OWNER_ROLE } from "./config/base";
 import ParkingFeeManagement from "./pages/ParkingLotOwner/ParkingFee/ParkingFeeManagement";
+import AccountListSelector from "./pages/Admin/Accounts/AccountListSelector";
+import UserAccountList from "./pages/Admin/Accounts/UserAccounts/UserAccountList";
+import AdminAccountDetails from "./pages/Admin/Accounts/AdminAccounts/AdminAccountDetails";
+import UserDetail from "./pages/Admin/Accounts/UserAccounts/UserDetail";
 import StaffDetailScreen from "./pages/ParkingLotOwner/StaffManagement/StaffDetail";
+import ParkingLotOwnerList from "./pages/Admin/ParkingLotOwner/ParkingLotOwnerList";
+import ParkingLotOwnerDetails from "./pages/Admin/ParkingLotOwner/ParkingLotOwnerDetails";
+import SubscriptionList from "./pages/Admin/Subscriptions/SubscriptionList";
+import RequestDetails from "./pages/Admin/Requests/RequestDetails";
 import UploadFile from "./pages/ParkingLotOwner/UploadFile";
 import ParkingHistoryDetail from "./pages/ParkingLotOwner/ParkingHistory/HistoryManagement/ParkingHistoryDetail";
 import IncidentDetail from "./pages/ParkingLotOwner/IncidentReports/IncidentDetail";
 import SubscriptionPricingSelect from "./pages/ParkingLotOwner/Subscription/SubscriptionPricingSelect";
 import StaffShiftManagement from "./pages/ParkingLotOwner/StaffShift/StaffShiftManagement";
-import AdminRequestList from "@/pages/Admin/Requests/AdminRequestList.tsx";
-import DefaultLayout from "@/layouts/default.tsx";
+// import AdminRequestList from "@/pages/Admin/Requests/AdminRequestList.tsx";
+// import DefaultLayout from "@/layouts/default.tsx";
 
 // Protected Route Component
 interface ProtectedRouteProps {
@@ -177,10 +183,22 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route path="home" element={<AdminDashboard />} />
-          <Route path="accounts" element={<AdminAccountList />} />
-          <Route path="parking-owners" element={<AdminParkingLotOwnerList />} />
+          <Route path="home" element={<AdminDashboardPage />} />
+
+          {/* Account Management Routes */}
+          <Route path="accounts" element={<AccountListSelector />} />
+          <Route path="accounts/users" element={<UserAccountList />} />
+          <Route path="accounts/users/:id" element={<UserDetail />} />
+          <Route path="accounts/admins" element={<AdminAccountList />} />
+          <Route path="accounts/admins/:id" element={<AdminAccountDetails />} />
+          <Route path="parking-owners" element={<ParkingLotOwnerList />} />
+          <Route
+            path="parking-owners/:id"
+            element={<ParkingLotOwnerDetails />}
+          />
           <Route path="requests" element={<AdminRequestList />} />
+          <Route path="requests/details/:id" element={<RequestDetails />} />
+          <Route path="subscriptions" element={<SubscriptionList />} />
         </Route>
 
         {/* Owner Routes */}
