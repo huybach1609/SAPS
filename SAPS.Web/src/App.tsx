@@ -29,6 +29,7 @@ import ParkingHistoryDetail from "./pages/ParkingLotOwner/ParkingHistory/History
 import IncidentDetail from "./pages/ParkingLotOwner/IncidentReports/IncidentDetail";
 import SubscriptionPricingSelect from "./pages/ParkingLotOwner/Subscription/SubscriptionPricingSelect";
 import StaffShiftManagement from "./pages/ParkingLotOwner/StaffShift/StaffShiftManagement";
+import AdminRequestList from "@/pages/Admin/Requests/AdminRequestList.tsx";
 
 // Protected Route Component
 interface ProtectedRouteProps {
