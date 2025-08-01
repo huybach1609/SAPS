@@ -49,57 +49,62 @@ interface NavigationItem {
 
 interface NavigationListProps {
   items: NavigationItem[];
+  isOwner : boolean;
 }
 
-const NavigationList: React.FC<NavigationListProps> = ({ items }) => {
+const NavigationList: React.FC<NavigationListProps> = ({ items, isOwner = false }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { selectedParkingLot } = useParkingLot();
+
+  // Only use parking lot context for owner role
+  const parkingLotContext = isOwner ? useParkingLot() : null;
+  const selectedParkingLot = parkingLotContext?.selectedParkingLot;
 
   return (
-    <Listbox aria-label="Navigation List" className="flex flex-col gap-2">
-      {items.map((item, index) => {
-        // Check if item should be disabled based on isActive prop and parking lot status
-        const isDisabled =
-          item.isActive !== undefined &&
-          (selectedParkingLot?.status === "Active"
-            ? !item.isActive
-            : item.isActive);
+      <Listbox aria-label="Navigation List" className="flex flex-col gap-2">
+        {items.map((item, index) => {
+          // Check if item should be disabled based on isActive prop and parking lot status
+          // Only apply this logic for owner items
+          const isDisabled = isOwner &&
+              item.isActive !== undefined &&
+              (selectedParkingLot?.status === "Active"
+                  ? !item.isActive
+                  : item.isActive);
 
-        const listboxItem = (
-          <>
-            <ListboxItem
-              key={index}
-              className={`p-3 
+          const listboxItem = (
+              <>
+                <ListboxItem
+                    key={index}
+                    className={`p-3 
                              ${location.pathname === item.path ? "bg-primary text-background" : ""}
                              hover:bg-primary hover:text-background
                              ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}
                              `}
-              color="secondary"
-              endContent={
-                isDisabled ? (
-                  <Tooltip
-                    key={index}
-                    className="text-background"
-                    color="warning"
-                    content="Renew your subscription to access this feature"
-                    placement="right"
-                  >
-                    <CircleAlert size={16} />
-                  </Tooltip>
-                ) : null
-              }
-              isReadOnly={isDisabled}
-              startContent={item.icon}
-              title={item.title}
-              onClick={() => navigate(item.path)}
-            />
-          </>
-        );
+                    color="secondary"
+                    endContent={
+                      isDisabled ? (
+                          <Tooltip
+                              key={index}
+                              className="text-background"
+                              color="warning"
+                              content="Renew your subscription to access this feature"
+                              placement="right"
+                          >
+                            <CircleAlert size={16} />
+                          </Tooltip>
+                      ) : null
+                    }
+                    isReadOnly={isDisabled}
+                    startContent={item.icon}
+                    title={item.title}
+                    onClick={() => navigate(item.path)}
+                />
+              </>
+          );
 
-        return listboxItem;
-      })}
-    </Listbox>
+          return listboxItem;
+        })}
+      </Listbox>
   );
 };
 
@@ -272,9 +277,9 @@ export const SideBar: React.FC<SidebarProps> = ({ isOpen }) => {
       <HeadingBar />
       <Divider className="bg-border my-4" />
       {user?.role === OWNER_ROLE ? (
-        <NavigationList items={parkingLotOwnerItems} />
+        <NavigationList items={parkingLotOwnerItems} isOwner={true} />
       ) : (
-        <NavigationList items={adminItems} />
+        <NavigationList items={adminItems} isOwner={false}/>
       )}
       {/* // {role === 'parkinglotowner' ? <ParkingLotOwnerList /> : <AdminList />} */}
     </motion.div>

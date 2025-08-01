@@ -5,18 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="06a12574-f358-49e9-9abb-9127d952d4cc" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SAPS.Web/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/SAPS.Web/src/App.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/SAPS.Web/src/components/layout/sidebar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/SAPS.Web/src/components/layout/sidebar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SAPS.Web/src/config/base.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/SAPS.Web/src/config/base.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SAPS.Web/src/pages/ParkingLotOwner/IncidentReports/IncidentDetail.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/SAPS.Web/src/pages/ParkingLotOwner/IncidentReports/IncidentDetail.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SAPS.Web/src/pages/ParkingLotOwner/IncidentReports/IncidentReports.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/SAPS.Web/src/pages/ParkingLotOwner/IncidentReports/IncidentReports.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SAPS.Web/src/pages/ParkingLotOwner/ParkingFee/FeeScheduleModal.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/SAPS.Web/src/pages/ParkingLotOwner/ParkingFee/FeeScheduleModal.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SAPS.Web/src/pages/ParkingLotOwner/ParkingFee/ParkingFeeManagement.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/SAPS.Web/src/pages/ParkingLotOwner/ParkingFee/ParkingFeeManagement.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SAPS.Web/src/pages/ParkingLotOwner/ParkingHistory/HistoryManagement/ParkingHistory.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/SAPS.Web/src/pages/ParkingLotOwner/ParkingHistory/HistoryManagement/ParkingHistory.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SAPS.Web/src/pages/ParkingLotOwner/ParkingHistory/HistoryManagement/ParkingHistoryDetail.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/SAPS.Web/src/pages/ParkingLotOwner/ParkingHistory/HistoryManagement/ParkingHistoryDetail.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SAPS.Web/src/pages/ParkingLotOwner/StaffManagement/StaffDetail.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/SAPS.Web/src/pages/ParkingLotOwner/StaffManagement/StaffDetail.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SAPS.Web/src/pages/ParkingLotOwner/Whitelist/WhiteListManagement.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/SAPS.Web/src/pages/ParkingLotOwner/Whitelist/WhiteListManagement.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -26,7 +18,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="huybach" />
+        <entry key="$PROJECT_DIR$" value="BachLD-Admin" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />

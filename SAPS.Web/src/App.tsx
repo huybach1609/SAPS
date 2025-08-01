@@ -30,6 +30,7 @@ import IncidentDetail from "./pages/ParkingLotOwner/IncidentReports/IncidentDeta
 import SubscriptionPricingSelect from "./pages/ParkingLotOwner/Subscription/SubscriptionPricingSelect";
 import StaffShiftManagement from "./pages/ParkingLotOwner/StaffShift/StaffShiftManagement";
 import AdminRequestList from "@/pages/Admin/Requests/AdminRequestList.tsx";
+import DefaultLayout from "@/layouts/default.tsx";
 
 // Protected Route Component
 interface ProtectedRouteProps {
@@ -170,7 +171,9 @@ function App() {
           path="/admin"
           element={
             <ProtectedRoute requiredRole={ADMIN_ROLE}>
-              <Outlet />
+              <DefaultLayout  title="SAPLS Admin Dashboard">
+                <Outlet />
+              </DefaultLayout>
             </ProtectedRoute>
           }
         >
