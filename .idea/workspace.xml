@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="905a0a15-887e-4c9a-a792-5e24e9e413ab" name="Changes" comment="update modals" />
+    <list default="true" id="905a0a15-887e-4c9a-a792-5e24e9e413ab" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -18,9 +18,9 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 0
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="30cwCu0DkgEk2OCCk0Ijqab4Dfe" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -31,7 +31,6 @@
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "BachLD-Admin-merge",
     "last_opened_file_path": "F:/Capstone/SAPS",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -50,12 +49,13 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="905a0a15-887e-4c9a-a792-5e24e9e413ab" name="Changes" comment="" />
+      <changelist id="06a12574-f358-49e9-9abb-9127d952d4cc" name="Changes" comment="" />
       <created>1753940044974</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1753940044974</updated>
       <workItem from="1753940046963" duration="4535000" />
+      <workItem from="1753969455562" duration="833000" />
     </task>
     <task id="LOCAL-00001" summary="add package">
       <option name="closed" value="true" />
