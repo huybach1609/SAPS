@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="06a12574-f358-49e9-9abb-9127d952d4cc" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+    <list default="true" id="06a12574-f358-49e9-9abb-9127d952d4cc" name="Changes" comment="update router">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SAPS.Web/src/App.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/SAPS.Web/src/App.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SAPS.Web/src/config/base.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/SAPS.Web/src/config/base.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,7 +80,15 @@
       <option name="project" value="LOCAL" />
       <updated>1753949126245</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="update router">
+      <option name="closed" value="true" />
+      <created>1754024428927</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1754024428927</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -101,6 +108,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="add package" />
     <MESSAGE value="update modals" />
-    <option name="LAST_COMMIT_MESSAGE" value="update modals" />
+    <MESSAGE value="update router" />
+    <option name="LAST_COMMIT_MESSAGE" value="update router" />
   </component>
 </project>
