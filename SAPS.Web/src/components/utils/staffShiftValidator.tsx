@@ -109,7 +109,7 @@ export class StaffShiftValidator {
   static validateRequiredFields(shift: Partial<StaffShift>): ValidationError[] {
     const errors: ValidationError[] = [];
     const requiredFields: (keyof StaffShift)[] = [
-      'id', 'staffId', 'parkingLotId', 'startTime', 'endTime'
+      'id', 'staffIds', 'parkingLotId', 'startTime', 'endTime'
     ];
 
     for (const field of requiredFields) {

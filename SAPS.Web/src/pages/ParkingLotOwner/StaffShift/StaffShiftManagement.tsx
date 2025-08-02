@@ -35,7 +35,7 @@ const StaffShiftManagement: React.FC = () => {
         } catch (error) {
             console.error('Error loading shifts:', error);
             // Fallback to mock data if API fails
-            setShiftsData(mockShifts);
+            // setShiftsData(mockShifts);
         } finally {
             setRefreshing(false);
         }
@@ -43,39 +43,39 @@ const StaffShiftManagement: React.FC = () => {
 
 
 
-    // Mock data for demonstration
-    const mockShifts: StaffShift[] = [
-        {
-            id: '1',
-            staffId: 'staff-1',
-            parkingLotId: selectedParkingLot?.id || '',
-            startTime: TimeUtils.timeToMinutes('09:00'),
-            endTime: TimeUtils.timeToMinutes('17:00'),
-            shiftType: 'Regular',
-            dayOfWeeks: '1,2,3,4,5', // Monday to Friday
-            specificDate: null,
-            isActive: true,
-            status: 'Scheduled',
-            notes: 'Morning shift',
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-        },
-        {
-            id: '2',
-            staffId: 'staff-2',
-            parkingLotId: selectedParkingLot?.id || '',
-            startTime: TimeUtils.timeToMinutes('17:00'),
-            endTime: TimeUtils.timeToMinutes('01:00'),
-            shiftType: 'Emergency',
-            dayOfWeeks: '6,7', // Weekend
-            specificDate: null,
-            isActive: true,
-            status: 'Active',
-            notes: 'Weekend emergency shift',
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-        }
-    ];
+    // // Mock data for demonstration
+    // const mockShifts: StaffShift[] = [
+    //     {
+    //         id: '1',
+    //         staffId: 'staff-1',
+    //         parkingLotId: selectedParkingLot?.id || '',
+    //         startTime: TimeUtils.timeToMinutes('09:00'),
+    //         endTime: TimeUtils.timeToMinutes('17:00'),
+    //         shiftType: 'Regular',
+    //         dayOfWeeks: '1,2,3,4,5', // Monday to Friday
+    //         specificDate: null,
+    //         isActive: true,
+    //         status: 'Scheduled',
+    //         notes: 'Morning shift',
+    //         createdAt: new Date().toISOString(),
+    //         updatedAt: new Date().toISOString()
+    //     },
+    //     {
+    //         id: '2',
+    //         staffId: 'staff-2',
+    //         parkingLotId: selectedParkingLot?.id || '',
+    //         startTime: TimeUtils.timeToMinutes('17:00'),
+    //         endTime: TimeUtils.timeToMinutes('01:00'),
+    //         shiftType: 'Emergency',
+    //         dayOfWeeks: '6,7', // Weekend
+    //         specificDate: null,
+    //         isActive: true,
+    //         status: 'Active',
+    //         notes: 'Weekend emergency shift',
+    //         createdAt: new Date().toISOString(),
+    //         updatedAt: new Date().toISOString()
+    //     }
+    // ];
 
     useEffect(() => {
         const initialLoad = async () => {
@@ -115,10 +115,11 @@ const StaffShiftManagement: React.FC = () => {
         }
     };
 
-    const handleSaveShift = async (shiftData: CreateStaffShift) => {
+    const handleSaveShift = async (shiftData: CreateStaffShift | StaffShift) => {
 
         try {
-            // Validate the shift data
+
+
             const errors = StaffShiftValidator.validate(shiftData);
             if (errors.length > 0) {
                 alert('Validation errors: ' + errors.map(e => e.message).join(', '));
@@ -126,21 +127,6 @@ const StaffShiftManagement: React.FC = () => {
 
             }
 
-            // // Check for conflicts
-            // const conflictResult = ShiftConflictChecker.checkConflicts(shiftData, shiftsData, false);
-
-            // if (conflictResult.hasConflict) {
-            //     const conflictDetails = ShiftConflictChecker.getConflictDetails(conflictResult);
-            //     const conflictMessage = `${conflictResult.message}\n\nConflicting shifts:\n${conflictDetails.join('\n')}`;
-
-            //     const userConfirmed = window.confirm(
-            //         `⚠️ SCHEDULE CONFLICT DETECTED\n\n${conflictMessage}\n\nDo you want to create this shift anyway?`
-            //     );
-
-            //     if (!userConfirmed) {
-            //         return; // User cancelled, don't create the shift
-            //     }
-            // }
 
             // Prepare the data for API
             const shiftToCreate = {
@@ -150,7 +136,7 @@ const StaffShiftManagement: React.FC = () => {
                 status: shiftData.status || 'Scheduled',
             };
 
-            const newShift = await createStaffShift(selectedParkingLot?.id || '', shiftToCreate);
+            const newShift = await createStaffShift(selectedParkingLot?.id || '', shiftToCreate as CreateStaffShift);
 
             // Update local state
             setShiftsData(prev => [...prev, newShift]);
@@ -164,6 +150,7 @@ const StaffShiftManagement: React.FC = () => {
             if (error instanceof AxiosError) {
                 if (error.response?.data.errors) {
                     // Store the conflicts and pending shift data
+                    console.log(error.response.data);
                     setConflicts(error.response.data.errors);
                     setPendingShiftData(shiftData);
                     // Show the conflict modal
@@ -204,7 +191,7 @@ const StaffShiftManagement: React.FC = () => {
             };
 
             // Call API to update shift
-            const updatedShift = await updateStaffShift(selectedParkingLot?.id || '', shiftData.id, shiftToUpdate);
+            const updatedShift = await updateStaffShift(selectedParkingLot?.id || '', shiftData.id || '', shiftToUpdate);
 
             // Update local state with the fresh data from API
             setShiftsData(prev => prev.map(shift =>

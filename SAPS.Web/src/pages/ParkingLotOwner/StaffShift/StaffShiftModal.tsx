@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Spinner, Textarea, useDisclosure, Checkbox } from '@heroui/react';
+import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Spinner, Textarea, useDisclosure, Checkbox, ScrollShadow, Divider } from '@heroui/react';
 import { StaffShift, CreateStaffShift } from '@/services/parkinglot/staffShift';
 import { StaffShiftValidator, TimeUtils } from '@/components/utils/staffShiftValidator';
 import { searchStaff } from '@/services/parkinglot/staffService';
 import { StaffProfile, User } from '@/types/User';
 import { formatPhoneNumber } from '@/components/utils/stringUtils';
+import { Trash } from 'lucide-react';
 
 interface StaffShiftModalProps {
     isOpen: boolean;
     onOpenChange: () => void;
-    onSave: (shiftData: CreateStaffShift | StaffShift) => void;
+    onSave: (shiftData:  StaffShift | CreateStaffShift) => void;
     shift?: StaffShift | null;
     mode: 'add' | 'edit';
     parkingLotId: string;
@@ -26,7 +27,7 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
 }) => {
     const [formData, setFormData] = useState<Partial<CreateStaffShift>>({
         id: '',
-        staffId: '',
+        staffIds: [],
         parkingLotId: '',
         startTime: 0,
         endTime: 0,
@@ -40,8 +41,10 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
 
     const [selectedDays, setSelectedDays] = useState<number[]>([]);
 
+    // search staff
     const [keySearchStaff, setKeySearchStaff] = useState<string>('');
-    const [selectedStaff, setSelectedStaff] = useState<StaffProfile | null>(null);
+    // selected staff list
+    const [selectedStaffs, setSelectedStaffs] = useState<StaffProfile[]>([]);
 
     // loading for search staff
     const [loading, setLoading] = useState<boolean>(false);
@@ -84,11 +87,11 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
 
 
     useEffect(() => {
-        setSelectedStaff(shift?.staff || null);
+        setSelectedStaffs(shift?.assignedStaff || []);
         if (shift && mode === 'edit') {
             setFormData({
                 id: shift.id,
-                staffId: shift.staffId,
+                staffIds: shift.assignedStaff?.map(staff => staff.staffId) || [],
                 parkingLotId: shift.parkingLotId,
                 startTime: shift.startTime,
                 endTime: shift.endTime,
@@ -112,7 +115,7 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
             // Reset form for add mode
             setFormData({
                 id: '',
-                staffId: '',
+                staffIds: [],
                 parkingLotId: parkingLotId,
                 startTime: 0,
                 endTime: 0,
@@ -168,10 +171,24 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
         }
     };
 
-    const handleStaffSelection = (staffId: string,) => {
-        handleInputChange('staffId', staffId);
-        setSelectedStaff(staffList.find(staff => staff.staffId === staffId) || null);
-        // // Clear the search input after selection
+    const handleStaffSelection = (staffId: string, staff: StaffProfile) => {
+        // Check if staff is already selected
+        const isAlreadySelected = selectedStaffs.some(selectedStaff => selectedStaff.staffId === staffId);
+        
+        if (isAlreadySelected) {
+            // If already selected, remove from selection
+            setSelectedStaffs(prev => prev.filter(s => s.staffId !== staffId));
+            // Clear staffId if no staff is selected
+            if (selectedStaffs.length === 1) {
+                handleInputChange('staffIds', []);
+            }
+        } else {
+            // If not selected, add to selection
+            handleInputChange('staffIds', [...selectedStaffs.map(s => s.staffId), staffId]);
+            setSelectedStaffs(prev => [...prev, staff]);
+        }
+        
+        // Clear the search input after selection
         setKeySearchStaff('');
         setStaffList([]);
         setSearchError('');
@@ -200,7 +217,7 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
 
         validationErrors.forEach(error => {
             // Customize error message for staffId
-            if (error.field === 'staffId') {
+            if (error.field === 'staffIds') {
                 errorMap[error.field] = 'Please select a staff member from the search results';
             }
             if (error.field === 'dateLogic') {
@@ -256,30 +273,9 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
                     {mode === 'add' ? 'Add New Staff Shift' : 'Edit Staff Shift'}
                 </ModalHeader>
                 <ModalBody>
-                    {/* Error Summary */}
-                    {/* {Object.keys(errors).length > 0 && (
-                        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
-                            <div className="text-red-800 font-medium mb-2">Please fix the following errors:</div>
-                            <ul className="text-red-700 text-sm space-y-1">
-                                {Object.entries(errors).map(([field, message]) => (
-                                    <li key={field}>• {message}</li>
-                                ))}
-                            </ul>
-                        </div>
-                    )} */}
+
 
                     <div className="space-y-4">
-                        {/* Staff ID */}
-                        {/* <Input
-                            label="Staff ID"
-                            value={formData.staffId || ''}
-                            onChange={(e) => handleInputChange('staffId', e.target.value)}
-                            isInvalid={!!errors.staffId}
-                            errorMessage={errors.staffId}
-                            
-                            placeholder="Enter staff ID"
-                            
-                        /> */}
 
                         <div>
                             <label className="block text-sm font-medium mb-1" htmlFor="search-staff-input">
@@ -292,40 +288,51 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
                                 type="text"
                                 value={keySearchStaff}
                                 onChange={(e) => setKeySearchStaff(e.target.value)}
-                                isInvalid={!!errors.staffId || !!searchError}
-                                errorMessage={errors.staffId || searchError}
+                                isInvalid={!!errors.staffIds || !!searchError}
+                                errorMessage={errors.staffIds || searchError}
                             />
                         </div>
                         {/* Selected User */}
-                        {formData.staffId && (
-                            <div className="mb-4 p-3 bg-blue-50 rounded-md">
-                                <div className="font-medium">
-                                    Selected: {selectedStaff?.user?.fullName || ''}
+                        {formData.staffIds != null && formData.staffIds.length > 0 && (
+                            <div key={formData.staffIds.join(',')}>
+                                <div className="block text-sm font-medium ">
+                                    Selected Staff
                                 </div>
-                                <div className="text-sm text-gray-600">{selectedStaff?.user?.email || ''}</div>
-                                <div className="text-sm text-gray-600">{formatPhoneNumber(selectedStaff?.user?.phone || '')}</div>
-                            </div>
-                            // (shift && mode === 'edit' && shift.staff) ?
-                            // <>
+                                <div className="mb-4 p-3 bg-blue-50 rounded-md ">
+                                    {selectedStaffs.map((staff) => {
+                                        return (
+                                            <>
+                                                <div key={staff.staffId} className="flex justify-between">
+                                                    <div className='flex items-center gap-2'>
 
-                            //     <div className="mb-4 p-3 bg-blue-50 rounded-md">
-                            //         <div className="font-medium">
-                            //             Selected: {shift.staff?.user?.fullName || ''}
-                            //         </div>
-                            //         <div className="text-sm text-gray-600">{shift.staff?.user?.email || ''}</div>
-                            //         <div className="text-sm text-gray-600">{formatPhoneNumber(shift.staff?.user?.phone || '')}</div>
-                            //     </div>
-                            // </>
-                            // :
-                            // <>
-                            //     <div className="mb-4 p-3 bg-blue-50 rounded-md">
-                            //         <div className="font-medium">
-                            //             Selected: {selectedStaff?.user?.fullName || ''}
-                            //         </div>
-                            //         <div className="text-sm text-gray-600">{selectedStaff?.user?.email || ''}</div>
-                            //         <div className="text-sm text-gray-600">{formatPhoneNumber(selectedStaff?.user?.phone || '')}</div>
-                            //     </div>
-                            // </>
+                                                        <div className="font-medium text-sm">
+                                                            {staff.user?.fullName || ''}
+                                                        </div>
+                                                        <div className="text-sm text-gray-600">{staff.user?.email || ''}</div>
+                                                        <div className="text-sm text-gray-600">{formatPhoneNumber(staff.user?.phone || '')}</div>
+                                                    </div>
+                                                    <Button isIconOnly variant="light" size="sm" color="danger" onPress={() => {
+                                                        setSelectedStaffs(prev => {
+                                                            const newSelectedStaffs = prev.filter(s => s.staffId !== staff.staffId);
+                                                            // Clear staffId if no staff is selected
+                                                            if (newSelectedStaffs.length === 0) {
+                                                                handleInputChange('staffIds', []);
+                                                            }
+                                                            return newSelectedStaffs;
+                                                        });
+                                                    }}>
+                                                        <Trash size={16} />
+                                                    </Button>
+
+                                                </div>
+                                                <Divider className="bg-primary-900/20" />
+                                            </>
+                                        )
+                                    })}
+
+                                </div>
+                            </div>
+
                         )}
 
 
@@ -337,31 +344,33 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
                         ) : searchError ? (
                             <div className="mb-4 text-sm text-red-500">{searchError}</div>
                         ) : staffList.length > 0 ? (
-                            <div className="mb-4 max-h-40 overflow-y-auto border border-gray-200 rounded-md">
-                                {staffList.map((staff) => (
-                                    <div
-                                        key={staff.staffId}
-                                        className={`p-3 cursor-pointer hover:bg-gray-50 ${formData.staffId === staff.staffId ? "bg-blue-50 border-l-4 border-blue-500" : ""}`}
-                                        onClick={() => handleStaffSelection(staff.staffId)}
-                                    >
-                                        <div className="font-medium">{staff.user?.fullName || ''}</div>
-                                        <div className="text-sm text-gray-500">{staff.user?.email || ''}</div>
-                                        <div className="text-sm text-gray-500">{formatPhoneNumber(staff.user?.phone || '')}</div>
-                                    </div>
-                                ))}
-                            </div>
+                            <ScrollShadow className="mb-4 max-h-40 overflow-y-auto border border-gray-200 rounded-md bg-primary-300/30">
+                                {staffList.map((staff) => {
+                                    const isSelected = selectedStaffs.some(selectedStaff => selectedStaff.staffId === staff.staffId);
+                                    return (
+                                        <div
+                                            key={staff.staffId}
+                                            className={`p-3 cursor-pointer flex items-center gap-2
+                                                hover:bg-primary-300/40
+                                                ${isSelected ? "bg-green-50 border-l-4 border-green-500" : "hover:bg-primary-300/40"}`}
+                                            onClick={() => handleStaffSelection(staff.staffId, staff)}
+                                        >
+                                            <div className="font-medium text-sm">{staff.user?.fullName || ''}</div>
+                                            <div className="text-sm text-gray-500">{staff.user?.email || ''}</div>
+                                            <div className="text-sm text-gray-500">{formatPhoneNumber(staff.user?.phone || '')}</div>
+                                            {isSelected && (
+                                                <div className="ml-auto text-sm text-green-600 font-medium">
+                                                    ✓ Selected
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </ScrollShadow>
                         ) : keySearchStaff && !loading ? (
                             <div className="mb-4 text-sm text-gray-500">No results found</div>
                         ) : null}
-                        {/* Parking Lot ID */}
-                        {/* <Input
-                            label="Parking Lot ID"
-                            value={formData.parkingLotId || ''}
-                            onChange={(e) => handleInputChange('parkingLotId', e.target.value)}
-                            isInvalid={!!errors.parkingLotId}
-                            errorMessage={errors.parkingLotId}
-                            placeholder="Enter parking lot ID"
-                        /> */}
+
 
                         {/* Time Range */}
                         <div>

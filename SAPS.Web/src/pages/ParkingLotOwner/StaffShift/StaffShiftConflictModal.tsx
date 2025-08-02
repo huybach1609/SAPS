@@ -1,20 +1,21 @@
 import React from 'react';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Chip } from '@heroui/react';
 import { AlertTriangle } from 'lucide-react';
-import { StaffShift } from '@/services/parkinglot/staffShift';
 import { StaffProfile } from '@/types/User';
 import { TimeUtils } from '@/components/utils/staffShiftValidator';
 
 export interface ShiftConflict {
-   staffId: string;
-   staffName?: string;
+   id: string;
+   staffId: string[];
+   staffName?: string[];
    conflictType: string;
    message: string;
-   conflictingShift?: StaffShift;
+   // conflictingShift?: StaffShift;
    staff?: StaffProfile;
    startTime: number;
    endTime: number;
    dayOfWeeks: string;
+   shiftType: 'Regular' | 'Emergency';
 }
 
 interface StaffShiftConflictModalProps {
@@ -76,18 +77,16 @@ const StaffShiftConflictModal: React.FC<StaffShiftConflictModalProps> = ({
                                           <div className="flex items-center gap-2">
                                              <div className="w-2 h-2 bg-red-500 rounded-full"></div>
                                              <span className="font-semibold text-gray-900 text-sm">
-                                                {conflict.staff?.user?.fullName || `Staff ID: ${conflict.staffId}`}
+
+                                                {/* {conflict.staffName || `Staff ID: ${conflict.staffId}`} */}
+                                                {conflict.staffName?.join(', ')}
+
                                              </span>
                                           </div>
-                                          
+
                                           <div className="grid grid-cols-1 gap-1 text-xs text-gray-600">
-                                             <div className="flex items-center gap-2">
-                                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207" />
-                                                </svg>
-                                                <span>{conflict.staff?.user?.email || 'No email available'}</span>
-                                             </div>
-                                             
+                                            
+
                                              <div className="flex items-center gap-2">
                                                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -96,7 +95,7 @@ const StaffShiftConflictModal: React.FC<StaffShiftConflictModalProps> = ({
                                                    {minutesToTime(conflict.startTime) || '00:00'} - {minutesToTime(conflict.endTime || 0)}
                                                 </span>
                                              </div>
-                                             
+
                                              <div className="flex items-center gap-2">
                                                 <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -114,26 +113,6 @@ const StaffShiftConflictModal: React.FC<StaffShiftConflictModalProps> = ({
                               <p className="text-sm text-gray-700 mb-2">
                                  {conflict.message}
                               </p>
-
-                              {conflict.conflictingShift && (
-                                 <div className="bg-white rounded p-3 border border-gray-200">
-                                    <p className="text-xs text-gray-500 mb-1">Conflicting Shift Details:</p>
-                                    <div className="grid grid-cols-2 gap-2 text-sm">
-                                       <div>
-                                          <span className="font-medium">Time:</span> {formatTime(conflict.conflictingShift.startTime)} - {formatTime(conflict.conflictingShift.endTime)}
-                                       </div>
-                                       <div>
-                                          <span className="font-medium">Days:</span> {formatDays(conflict.conflictingShift.dayOfWeeks)}
-                                       </div>
-                                       <div>
-                                          <span className="font-medium">Type:</span> {conflict.conflictingShift.shiftType}
-                                       </div>
-                                       <div>
-                                          <span className="font-medium">ID:</span> {conflict.conflictingShift.id}
-                                       </div>
-                                    </div>
-                                 </div>
-                              )}
                            </div>
                         )
                      })}

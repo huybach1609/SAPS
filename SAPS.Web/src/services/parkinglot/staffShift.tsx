@@ -7,7 +7,7 @@ import axios from 'axios';
 
 export interface StaffShift {
   id: string;
-  staffId: string;
+  staffIds: string[];
   parkingLotId: string;
   startTime: number; // Minutes from midnight (0-1439)
   endTime: number; // Minutes from midnight (0-1439)
@@ -21,13 +21,13 @@ export interface StaffShift {
   updatedAt: string; // ISO datetime string
 
   parkingLot?: ParkingLot;
-  staff?: StaffProfile;
+  assignedStaff?: StaffProfile[];
 }
 
 // Type for creating new StaffShift (optional fields for defaults)
 export interface CreateStaffShift {
-  id: string;
-  staffId: string;
+  id?: string;
+  staffIds: string[];
   parkingLotId: string;
   startTime: number;
   endTime: number;
@@ -59,7 +59,7 @@ const getAuthHeaders = () => ({
 export async function fetchStaffShifts(parkingLotId: string): Promise<StaffShift[]> {
   if (!parkingLotId) throw new Error('Parking lot ID is required');
   try {
-    const response = await axios.get(`${apiUrl}/api/StaffShift/${parkingLotId}`, {
+    const response = await axios.get(`${apiUrl}/api/Shift/parking-lot/${parkingLotId}`, {
       headers: getAuthHeaders()
     });
     return response.data;
@@ -75,7 +75,7 @@ export async function fetchStaffShifts(parkingLotId: string): Promise<StaffShift
 export async function createStaffShift(parkingLotId: string, shiftData: CreateStaffShift): Promise<StaffShift> {
   if (!parkingLotId) throw new Error('Parking lot ID is required');
   try {
-    const response = await axios.post(`${apiUrl}/api/StaffShift`, shiftData, {
+    const response = await axios.post(`${apiUrl}/api/Shift`, shiftData, {
       headers: getAuthHeaders()
     });
     return response.data;
@@ -90,7 +90,7 @@ export async function createStaffShift(parkingLotId: string, shiftData: CreateSt
 export async function updateStaffShift(parkingLotId: string, shiftId: string, shiftData: Partial<StaffShift>): Promise<StaffShift> {
   if (!parkingLotId || !shiftId) throw new Error('Parking lot ID and shift ID are required');
   try {
-    const response = await axios.put(`${apiUrl}/api/StaffShift/${shiftId}`, shiftData, {
+    const response = await axios.put(`${apiUrl}/api/Shift/${shiftId}`, shiftData, {
       headers: getAuthHeaders()
     });
     return response.data;
@@ -105,7 +105,7 @@ export async function updateStaffShift(parkingLotId: string, shiftId: string, sh
 export async function deleteStaffShift(parkingLotId: string, shiftId: string): Promise<void> {
   if (!parkingLotId || !shiftId) throw new Error('Parking lot ID and shift ID are required');
   try {
-    await axios.delete(`${apiUrl}/api/StaffShift/${shiftId}`, {
+    await axios.delete(`${apiUrl}/api/Shift/${shiftId}`, {
       headers: getAuthHeaders()
     });
   } catch (error) {

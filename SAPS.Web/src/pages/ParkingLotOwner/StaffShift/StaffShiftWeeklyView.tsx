@@ -231,7 +231,7 @@ const StaffShiftWeeklyView: React.FC<StaffShiftWeeklyViewProps> = ({
                                                                     ) : (
                                                                         <User className="w-3 h-3 flex-shrink-0" />
                                                                     )}
-                                                                    <span className="truncate">{shift.staff?.user?.fullName || 'staff shift'}</span>
+                                                                    <span className="truncate">{shift.assignedStaff?.map(staff => staff.user?.fullName).join(', ') || 'staff shift'}</span>
                                                                 </div>
                                                                 <div className="text-xs opacity-75 flex items-center gap-1 mb-1">
                                                                     <Clock className="w-3 h-3 flex-shrink-0" />
@@ -246,13 +246,14 @@ const StaffShiftWeeklyView: React.FC<StaffShiftWeeklyViewProps> = ({
 
                                                             {/* Hover Actions */}
                                                             {hoveredShift === shift.id && (
-                                                                <div className="absolute top-0 right-0 transform translate-x-full -translate-y-1 flex gap-1 z-20">
+                                                                <div className="absolute top-[-10px] right-[30px] transform translate-x-full -translate-y-1 flex gap-1 z-30">
                                                                     <button
                                                                         onClick={(e) => {
                                                                             e.stopPropagation();
                                                                             onEdit(shift);
                                                                         }}
-                                                                        className="p-1 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                                                                        className="p-1 bg-secondary/40 backdrop-blur-xl text-white rounded-md hover:bg-primary
+                                                                         transition-colors"
                                                                     >
                                                                         <Edit2 className="w-3 h-3" />
                                                                     </button>
@@ -261,7 +262,7 @@ const StaffShiftWeeklyView: React.FC<StaffShiftWeeklyViewProps> = ({
                                                                             e.stopPropagation();
                                                                             onDelete(shift.id);
                                                                         }}
-                                                                        className="p-1 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+                                                                        className="p-1 bg-danger/30 backdrop-blur-xl text-white rounded-md hover:bg-danger transition-colors"
                                                                     >
                                                                         <Trash2 className="w-3 h-3" />
                                                                     </button>
@@ -303,7 +304,7 @@ const StaffShiftWeeklyView: React.FC<StaffShiftWeeklyViewProps> = ({
                                     ) : (
                                         <User className="w-3 h-3" />
                                     )}
-                                    <span className="font-medium">{shift.staff?.user?.fullName || 'staff shift'}</span>
+                                    <span className="font-medium">{shift.assignedStaff?.map(staff => staff.user?.fullName).join(', ') || 'staff shift'}</span>
                                 </div>
                                 <div className="flex items-center gap-1">
                                     <Clock className="w-3 h-3" />
