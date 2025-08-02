@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -46,6 +47,7 @@ public class RegisterPhase1Fragment extends Fragment {
     private EditText emailInput, passwordInput, confirmPasswordInput;
     private Uri frontImageUri, backImageUri;
     private LoadingDialog loadingDialog;
+    private CheckBox privacyPolicyCheckbox;
 
     @Nullable
     @Override
@@ -62,6 +64,7 @@ public class RegisterPhase1Fragment extends Fragment {
         emailInput = view.findViewById(R.id.edit_text_email);
         passwordInput = view.findViewById(R.id.edit_text_password);
         confirmPasswordInput = view.findViewById(R.id.edit_text_confirm_password);
+        privacyPolicyCheckbox = view.findViewById(R.id.check_box_privacy_policy);
 
         loadingDialog = new LoadingDialog(requireActivity());
 
@@ -98,6 +101,11 @@ public class RegisterPhase1Fragment extends Fragment {
 
             if (password.length() < 8) {
                 Toast.makeText(requireContext(), "Password must be at least 8 characters", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (!privacyPolicyCheckbox.isChecked()) {
+                Toast.makeText(requireContext(), "You must agree to the privacy policy", Toast.LENGTH_SHORT).show();
                 return;
             }
 

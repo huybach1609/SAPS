@@ -1,5 +1,7 @@
 package vn.edu.fpt.sapsmobile.models;
 
+import vn.edu.fpt.sapsmobile.enums.NotificationType;
+
 public class Notification {
     private int id;
     private String header;
@@ -8,6 +10,8 @@ public class Notification {
     private String sendDate;
     private int senderId;
     private boolean isRead;  // Thêm trường này để theo dõi trạng thái đã đọc
+
+    private NotificationType notificationType;
 
     // Constructor, getters and setters
 
@@ -22,6 +26,16 @@ public class Notification {
     }
 
     // Getter và Setter cho isRead
+
+
+    public NotificationType getNotificationType() {
+        return notificationType;
+    }
+
+    public void setNotificationType(NotificationType notificationType) {
+        this.notificationType = notificationType;
+    }
+
     public boolean isRead() {
         return isRead;
     }
