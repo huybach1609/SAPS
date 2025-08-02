@@ -109,6 +109,41 @@
                 android:textColor="#FFFFFF" />
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/toggleTabs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="12dp"
+            android:background="@android:color/transparent">
+
+            <Button
+                android:id="@+id/btnMyVehicles"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:text="Xe của tôi"
+                android:background="@drawable/bg_tab_selected"
+                android:textColor="#000000"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:layout_marginEnd="6dp"/>
+
+            <Button
+                android:id="@+id/btnSharedVehicles"
+                android:layout_width="0dp"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:text="Xe được chia sẻ"
+                android:background="@drawable/bg_tab_unselected"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:layout_marginStart="6dp"/>
+        </LinearLayout>
+
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvVehicles"
             android:layout_width="match_parent"
