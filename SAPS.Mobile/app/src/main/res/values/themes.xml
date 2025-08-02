@@ -32,8 +32,13 @@
         <item name="android:enforceNavigationBarContrast" tools:targetApi="29">false</item>
 
         <!-- Window layout flags for edge-to-edge -->
-        <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="28">shortEdges</item>
+        <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="28">never</item>
+
+
+
     </style>
 
     <style name="Theme.SAPSMobile" parent="Base.Theme.SAPSMobile" />
+
+
 </resources>

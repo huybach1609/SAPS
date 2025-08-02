@@ -29,8 +29,9 @@ public class ProfileFragment extends Fragment {
     private ImageView profileImageView;
     private TextView profileName, profileEmail;
     private TextView idNumber, dateOfBirth, sex, nationality, placeOfOrigin, placeOfResidence, phone;
+    private TextView verifyText;
+    private ImageView verifyIcon;
     private Button logoutButton;
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -48,13 +49,26 @@ public class ProfileFragment extends Fragment {
         profileImageView = view.findViewById(R.id.profile_image);
         profileName = view.findViewById(R.id.profile_name);
         profileEmail = view.findViewById(R.id.profile_email);
+        verifyIcon = view.findViewById(R.id.verify_icon);
+        verifyText = view.findViewById(R.id.verify_text);
 
-        // Bind data
         profileName.setText(user.getName());
         profileEmail.setText(user.getEmail());
         loadImageProfile(user.getProfilePictureUrl());
 
-        // Body fields
+        // ✅ Kiểm tra xác minh CCCD cả 2 mặt
+        if (
+                user.getIdCardFrontUrl() != null && !user.getIdCardFrontUrl().isEmpty() &&
+                        user.getIdCardBackUrl() != null && !user.getIdCardBackUrl().isEmpty()
+        ) {
+            verifyIcon.setVisibility(View.VISIBLE);
+            verifyText.setVisibility(View.GONE);
+        } else {
+            verifyIcon.setVisibility(View.GONE);
+            verifyText.setVisibility(View.VISIBLE);
+        }
+
+        // Thông tin cá nhân
         idNumber = view.findViewById(R.id.id_number);
         dateOfBirth = view.findViewById(R.id.date_of_birth);
         sex = view.findViewById(R.id.sex);
@@ -64,22 +78,20 @@ public class ProfileFragment extends Fragment {
         phone = view.findViewById(R.id.phone);
         TextView memberSince = view.findViewById(R.id.member_since);
 
-
-        // Bind dữ liệu từ user model
-        // Đúng (hiển thị đầy đủ)
+        // Gán dữ liệu
         idNumber.setText(String.valueOf(user.getUserId()));
+        dateOfBirth.setText(user.getDateOfBirth());
+        sex.setText(user.getSex());
+        nationality.setText(user.getNationality());
+        placeOfOrigin.setText(user.getPlaceOfOrigin());
+        placeOfResidence.setText(user.getPlaceOfResidence());
+        phone.setText(user.getPhone());
 
-        dateOfBirth.setText(user.getDateOfBirth()); // cần thêm getter
-        sex.setText(user.getSex());                 // cần thêm getter
-        nationality.setText(user.getNationality()); // cần thêm getter
-        placeOfOrigin.setText(user.getPlaceOfOrigin()); // cần thêm getter
-        placeOfResidence.setText(user.getPlaceOfResidence()); // cần thêm getter
-        phone.setText(user.getPhone());             // cần thêm getter
-
-        // Format ngày từ createdAt (ví dụ: "2024-01-01T12:00:00Z") → "01/01/2024"
-        String formattedDate = user.getCreatedAt() != null ? user.getCreatedAt().split("T")[0].replace("-", "/") : "N/A";
+        // Format ngày
+        String formattedDate = user.getCreatedAt() != null
+                ? user.getCreatedAt().split("T")[0].replace("-", "/")
+                : "N/A";
         memberSince.setText(formattedDate);
-
 
         // Logout
         logoutButton = view.findViewById(R.id.btn_logout);
@@ -87,29 +99,27 @@ public class ProfileFragment extends Fragment {
             mainActivity.getAuthService().signOut(() -> mainActivity.logoutProgress());
         });
 
-        // Nút Edit Personal Information
+        // Edit Info
         Button editButton = view.findViewById(R.id.btn_edit_info);
         editButton.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), EditProfileActivity.class);
             startActivity(intent);
         });
 
-        // Change Password Button
+        // Change Password
         Button btnChangePassword = view.findViewById(R.id.btn_change_password);
         btnChangePassword.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ChangePasswordActivity.class);
             startActivity(intent);
         });
 
-        // Notifications Button
+        // Notifications
         Button btnNotification = view.findViewById(R.id.btn_notification);
         btnNotification.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), NotificationsListActivity.class);
             startActivity(intent);
         });
-
     }
-
 
     private void loadImageProfile(String profileUrl) {
         if (profileUrl != null && !profileUrl.isEmpty()) {
@@ -123,5 +133,4 @@ public class ProfileFragment extends Fragment {
             profileImageView.setImageResource(R.drawable.account_circle_24);
         }
     }
-
 }
