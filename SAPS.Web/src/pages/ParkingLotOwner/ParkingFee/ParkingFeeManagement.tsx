@@ -492,7 +492,7 @@ const FeeSchedulesTab: React.FC<{
                 <h2 className="text-lg font-semibold text-gray-900">Fee Schedules</h2>
 
                 <div>
-                   
+
                     <Button
                         color="default"
                         onPress={onAdd}

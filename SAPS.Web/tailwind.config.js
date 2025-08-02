@@ -1,16 +1,22 @@
-import { heroui } from "@heroui/theme"
+import { heroui } from "@heroui/theme";
 
 /** @type {import('tailwindcss').Config} */
 export default {
   content: [
     "./index.html",
-    './src/layouts/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+    "./src/layouts/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        primary: "#023E8A",
+        "admin-primary": "#023E8A",
+        "admin-sidebar": "#023E8A",
+      },
+    },
   },
   darkMode: "class",
   plugins: [heroui({
@@ -61,7 +67,7 @@ export default {
           danger_light: "#FF0000",
           success: "#606c38",
           success_light: "#dad7cd",
-          warning: "#c1121f",
+          warning: "#e85d04",
           warning_light: "#fdf0d5",
           info: "#457b9d",
           info_light: "#f1faee",

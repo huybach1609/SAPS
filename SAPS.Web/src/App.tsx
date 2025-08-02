@@ -1,6 +1,6 @@
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/services/auth/AuthContext";
-import { ParkingLotProvider } from "@/pages/ParkingLotOwner/ParkingLotContext";
+import { ParkingLotProvider, useParkingLot } from "@/pages/ParkingLotOwner/ParkingLotContext";
 
 import IndexPage from "@/pages/index";
 import DocsPage from "@/pages/docs";
@@ -10,22 +10,33 @@ import AboutPage from "@/pages/about";
 import ErrorPage from "@/pages/ErrorPage";
 import LoginPage from "./pages/Auth/Login";
 import OwnerDashboard from "./pages/ParkingLotOwner/Home/OwnerDashboard";
-import AdminDashboard from "./pages/Admin/AdminDashboard";
 import { WhitelistManagement } from "./pages/ParkingLotOwner/Whitelist/WhiteListManagement";
+import DefaultLayout from "./layouts/default";
+import AdminDashboardPage from "./pages/Admin/AdminDashboardPage";
 import IncidentReports from "./pages/ParkingLotOwner/IncidentReports/IncidentReports";
 import ParkingHistory from "./pages/ParkingLotOwner/ParkingHistory/HistoryManagement/ParkingHistory";
 import StaffManagement from "./pages/ParkingLotOwner/StaffManagement/StaffManagement";
 import ParkingLotInfo from "./pages/ParkingLotOwner/ParkingInfo/ParkingLotInfo";
-import AdminAccountList from "./pages/Admin/AdminAccounts/AdminAccountList";
-import AdminParkingLotOwnerList from "./pages/Admin/ParkingLotOwnerAccounts/AdminParkingLotOwnerList";
+import AdminAccountList from "./pages/Admin/Accounts/AdminAccounts/AdminAccountList";
 import AdminRequestList from "./pages/Admin/Requests/AdminRequestList";
 import { ADMIN_ROLE, OWNER_ROLE } from "./config/base";
 import ParkingFeeManagement from "./pages/ParkingLotOwner/ParkingFee/ParkingFeeManagement";
+import AccountListSelector from "./pages/Admin/Accounts/AccountListSelector";
+import UserAccountList from "./pages/Admin/Accounts/UserAccounts/UserAccountList";
+import AdminAccountDetails from "./pages/Admin/Accounts/AdminAccounts/AdminAccountDetails";
+import UserDetail from "./pages/Admin/Accounts/UserAccounts/UserDetail";
 import StaffDetailScreen from "./pages/ParkingLotOwner/StaffManagement/StaffDetail";
+import ParkingLotOwnerList from "./pages/Admin/ParkingLotOwner/ParkingLotOwnerList";
+import ParkingLotOwnerDetails from "./pages/Admin/ParkingLotOwner/ParkingLotOwnerDetails";
+import SubscriptionList from "./pages/Admin/Subscriptions/SubscriptionList";
+import RequestDetails from "./pages/Admin/Requests/RequestDetails";
 import UploadFile from "./pages/ParkingLotOwner/UploadFile";
 import ParkingHistoryDetail from "./pages/ParkingLotOwner/ParkingHistory/HistoryManagement/ParkingHistoryDetail";
 import IncidentDetail from "./pages/ParkingLotOwner/IncidentReports/IncidentDetail";
 import SubscriptionPricingSelect from "./pages/ParkingLotOwner/Subscription/SubscriptionPricingSelect";
+import StaffShiftManagement from "./pages/ParkingLotOwner/StaffShift/StaffShiftManagement";
+// import AdminRequestList from "@/pages/Admin/Requests/AdminRequestList.tsx";
+// import DefaultLayout from "@/layouts/default.tsx";
 
 // Protected Route Component
 interface ProtectedRouteProps {
@@ -37,7 +48,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole 
   const { user, isAuthenticated, loading } = useAuth();
 
   if (loading) {
-    return <div>Loading...</div>; // Or your loading component
+    return <div>Loading...</div>;
   }
 
   if (!isAuthenticated) {
@@ -46,6 +57,32 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole 
 
   if (requiredRole && user?.role !== requiredRole) {
     return <Navigate to="/unauthorized" replace />;
+  }
+
+  return <>{children}</>;
+};
+
+// Active Route Component for parking lot status check
+interface ActiveRouteProps {
+  children: React.ReactNode;
+  requireActive?: boolean;
+}
+
+const ActiveRoute: React.FC<ActiveRouteProps> = ({ children, requireActive = true }) => {
+  const { selectedParkingLot, loading } = useParkingLot();
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  // If requireActive is true, check if parking lot is active
+  if (requireActive && selectedParkingLot?.status !== 'Active') {
+    return <Navigate to="/owner/subscription" replace />;
+  }
+
+  // If requireActive is false, check if parking lot is inactive
+  if (!requireActive && selectedParkingLot?.status === 'Active') {
+    return <Navigate to="/owner/parking-info" replace />;
   }
 
   return <>{children}</>;
@@ -95,8 +132,7 @@ const RoleBasedRedirect: React.FC = () => {
 
 const OwnerParkingLotProviderWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user } = useAuth();
-  // You may need to adjust this if the parkingLotId is stored elsewhere
-  const userId = user?.id || "1"; // fallback to '1' if not available
+  const userId = user?.id || "";
   return (
     <ParkingLotProvider userId={userId}>
       {children}
@@ -141,14 +177,28 @@ function App() {
           path="/admin"
           element={
             <ProtectedRoute requiredRole={ADMIN_ROLE}>
-              <Outlet />
+              <DefaultLayout  title="SAPLS Admin Dashboard">
+                <Outlet />
+              </DefaultLayout>
             </ProtectedRoute>
           }
         >
-          <Route path="home" element={<AdminDashboard />} />
-          <Route path="accounts" element={<AdminAccountList />} />
-          <Route path="parking-owners" element={<AdminParkingLotOwnerList />} />
+          <Route path="home" element={<AdminDashboardPage />} />
+
+          {/* Account Management Routes */}
+          <Route path="accounts" element={<AccountListSelector />} />
+          <Route path="accounts/users" element={<UserAccountList />} />
+          <Route path="accounts/users/:id" element={<UserDetail />} />
+          <Route path="accounts/admins" element={<AdminAccountList />} />
+          <Route path="accounts/admins/:id" element={<AdminAccountDetails />} />
+          <Route path="parking-owners" element={<ParkingLotOwnerList />} />
+          <Route
+            path="parking-owners/:id"
+            element={<ParkingLotOwnerDetails />}
+          />
           <Route path="requests" element={<AdminRequestList />} />
+          <Route path="requests/details/:id" element={<RequestDetails />} />
+          <Route path="subscriptions" element={<SubscriptionList />} />
         </Route>
 
         {/* Owner Routes */}
@@ -164,16 +214,49 @@ function App() {
         >
           <Route path="home" element={<OwnerDashboard />} />
           <Route path="parking-info" element={<ParkingLotInfo />} />
-          <Route path="staff" element={<StaffManagement />} />
-          <Route path="staff/:parkingLotId/:staffId" element={<StaffDetailScreen  />} />
-          <Route path="history" element={<ParkingHistory />} />
-          <Route path="history/:parkingLotId/:sessionId" element={<ParkingHistoryDetail />} />
-          <Route path="incidents" element={<IncidentReports />} />
-          <Route path="incidents/:parkingLotId/:incidentId" element={<IncidentDetail />} />
-          <Route path="whitelist" element={<WhitelistManagement />} />
-          <Route path="parking-fee" element={<ParkingFeeManagement />} />
+          <Route path="staff" element={
+            <StaffManagement />
+          } />
+          <Route path="staff/:parkingLotId/:staffId" element={
+            <StaffDetailScreen />
+          } />
+          <Route path="history" element={
+            <ParkingHistory />
+          } />
+          <Route path="history/:parkingLotId/:sessionId" element={
+            <ParkingHistoryDetail />
+          } />
+          <Route path="incidents" element={
+            <ActiveRoute requireActive={true}>
+              <IncidentReports />
+            </ActiveRoute>
+          } />
+          <Route path="incidents/:parkingLotId/:incidentId" element={
+            <ActiveRoute requireActive={true}>
+              <IncidentDetail />
+            </ActiveRoute>
+          } />
+          <Route path="whitelist" element={
+            <ActiveRoute requireActive={true}>
+              <WhitelistManagement />
+            </ActiveRoute>
+          } />
+          <Route path="parking-fee" element={
+            <ActiveRoute requireActive={true}>
+              <ParkingFeeManagement />
+            </ActiveRoute>
+          } />
           <Route path="upload-file" element={<UploadFile />} />
-          <Route path="subscription" element={<SubscriptionPricingSelect />} />
+          <Route path="subscription" element={
+            // <ActiveRoute requireActive={false}>
+            <SubscriptionPricingSelect />
+            // </ActiveRoute>
+          } />
+          <Route path="staff-shift" element={
+            <ActiveRoute requireActive={true}>
+              <StaffShiftManagement />
+            </ActiveRoute>
+          } />
         </Route>
 
         {/* Dashboard redirect route */}

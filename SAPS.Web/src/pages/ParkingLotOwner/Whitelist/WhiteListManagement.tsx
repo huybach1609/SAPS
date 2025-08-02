@@ -28,7 +28,7 @@ import DefaultLayout from "@/layouts/default";
 export function WhitelistManagement() {
   const { selectedParkingLot, loading: parkingLotLoading } = useParkingLot();
   const [editingEntry, setEditingEntry] = useState<Whitelist | null>(null);
-  
+
   // Modal disclosures
   const addModalDisclosure = useDisclosure();
   const editModalDisclosure = useDisclosure();

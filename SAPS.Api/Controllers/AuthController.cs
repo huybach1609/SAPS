@@ -1,11 +1,9 @@
 ﻿using System.Security.Claims;
-using System.Threading.Tasks;
-using Google.Apis.Upload;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SAPS.Api.Dtos;
-using SAPS.Api.Models;
+using SAPS.Api.Models.Generated;
 using SAPS.Api.Repository;
 using SAPS.Api.Service;
 
@@ -19,62 +17,33 @@ namespace SAPS.Api.Controllers
         private readonly AuthService _authService;
         private readonly GoogleAuthService _googleAuthService;
         private readonly IUserRepository _userRepo;
-        public AuthController(AuthService authService, IUserRepository userRepo, GoogleAuthService googleAuthService, ILogger<AuthController> logger)
+        private readonly IMapper _mapper;
+
+        public AuthController(
+            AuthService authService, 
+            IUserRepository userRepo, 
+            GoogleAuthService googleAuthService, 
+            IMapper mapper,
+            ILogger<AuthController> logger)
         {
             _authService = authService;
             _userRepo = userRepo;
             _googleAuthService = googleAuthService;
+            _mapper = mapper;
             _logger = logger;
         }
+
         [HttpPost("login")]
         public async Task<ActionResult<AuthResponse>> Login([FromBody] UserLoginDto login)
         {
-            var resutl = await _authService.Login(login);
-            if (resutl.User == null)
+            var result = await _authService.Login(login);
+            if (result.User == null)
             {
                 return Unauthorized("Invalid username or password");
             }
-            return Ok(resutl);
+            return Ok(result);
         }
-        //[HttpPost("google/verify")]
-        //public async Task<IActionResult> VerifyGoogleToken([FromBody] GoogleTokenRequest request)
-        //{
-        //    try
-        //    {
-        //        if (string.IsNullOrEmpty(request.IdToken))
-        //        {
-        //            return BadRequest("ID token is required");
-        //        }
 
-        //        // Verify Google ID token
-        //        var payload = await _googleAuthService.VerifyGoogleTokenAsync(request.IdToken);
-
-        //        if (payload == null)
-        //        {
-        //            return Unauthorized("Invalid Google token");
-        //        }
-
-        //        // Create or update user
-        //        var user = await _googleAuthService.CreateOrUpdateUserAsync(payload);
-
-        //        // Generate JWT token
-        //        var jwtToken = _googleAuthService.GenerateJwtToken(user);
-        //        Console.WriteLine(jwtToken);
-
-        //        var response = new AuthResponse
-        //        {
-        //            AccessToken = jwtToken,
-        //            User = user,
-        //            ExpiresAt = DateTime.UtcNow.AddHours(24)
-        //        };
-
-        //        return Ok(response);
-        //    }
-        //    catch (Exception ex)
-        //    {s
-        //        return StatusCode(500, $"Internal server error: {ex.Message}");
-        //    }
-        //}
         [HttpPost("google/verify")]
         public async Task<IActionResult> VerifyGoogleToken([FromBody] GoogleTokenRequest request)
         {
@@ -88,7 +57,7 @@ namespace SAPS.Api.Controllers
                     return BadRequest("ID token is required");
                 }
 
-                // Verify Google ID token
+                // Xác thực Google ID token
                 var payload = await _googleAuthService.VerifyGoogleTokenAsync(request.IdToken);
                 if (payload == null)
                 {
@@ -98,18 +67,21 @@ namespace SAPS.Api.Controllers
 
                 _logger.LogInformation("Google token verified for user: {Email}", payload.Email);
 
-                // Create or update user
+                // Tạo hoặc cập nhật người dùng
                 var user = await _googleAuthService.CreateOrUpdateUserAsync(payload);
-                _logger.LogInformation("User created/updated: {UserId}", user.UserId);
+                _logger.LogInformation("User created/updated: {UserId}", user.Id);
 
-                // Generate JWT token
+                // Map User entity to UserResponseDto to avoid circular references
+                var userDto = _mapper.Map<UserResponseDto>(user);
+
+                // Tạo JWT token
                 var jwtToken = _googleAuthService.GenerateJwtToken(user);
                 _logger.LogInformation("JWT token generated successfully");
 
                 var response = new AuthResponse
                 {
                     AccessToken = jwtToken,
-                    User = user,
+                    User = userDto,
                     ExpiresAt = DateTime.UtcNow.AddHours(24)
                 };
 
@@ -123,17 +95,22 @@ namespace SAPS.Api.Controllers
             }
         }
 
-
         [HttpPost("refresh")]
         [Authorize]
         public async Task<IActionResult> RefreshToken()
         {
             try
             {
-                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+                var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrEmpty(userId))
+                {
+                    return Unauthorized("Invalid token");
+                }
+
                 var user = await _userRepo.GetByIdAsync(userId);
 
-                if (user == null)
+                if (user == null || !user.IsActive)
                 {
                     return Unauthorized("User not found or inactive");
                 }
@@ -147,7 +124,5 @@ namespace SAPS.Api.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
-        
     }
-
 }

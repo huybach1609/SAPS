@@ -25,7 +25,7 @@ export default function StaffManagement() {
         setStatusFilter,
         loadStaffList,
         handleSearch,
-        handleRemoveFromStaffList,
+        handleDeactivateStaff,
         handleReset,
     } = useStaffManagement(selectedParkingLot?.id);
 
@@ -71,7 +71,7 @@ export default function StaffManagement() {
                         setSelectUser={setSelectedUser}
                         parkingLot={selectedParkingLot}
                         updateModalDisclosure={updateModalDisclosure}
-                        handleRemoveFromStaffList={handleRemoveFromStaffList}
+                        handleDeactivateStaff={handleDeactivateStaff}
                     />
                 )}
             </div>

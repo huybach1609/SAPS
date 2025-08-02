@@ -21,6 +21,7 @@ export interface StaffProfile {
   staffId: string;
   parkingLotId: string;
   status: number;
+  user?: User;
 }
 export enum StaffStatus {
   ACTIVE = 0,
