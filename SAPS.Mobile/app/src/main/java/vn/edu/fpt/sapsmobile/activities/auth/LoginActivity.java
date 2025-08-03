@@ -71,6 +71,12 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationSe
         });
 
         signInButton.setOnClickListener(v -> handleEmailLogin());
+
+        TextView forgotPasswordText = findViewById(R.id.forgot_password_text);
+        forgotPasswordText.setOnClickListener(v -> {
+            startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
+        });
+
     }
 
     private void handleEmailLogin() {

@@ -325,6 +325,32 @@ public class AuthenticationService {
         });
     }
 
+
+    public void resetPassword(String email, AuthCallback callback) {
+        if (email == null || email.trim().isEmpty()) {
+            callback.onAuthFailure("Email is required");
+            return;
+        }
+
+        Call<Void> call = authService.resetPassword(email.trim());
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    callback.onAuthSuccess(null);
+                } else {
+                    callback.onAuthFailure("Reset failed: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                callback.onAuthFailure("Network error: " + t.getMessage());
+            }
+        });
+    }
+
+
     // Lấy thông điệp lỗi đăng ký dựa trên HTTP status code
     private String getRegisterErrorMessage(int statusCode) {
         switch (statusCode) {

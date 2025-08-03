@@ -1,6 +1,9 @@
 package vn.edu.fpt.sapsmobile.models;
 
+import com.google.gson.annotations.SerializedName;
+
 public class User {
+
     private String userId;
     private String googleId;
     private String email;
@@ -19,6 +22,13 @@ public class User {
     private String phone;
     private String issueDate;
     private String issuePlace;
+
+    // ✅ Thêm thông tin căn cước (2 mặt)
+    @SerializedName("id_card_front_url")
+    private String idCardFrontUrl;
+
+    @SerializedName("id_card_back_url")
+    private String idCardBackUrl;
 
     // Getters và Setters
     public String getUserId() { return userId; }
@@ -69,6 +79,24 @@ public class User {
     public String getIssuePlace() { return issuePlace; }
     public void setIssuePlace(String issuePlace) { this.issuePlace = issuePlace; }
 
+    // ✅ Getter/Setter mặt trước
+    public String getIdCardFrontUrl() {
+        return idCardFrontUrl;
+    }
+
+    public void setIdCardFrontUrl(String idCardFrontUrl) {
+        this.idCardFrontUrl = idCardFrontUrl;
+    }
+
+    // ✅ Getter/Setter mặt sau
+    public String getIdCardBackUrl() {
+        return idCardBackUrl;
+    }
+
+    public void setIdCardBackUrl(String idCardBackUrl) {
+        this.idCardBackUrl = idCardBackUrl;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -88,6 +116,8 @@ public class User {
                 ", phone='" + phone + '\'' +
                 ", issueDate='" + issueDate + '\'' +
                 ", issuePlace='" + issuePlace + '\'' +
+                ", idCardFrontUrl='" + idCardFrontUrl + '\'' +
+                ", idCardBackUrl='" + idCardBackUrl + '\'' +
                 '}';
     }
 }
