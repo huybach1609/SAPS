@@ -158,7 +158,7 @@ public class RegisterPhase1Fragment extends Fragment {
                     .build();
 
             Request request = new Request.Builder()
-                    .url("http://10.35.88.16:8080/api/ocr/full")
+                    .url("http://10.35.88.37:8080/api/ocr/full")
                     .post(requestBody)
                     .build();
 

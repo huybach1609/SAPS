@@ -41,6 +41,9 @@
         <activity android:name=".activities.auth.ChangePasswordActivity"
             android:label="Change Password Screen"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity android:name=".activities.auth.ForgotPasswordActivity" />
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"

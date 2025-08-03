@@ -2,6 +2,8 @@ package vn.edu.fpt.sapsmobile.API;// API/AuthService.java
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import vn.edu.fpt.sapsmobile.models.AuthResponse;
@@ -24,4 +26,8 @@ public interface AuthService {
 
     @POST("register")
     Call<RegisterResponse> register(@Body RegisterRequest request);
+    @FormUrlEncoded
+    @POST("/auth/reset-password")
+    Call<Void> resetPassword(@Field("email") String email);
+
 }
