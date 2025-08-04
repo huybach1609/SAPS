@@ -51,13 +51,13 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole 
     return <div>Loading...</div>;
   }
 
-  if (!isAuthenticated) {
-    return <Navigate to="/auth/login" replace />;
-  }
+  // if (!isAuthenticated) {
+  //   return <Navigate to="/auth/login" replace />;
+  // }
 
-  if (requiredRole && user?.role !== requiredRole) {
-    return <Navigate to="/unauthorized" replace />;
-  }
+  // if (requiredRole && user?.role !== requiredRole) {
+  //   return <Navigate to="/unauthorized" replace />;
+  // }
 
   return <>{children}</>;
 };

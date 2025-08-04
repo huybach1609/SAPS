@@ -22,6 +22,9 @@ namespace SAPS.Api.Dtos.Subscription
 
         [JsonPropertyName("status")]
         public string Status { get; set; } = null!;
+
+        [JsonPropertyName("lastUpdatedBy")]
+        public string? LastUpdatedBy { get; set; }
     }
 
     public class CreateSubscriptionDto

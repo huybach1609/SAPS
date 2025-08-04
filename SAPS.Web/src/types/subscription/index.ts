@@ -2,11 +2,12 @@ export interface Subscription {
   id: string;
   name: string;
   duration: number; // milliseconds
-  description: string;
+  description: string | null;
   price: number;
   status: "active" | "inactive";
   createdAt?: string;
   updatedAt?: string;
+  lastUpdatedBy?: string;
 }
 
 export interface CreateSubscriptionDto {

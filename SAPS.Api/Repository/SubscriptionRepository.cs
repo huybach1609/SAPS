@@ -15,6 +15,7 @@ namespace SAPS.Api.Repository
         public async Task<IEnumerable<Subscription>> GetAllSubscriptionsAsync()
         {
             return await _context.Subscriptions
+                .Include(s => s.LastUpdatedByNavigation)
                 .OrderBy(s => s.Name)
                 .ToListAsync();
         }
@@ -22,6 +23,7 @@ namespace SAPS.Api.Repository
         public async Task<Subscription?> GetSubscriptionByIdAsync(string id)
         {
             return await _context.Subscriptions
+                .Include(s => s.LastUpdatedByNavigation)
                 .FirstOrDefaultAsync(s => s.Id == id);
         }
 

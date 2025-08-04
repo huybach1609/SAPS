@@ -58,6 +58,7 @@ export const subscriptionService = {
         status: item.status.toLowerCase(), // Convert "Active" to "active"
         createdAt: item.createdAt,
         updatedAt: item.updatedAt,
+        lastUpdatedBy: item.lastUpdatedBy,
       }));
 
       return { success: true, data: mappedData };
@@ -84,6 +85,7 @@ export const subscriptionService = {
         status: data.status.toLowerCase(), // Convert "Active" to "active"
         createdAt: data.createdAt,
         updatedAt: data.updatedAt,
+        lastUpdatedBy: data.lastUpdatedBy,
       };
 
       return { success: true, data: mappedData };
@@ -122,6 +124,7 @@ export const subscriptionService = {
         status: data.status.toLowerCase(), // Convert "Active" to "active"
         createdAt: data.createdAt,
         updatedAt: data.updatedAt,
+        lastUpdatedBy: data.lastUpdatedBy,
       };
 
       return { success: true, data: mappedData };
@@ -161,6 +164,7 @@ export const subscriptionService = {
         status: data.status.toLowerCase(), // Convert "Active" to "active"
         createdAt: data.createdAt,
         updatedAt: data.updatedAt,
+        lastUpdatedBy: data.lastUpdatedBy,
       };
 
       return { success: true, data: mappedData };
@@ -197,6 +201,7 @@ export const subscriptionService = {
         status: data.status.toLowerCase(), // Convert "Active" to "active"
         createdAt: data.createdAt,
         updatedAt: data.updatedAt,
+        lastUpdatedBy: data.lastUpdatedBy,
       };
 
       return { success: true, data: mappedData };

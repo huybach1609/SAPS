@@ -21,6 +21,8 @@ public partial class ClientProfile
 
     public virtual ICollection<SharedVehicleRequest> SharedVehicleRequests { get; set; } = new List<SharedVehicleRequest>();
 
+    public virtual ICollection<SharedVehicle> SharedVehicles { get; set; } = new List<SharedVehicle>();
+
     public virtual User User { get; set; } = null!;
 
     public virtual ICollection<Vehicle> Vehicles { get; set; } = new List<Vehicle>();

@@ -1,119 +1,165 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { Card, Button, Avatar } from "@heroui/react";
+import { Card, Button, Avatar, Spinner } from "@heroui/react";
 import { Ban, Car, Activity, Users } from "lucide-react";
 import blankProfilePicture from "@/assets/Default/blank-profile-picture.webp";
 import { UserDetails } from "@/types/UserClient";
-
-// Mock user data showing default empty state
-const mockUserData: UserDetails = {
-  id: "U001",
-  fullName: "John Michael Smith",
-  email: "john.smith@email.com",
-  profileImageUrl: blankProfilePicture,
-  status: "active",
-  verificationStatus: "Verified",
-  citizenId: "********1234",
-  phone: "+1 (555) 123-4567",
-  dateOfBirth: "March 15, 1990",
-  address: "456 Elm Street, District 3, Ho Chi Minh City, Vietnam",
-  registrationDate: "March 15, 2024",
-  lastLogin: "June 3, 2025 - 14:30 PM",
-  vehicles: [
-    {
-      licensePlate: "ABC-1234",
-      model: "2020 Toyota Camry",
-      color: "White",
-      registrationDate: "Mar 16, 2024",
-      status: "active",
-    },
-    {
-      licensePlate: "XYZ-5678",
-      model: "2019 Honda Civic",
-      color: "Blue",
-      registrationDate: "Apr 10, 2024",
-      status: "active",
-    },
-  ],
-  sharedVehicles: [
-    {
-      licensePlate: "GHI-3456",
-      model: "2018 Ford Focus",
-      color: "Red",
-      registrationDate: "Feb 20, 2024",
-      owner: "Sarah Johnson (USER-SARAH2024)",
-      accessType: "Temporary Access",
-      status: "active",
-    },
-    {
-      licensePlate: "DEF-9012",
-      model: "2021 Nissan Altima",
-      color: "Silver",
-      registrationDate: "Jan 15, 2024",
-      owner: "Mike Wilson (USER-MIKE2023)",
-      accessType: "Permanent Access",
-      status: "active",
-    },
-  ],
-  parkingActivity: [
-    {
-      date: "Jun 2, 2025",
-      location: "Downtown Mall",
-      vehicle: "ABC-1234",
-      duration: "2h 15m",
-      amount: "$12.38",
-    },
-    {
-      date: "Jun 1, 2025",
-      location: "Airport Terminal",
-      vehicle: "XYZ-5678",
-      duration: "4h 30m",
-      amount: "$22.50",
-    },
-    {
-      date: "May 30, 2025",
-      location: "City Center",
-      vehicle: "ABC-1234",
-      duration: "1h 45m",
-      amount: "$8.75",
-    },
-  ],
-  stats: {
-    totalParkingSessions: 47,
-    totalSpent: "$234.50",
-    avgSessionDuration: "2.3h",
-  },
-};
+import { userClientService } from "@/services/userClient/userClientService";
 
 const UserDetail: React.FC = () => {
   const navigate = useNavigate();
-  useParams<{ id: string }>();
+  const { id } = useParams<{ id: string }>();
   const location = useLocation();
   const userData = location.state?.user;
 
   console.log("Location state:", location.state);
   console.log("User data from navigation:", userData);
+  console.log("URL param ID:", id);
 
-  // Transform ClientUser to UserDetails if userData is provided
-  // Nếu là real data, chỉ thay thế các thông tin cơ bản và giữ nguyên mockdata cho phần vehicles, activities
-  const transformedUserData = userData
-    ? ({
-        ...mockUserData, // Giữ lại dữ liệu mock cho phần xe và hoạt động
-        id: userData.id,
-        fullName: userData.fullName,
-        email: userData.email,
-        status: userData.status,
-        registrationDate: userData.createdAt || mockUserData.registrationDate,
-        // Các trường khác vẫn giữ giá trị mock
-      } as UserDetails)
-    : null;
-
-  // Use transformed data or fallback to mock data
-  const [user] = useState<UserDetails>(transformedUserData || mockUserData);
+  // State management
+  const [user, setUser] = useState<UserDetails | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [showConfirmBan, setShowConfirmBan] = useState(false);
+  const [banLoading, setBanLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  // Fetch user details from API
+  useEffect(() => {
+    const fetchUserDetails = async () => {
+      if (!id) {
+        setError("User ID is required");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        setError(null);
+
+        console.log("🔄 Fetching user details from API...");
+        const response = await userClientService.getUserClientDetails(id);
+
+        if (response.success && response.data) {
+          console.log("✅ Successfully fetched user details:", response.data);
+          setUser(response.data);
+        } else {
+          console.error("❌ Failed to fetch user details:", response.error);
+          setError(response.error || "Failed to load user details");
+        }
+      } catch (err) {
+        console.error("🔥 Exception while fetching user details:", err);
+        setError("An error occurred while fetching user details");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserDetails();
+  }, [id]);
+
+  // Handle ban user
+  const handleBanUser = async () => {
+    if (!id || !user) return;
+
+    try {
+      setBanLoading(true);
+      setError(null);
+
+      console.log("🔄 Banning user client...");
+      const response = await userClientService.banUserClient(id);
+
+      if (response.success) {
+        console.log("✅ User client action completed successfully");
+        const actionText = user.status === "active" ? "banned" : "unbanned";
+        const newStatus = user.status === "active" ? "inactive" : "active";
+
+        setSuccessMessage(`User account ${actionText} successfully`);
+        setUser({ ...user, status: newStatus }); // Update local state
+        setShowConfirmBan(false);
+
+        // Clear success message after 3 seconds
+        setTimeout(() => setSuccessMessage(null), 3000);
+      } else {
+        console.error("❌ Failed to update user client:", response.error);
+        const actionText = user.status === "active" ? "ban" : "unban";
+        setError(response.error || `Failed to ${actionText} user account`);
+      }
+    } catch (err) {
+      console.error("🔥 Exception while banning user client:", err);
+      setError("An error occurred while banning user account");
+    } finally {
+      setBanLoading(false);
+    }
+  };
+
+  // Loading state
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <Spinner size="lg" color="primary" />
+        <span className="ml-2">Loading user details...</span>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error || !user) {
+    return (
+      <div className="w-full">
+        <div className="mb-2">
+          <button
+            onClick={() => navigate("/admin/accounts/users")}
+            className="text-blue-600 hover:text-blue-800 flex items-center font-medium"
+          >
+            <svg
+              className="w-5 h-5 mr-1"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              />
+            </svg>
+            Back to User Account List
+          </button>
+        </div>
+
+        <div className="bg-red-50 border-l-4 border-red-500 p-4">
+          <p className="text-red-800">{error || "User not found"}</p>
+          <Button
+            color="primary"
+            className="mt-4"
+            onPress={() => window.location.reload()}
+          >
+            Retry
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-6 w-full">
+    <div className="w-full">
+      {/* Error message */}
+      {error && (
+        <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
+          <p className="text-red-800">{error}</p>
+        </div>
+      )}
+
+      {/* Success message */}
+      {successMessage && (
+        <div className="bg-green-50 border-l-4 border-green-500 p-4 mb-4">
+          <p className="text-green-800">{successMessage}</p>
+        </div>
+      )}
+
       {/* Back button */}
       <div className="mb-2">
         <button
@@ -208,7 +254,7 @@ const UserDetail: React.FC = () => {
                 <div>
                   <p className="text-sm text-gray-500">Verification Status</p>
                   <span className="inline-block px-2 py-1 bg-green-100 text-green-800 rounded text-sm font-medium">
-                    {user.verificationStatus}
+                    {user.verificationStatus || "Verified"}
                   </span>
                 </div>
               </div>
@@ -267,38 +313,44 @@ const UserDetail: React.FC = () => {
           </div>
           <div>
             <p className="text-sm text-gray-500 mb-1">Phone Number</p>
-            <div className="border rounded p-3 bg-gray-50">{user.phone}</div>
+            <div className="border rounded p-3 bg-gray-50">
+              {user.phone || "N/A"}
+            </div>
           </div>
           <div>
             <p className="text-sm text-gray-500 mb-1">Citizen ID</p>
             <div className="border rounded p-3 bg-gray-50 flex items-center">
-              {user.citizenId}
-              <span className="ml-2 text-xs text-gray-500 italic">
-                (number is masked for privacy)
-              </span>
+              {user.citizenId || "N/A"}
+              {user.citizenId && (
+                <span className="ml-2 text-xs text-gray-500 italic">
+                  (number is masked for privacy)
+                </span>
+              )}
             </div>
           </div>
           <div>
             <p className="text-sm text-gray-500 mb-1">Date of Birth</p>
             <div className="border rounded p-3 bg-gray-50">
-              {user.dateOfBirth}
+              {user.dateOfBirth || "N/A"}
             </div>
           </div>
           <div>
             <p className="text-sm text-gray-500 mb-1">Registration Date</p>
             <div className="border rounded p-3 bg-gray-50">
-              {user.registrationDate}
+              {user.registrationDate || "N/A"}
             </div>
           </div>
           <div>
             <p className="text-sm text-gray-500 mb-1">Last Login</p>
             <div className="border rounded p-3 bg-gray-50">
-              {user.lastLogin}
+              {user.lastLogin || "Never logged in"}
             </div>
           </div>
           <div className="md:col-span-2">
             <p className="text-sm text-gray-500 mb-1">Address</p>
-            <div className="border rounded p-3 bg-gray-50">{user.address}</div>
+            <div className="border rounded p-3 bg-gray-50">
+              {user.address || "N/A"}
+            </div>
           </div>
         </div>
       </Card>
@@ -336,7 +388,7 @@ const UserDetail: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {user.vehicles.length > 0 ? (
+              {user.vehicles && user.vehicles.length > 0 ? (
                 user.vehicles.map((vehicle) => (
                   <tr key={vehicle.licensePlate} className="hover:bg-gray-50">
                     <td className="px-4 py-3 text-sm font-medium text-blue-600">
@@ -348,8 +400,15 @@ const UserDetail: React.FC = () => {
                       {vehicle.registrationDate}
                     </td>
                     <td className="px-4 py-3 text-sm">
-                      <span className="inline-block px-2 py-1 bg-green-100 text-green-800 rounded-md text-xs font-medium">
-                        Active
+                      <span
+                        className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${
+                          vehicle.status === "active"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-yellow-100 text-yellow-800"
+                        }`}
+                      >
+                        {vehicle.status.charAt(0).toUpperCase() +
+                          vehicle.status.slice(1)}
                       </span>
                     </td>
                   </tr>
@@ -456,7 +515,7 @@ const UserDetail: React.FC = () => {
           <div className="bg-[#40bcd8] rounded-lg p-5 text-white w-full">
             <div className="text-center">
               <div className="text-4xl font-bold mb-1">
-                {user.stats.totalParkingSessions}
+                {user.stats?.totalParkingSessions || 0}
               </div>
               <div className="text-sm">Total Parking Sessions</div>
             </div>
@@ -465,7 +524,7 @@ const UserDetail: React.FC = () => {
           <div className="bg-[#40bcd8] rounded-lg p-5 text-white w-full">
             <div className="text-center">
               <div className="text-4xl font-bold mb-1">
-                {user.stats.totalSpent}
+                {user.stats?.totalSpent || "$0.00"}
               </div>
               <div className="text-sm">Total Spent</div>
             </div>
@@ -474,7 +533,7 @@ const UserDetail: React.FC = () => {
           <div className="bg-[#40bcd8] rounded-lg p-5 text-white w-full">
             <div className="text-center">
               <div className="text-4xl font-bold mb-1">
-                {user.stats.avgSessionDuration}
+                {user.stats?.avgSessionDuration || "0h"}
               </div>
               <div className="text-sm">Avg Session Duration</div>
             </div>
@@ -509,7 +568,7 @@ const UserDetail: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {user.parkingActivity.length > 0 ? (
+              {user.parkingActivity && user.parkingActivity.length > 0 ? (
                 user.parkingActivity.map((activity, index) => (
                   <tr key={index} className="hover:bg-gray-50">
                     <td className="px-4 py-3 text-sm">{activity.date}</td>
@@ -568,15 +627,44 @@ const UserDetail: React.FC = () => {
           </div>
         </div>
 
-        <Button
-          color="danger"
-          size="lg"
-          startContent={<Ban />}
-          className="bg-red-600 text-white px-8"
-          onPress={() => setShowConfirmBan(true)}
-        >
-          Ban Account
-        </Button>
+        <div className="w-full flex justify-center items-center">
+          {user.status === "active" ? (
+            <Button
+              color="danger"
+              size="lg"
+              startContent={<Ban />}
+              className="w-full bg-red-600 hover:bg-red-700 text-white transition-colors duration-200"
+              onPress={() => setShowConfirmBan(true)}
+            >
+              Ban Account
+            </Button>
+          ) : (
+            <Button
+              color="success"
+              size="lg"
+              startContent={
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              }
+              className="w-full bg-green-600 hover:bg-green-700 text-white transition-colors duration-200"
+              onPress={() => setShowConfirmBan(true)}
+            >
+              Unban Account
+            </Button>
+          )}
+        </div>
 
         <div className="mt-6 p-4 bg-blue-50 text-blue-800 rounded-md">
           <p className="text-sm">
@@ -589,28 +677,117 @@ const UserDetail: React.FC = () => {
 
       {/* Ban Confirmation Modal */}
       {showConfirmBan && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <Card className="w-full max-w-md mx-4 p-6">
-            <h3 className="text-xl font-bold mb-4">Ban Account</h3>
-            <p className="text-default-600 mb-6">
-              Are you sure you want to ban {user.fullName}'s account? The user
-              will not be able to log in until the account is reactivated.
-            </p>
-            <div className="flex justify-end gap-3">
-              <Button variant="flat" onPress={() => setShowConfirmBan(false)}>
-                Cancel
-              </Button>
-              <Button
-                color="danger"
-                onPress={() => {
-                  alert("Account banned successfully");
-                  setShowConfirmBan(false);
-                }}
-              >
-                Ban Account
-              </Button>
-            </div>
-          </Card>
+        <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center z-[9999] p-0 mt-auto">
+          <div className="relative">
+            <Card className="w-full max-w-lg mx-auto p-8 shadow-2xl border-0 bg-white rounded-2xl transform transition-all duration-300 scale-100">
+              {/* Modal Header */}
+              <div className="flex items-center justify-center mb-6">
+                <div
+                  className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 ${
+                    user?.status === "active" ? "bg-red-100" : "bg-green-100"
+                  }`}
+                >
+                  {user?.status === "active" ? (
+                    <Ban className="w-8 h-8 text-red-600" />
+                  ) : (
+                    <svg
+                      className="w-8 h-8 text-green-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                      />
+                    </svg>
+                  )}
+                </div>
+              </div>
+
+              <div className="text-center">
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                  {user?.status === "active" ? "Ban Account" : "Unban Account"}
+                </h3>
+                <p className="text-gray-600 mb-8 leading-relaxed">
+                  Are you sure you want to{" "}
+                  {user?.status === "active" ? "ban" : "unban"}{" "}
+                  <span className="font-semibold text-gray-900">
+                    {user?.fullName}
+                  </span>
+                  's account?
+                  <br />
+                  <span className="text-sm text-gray-500 mt-2 inline-block">
+                    {user?.status === "active"
+                      ? "The user will not be able to log in until the account is reactivated."
+                      : "The user will be able to log in and use the system again."}
+                  </span>
+                </p>
+              </div>
+
+              {/* Modal Actions */}
+              <div className="flex flex-col sm:flex-row gap-3 justify-end">
+                <Button
+                  variant="flat"
+                  onPress={() => setShowConfirmBan(false)}
+                  className="w-full sm:w-auto px-6 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl font-medium transition-colors duration-200"
+                  isDisabled={banLoading}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  color={user?.status === "active" ? "danger" : "success"}
+                  onPress={handleBanUser}
+                  isLoading={banLoading}
+                  isDisabled={banLoading}
+                  className={`w-full sm:w-auto px-6 py-3 text-white rounded-xl font-medium transition-colors duration-200 shadow-lg hover:shadow-xl ${
+                    user?.status === "active"
+                      ? "bg-red-600 hover:bg-red-700"
+                      : "bg-green-600 hover:bg-green-700"
+                  }`}
+                >
+                  {banLoading ? (
+                    <div className="flex items-center justify-center">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                      {user?.status === "active"
+                        ? "Banning..."
+                        : "Unbanning..."}
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center">
+                      {user?.status === "active" ? (
+                        <>
+                          <Ban className="w-4 h-4 mr-2" />
+                          Ban Account
+                        </>
+                      ) : (
+                        <>
+                          <svg
+                            className="w-4 h-4 mr-2"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                          Unban Account
+                        </>
+                      )}
+                    </div>
+                  )}
+                </Button>
+              </div>
+            </Card>
+          </div>
         </div>
       )}
     </div>

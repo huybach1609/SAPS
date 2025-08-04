@@ -127,9 +127,10 @@ export default function SubscriptionList() {
     const matchesSearch =
       appliedSearch === "" ||
       subscription.name.toLowerCase().includes(appliedSearch.toLowerCase()) ||
-      subscription.description
-        .toLowerCase()
-        .includes(appliedSearch.toLowerCase());
+      (subscription.description &&
+        subscription.description
+          .toLowerCase()
+          .includes(appliedSearch.toLowerCase()));
 
     const matchesStatus =
       appliedStatus === "All" || subscription.status === appliedStatus;
@@ -363,13 +364,14 @@ export default function SubscriptionList() {
                   <th className="px-4 py-3 font-semibold">Duration</th>
                   <th className="px-4 py-3 font-semibold">Price</th>
                   <th className="px-4 py-3 font-semibold">Status</th>
+                  <th className="px-4 py-3 font-semibold">Last Updated By</th>
                   <th className="px-4 py-3 font-semibold">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
                 {currentItems.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-4 py-8 text-center">
+                    <td colSpan={7} className="px-4 py-8 text-center">
                       <div className="text-center py-8">
                         <Package className="mx-auto h-12 w-12 text-gray-400 mb-4" />
                         <h3 className="text-lg font-medium text-gray-900 mb-2">
@@ -428,6 +430,11 @@ export default function SubscriptionList() {
                           {subscription.status.charAt(0).toUpperCase() +
                             subscription.status.slice(1)}
                         </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="text-sm text-gray-700">
+                          {subscription.lastUpdatedBy || "N/A"}
+                        </div>
                       </td>
                       <td className="px-4 py-3">
                         <button
