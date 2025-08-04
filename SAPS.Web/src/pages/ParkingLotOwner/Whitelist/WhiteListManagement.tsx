@@ -1,3 +1,4 @@
+
 // WhiteListManagement.tsx (Refactored)
 import type { Whitelist } from "@/types/Whitelist";
 import { useState } from "react";
@@ -22,6 +23,8 @@ import EditEntryModal from "./EditEntryModal";
 import { WhitelistTable } from "@/components/ui/whitelist/WhitelistTable";
 import { WhitelistSearchBar } from "@/components/ui/whitelist/WhitelistSearchBar";
 
+import DefaultLayout from "@/layouts/default";
+
 export function WhitelistManagement() {
   const { selectedParkingLot, loading: parkingLotLoading } = useParkingLot();
   const [editingEntry, setEditingEntry] = useState<Whitelist | null>(null);
@@ -37,7 +40,6 @@ export function WhitelistManagement() {
     loading,
     pagination,
     tableSearch,
-    currentPage,
     setTableSearch,
     setCurrentPage,
     handleAddToWhitelist,
@@ -53,28 +55,20 @@ export function WhitelistManagement() {
     editModalDisclosure.onOpen();
   };
 
-  const handleUpdateEntryWithModal = async (
-    updatedEntry: Whitelist,
-    expiryDate: string,
-    onClose?: () => void
-  ) => {
+  const handleUpdateEntryWithModal = async (updatedEntry: Whitelist, expiryDate: string, onClose?: () => void) => {
     await handleUpdateEntry(updatedEntry, expiryDate);
     if (onClose) onClose();
     setEditingEntry(null);
   };
 
   const handleRemoveWithConfirmation = async (clientId: string) => {
-    if (
-      window.confirm(
-        "Are you sure you want to remove this user from the whitelist?"
-      )
-    ) {
+    if (window.confirm("Are you sure you want to remove this user from the whitelist?")) {
       await handleRemoveFromWhitelist(clientId);
     }
   };
 
   return (
-    <>
+    <DefaultLayout title="Whitelist">
       <div className="max-w-7xl mx-auto p-6">
         <WhitelistStatusComponent
           loadparking={parkingLotLoading}
@@ -122,8 +116,7 @@ export function WhitelistManagement() {
         {pagination && pagination.totalPages > 1 && (
           <div className="mt-6 flex items-center justify-between">
             <div className="text-sm">
-              Showing page {pagination.currentPage} of {pagination.totalPages} (
-              {pagination.totalItems} total items)
+              Showing page {pagination.currentPage} of {pagination.totalPages} ({pagination.totalItems} total items)
             </div>
             <div className="flex space-x-2">
               <Button
@@ -142,11 +135,7 @@ export function WhitelistManagement() {
               />
               <Button
                 disabled={!pagination.hasNextPage || parkingLotLoading}
-                onPress={() =>
-                  setCurrentPage((prev) =>
-                    Math.min(pagination.totalPages, prev + 1)
-                  )
-                }
+                onPress={() => setCurrentPage((prev) => Math.min(pagination.totalPages, prev + 1))}
               >
                 Next
               </Button>
@@ -174,6 +163,6 @@ export function WhitelistManagement() {
           parkingLotId={selectedParkingLot?.id || ""}
         />
       </div>
-    </>
+    </DefaultLayout>
   );
 }

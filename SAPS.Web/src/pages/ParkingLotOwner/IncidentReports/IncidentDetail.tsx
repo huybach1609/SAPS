@@ -26,7 +26,7 @@ import {
   IncidentPriority,
   FileType,
 } from "@/types/IncidentReport";
-
+import DefaultLayout from "@/layouts/default";
 import {
   fetchIncidentById,
   updateIncidentStatus,
@@ -74,21 +74,21 @@ const IncidentDetail: React.FC = () => {
   // Show loading state
   if (loading) {
     return (
-      <>
+      <DefaultLayout className="m-2">
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4" />
             <p className="text-gray-600">Loading incident details...</p>
           </div>
         </div>
-      </>
+      </DefaultLayout>
     );
   }
 
   // Show error state
   if (error || !incident) {
     return (
-      <>
+      <DefaultLayout className="m-2">
         <div className="flex items-center justify-center min-h-[400px]">
           <div className="text-center">
             <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
@@ -98,7 +98,7 @@ const IncidentDetail: React.FC = () => {
             <p className="text-gray-600">{error || "Incident not found"}</p>
           </div>
         </div>
-      </>
+      </DefaultLayout>
     );
   }
 
@@ -174,7 +174,7 @@ const IncidentDetail: React.FC = () => {
       const updatedIncident = await updateIncidentStatus(
         parkingLotId,
         incidentId,
-        newStatus
+        newStatus,
       );
 
       setCurrentStatus(newStatus);
@@ -190,11 +190,14 @@ const IncidentDetail: React.FC = () => {
     [];
   const documentFiles =
     incident.incidentEvidences?.filter(
-      (e) => e.fileType === FileType.Document
+      (e) => e.fileType === FileType.Document,
     ) ?? [];
 
   return (
-    <>
+    <DefaultLayout
+      className="m-2"
+      title={`Incident Details - ${incident.header}`}
+    >
       {/* Header */}
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
@@ -265,23 +268,23 @@ const IncidentDetail: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="incidentReportedDate">
                 Date
               </label>
               <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
                 <Calendar className="w-4 h-4 text-gray-500" />
-                <span className="text-gray-900">
+                <span id="incidentReportedDate" className="text-gray-900">
                   {formatDate(incident.reportedDate)}
                 </span>
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="timeReported" className="block text-sm font-medium text-gray-700 mb-2">
                 Time
               </label>
               <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
                 <Clock className="w-4 h-4 text-gray-500" />
-                <span className="text-primary-900/80">
+                <span className="text-primary-900/80" id="timeReported">
                   {formatTime(incident.reportedDate)}
                 </span>
               </div>
@@ -289,22 +292,22 @@ const IncidentDetail: React.FC = () => {
           </div>
 
           <div className="mb-3">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="reportName" className="block text-sm font-medium text-gray-700 mb-2">
               Reported By
             </label>
             <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
               <User className="w-4 h-4 text-gray-500" />
-              <span className="text-gray-900">
+              <span id="reportName" className="text-gray-900">
                 {incident.reporter.name} ({incident.reporter.role})
               </span>
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label  htmlFor="incidentDescription" className="block text-sm font-medium text-gray-700 mb-2">
               Incident Description
             </label>
-            <div className="p-4 bg-gray-50 rounded-lg">
+            <div className="p-4 bg-gray-50 rounded-lg" id="incidentDescription">
               <p className="text-gray-900 leading-relaxed">
                 {incident.description}
               </p>
@@ -522,7 +525,7 @@ const IncidentDetail: React.FC = () => {
         time={modalImageInfo?.time || ""}
         onClose={() => setModalImageInfo(null)}
       />
-    </>
+    </DefaultLayout>
   );
 };
 

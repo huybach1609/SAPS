@@ -35,15 +35,16 @@ public class MainActivity extends AppCompatActivity implements AuthenticationSer
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // check login info
-        tokenManager = new TokenManager(this);
-        if (!tokenManager.isLoggedIn()) {
-            Intent loginIntent = new Intent(this, LoginActivity.class);
-            startActivity(loginIntent);
-        }
+//         check login info
 
-
-        authService = new AuthenticationService(this, this);
+//        tokenManager = new TokenManager(this);
+//        if (!tokenManager.isLoggedIn()) {
+//            Intent loginIntent = new Intent(this, LoginActivity.class);
+//            startActivity(loginIntent);
+//        }
+//
+//
+//        authService = new AuthenticationService(this, this);
 
         initializeBottomNavigation();
 

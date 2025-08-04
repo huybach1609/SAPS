@@ -8,6 +8,7 @@ import {
   DropdownTrigger,
   Listbox,
   ListboxItem,
+  Tooltip,
 } from "@heroui/react";
 import {
   EllipsisVertical,
@@ -21,12 +22,18 @@ import {
   ClipboardList,
   DollarSign,
   Package,
+  CreditCard,
+  CircleAlert,
+  Clock,
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+
 import { ThemeSwitch } from "../theme-switch";
 import blankProfile from "../../assets/Default/blank-profile-picture.webp";
+
 import { useAuth } from "@/services/auth/AuthContext";
 import { OWNER_ROLE } from "@/config/base";
+import { useParkingLot } from "@/pages/ParkingLotOwner/ParkingLotContext";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -37,27 +44,67 @@ interface NavigationItem {
   icon: React.ReactNode;
   title: string;
   path: string;
+  isActive?: boolean;
 }
 
 interface NavigationListProps {
   items: NavigationItem[];
+  isOwner : boolean;
 }
 
-const NavigationList: React.FC<NavigationListProps> = ({ items }) => {
+const NavigationList: React.FC<NavigationListProps> = ({ items, isOwner = false }) => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Only use parking lot context for owner role
+  const parkingLotContext = isOwner ? useParkingLot() : null;
+  const selectedParkingLot = parkingLotContext?.selectedParkingLot;
 
   return (
-    <Listbox aria-label="Navigation List" className="flex flex-col gap-2">
-      {items.map((item, index) => (
-        <ListboxItem
-          key={index}
-          startContent={item.icon}
-          title={item.title}
-          onClick={() => navigate(item.path)}
-          className="p-3"
-        />
-      ))}
-    </Listbox>
+      <Listbox aria-label="Navigation List" className="flex flex-col gap-2">
+        {items.map((item, index) => {
+          // Check if item should be disabled based on isActive prop and parking lot status
+          // Only apply this logic for owner items
+          const isDisabled = isOwner &&
+              item.isActive !== undefined &&
+              (selectedParkingLot?.status === "Active"
+                  ? !item.isActive
+                  : item.isActive);
+
+          const listboxItem = (
+              <>
+                <ListboxItem
+                    key={index}
+                    className={`p-3 
+                             ${location.pathname === item.path ? "bg-primary text-background" : ""}
+                             hover:bg-primary hover:text-background
+                             ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}
+                             `}
+                    color="secondary"
+                    endContent={
+                      isDisabled ? (
+                          <Tooltip
+                              key={index}
+                              className="text-background"
+                              color="warning"
+                              content="Renew your subscription to access this feature"
+                              placement="right"
+                          >
+                            <CircleAlert size={16} />
+                          </Tooltip>
+                      ) : null
+                    }
+                    isReadOnly={isDisabled}
+                    startContent={item.icon}
+                    title={item.title}
+                    onClick={() => navigate(item.path)}
+                />
+              </>
+          );
+
+          return listboxItem;
+        })}
+      </Listbox>
   );
 };
 
@@ -91,11 +138,11 @@ const adminItems: NavigationItem[] = [
 ];
 
 const parkingLotOwnerItems: NavigationItem[] = [
-  {
-    icon: <Home size={20} />,
-    title: "Home",
-    path: "/owner/home",
-  },
+  // {
+  //     icon: <Home size={20} />,
+  //     title: "Home",
+  //     path: "/owner/home"
+  // },
   {
     icon: <Building2 size={20} />,
     title: "Parking Lot Information",
@@ -115,28 +162,49 @@ const parkingLotOwnerItems: NavigationItem[] = [
     icon: <DollarSign size={20} />,
     title: "Parking Fee Management",
     path: "/owner/parking-fee",
+    isActive: true,
   },
   {
     icon: <AlertTriangle size={20} />,
     title: "Incident Reports",
     path: "/owner/incidents",
+    isActive: true,
   },
   {
     icon: <FileText size={20} />,
     title: "Whitelist",
     path: "/owner/whitelist",
+    isActive: true,
   },
+  {
+    icon: <Clock size={20} />,
+    title: "Staff Shift Management",
+    path: "/owner/staff-shift",
+    isActive: true,
+  },
+  // {
+  //     icon: <FileText size={20} />,
+  //     title: "Subscription",
+  //     path: "/owner/subscription"
+  // },
+  // {
+  //     icon: <FileText size={20} />,
+  //     title: "Upload File",
+  //     path: "/owner/upload-file"
+  // }
 ];
 
 const HeadingBar: React.FC = () => {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
   return (
     <div className="flex justify-between items-center my-4">
       <div className="flex items-center gap-2">
         <img
-          src={blankProfile}
           alt="Profile"
           className="w-12 h-12 rounded-full m-2"
+          src={blankProfile}
         />
         <div>
           <h2 className="text-medium font-bold ">{user?.fullName}</h2>
@@ -148,7 +216,7 @@ const HeadingBar: React.FC = () => {
 
       <Dropdown>
         <DropdownTrigger>
-          <Button className="bg-transparent text-background " isIconOnly>
+          <Button isIconOnly className="bg-transparent text-background ">
             <EllipsisVertical />
           </Button>
         </DropdownTrigger>
@@ -160,10 +228,20 @@ const HeadingBar: React.FC = () => {
             </button>
           </DropdownItem>
 
-          <DropdownItem textValue="Change Themes" key="changeThemes">
-            <ThemeSwitch variant="button" showLabel={true} className="w-full" />
+          <DropdownItem key="changeThemes" textValue="Change Themes">
+            <ThemeSwitch className="w-full" showLabel={true} variant="button" />
           </DropdownItem>
-          <DropdownItem textValue="Logout" key="logout">
+          {user?.role === OWNER_ROLE ? (
+            <DropdownItem key="subscription" textValue="Subscription">
+              <button
+                className="flex items-center gap-2 w-full text-left transition-opacity hover:opacity-80 "
+                onClick={() => navigate("/owner/subscription")}
+              >
+                <CreditCard size={16} /> Subscription
+              </button>
+            </DropdownItem>
+          ) : null}
+          <DropdownItem key="logout" textValue="Logout">
             <button
               className="flex items-center gap-2 w-full text-left transition-opacity hover:opacity-80 "
               onClick={logout}
@@ -178,31 +256,32 @@ const HeadingBar: React.FC = () => {
   );
 };
 
-export const SideBar: React.FC<SidebarProps> = ({ isOpen, role }) => {
+export const SideBar: React.FC<SidebarProps> = ({ isOpen }) => {
   const { user } = useAuth();
-
-  // Determine role - use prop if provided, otherwise fallback to user role
-  const activeRole = role || user?.role;
 
   return (
     <motion.div
-      initial={false}
       animate={{
         width: isOpen ? 300 : 0,
         opacity: isOpen ? 1 : 0,
+        // maxWidth: isOpen ? 300: 0,
         minWidth: isOpen ? 250 : 0,
       }}
+      className=" 
+            bg-foreground text-background border-r border-divider h-full flex flex-col
+            p-5 shadow-lg overflow-hidden z-50
+            "
+      initial={false}
       transition={{ duration: 0.3, ease: "easeInOut" }}
-      className="bg-foreground text-background border-r border-divider h-full flex flex-col
-                      p-5 shadow-lg overflow-hidden z-50"
     >
       <HeadingBar />
       <Divider className="bg-border my-4" />
-      {activeRole === OWNER_ROLE ? (
-        <NavigationList items={parkingLotOwnerItems} />
+      {user?.role === OWNER_ROLE ? (
+        <NavigationList items={parkingLotOwnerItems} isOwner={true} />
       ) : (
-        <NavigationList items={adminItems} />
+        <NavigationList items={adminItems} isOwner={false}/>
       )}
+      {/* // {role === 'parkinglotowner' ? <ParkingLotOwnerList /> : <AdminList />} */}
     </motion.div>
   );
 };

@@ -2,23 +2,23 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { WhitelistManagement } from '@/pages/ParkingLotOwner/Whitelist/WhiteListManagement';
-import * as ParkingLotContext from '../../pages/ParkingLotOwner/ParkingLotContext';
+import * as ParkingLotContext from '@/pages/ParkingLotOwner/ParkingLotContext';
 import * as whitelistService from '@/services/parkinglot/whitelistService';
 import { ParkingLot } from '@/types/ParkingLot';
 import { PaginatedWhitelistResponse } from '@/types/Whitelist';
 
-vi.mock('../../pages/ParkingLotOwner/ParkingLotContext');
+vi.mock('@/pages/ParkingLotOwner/ParkingLotContext');
 vi.mock('@/services/parkinglot/whitelistService');
-vi.mock('./WhiteListStatus', () => ({
+vi.mock('@/pages/ParkingLotOwner/Whitelist/WhiteListStatus', () => ({
   default: () => <div>Whitelist Status</div>
 }));
-vi.mock('./WhiteListModal', () => ({
+vi.mock('@/pages/ParkingLotOwner/Whitelist/WhiteListModal', () => ({
   default: () => <div>Add File Modal</div>
 }));
-vi.mock('./AddUserModal', () => ({
+vi.mock('@/pages/ParkingLotOwner/Whitelist/AddUserModal', () => ({
   default: () => <div>Add User Modal</div>
 }));
-vi.mock('./EditEntryModal', () => ({
+vi.mock('@/pages/ParkingLotOwner/Whitelist/EditEntryModal', () => ({
   default: () => <div>Edit Entry Modal</div>
 }));
 
@@ -27,10 +27,6 @@ vi.mock('@/layouts/default', () => {
     default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>
   }
 })
-
-
-
-
 
 const mockParkingLotContext = vi.mocked(ParkingLotContext);
 const mockWhitelistService = vi.mocked(whitelistService);

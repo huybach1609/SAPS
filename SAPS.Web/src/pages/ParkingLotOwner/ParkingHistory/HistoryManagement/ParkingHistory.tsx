@@ -37,6 +37,7 @@ import {
 import ParkingHistoryStatistics from "./ParkingHistoryStatistics";
 import { formatDate, formatTime } from "@/components/utils/stringUtils";
 import { ParkingSessionStatus } from "@/types/ParkingSession";
+import DefaultLayout from "@/layouts/default";
 
 const ParkingHistory: React.FC = () => {
   const { selectedParkingLot, loading: parkingLotLoading } = useParkingLot();
@@ -75,17 +76,17 @@ const ParkingHistory: React.FC = () => {
       // Convert DateValue objects to ISO strings if present
       const dateRangeStart = dateRange?.start
         ? new Date(
-            dateRange.start.year,
-            dateRange.start.month - 1,
-            dateRange.start.day
-          ).toISOString()
+          dateRange.start.year,
+          dateRange.start.month - 1,
+          dateRange.start.day
+        ).toISOString()
         : undefined;
       const dateRangeEnd = dateRange?.end
         ? new Date(
-            dateRange.end.year,
-            dateRange.end.month - 1,
-            dateRange.end.day
-          ).toISOString()
+          dateRange.end.year,
+          dateRange.end.month - 1,
+          dateRange.end.day
+        ).toISOString()
         : undefined;
       const statusValue = status || undefined;
 
@@ -156,7 +157,7 @@ const ParkingHistory: React.FC = () => {
   }
 
   return (
-    <>
+    <DefaultLayout title="Parking History">
       <ParkingHistoryStatistics parkingLotId={selectedParkingLot?.id || ""} />
 
       {/* Search & Filter */}
@@ -314,7 +315,7 @@ const ParkingHistory: React.FC = () => {
           </div>
         </div>
       )}
-    </>
+    </DefaultLayout>
   );
 };
 
@@ -356,17 +357,17 @@ function ParkingHistoryTable({
         aria-label="Parking History Table"
         className="w-full"
         color="secondary"
-        // selectedKeys={selectedSession ? [selectedSession.id] : []}
-        // onSelectionChange={(keys: any) => {
-        //     if (typeof keys === 'string') { // Handle "all" selection
-        //         setSelectedSession(null);
-        //         return;
-        //     }
-        //     const [selectedId] = keys;
-        //     const session = parkingSessions.find((s) => s.id === selectedId);
-        //     setSelectedSession(session || null);
-        // }}
-        // selectionMode="single"
+      // selectedKeys={selectedSession ? [selectedSession.id] : []}
+      // onSelectionChange={(keys: any) => {
+      //     if (typeof keys === 'string') { // Handle "all" selection
+      //         setSelectedSession(null);
+      //         return;
+      //     }
+      //     const [selectedId] = keys;
+      //     const session = parkingSessions.find((s) => s.id === selectedId);
+      //     setSelectedSession(session || null);
+      // }}
+      // selectionMode="single"
       >
         <TableHeader className="">
           <TableColumn

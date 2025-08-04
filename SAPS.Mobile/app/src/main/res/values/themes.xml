@@ -2,7 +2,6 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.SAPSMobile" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorOnPrimary">@color/colorOnPrimary</item>
         <item name="colorSecondary">@color/colorSecondary</item>
@@ -10,10 +9,30 @@
 
         <item name="android:colorBackground">@color/bg</item>
         <item name="colorOnBackground">@color/fg</item>
+        <item name="colorSurface">@color/bg</item>
+        <item name="colorOnSurface">@color/fg</item>
 
         <item name="colorPrimaryDark">@color/fg0</item>
         <item name="colorError">@color/redBright</item>
 
+        <!-- Enable edge-to-edge display -->
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+
+        <!-- Status bar content color (dark icons for light background) -->
+        <item name="android:windowLightStatusBar">true</item>
+
+        <!-- Navigation bar content color (API 27+) -->
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">true</item>
+
+        <!-- Disable status/nav bar contrast enforcement (API 29+) -->
+        <item name="android:enforceStatusBarContrast" tools:targetApi="29">false</item>
+        <item name="android:enforceNavigationBarContrast" tools:targetApi="29">false</item>
+
+        <!-- Window layout flags for edge-to-edge -->
+        <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="28">shortEdges</item>
     </style>
 
     <style name="Theme.SAPSMobile" parent="Base.Theme.SAPSMobile" />
