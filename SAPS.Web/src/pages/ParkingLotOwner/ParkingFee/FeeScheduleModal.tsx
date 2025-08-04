@@ -265,10 +265,10 @@ export const FeeScheduleModal: React.FC<{
           </div>
 
           <div>
-            <label className="block text-sm font-medium   mb-2">
+            <label htmlFor="dayofweek" className="block text-sm font-medium   mb-2">
               Days of Week (leave empty for all days)
             </label>
-            <div className="grid grid-cols-2 gap-2">
+            <div id="dayofweek" className="grid grid-cols-2 gap-2">
               {dayOptions.map((day, idx) => (
                 <label key={day} className="flex items-center space-x-2">
                   <input

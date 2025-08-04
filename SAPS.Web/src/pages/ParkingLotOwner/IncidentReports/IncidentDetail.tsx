@@ -7,7 +7,6 @@ import {
   User,
   Calendar,
   Clock,
-
   FolderOpen,
   FileSearch,
   CheckCircle,
@@ -41,7 +40,7 @@ const IncidentDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentStatus, setCurrentStatus] = useState<IncidentStatus | null>(
-    null,
+    null
   );
   const [modalImageInfo, setModalImageInfo] =
     useState<ModalImageInfoContent | null>(null);
@@ -145,8 +144,6 @@ const IncidentDetail: React.FC = () => {
         return IncidentStatus[status];
     }
   };
-
-  
 
   const formatFileSize = (bytes: number): string => {
     if (bytes < 1024) return bytes + " B";
@@ -271,23 +268,23 @@ const IncidentDetail: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-3">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="incidentReportedDate">
                 Date
               </label>
               <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
                 <Calendar className="w-4 h-4 text-gray-500" />
-                <span className="text-gray-900">
+                <span id="incidentReportedDate" className="text-gray-900">
                   {formatDate(incident.reportedDate)}
                 </span>
               </div>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="timeReported" className="block text-sm font-medium text-gray-700 mb-2">
                 Time
               </label>
               <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
                 <Clock className="w-4 h-4 text-gray-500" />
-                <span className="text-primary-900/80">
+                <span className="text-primary-900/80" id="timeReported">
                   {formatTime(incident.reportedDate)}
                 </span>
               </div>
@@ -295,22 +292,22 @@ const IncidentDetail: React.FC = () => {
           </div>
 
           <div className="mb-3">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="reportName" className="block text-sm font-medium text-gray-700 mb-2">
               Reported By
             </label>
             <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
               <User className="w-4 h-4 text-gray-500" />
-              <span className="text-gray-900">
+              <span id="reportName" className="text-gray-900">
                 {incident.reporter.name} ({incident.reporter.role})
               </span>
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <label  htmlFor="incidentDescription" className="block text-sm font-medium text-gray-700 mb-2">
               Incident Description
             </label>
-            <div className="p-4 bg-gray-50 rounded-lg">
+            <div className="p-4 bg-gray-50 rounded-lg" id="incidentDescription">
               <p className="text-gray-900 leading-relaxed">
                 {incident.description}
               </p>

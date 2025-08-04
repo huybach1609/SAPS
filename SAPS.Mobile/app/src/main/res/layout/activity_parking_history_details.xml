@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:id="@+id/main"
+    android:layout_height="match_parent"
+    android:padding="12dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            android:elevation="4dp" />
+
+
+        <!-- Header -->
+        <TextView
+            android:id="@+id/tvHeader"
+            android:text="🚗 Parking Session Details"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/tvSubHeader"
+            android:text="Complete information about your parking session"
+            android:textSize="14sp"
+            android:layout_marginBottom="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <!-- Session + Time -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:background="#F0F6FF"
+                android:layout_margin="4dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+
+                <TextView android:text="Session Information" android:textStyle="bold"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView android:id="@+id/tvLocation" android:text="Location: Downtown Mall"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView android:id="@+id/tvSlot" android:text="Parking Slot: A-15"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView android:id="@+id/tvVehicle" android:text="Vehicle: ABC-1234"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView android:id="@+id/tvVehicleModel" android:text="Vehicle Model: Toyota Camry"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:background="#FFF6F6"
+                android:layout_margin="4dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+
+                <TextView android:text="Time Details" android:textStyle="bold"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView android:id="@+id/tvEntryDate" android:text="Entry Date: Jun 2, 2025"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView android:id="@+id/tvEntryTime" android:text="Entry Time: 14:30 PM"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView android:id="@+id/tvExitDate" android:text="Exit Date: Jun 2, 2025"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                <TextView android:id="@+id/tvExitTime" android:text="Exit Time: 16:45 PM"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Total Duration -->
+        <TextView
+            android:id="@+id/tvDuration"
+            android:text="Total Duration: 2 hours 15 minutes"
+            android:background="#E3F2FD"
+            android:padding="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <!-- Payment Details -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:background="#F1F8E9"
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView android:text="💰 Payment Details" android:textStyle="bold"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            <TextView android:id="@+id/tvBaseRate" android:text="Base Rate: $5.00/hour"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            <TextView android:id="@+id/tvTimeCharged" android:text="Time Charged: 2.25 hours"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            <TextView android:id="@+id/tvSubtotal" android:text="Subtotal: $11.25"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            <TextView android:id="@+id/tvTax" android:text="Tax: $1.13"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            <TextView
+                android:id="@+id/tvTotalAmount"
+                android:text="Total Amount Paid: $12.38"
+                android:textStyle="bold"
+                android:textColor="#1E88E5"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <!-- Transaction Details -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:padding="8dp"
+            android:background="#F3E5F5"
+            android:layout_marginTop="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView android:text="📄 Transaction Details" android:textStyle="bold"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            <TextView android:id="@+id/tvTransactionId" android:text="Transaction ID: TXN-20250602-089"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            <TextView android:id="@+id/tvPaymentMethod" android:text="Payment Method: Bank Transfer"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            <TextView android:id="@+id/tvPaymentStatus" android:text="Payment Status: Paid"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            <TextView android:id="@+id/tvPaymentDate" android:text="Payment Date: Jun 2, 2025 - 16:47 PM"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+            <TextView android:id="@+id/tvReferenceCode" android:text="Reference Code: PARK-ABC1234-020625"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <!-- Buttons -->
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/btnEmailReceipt"
+                android:text="Email Receipt"
+                android:layout_marginEnd="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <Button
+                android:id="@+id/btnReportIssue"
+                android:text="Report Issue"
+                android:backgroundTint="#FFA000"
+                android:textColor="#FFFFFF"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

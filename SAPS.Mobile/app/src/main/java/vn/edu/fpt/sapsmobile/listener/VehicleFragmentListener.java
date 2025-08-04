@@ -4,9 +4,9 @@ import android.app.AlertDialog;
 
 import vn.edu.fpt.sapsmobile.models.Vehicle;
 
-public interface VehicleFragmentListener {
+public interface VehicleFragmentListener  extends Listener {
     void onEditClicked(Vehicle vehicle);
     void onShareClicked(Vehicle vehicle);
     void onVehicleClicked(Vehicle vehicle);
-    void onCheckout(Vehicle vehicle, AlertDialog dialog);
+
 }

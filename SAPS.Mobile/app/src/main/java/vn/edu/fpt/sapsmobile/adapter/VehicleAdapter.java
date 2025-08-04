@@ -14,15 +14,20 @@ import java.util.List;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
 import vn.edu.fpt.sapsmobile.listener.VehicleFragmentListener;
+import vn.edu.fpt.sapsmobile.utils.RecyclerUtils;
 
-public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleViewHolder> {
+public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleViewHolder>
+        implements RecyclerUtils.UpdatableAdapter<Vehicle> {
 
-    private final List<Vehicle> vehicles;
-    private final VehicleFragmentListener actionListener;
+    private List<Vehicle> vehicles;
+    private VehicleFragmentListener actionListener;
 
     public VehicleAdapter(List<Vehicle> vehicles, VehicleFragmentListener listener) {
         this.vehicles = vehicles;
         this.actionListener = listener;
+    }
+    public VehicleAdapter() {
+
     }
 
     @NonNull
@@ -42,6 +47,13 @@ public class VehicleAdapter extends RecyclerView.Adapter<VehicleAdapter.VehicleV
     public int getItemCount() {
         return vehicles.size();
     }
+
+    @Override
+    public void updateData(List<Vehicle> newData) {
+        this.vehicles = newData;
+        notifyDataSetChanged();
+    }
+
 
     static class VehicleViewHolder extends RecyclerView.ViewHolder {
 
