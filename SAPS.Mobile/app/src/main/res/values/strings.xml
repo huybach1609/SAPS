@@ -16,4 +16,37 @@
     </string-array>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Group & Logo -->
+    <string name="app_group_name">SAPLS</string>
+    <string name="logo_description">Logo nhóm</string>
+
+    <!-- Parking session info labels -->
+    <string name="label_vehicle">Vehicle:</string>
+    <string name="label_location">Location:</string>
+    <string name="label_entry_time">Entry Time:</string>
+    <string name="label_duration">Duration:</string>
+
+    <!-- Buttons -->
+    <string name="btn_check_out">Check Out</string>
+    <!-- Header / Title -->
+    <string name="title_my_vehicles">🚗 My Vehicles</string>
+    <string name="btn_add_vehicle">+ Add Vehicle</string>
+    <string name="btn_add_vehicle_desc">Thêm xe mới</string>
+
+    <!-- Share code card -->
+    <string name="label_share_code">🔑 Your Share Code</string>
+    <string name="example_share_code">USER-JOHN2025</string>
+    <string name="share_code_description">Give this code to vehicle owners to grant you access to their vehicles.</string>
+    <string name="btn_copy_my_share_code">📋 Copy My Share Code</string>
+    <string name="btn_copy_share_code_desc">Sao chép mã chia sẻ</string>
+
+    <!-- Tabs -->
+    <string name="tab_my_vehicles">Xe của tôi</string>
+    <string name="tab_shared_vehicles">Xe được chia sẻ</string>
+
+    <!-- Content descriptions -->
+    <string name="cd_share_code_card">Thẻ mã chia sẻ</string>
+    <!-- Parking History Screen -->
+    <string name="title_parking_history">📋 Parking History</string>
+    <string name="label_date">Date: </string>
 </resources>

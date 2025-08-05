@@ -4,7 +4,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +12,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -24,12 +25,11 @@ import vn.edu.fpt.sapsmobile.API.apiinterface.ParkingSessionApiService;
 import vn.edu.fpt.sapsmobile.API.apiinterface.VehicleApiService;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.actionhandler.HistoryFragmentHandler;
-import vn.edu.fpt.sapsmobile.activities.CheckoutActivity;
 import vn.edu.fpt.sapsmobile.adapter.ParkingSessionAdapter;
-import vn.edu.fpt.sapsmobile.dialog.VehicleDetailDialog;
 import vn.edu.fpt.sapsmobile.models.ParkingLot;
 import vn.edu.fpt.sapsmobile.models.ParkingSession;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
+import vn.edu.fpt.sapsmobile.utils.DateTimeHelper;
 
 
 public class HomeFragment extends Fragment {
@@ -48,6 +48,12 @@ public class HomeFragment extends Fragment {
 
         rvParkingHistory = view.findViewById(R.id.rvParkingHistory);
         rvParkingHistory.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        parkingSessionAdapter = new ParkingSessionAdapter(new ArrayList<>(),
+                new HistoryFragmentHandler(requireContext()),
+                requireContext(),
+                "homeFragment");
+        rvParkingHistory.setAdapter(parkingSessionAdapter);
 
         return view;
     }
@@ -73,8 +79,10 @@ public class HomeFragment extends Fragment {
                     session = response.body();
 
 //                     Hiển thị thời gian
-                    tvEntryTime.setText(session.getEntryDateTime());
-                    tvDuration.setText(session.getExitDateTime() != null ? session.getExitDateTime() : "Ongoing");
+
+                    tvEntryTime.setText(DateTimeHelper.formatDateTime(session.getEntryDateTime()));
+                    LocalDateTime now = LocalDateTime.now();
+                    tvDuration.setText(DateTimeHelper.calculateDuration(session.getEntryDateTime(),now.toString())+" onGoing");
 
                     // Gọi tiếp API lấy Vehicle
                     VehicleApiService vehicleApiService = ApiTest.getService(requireContext()).create(VehicleApiService.class);
@@ -121,7 +129,7 @@ public class HomeFragment extends Fragment {
 
 
         // Lấy lịch sử
-        parkingSessionApi.getParkingSessionOfVehicleParkingList().enqueue(new Callback<List<ParkingSession>>() {
+        parkingSessionApi.getParkingSessionOf5VehicleLastest().enqueue(new Callback<List<ParkingSession>>() {
             @Override
             public void onResponse(Call<List<ParkingSession>> call, Response<List<ParkingSession>> response) {
                 if (!isAdded() || getContext() == null) return;

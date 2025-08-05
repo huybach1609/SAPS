@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import vn.edu.fpt.sapsmobile.API.apiinterface.VehicleApiService;
 
 public class ApiTest {
-    private static final String BASE_URL = "https://e29fcf0d-97d4-404f-a252-ff81d2feb755.mock.pstmn.io";
+    private static final String BASE_URL = "https://a977930d-26ce-4a3d-8a1b-b8610e56c079.mock.pstmn.io";
     private static Retrofit retrofit;
 
     public static Retrofit  getService(Context context) {

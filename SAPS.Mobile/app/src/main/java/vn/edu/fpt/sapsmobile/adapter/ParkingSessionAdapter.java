@@ -24,6 +24,7 @@ import vn.edu.fpt.sapsmobile.listener.HistoryFragmentListener;
 import vn.edu.fpt.sapsmobile.models.ParkingLot;
 import vn.edu.fpt.sapsmobile.models.ParkingSession;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
+import vn.edu.fpt.sapsmobile.utils.DateTimeHelper;
 
 public class ParkingSessionAdapter extends RecyclerView.Adapter<ParkingSessionAdapter.ParkingSessionViewHolder> {
 
@@ -82,13 +83,14 @@ public class ParkingSessionAdapter extends RecyclerView.Adapter<ParkingSessionAd
 
             // Set thời lượng
             if (session.getExitDateTime() == null) {
-                tvDuration.setText("Unknown");
+                LocalDateTime now = LocalDateTime.now();
+                tvDuration.setText(DateTimeHelper.calculateDuration(session.getEntryDateTime(),now.toString())+" onGoing");
             } else {
-                tvDuration.setText(calculateDuration(session.getEntryDateTime(), session.getExitDateTime()));
+                tvDuration.setText(DateTimeHelper.calculateDuration(session.getEntryDateTime(), session.getExitDateTime()));
             }
 
             // Set ngày
-            tvDate.setText(formatDate(session.getEntryDateTime()));
+            tvDate.setText(DateTimeHelper.formatDate(session.getEntryDateTime()));
 
             // Set amount + status
             tvAmount.setText(String.format("$%.2f", session.getCost()));
@@ -136,24 +138,6 @@ public class ParkingSessionAdapter extends RecyclerView.Adapter<ParkingSessionAd
             });
         }
 
-        private String calculateDuration(String entry, String exit) {
-            if (exit == null) exit = LocalDateTime.now().toString();
-            DateTimeFormatter formatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-            LocalDateTime entryTime = LocalDateTime.parse(entry, formatter);
-            LocalDateTime exitTime = LocalDateTime.parse(exit, formatter);
 
-            long minutes = java.time.Duration.between(entryTime, exitTime).toMinutes();
-            long hours = minutes / 60;
-            minutes = minutes % 60;
-
-            return hours + "h " + minutes + "m";
-        }
-
-        private String formatDate(String dateTime) {
-            DateTimeFormatter inputFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
-            DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("MMM d, yyyy");
-            LocalDateTime date = LocalDateTime.parse(dateTime, inputFormatter);
-            return outputFormatter.format(date);
-        }
     }
 }

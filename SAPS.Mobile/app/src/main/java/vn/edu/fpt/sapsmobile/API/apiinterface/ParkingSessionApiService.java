@@ -17,8 +17,8 @@ public interface ParkingSessionApiService {
     Call<List<ParkingSession>> getParkingSessionListLast3Months();
     @GET("/parkingsessionLastYear")
     Call<List<ParkingSession>> getParkingSessionListLastYear();
-    @GET("/parkingsessionOfVehicleParkingList")
-    Call<List<ParkingSession>> getParkingSessionOfVehicleParkingList();
+    @GET("/getParkingSessionOf5VehicleLastest")
+    Call<List<ParkingSession>> getParkingSessionOf5VehicleLastest();
     @GET("/parkingsessionLastestVehicleParking")
     Call<ParkingSession> getParkingSessionLastestVehicleParking();
 

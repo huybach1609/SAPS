@@ -3,7 +3,6 @@
     import androidx.fragment.app.Fragment;
     import androidx.recyclerview.widget.LinearLayoutManager;
     import androidx.recyclerview.widget.RecyclerView;
-    import androidx.viewpager2.widget.ViewPager2;
 
     import android.content.ClipData;
     import android.content.ClipboardManager;
@@ -18,22 +17,14 @@
     import android.widget.Toast;
 
 
-    import com.google.android.material.tabs.TabLayout;
-
-    import java.util.ArrayList;
     import java.util.List;
 
-    import retrofit2.Call;
-    import retrofit2.Callback;
-    import retrofit2.Response;
     import vn.edu.fpt.sapsmobile.API.ApiTest;
     import vn.edu.fpt.sapsmobile.API.apiinterface.VehicleApiService;
     import vn.edu.fpt.sapsmobile.R;
-    import vn.edu.fpt.sapsmobile.actionhandler.VehicleFragmentHandler;
     import vn.edu.fpt.sapsmobile.adapter.VehicleAdapter;
-    import vn.edu.fpt.sapsmobile.listener.VehicleFragmentListener;
     import vn.edu.fpt.sapsmobile.models.Vehicle;
-    import vn.edu.fpt.sapsmobile.services.DummyVehicleData;
+    import vn.edu.fpt.sapsmobile.services.DummyData;
     import vn.edu.fpt.sapsmobile.utils.RecyclerUtils;
 
 
@@ -100,7 +91,7 @@
 //                    tv_share_code.setText("Lỗi kết nối: " + t.getMessage());
 //                }
 //            });
-            DummyVehicleData dataSample = new DummyVehicleData();
+            DummyData dataSample = new DummyData();
             RecyclerUtils.updateRecyclerView(rvVehicles, dataSample.getSampleVehicles());
 
             //btn Myvehicle
