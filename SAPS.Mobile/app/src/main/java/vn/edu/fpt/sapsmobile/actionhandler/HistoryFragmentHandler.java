@@ -4,7 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 
-import vn.edu.fpt.sapsmobile.activities.CheckoutActivity;
+import vn.edu.fpt.sapsmobile.activities.checkout.CheckoutActivity;
 import vn.edu.fpt.sapsmobile.activities.ParkingHistoryDetailsActivity;
 import vn.edu.fpt.sapsmobile.dialog.VehicleDetailDialog;
 import vn.edu.fpt.sapsmobile.listener.HistoryFragmentListener;

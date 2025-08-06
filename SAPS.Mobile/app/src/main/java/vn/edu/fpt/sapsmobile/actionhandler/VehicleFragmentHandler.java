@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
-import vn.edu.fpt.sapsmobile.activities.CheckoutActivity;
+import vn.edu.fpt.sapsmobile.activities.checkout.CheckoutActivity;
 import vn.edu.fpt.sapsmobile.dialog.VehicleDetailDialog;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
 import vn.edu.fpt.sapsmobile.listener.VehicleFragmentListener;

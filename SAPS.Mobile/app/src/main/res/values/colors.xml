@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
     <!--    <color name="black">#FF000000</color>-->
     <!--    <color name="white">#FFFFFFFF</color>-->
     <!-- Background -->
@@ -30,4 +30,37 @@
     <color name="text_primary">#0F172A</color>
     <color name="text_secondary">#6B7280</color>
     <color name="white">#FFFFFF</color>
+    <!-- Base Colors -->
+    <color name="color_primary">#1976D2</color> <!-- Màu chủ đạo -->
+    <color name="color_primary_dark">#0D47A1</color>
+    <color name="color_primary_light">#63A4FF</color>
+
+    <color name="color_background">#F5F5F5</color> <!-- Nền app -->
+    <color name="color_surface">#FFFFFF</color> <!-- Card / surface -->
+    <color name="color_divider">#E0E0E0</color>
+
+    <!-- Text Colors -->
+    <color name="text_on_primary">#FFFFFF</color>
+
+    <!-- State Colors -->
+    <color name="color_error">#D32F2F</color>
+    <color name="color_warning">#FFA000</color>
+    <color name="color_success">#388E3C</color>
+    <!-- Brand / accents -->
+    <color name="colorAccent">#0D6EFD</color>
+
+    <!-- Neutral / outlines -->
+    <color name="neutral">#E6EDF7</color>
+
+    <!-- Warning / danger -->
+    <color name="warning">#D9534F</color>
+    <color name="danger">#D9534F</color>
+    <!-- Background -->
+
+
+
+    <!-- Brand & UI Colors -->
+    <color name="primary_light">#BBDEFB</color> <!-- Xanh nhạt hơn -->
+    <color name="success">#4CAF50</color> <!-- Xanh lá báo thành công -->
+
 </resources>

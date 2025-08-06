@@ -4,7 +4,10 @@
     android:layout_margin="8dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/left_border_card">
+    android:background="@drawable/left_border_card"
+    android:descendantFocusability="afterDescendants"
+    android:focusable="false"
+    android:clickable="false">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -50,30 +53,6 @@
                 android:layout_height="wrap_content"/>
         </LinearLayout>
 
-        <!-- Cột chứa nút bấm -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.4"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:paddingStart="8dp"
-            android:layout_gravity="center_vertical">
 
-            <Button
-                android:id="@+id/btnEdit"
-                android:text="Edit"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
-
-            <Button
-                android:id="@+id/btnShare"
-                android:text="Share"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:layout_marginTop="8dp"/>
-        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

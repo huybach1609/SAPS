@@ -1,4 +1,4 @@
-package vn.edu.fpt.sapsmobile.activities;
+package vn.edu.fpt.sapsmobile.activities.checkout;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,8 +18,6 @@ import android.widget.Spinner;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import androidx.core.app.NavUtils;
-
-import com.google.android.material.button.MaterialButton;
 
 import retrofit2.Call;
 import retrofit2.Callback;

@@ -1,9 +1,8 @@
-package vn.edu.fpt.sapsmobile.activities;
+package vn.edu.fpt.sapsmobile.activities.checkout;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -23,11 +22,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import vn.edu.fpt.sapsmobile.API.ApiTest;
-import vn.edu.fpt.sapsmobile.API.apiinterface.ParkingLotApiService;
 import vn.edu.fpt.sapsmobile.API.apiinterface.TransactionApiService;
 import vn.edu.fpt.sapsmobile.R;
-import vn.edu.fpt.sapsmobile.activities.main.MainActivity;
-import vn.edu.fpt.sapsmobile.models.ParkingLot;
 import vn.edu.fpt.sapsmobile.models.Transaction;
 
 public class PaymentActivity extends AppCompatActivity {

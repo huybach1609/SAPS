@@ -1,8 +1,7 @@
-package vn.edu.fpt.sapsmobile.activities;
+package vn.edu.fpt.sapsmobile.activities.checkout;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -13,7 +12,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import vn.edu.fpt.sapsmobile.R;
-import vn.edu.fpt.sapsmobile.actionhandler.HistoryFragmentHandler;
 import vn.edu.fpt.sapsmobile.activities.main.MainActivity;
 import vn.edu.fpt.sapsmobile.models.Transaction;
 
