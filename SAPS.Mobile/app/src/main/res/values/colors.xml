@@ -26,4 +26,8 @@
     <color name="colorBackground">#e7f4f7</color>
     <color name="colorOnBackground">#3c3836</color>
     <color name="colorOnSurfaceVariant">@color/fg0</color>
+    <color name="primary">#0B69FF</color>
+    <color name="text_primary">#0F172A</color>
+    <color name="text_secondary">#6B7280</color>
+    <color name="white">#FFFFFF</color>
 </resources>

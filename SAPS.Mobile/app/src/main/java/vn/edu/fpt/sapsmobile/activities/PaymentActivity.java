@@ -32,7 +32,7 @@ import vn.edu.fpt.sapsmobile.models.Transaction;
 
 public class PaymentActivity extends AppCompatActivity {
     ImageView imgQrCode;
-    Button btnFinish;
+    Button btnIHavePaid;
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -46,12 +46,12 @@ public class PaymentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_payment);
-        btnFinish = findViewById(R.id.btnFinish);
+        btnIHavePaid = findViewById(R.id.btnIHavePaid);
         imgQrCode = findViewById(R.id.imgQrCode);
 
         String jsonFromApi = "\"Bank: Agribank\\nAccount: 2204205387290\\nName: [NGHIEM PHU DUC]\";";
         generateQr("970405","2204205387290","NGHIEM PHU DUC");
-        btnFinish.setOnClickListener(v -> {
+        btnIHavePaid.setOnClickListener(v -> {
             Intent intent = new Intent(PaymentActivity.this, PaymentResultActivity.class);
             intent.putExtra("status", "SUCCESS");
             TransactionApiService transactionApiService = ApiTest.getService(this).create(TransactionApiService.class);

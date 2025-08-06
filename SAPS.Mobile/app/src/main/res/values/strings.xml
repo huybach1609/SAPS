@@ -49,4 +49,87 @@
     <!-- Parking History Screen -->
     <string name="title_parking_history">📋 Parking History</string>
     <string name="label_date">Date: </string>
+    <!-- Summary -->
+    <string name="summary_title">Parking Session Overview</string>
+
+    <!-- Vehicle info -->
+    <string name="vehicle_sample">ABC-1234 — Toyota Camry</string>
+    <string name="location_sample">Downtown Mall — Slot A-15</string>
+
+    <!-- Time -->
+    <string name="entry_time">Entry: 14:30</string>
+    <string name="exit_time">Exit: 16:45</string>
+    <string name="duration_time">Duration: 2h 15m</string>
+    <string name="session_id">ID: SESS-20250806-001</string>
+
+    <!-- Payment breakdown -->
+    <string name="payment_breakdown_title">Payment Details</string>
+    <string name="time_parked">Time</string>
+    <string name="time_parked_value">2.25 hours</string>
+    <string name="total_amount">Total</string>
+    <string name="total_amount_value">$12.38</string>
+    <string name="back">Back</string>
+    <!-- Payment method -->
+    <string name="payment_method_title">Payment Method</string>
+
+    <!-- Buttons -->
+    <string name="confirm_checkout">Confirm Payment</string>
+    <!-- Footer note -->
+    <string name="footer_note">Note: The transaction may take a few minutes to complete. Contact support if it takes more than 15 minutes.</string>
+
+    <!-- Content descriptions -->
+    <string name="cd_vehicle_icon">vehicle icon</string>
+    <string name="cd_bank_icon">bank icon</string>
+    <string name="session_details_title">Parking Session</string>
+    <string name="session_details_heading">Parking Session Details</string>
+    <string name="session_details_subheading">Complete information about your parking session</string>
+
+    <string name="session_info_title">Session information</string>
+    <string name="sample_location">Location: Downtown Mall</string>
+    <string name="sample_slot">Parking Slot: A-15</string>
+    <string name="sample_vehicle_plate">ABC-1234</string>
+    <string name="sample_vehicle_model">Toyota Camry</string>
+
+    <string name="time_details_title">Time details</string>
+    <string name="sample_entry_date">Entry Date: Jun 2, 2025</string>
+    <string name="sample_entry_time">Entry Time: 14:30</string>
+    <string name="sample_exit_date">Exit Date: Jun 2, 2025</string>
+    <string name="sample_exit_time">Exit Time: 16:45</string>
+
+    <string name="sample_duration">Total Duration: 2 hours 15 minutes</string>
+
+    <string name="payment_details_title">Payment details</string>
+    <string name="base_rate">Base rate</string>
+    <string name="base_rate_value">$5.00 / hour</string>
+    <string name="time_charged">Time charged</string>
+    <string name="time_charged_value">2.25 hours</string>
+    <string name="subtotal">Subtotal</string>
+    <string name="subtotal_value">$11.25</string>
+    <string name="tax">Tax</string>
+    <string name="tax_value">$1.13</string>
+    <string name="total">Total</string>
+    <string name="total_value">$12.38</string>
+
+    <string name="transaction_details_title">Transaction details</string>
+    <string name="sample_txn_id">Transaction ID: TXN-20250602-089</string>
+    <string name="sample_payment_method">Payment Method: Bank Transfer</string>
+    <string name="sample_payment_status">Payment Status: Paid</string>
+    <string name="sample_payment_date">Payment Date: Jun 2, 2025 - 16:47</string>
+    <string name="sample_reference_code">Reference Code: PARK-ABC1234-020625</string>
+
+    <string name="email_receipt">Email receipt</string>
+    <string name="report_issue">Report issue</string>
+    <string name="vehicle_details_title">Vehicle Details</string>
+    <string name="vehicle_details_heading">Vehicle Details</string>
+
+    <string name="label_license_plate">License Plate</string>
+    <string name="label_brand">Brand</string>
+    <string name="label_model">Model</string>
+    <string name="label_color">Color</string>
+    <string name="label_sharing_status">Sharing Status</string>
+
+    <string name="placeholder_text">—</string>
+
+    <string name="button_checkout">Check out</string>
+    <string name="button_cancel">Cancel</string>
 </resources>

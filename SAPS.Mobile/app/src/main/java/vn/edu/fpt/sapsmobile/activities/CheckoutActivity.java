@@ -19,6 +19,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import androidx.core.app.NavUtils;
 
+import com.google.android.material.button.MaterialButton;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -34,7 +36,7 @@ public class CheckoutActivity extends AppCompatActivity {
     TextView tvVehicle, tvLocation, tvEntryTime, tvExitTime, tvDuration;
     TextView tvBaseRate, tvTimeParked, tvSubtotal, tvTax, tvTotalAmount;
     Spinner spinnerPaymentMethod;
-    Button btnConfirmCheckout;
+    Button btnConfirmCheckout,btnBack;
     ParkingSession parkingSessionToCheckOut;
     ParkingLot parkingLotCheckOut;
     @Override
@@ -73,7 +75,10 @@ public class CheckoutActivity extends AppCompatActivity {
 
         spinnerPaymentMethod = findViewById(R.id.spinnerPaymentMethod);
         btnConfirmCheckout = findViewById(R.id.btnConfirmCheckout);
-
+        btnBack = findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(v ->
+                getOnBackPressedDispatcher().onBackPressed()
+        );
         btnConfirmCheckout.setOnClickListener(v -> {
             // Tạo Intent
             Intent intent = new Intent(CheckoutActivity.this, PaymentActivity.class);
