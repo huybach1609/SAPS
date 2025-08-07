@@ -253,6 +253,7 @@ const PaymentSubscriptionComponent: React.FC = () => {
                   onTimeout={handlePaymentTimeout}
                   autoStart={true}
                   className="mb-4"
+                  expireAt={parkingLotSubscription?.paymentResponse?.data?.expiredAt}
                />
             )}
 
@@ -383,7 +384,7 @@ const PaymentSubscriptionComponent: React.FC = () => {
                </div>
             </div>
 
-          
+
          </div>
       </DefaultLayout>
    );
