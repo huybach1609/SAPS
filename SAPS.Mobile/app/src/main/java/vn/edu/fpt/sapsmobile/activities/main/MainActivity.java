@@ -16,6 +16,7 @@ import com.google.android.material.navigation.NavigationBarView;
 
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.activities.auth.LoginActivity;
+import vn.edu.fpt.sapsmobile.activities.auth.WelcomeActivity;
 import vn.edu.fpt.sapsmobile.fragments.HistoryFragment;
 import vn.edu.fpt.sapsmobile.fragments.HomeFragment;
 import vn.edu.fpt.sapsmobile.fragments.ProfileFragment;
@@ -43,12 +44,19 @@ public class MainActivity extends AppCompatActivity implements AuthenticationSer
 
         // Check login info
         tokenManager = new TokenManager(this);
+//        if (!tokenManager.isLoggedIn()) {
+//            Intent loginIntent = new Intent(this, LoginActivity.class);
+//            startActivity(loginIntent);
+//            finish(); // Prevent going back to MainActivity without login
+//            return;
+//        }
         if (!tokenManager.isLoggedIn()) {
-            Intent loginIntent = new Intent(this, LoginActivity.class);
-            startActivity(loginIntent);
+            Intent welcome = new Intent(this, WelcomeActivity.class);
+            startActivity(welcome);
             finish(); // Prevent going back to MainActivity without login
             return;
         }
+
 
         authService = new AuthenticationService(this, this);
         initializeBottomNavigation();
@@ -79,7 +87,6 @@ public class MainActivity extends AppCompatActivity implements AuthenticationSer
                         navigationBars.bottom
                 );
             }
-
             return insets;
         });
     }

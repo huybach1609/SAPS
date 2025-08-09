@@ -13,6 +13,8 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.card.MaterialCardView;
 
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.activities.auth.ChangePasswordActivity;
@@ -33,6 +35,11 @@ public class ProfileFragment extends Fragment {
     private ImageView verifyIcon;
     private Button logoutButton;
 
+    private BottomSheetBehavior<View> bottomSheetBehavior;
+    private View bottomSheet;
+
+    private MaterialCardView notificationCardView, logoutCardView, changePasswordCardView, editProfileCardView, showProfileInfomationCardView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_profile, container, false);
@@ -45,6 +52,7 @@ public class ProfileFragment extends Fragment {
         mainActivity = (MainActivity) requireActivity();
         user = mainActivity.getTokenManager().getUserData();
 
+
         // Header
         profileImageView = view.findViewById(R.id.profile_image);
         profileName = view.findViewById(R.id.profile_name);
@@ -55,6 +63,27 @@ public class ProfileFragment extends Fragment {
         profileName.setText(user.getName());
         profileEmail.setText(user.getEmail());
         loadImageProfile(user.getProfilePictureUrl());
+
+
+        initBottomSheet(view);
+
+        //  Handle Back Press to close bottom sheet instead of leaving
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(),
+                new androidx.activity.OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                        } else {
+                            // Allow normal back navigation
+                            setEnabled(false);
+                            requireActivity().onBackPressed();
+                        }
+                    }
+                });
+
+
+
 
         // ✅ Kiểm tra xác minh CCCD cả 2 mặt
         if (
@@ -94,30 +123,41 @@ public class ProfileFragment extends Fragment {
         memberSince.setText(formattedDate);
 
         // Logout
-        logoutButton = view.findViewById(R.id.btn_logout);
-        logoutButton.setOnClickListener(v -> {
+//        logoutButtoneron = view.findViewById(R.id.btn_logout);
+        logoutCardView = view.findViewById(R.id.logout_cardview);
+        logoutCardView.setOnClickListener(v -> {
             mainActivity.getAuthService().signOut(() -> mainActivity.logoutProgress());
         });
 
         // Edit Info
-        Button editButton = view.findViewById(R.id.btn_edit_info);
-        editButton.setOnClickListener(v -> {
+//        Button editButton = view.findViewById(R.id.btn_edit_info);
+        editProfileCardView = view.findViewById(R.id.edit_profile_cardview);
+        editProfileCardView.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), EditProfileActivity.class);
             startActivity(intent);
         });
 
         // Change Password
-        Button btnChangePassword = view.findViewById(R.id.btn_change_password);
-        btnChangePassword.setOnClickListener(v -> {
+//        Button btnChangePassword = view.findViewById(R.id.btn_change_password);
+        changePasswordCardView = view.findViewById(R.id.password_cardview);
+        changePasswordCardView.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ChangePasswordActivity.class);
             startActivity(intent);
         });
 
         // Notifications
-        Button btnNotification = view.findViewById(R.id.btn_notification);
-        btnNotification.setOnClickListener(v -> {
+        notificationCardView = view.findViewById(R.id.notification_cardview);
+        notificationCardView.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), NotificationsListActivity.class);
             startActivity(intent);
+        });
+
+        // Button to open bottom sheet
+        showProfileInfomationCardView = view.findViewById(R.id.show_info_cardview);
+        showProfileInfomationCardView.setOnClickListener(v -> {
+            if (bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
         });
     }
 
@@ -133,4 +173,52 @@ public class ProfileFragment extends Fragment {
             profileImageView.setImageResource(R.drawable.account_circle_24);
         }
     }
+    // Optional: Handle back press to collapse bottom sheet instead of closing activity
+
+    private void initBottomSheet(View view) {
+        // Find bottom sheet view
+        bottomSheet = view.findViewById(R.id.standard_bottom_sheet);
+
+        // Get bottom sheet behavior
+        bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+
+        // Configure bottom sheet
+        bottomSheetBehavior.setPeekHeight(200); // Height when collapsed
+        bottomSheetBehavior.setHideable(true);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN); // Start collapsed
+
+        // Add callback to listen for state changes
+        bottomSheetBehavior.addBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(View bottomSheet, int newState) {
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_EXPANDED:
+                        // Bottom sheet is fully expanded
+                        // You can add animations or UI changes here
+                        break;
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                        // Bottom sheet is collapsed to peek height
+                        break;
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                        // User is dragging the bottom sheet
+                        break;
+                    case BottomSheetBehavior.STATE_SETTLING:
+                        // Bottom sheet is settling
+                        break;
+                }
+            }
+
+            @Override
+            public void onSlide(View bottomSheet, float slideOffset) {
+                // Called when bottom sheet is being dragged
+                // slideOffset: 0.0 (collapsed) to 1.0 (expanded)
+                // You can use this for custom animations
+            }
+        });
+
+
+
+
+    }
+
 }

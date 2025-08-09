@@ -32,6 +32,7 @@
             android:exported="false"
             android:parentActivityName=".activities.main.MainActivity" />
         <activity android:name=".activities.auth.LoginActivity" />
+        <activity android:name=".activities.auth.WelcomeActivity" />
         <activity android:name=".activities.auth.RegisterActivity" />
         <activity android:name=".activities.auth.EditProfileActivity"/>
         <activity android:name=".activities.auth.NotificationsListActivity"

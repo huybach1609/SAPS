@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,8 +36,10 @@ import vn.edu.fpt.sapsmobile.utils.TokenManager;
 
 public class EditProfileActivity extends AppCompatActivity {
 
-    private EditText nameInput, dobInput, phoneInput, placeOriginInput, placeResidenceInput;
-    private EditText idNoInput, sexInput, nationalityInput, issueDateInput, issuePlaceInput;
+    private EditText   phoneInput  ;
+    private TextView nameInput, idNoInput, sexInput,
+            nationalityInput, dobInput, placeOriginInput,
+            placeResidenceInput,issueDateInput, issuePlaceInput;
     private Button saveButton;
     private TokenManager tokenManager;
     private User currentUser;
@@ -60,16 +63,18 @@ public class EditProfileActivity extends AppCompatActivity {
         currentUser = tokenManager.getUserData();
         loadingDialog = new LoadingDialog(this);
 
-        nameInput = findViewById(R.id.input_name);
-        idNoInput = findViewById(R.id.input_id_no);
-        sexInput = findViewById(R.id.input_sex);
-        nationalityInput = findViewById(R.id.input_nationality);
-        dobInput = findViewById(R.id.input_dob);
-        phoneInput = findViewById(R.id.input_phone);
-        placeOriginInput = findViewById(R.id.input_place_origin);
-        placeResidenceInput = findViewById(R.id.input_place_residence);
-        issueDateInput = findViewById(R.id.input_issue_date);
-        issuePlaceInput = findViewById(R.id.input_issue_place);
+        nameInput = findViewById(R.id.input_name);// text view
+        idNoInput = findViewById(R.id.input_id_no); // text view
+        sexInput = findViewById(R.id.input_sex); // text view
+        nationalityInput = findViewById(R.id.input_nationality); // text view
+        dobInput = findViewById(R.id.input_dob); // text view
+        phoneInput = findViewById(R.id.input_phone); // edit text
+        placeOriginInput = findViewById(R.id.input_place_origin); // text view
+        placeResidenceInput = findViewById(R.id.input_place_residence); // text view
+        issueDateInput = findViewById(R.id.input_issue_date); // text view
+        issuePlaceInput = findViewById(R.id.input_issue_place); // text view
+
+       // button
         saveButton = findViewById(R.id.btn_save_profile);
         previewImage = findViewById(R.id.preview_image);
 
@@ -144,10 +149,10 @@ public class EditProfileActivity extends AppCompatActivity {
             if (frontImageUri != null && backImageUri != null) {
                 uploadBothImagesToServer(frontImageUri, backImageUri);
             } else {
-                Toast.makeText(this, "Vui lòng chọn cả 2 mặt trước và sau của CCCD", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.edit_profile_toast_notification_1, Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(this, "Không chọn ảnh", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.edit_profile_toast_notification_2, Toast.LENGTH_SHORT).show();
         }
     }
 

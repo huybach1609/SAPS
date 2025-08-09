@@ -2,16 +2,20 @@ package vn.edu.fpt.sapsmobile.activities.auth;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.card.MaterialCardView;
 
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.activities.main.MainActivity;
@@ -21,21 +25,19 @@ import vn.edu.fpt.sapsmobile.utils.TokenManager;
 import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
 
 public class LoginActivity extends AppCompatActivity implements AuthenticationService.AuthCallback {
-
     private static final String TAG = "LoginActivity";
     private static final int RC_SIGN_IN = 9001;
-
     private AuthenticationService authenticationService;
-    private Button signInGoogleButton, signOutButton, signInButton;
-    private TextView userInfoText;
+    private Button signInButton;
+    private MaterialCardView signInGoogleButton;
+    private TextView registerButton, forgotPasswordText;
     private TokenManager tokenManager;
     private EditText emailInput, passwordInput;
-    private LoadingDialog loadingDialog; // ✅ Loading dialog
+    private LoadingDialog loadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (getSupportActionBar() != null) getSupportActionBar().hide();
         setContentView(R.layout.activity_login);
 
@@ -48,35 +50,46 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationSe
 
         initializeViews();
         initializeAuthService();
-        loadingDialog = new LoadingDialog(this); // ✅ Init here
+        loadingDialog = new LoadingDialog(this);
         checkLoginStatus();
+
+        // Set up the HTML formatting for register text
+        setupRegisterText();
     }
 
     private void initializeViews() {
-        signInGoogleButton = findViewById(R.id.sign_in_google_button);
-        signOutButton = findViewById(R.id.sign_out_button);
-        userInfoText = findViewById(R.id.user_info_text);
-
-        Button registerButton = findViewById(R.id.register);
+        // Find views
+        signInGoogleButton = findViewById(R.id.google_login_card);
+        registerButton = findViewById(R.id.register);
         signInButton = findViewById(R.id.sign_in_button);
-
         emailInput = findViewById(R.id.email_input_edit_text);
         passwordInput = findViewById(R.id.password_input_edit_text);
+        forgotPasswordText = findViewById(R.id.forgot_password_text);
 
+        // Set click listeners
         signInGoogleButton.setOnClickListener(v -> handleSignInClick());
-        signOutButton.setOnClickListener(v -> handleSignOutClick());
-
         registerButton.setOnClickListener(v -> {
             startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
         });
-
         signInButton.setOnClickListener(v -> handleEmailLogin());
-
-        TextView forgotPasswordText = findViewById(R.id.forgot_password_text);
         forgotPasswordText.setOnClickListener(v -> {
             startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
         });
 
+        // Set up back button if it exists
+        ImageButton backButton = findViewById(R.id.back_button);
+        if (backButton != null) {
+            backButton.setOnClickListener(v -> onBackPressed());
+        }
+    }
+
+    private void setupRegisterText() {
+        // Process HTML formatting in the register text
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            registerButton.setText(Html.fromHtml(getString(R.string.login_register_suggestion), Html.FROM_HTML_MODE_COMPACT));
+        } else {
+            registerButton.setText(Html.fromHtml(getString(R.string.login_register_suggestion)));
+        }
     }
 
     private void handleEmailLogin() {
@@ -198,13 +211,13 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationSe
     private void updateUI(User user) {
         if (user != null) {
             signInGoogleButton.setVisibility(View.GONE);
-            signOutButton.setVisibility(View.VISIBLE);
-            userInfoText.setText("Welcome, " + user.getName() + "\nEmail: " + user.getEmail());
-            userInfoText.setVisibility(View.VISIBLE);
+//            signOutButton.setVisibility(View.VISIBLE);
+//            userInfoText.setText("Welcome, " + user.getName() + "\nEmail: " + user.getEmail());
+//            userInfoText.setVisibility(View.VISIBLE);
         } else {
             signInGoogleButton.setVisibility(View.VISIBLE);
-            signOutButton.setVisibility(View.GONE);
-            userInfoText.setVisibility(View.GONE);
+//            signOutButton.setVisibility(View.GONE);
+//            userInfoText.setVisibility(View.GONE);
         }
     }
 }
