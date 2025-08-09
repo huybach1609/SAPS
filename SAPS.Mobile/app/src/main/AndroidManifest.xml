@@ -24,9 +24,9 @@
             android:name=".activities.PaymentActivity"
             android:exported="false"
             android:parentActivityName=".activities.CheckoutActivity" />
-        <activity
-            android:name=".PaymentActivity"
-            android:exported="false" />
+<!--        <activity-->
+<!--            android:name="activities.PaymentActivity"-->
+<!--            android:exported="false" />-->
         <activity
             android:name=".activities.CheckoutActivity"
             android:exported="false"
