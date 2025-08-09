@@ -1,37 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/design_default_color_background"
-    android:padding="24dp">
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:padding="16dp"
+    android:fitsSystemWindows="true">
 
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         app:cardCornerRadius="16dp"
-        app:cardElevation="4dp"
+        app:cardElevation="6dp"
         app:cardBackgroundColor="@android:color/white">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:padding="20dp">
 
-            <!-- Tiêu đề -->
+            <!-- Title -->
             <TextView
+                android:id="@+id/tvTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Vehicle Details"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"
-                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:text="@string/vehicle_details_title"
                 android:gravity="center"
-                android:layout_marginBottom="20dp"/>
+                android:layout_marginBottom="18dp"
+                android:textColor="@color/text_primary"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
-            <!-- Thông tin hiển thị theo từng dòng -->
+            <!-- Info rows -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -41,117 +44,162 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="License Plate: "
-                    android:textAppearance="?attr/textAppearanceBodySmall"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black" />
-                <TextView
-                    android:id="@+id/tvDetailLicense"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="..."
-                    android:layout_marginBottom="16dp"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:textColor="@android:color/darker_gray" />
+                    android:orientation="horizontal"
+                    android:paddingVertical="8dp"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_license_plate"
+                        android:textSize="14sp"
+                        android:textColor="@color/text_primary"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvDetailLicense"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/placeholder_text"
+                        android:textSize="16sp"
+                        android:textColor="@color/text_secondary" />
                 </LinearLayout>
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F1F5F9" />
+
                 <!-- Brand -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Brand: "
-                    android:textAppearance="?attr/textAppearanceBodySmall"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black" />
-                <TextView
-                    android:id="@+id/tvDetailBrand"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="..."
-                    android:layout_marginBottom="16dp"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:textColor="@android:color/darker_gray" />
+                    android:orientation="horizontal"
+                    android:paddingVertical="8dp"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_brand"
+                        android:textSize="14sp"
+                        android:textColor="@color/text_primary"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvDetailBrand"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/placeholder_text"
+                        android:textSize="16sp"
+                        android:textColor="@color/text_secondary" />
                 </LinearLayout>
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F1F5F9" />
+
                 <!-- Model -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Model: "
-                    android:textAppearance="?attr/textAppearanceBodySmall"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black" />
-                <TextView
-                    android:id="@+id/tvDetailModel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="..."
-                    android:layout_marginBottom="16dp"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:textColor="@android:color/darker_gray" />
+                    android:orientation="horizontal"
+                    android:paddingVertical="8dp"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_model"
+                        android:textSize="14sp"
+                        android:textColor="@color/text_primary"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvDetailModel"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/placeholder_text"
+                        android:textSize="16sp"
+                        android:textColor="@color/text_secondary" />
                 </LinearLayout>
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F1F5F9" />
+
                 <!-- Color -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Color: "
-                    android:textAppearance="?attr/textAppearanceBodySmall"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black" />
-                <TextView
-                    android:id="@+id/tvDetailColor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="..."
-                    android:layout_marginBottom="16dp"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:textColor="@android:color/darker_gray" />
+                    android:orientation="horizontal"
+                    android:paddingVertical="8dp"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_color"
+                        android:textSize="14sp"
+                        android:textColor="@color/text_primary"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvDetailColor"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/placeholder_text"
+                        android:textSize="16sp"
+                        android:textColor="@color/text_secondary" />
                 </LinearLayout>
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F1F5F9" />
+
                 <!-- Sharing Status -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Sharing Status: "
-                    android:textAppearance="?attr/textAppearanceBodySmall"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black" />
-                <TextView
-                    android:id="@+id/tvDetailStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="..."
-                    android:layout_marginBottom="8dp"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:textColor="@android:color/darker_gray" />
-                </LinearLayout>
+                    android:orientation="horizontal"
+                    android:paddingVertical="8dp"
+                    android:gravity="center_vertical">
 
-                <Button
+                    <TextView
+                        android:layout_width="120dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_sharing_status"
+                        android:textSize="14sp"
+                        android:textColor="@color/text_primary"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvDetailStatus"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/placeholder_text"
+                        android:textSize="16sp"
+                        android:textColor="@color/text_secondary" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Action button -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:layout_marginTop="20dp">
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnCheckout"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Check out"
-                    android:backgroundTint="#0066CC"
-                    android:textColor="#FFFFFF"
-                    android:layout_gravity="center_horizontal"
-                    android:textAllCaps="false" />
+                    android:layout_height="48dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="@string/button_checkout"
+                    android:textAllCaps="false"
+                    android:textSize="16sp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    app:cornerRadius="12dp"
+                    app:icon="@drawable/ic_checkout"
+                    app:iconGravity="textStart"
+                    app:iconPadding="12dp"
+                    app:iconTint="@color/white"
+                    android:backgroundTint="@color/primary"
+                    android:textColor="@color/white" />
             </LinearLayout>
 
         </LinearLayout>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
-import { User } from '@/types/User';
+import { StaffStatus, User } from '@/types/User';
 import { PaginationInfo } from '@/types/Whitelist';
-import { fetchStaffList, removeStaff } from '@/services/parkinglot/staffService';
+import { fetchStaffList, removeStaff, updateStaff } from '@/services/parkinglot/staffService';
 
 export const useStaffManagement = (parkingLotId: string | undefined) => {
   const [stafflist, setStafflist] = useState<User[]>([]);
@@ -41,13 +41,38 @@ export const useStaffManagement = (parkingLotId: string | undefined) => {
     }
   };
 
-  const handleRemoveFromStaffList = async (staffId: string) => {
+  const handleDeactivateStaff = async (staffId: string, user: User) => {
     if (!parkingLotId) return;
 
     if (window.confirm('Are you sure you want to deactivate this user ?')) {
       try {
-        await removeStaff(parkingLotId, staffId);
-        loadStaffList();
+        // Create the update request with the required fields
+        const updateRequest = {
+          fullName: user.fullName,
+          email: user.email,
+          phone: user.phone,
+          employeeId: user.staffProfile?.staffId || '',
+          dateOfBirth: '',
+          status: StaffStatus.TERMINATED
+        };
+        
+        await updateStaff(parkingLotId, updateRequest);
+        
+
+       loadStaffList();
+        // // Update the local state instead of refetching
+        // setStafflist(prevStaffList => 
+        //   prevStaffList.map(staff => 
+        //     staff.id === staffId 
+        //       ? { 
+        //           ...staff, 
+        //           staffProfile: staff.staffProfile 
+        //             ? { ...staff.staffProfile, status: StaffStatus.TERMINATED }
+        //             : undefined 
+        //         }
+        //       : staff
+        //   )
+        // );
       } catch (error) {
         console.error('Failed to deactivate user:', error);
       }
@@ -77,7 +102,7 @@ export const useStaffManagement = (parkingLotId: string | undefined) => {
     setStatusFilter,
     loadStaffList,
     handleSearch,
-    handleRemoveFromStaffList,
+    handleDeactivateStaff,
     handleReset,
   };
 };

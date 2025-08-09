@@ -33,8 +33,276 @@
 
 
     <string-array name="payment_methods">
-        <item>Chuyển khoản</item>
-        <item>Tiền mặt</item>
+        <item>Bank Transfer</item>
+        <item>By Cash</item>
     </string-array>
+    <string-array name="history_view_methods">
+        <item>Last 30 days</item>
+        <item>Last 3 months</item>
+        <item>Last year</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Group & Logo -->
+    <string name="app_group_name">SAPLS</string>
+    <string name="logo_description">Logo nhóm</string>
 
+    <!-- Parking session info labels -->
+    <string name="label_vehicle">Vehicle:</string>
+    <string name="label_location">Location:</string>
+    <string name="label_entry_time">Entry Time:</string>
+    <string name="label_duration">Duration:</string>
+
+    <!-- Buttons -->
+    <string name="btn_check_out">Check Out</string>
+    <!-- Header / Title -->
+    <string name="title_my_vehicles">🚗 My Vehicles</string>
+    <string name="btn_add_vehicle">+ Add Vehicle</string>
+    <string name="btn_add_vehicle_desc">Thêm xe mới</string>
+
+    <!-- Share code card -->
+    <string name="label_share_code">🔑 Your Share Code</string>
+    <string name="example_share_code">USER-JOHN2025</string>
+    <string name="share_code_description">Give this code to vehicle owners to grant you access to their vehicles.</string>
+    <string name="btn_copy_my_share_code">📋 Copy My Share Code</string>
+    <string name="btn_copy_share_code_desc">Sao chép mã chia sẻ</string>
+
+    <!-- Tabs -->
+    <string name="tab_my_vehicles">Xe của tôi</string>
+    <string name="tab_shared_vehicles">Xe được chia sẻ</string>
+
+    <!-- Content descriptions -->
+    <string name="cd_share_code_card">Thẻ mã chia sẻ</string>
+    <!-- Parking History Screen -->
+    <string name="title_parking_history">📋 Parking History</string>
+    <string name="label_date">Date: </string>
+    <!-- Summary -->
+    <string name="summary_title">Parking Session Overview</string>
+
+    <!-- Vehicle info -->
+    <string name="vehicle_sample">ABC-1234 — Toyota Camry</string>
+    <string name="location_sample">Downtown Mall — Slot A-15</string>
+
+    <!-- Time -->
+    <string name="entry_time">Entry: 14:30</string>
+    <string name="exit_time">Exit: 16:45</string>
+    <string name="duration_time">Duration: 2h 15m</string>
+    <string name="session_id">ID: SESS-20250806-001</string>
+
+    <!-- Payment breakdown -->
+    <string name="payment_breakdown_title">Payment Details</string>
+    <string name="time_parked">Time</string>
+    <string name="time_parked_value">2.25 hours</string>
+    <string name="total_amount">Total</string>
+    <string name="total_amount_value">$12.38</string>
+    <string name="back">Back</string>
+    <!-- Payment method -->
+    <string name="payment_method_title">Payment Method</string>
+
+    <!-- Buttons -->
+    <string name="confirm_checkout">Confirm Payment</string>
+    <!-- Footer note -->
+    <string name="footer_note">Note: The transaction may take a few minutes to complete. Contact support if it takes more than 15 minutes.</string>
+
+    <!-- Content descriptions -->
+    <string name="cd_vehicle_icon">vehicle icon</string>
+    <string name="cd_bank_icon">bank icon</string>
+    <string name="session_details_title">Parking Session</string>
+    <string name="session_details_heading">Parking Session Details</string>
+    <string name="session_details_subheading">Complete information about your parking session</string>
+
+    <string name="session_info_title">Session information</string>
+    <string name="sample_location">Location: Downtown Mall</string>
+    <string name="sample_slot">Parking Slot: A-15</string>
+    <string name="sample_vehicle_plate">ABC-1234</string>
+    <string name="sample_vehicle_model">Toyota Camry</string>
+
+    <string name="time_details_title">Time details</string>
+    <string name="sample_entry_date">Entry Date: Jun 2, 2025</string>
+    <string name="sample_entry_time">Entry Time: 14:30</string>
+    <string name="sample_exit_date">Exit Date: Jun 2, 2025</string>
+    <string name="sample_exit_time">Exit Time: 16:45</string>
+
+    <string name="sample_duration">Total Duration: 2 hours 15 minutes</string>
+
+    <string name="payment_details_title">Payment details</string>
+    <string name="base_rate">Base rate</string>
+    <string name="base_rate_value">$5.00 / hour</string>
+    <string name="time_charged">Time charged</string>
+    <string name="time_charged_value">2.25 hours</string>
+    <string name="subtotal">Subtotal</string>
+    <string name="subtotal_value">$11.25</string>
+    <string name="tax">Tax</string>
+    <string name="tax_value">$1.13</string>
+    <string name="total">Total</string>
+    <string name="total_value">$12.38</string>
+
+    <string name="transaction_details_title">Transaction details</string>
+    <string name="sample_txn_id">Transaction ID: TXN-20250602-089</string>
+    <string name="sample_payment_method">Payment Method: Bank Transfer</string>
+    <string name="sample_payment_status">Payment Status: Paid</string>
+    <string name="sample_payment_date">Payment Date: Jun 2, 2025 - 16:47</string>
+    <string name="sample_reference_code">Reference Code: PARK-ABC1234-020625</string>
+
+    <string name="email_receipt">Email receipt</string>
+    <string name="report_issue">Report issue</string>
+    <string name="vehicle_details_title">Vehicle Details</string>
+    <string name="vehicle_details_heading">Vehicle Details</string>
+
+    <string name="label_license_plate">License Plate</string>
+    <string name="label_brand">Brand</string>
+    <string name="label_model">Model</string>
+    <string name="label_color">Color</string>
+    <string name="label_sharing_status">Sharing Status</string>
+
+    <string name="placeholder_text">—</string>
+
+    <string name="button_checkout">Check out</string>
+    <string name="button_cancel">Cancel</string>
+    <string name="copied_code_label">Copied Code</string>
+    <string name="copied_to_clipboard">Code has been copied to clipboard!</string>
+    <string name="loading_data">Loading data...</string>
+    <string name="error_code">Error: %1$d</string>
+    <string name="connection_error">Connection error: %1$s</string>
+    <string name="dialog_add_vehicle_title">Add Vehicle</string>
+    <string name="option_register_my_vehicle">Register my own vehicle</string>
+    <string name="option_receive_from_share_code">Receive from share code</string>
+    <string name="cd_find_user">Find user</string>
+    <string name="label_color_prefix">Color: %1$s</string>
+    <!-- Content Descriptions -->
+    <string name="cd_back">Back button</string>
+    <string name="cd_user_avatar">User avatar</string>
+
+    <!-- Labels -->
+    <string name="label_back">Back</string>
+    <string name="title_user_verification">👤 User Verification</string>
+    <string name="desc_user_verification">Confirm you want to share with this user</string>
+    <string name="title_vehicle_access">🚗 Vehicle Access</string>
+    <string name="title_access_duration">Access Duration</string>
+
+    <!-- Sample Data -->
+    <string name="sample_user_name">Sarah Johnson</string>
+    <string name="sample_user_code">Share Code: USER-SARAH2024</string>
+    <string name="sample_member_since">Member Since: March 2024</string>
+    <string name="sample_vehicle_access">Granting access to: ABC-1234 (Toyota Camry)</string>
+
+    <!-- Options -->
+    <string name="option_permanent_access">Permanent Access</string>
+
+    <!-- Notes -->
+    <string name="hint_notes_optional">Notes (Optional)</string>
+    <string name="hint_notes_detail">Add any notes or restrictions...</string>
+
+    <!-- Warning -->
+    <string name="warning_confirm_action">⚠️ Confirm Action: This user will be able to park using your vehicle until you revoke access.</string>
+
+    <!-- Actions -->
+    <string name="action_grant_access">✅ Grant Access</string>
+    <string name="action_cancel">❌ Cancel</string>
+    <!-- Top bar -->
+    <string name="cd_share">Share</string>
+
+    <string name="title_shared_vehicle_access">Share Vehicle Access</string>
+    <string name="title_shared_vehicle">Shared Vehicle Details</string>
+    <string name="sub_shared_vehicle">Manage your shared vehicle access</string>
+
+    <!-- Vehicle section -->
+    <string name="section_vehicle_info">Vehicle Information</string>
+    <string name="license_plate_label">License Plate: GHI-3456</string>
+    <string name="model_label">Model: 2018 Ford Focus</string>
+    <string name="color_label">Color: Red</string>
+    <string name="status_label">Status: Active Access</string>
+
+    <!-- Owner section -->
+    <string name="section_owner">Vehicle Owner</string>
+    <string name="owner_name">Sarah Johnson</string>
+    <string name="owner_share_code">USER-SARAH2024</string>
+    <string name="owner_member_since">Member since: March 2024</string>
+
+    <!-- Access details -->
+    <string name="section_access_details">Access Details</string>
+    <string name="access_duration_label">Access Duration: Permanent Access</string>
+    <string name="access_granted_label">Access Granted: May 20, 2025</string>
+    <string name="access_expires_label">Expires: Never (until returned or revoked)</string>
+    <string name="access_last_used_label">Last Used: June 2, 2025</string>
+
+    <!-- Owner note -->
+    <string name="section_note">Note from Owner</string>
+    <string name="owner_note_text">"Thanks for being responsible with my car! Feel free to use it anytime. Just remember to keep it clean and fill up the gas when needed. Have a great day!"</string>
+
+    <!-- Usage -->
+    <string name="section_usage">Your Usage Summary</string>
+    <string name="usage_total_uses_label">Total Uses:</string>
+    <string name="usage_total_uses">12 times</string>
+    <string name="usage_total_hours_label">Total Hours:</string>
+    <string name="usage_total_hours">18.5 hours</string>
+    <string name="usage_avg_label">Average Duration:</string>
+    <string name="usage_avg_value">1.5 hours</string>
+    <string name="usage_fav_location_label">Favorite Location:</string>
+    <string name="usage_fav_location">Downtown Mall</string>
+
+    <!-- Footer -->
+    <string name="return_warning">Return Access: If you no longer need access to this vehicle, you can return it to the owner. This action cannot be undone.</string>
+    <string name="btn_return_access_to_owner">↩️ Return Access to Owner</string>
+    <string name="btn_cancel">Cancel</string>
+
+
+    <!-- Recall Access Screen -->
+    <string name="title_recall_access">📤 Recall Vehicle Access</string>
+    <string name="sub_recall_access">Remove shared access from users</string>
+
+    <!-- Vehicle Info -->
+    <string name="status_shared_with">Status: Currently Shared with Sarah Johnson</string>
+
+    <!-- Current User -->
+    <string name="section_current_user">👤 Current User with Access</string>
+    <string name="current_user_name">Sarah Johnson</string>
+    <string name="current_user_code">USER-SARAH2024</string>
+    <string name="current_user_granted_date">Access granted: May 15, 2025</string>
+    <string name="current_user_duration">Duration: Permanent Access</string>
+    <string name="current_user_active">Active</string>
+
+    <!-- Note -->
+    <string name="owner_note_text_recall">
+        "Please use this vehicle responsibly. Available for weekend trips and emergency use only. Contact me before using for long-distance travel."
+    </string>
+
+    <!-- Warning -->
+    <string name="recall_warning">⚠️ Warning: Recalling access will immediately remove the users ability to park this vehicle. This action cannot be undone.</string>
+
+    <!-- Buttons -->
+    <string name="btn_recall_access">📤 Recall Access</string>
+    <!-- Accessibility / common -->
+
+    <!-- Page / toolbar -->
+    <string name="sub_shared_vehicle_access">Review shared vehicle details</string>
+
+    <!-- Sections -->
+    <string name="license_plate_def">License Plate: DEF-9012</string>
+    <string name="model_altima">Model: 2021 Nissan Altima</string>
+    <string name="color_black">Color: Black</string>
+    <string name="status_pending">Status: Pending Your Response</string>
+
+    <string name="owner_john_smith">John Smith</string>
+    <string name="owner_code_john">USER-JOHN2023</string>
+    <string name="member_since_jan">Member since: January 2023</string>
+
+    <string name="access_duration_perm">Access Duration: Permanent Access</string>
+    <string name="access_invitation_date">Invitation Date: June 3, 2025</string>
+    <string name="access_expires_never">Expires: Never (until revoked)</string>
+
+    <string name="section_note_owner">Note from Owner</string>
+    <string name="owner_note_text_access">"Hi Sarah! Feel free to use my car for your daily commute. Please keep it clean and let me know if you need it for long trips. Thanks!"</string>
+
+    <string name="section_important_notes">Important Notes</string>
+    <string name="note_parking">• You can use this vehicle for parking at any SAPLS location</string>
+    <string name="note_revoke">• The owner can revoke access at any time</string>
+    <string name="note_return">• You can return access voluntarily using the "Return" button</string>
+
+    <!-- Buttons -->
+    <string name="btn_accept_access">Accept Access</string>
+    <string name="btn_decline_access">Decline Access</string>
+
+    <!-- Reused strings -->
+    <string name="btn_return_access">Return</string>
 </resources>

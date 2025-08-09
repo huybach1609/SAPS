@@ -27,6 +27,7 @@ import vn.edu.fpt.sapsmobile.utils.TokenManager;
 
 public class MainActivity extends AppCompatActivity implements AuthenticationService.AuthCallback {
     private TokenManager tokenManager;
+
     private BottomNavigationView bottomNavigation;
     private AuthenticationService authService;
 
@@ -148,6 +149,7 @@ public class MainActivity extends AppCompatActivity implements AuthenticationSer
         }
     }
 
+
     private Fragment currentFragment;
 
     private void loadFragment(Fragment fragment) {
@@ -158,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements AuthenticationSer
                     .commit();
         }
     }
+
 
     public TokenManager getTokenManager() {
         return tokenManager;

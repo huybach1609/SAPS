@@ -1,5 +1,5 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using SAPS.Api.Models;
+using SAPS.Api.Models.Generated;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -8,8 +8,6 @@ namespace SAPS.Api.Service
 {
     public class JwtService
     {
-
-
         private readonly IConfiguration _configuration;
 
         public JwtService(IConfiguration configuration)
@@ -24,10 +22,18 @@ namespace SAPS.Api.Service
 
             var claims = new List<Claim>
             {
-                //new Claim(ClaimTypes.Email, user.EmailAddress),
-                new(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-                new(ClaimTypes.Role, user.Role.ToString())
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Email, user.Email)
             };
+            
+            // Thêm roles vào claims
+            if (user.Roles != null && user.Roles.Any())
+            {
+                foreach (var role in user.Roles)
+                {
+                    claims.Add(new Claim(ClaimTypes.Role, role.Name));
+                }
+            }
 
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
@@ -39,5 +45,4 @@ namespace SAPS.Api.Service
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
-
 }

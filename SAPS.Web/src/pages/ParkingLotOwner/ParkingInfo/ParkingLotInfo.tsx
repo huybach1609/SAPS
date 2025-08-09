@@ -1,23 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Building2, MapPin, Calendar, Phone, Mail, Edit, Save } from 'lucide-react';
 import DefaultLayout from '@/layouts/default';
 import { ParkingLot } from '@/types/ParkingLot';
-import { useAuth  } from '@/services/auth/AuthContext';
+import { useAuth } from '@/services/auth/AuthContext';
 import { useParkingLot } from '../ParkingLotContext';
 import { Button } from '@heroui/button';
-import { addToast, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spinner, Tab, Tabs, useDisclosure } from '@heroui/react';
+import { addToast, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Progress, Spinner, Tab, Tabs, useDisclosure, user } from '@heroui/react';
 import axios from 'axios';
 import { apiUrl } from '@/config/base';
 import ParkingLotPayment from './ParkingLotPayment';
+import { User } from '@/types/User';
+import { formatDate } from '@/components/utils/stringUtils';
+import SubscriptionInfo from './SubscriptionInfo';
 
 
 const ParkingLotInfoContainer: React.FC = () => {
     const [editFormData, setEditFormData] = useState<Partial<ParkingLot>>({});
     const [useWhitelist, setUseWhitelist] = useState(false);
 
-    const { selectedParkingLot, loading, refresh } = useParkingLot();
+    const { selectedParkingLot, parkingLots, loading, refresh } = useParkingLot();
     const { user } = useAuth();
 
+    console.log(user);
     const { isOpen, onOpen, onClose } = useDisclosure();
 
     const handleEditClick = () => {
@@ -136,7 +140,7 @@ const ParkingLotInfoContainer: React.FC = () => {
                                 <div className="flex items-center space-x-3">
                                     <Calendar className="h-5 w-5 " />
                                     <div>
-                                            <p className="">{formatDate(selectedParkingLot.createdAt)}</p>
+                                        <p className="">{formatDate(selectedParkingLot.createdAt)}</p>
                                         <p className="text-sm text-background-900/50 mt-1">Registration date in SAPLS system</p>
                                     </div>
                                 </div>
@@ -173,6 +177,8 @@ const ParkingLotInfoContainer: React.FC = () => {
                     </div>
                 </div>
             </div>
+            {/* Subscription information section */}
+            <SubscriptionInfo selectedParkingLot={selectedParkingLot} user={user as User} parkingLots={parkingLots} />
 
             {/* Edit Modal with HeroUI */}
             <Modal
@@ -283,6 +289,7 @@ const ParkingLotInfoContainer: React.FC = () => {
         </div>
     );
 }
+
 const ParkingLotInfo: React.FC = () => {
     let tabs = [
         {
