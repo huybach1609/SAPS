@@ -4,7 +4,7 @@
     android:id="@+id/scroll_recall_vehicle"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg"
+    android:background="@color/md_theme_surface"
     android:padding="16dp"
     android:fillViewport="true">
 
@@ -33,7 +33,7 @@
                     android:src="@drawable/ic_arrow_back"
                     android:contentDescription="@string/cd_back"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    app:tint="@color/primary"
+                    app:tint="@color/md_theme_onSurface"
                     android:padding="8dp" />
                 <TextView
                     android:layout_width="wrap_content"
@@ -41,7 +41,7 @@
                     android:text="@string/back"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:textColor="@color/primary"
+                    android:textColor="@color/md_theme_onSurface"
                     android:paddingStart="8dp" />
 
                 <ImageButton
@@ -51,7 +51,7 @@
                     android:src="@drawable/ic_list"
                     android:contentDescription="@string/cd_share"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    app:tint="@color/primary"
+                    app:tint="@color/md_theme_onSurface"
                     android:padding="8dp" />
             </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
@@ -68,7 +68,7 @@
                 android:gravity="center"
                 android:textSize="26sp"
                 android:textStyle="bold"
-                android:textColor="@color/text_primary"
+                android:textColor="@color/md_theme_onSurface"
                 android:paddingStart="8dp" />
         </LinearLayout>
 
@@ -79,7 +79,7 @@
             android:layout_height="wrap_content"
             android:text="@string/sub_recall_access"
             android:textSize="14sp"
-            android:textColor="@color/text_secondary"
+            android:textColor="@color/md_theme_secondary"
             android:layout_marginTop="8dp" />
 
         <!-- Vehicle Information -->
@@ -105,7 +105,7 @@
                     android:text="@string/section_vehicle_info"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    android:textColor="@color/text_primary" />
+                    android:textColor="@color/md_theme_onSurface" />
 
                 <TextView
                     android:id="@+id/tv_license_plate"
@@ -113,7 +113,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/license_plate_label"
                     android:layout_marginTop="10dp"
-                    android:textColor="@color/text_secondary" />
+                    android:textColor="@color/md_theme_secondary" />
 
                 <TextView
                     android:id="@+id/tv_model"
@@ -121,7 +121,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/model_label"
                     android:layout_marginTop="4dp"
-                    android:textColor="@color/text_secondary" />
+                    android:textColor="@color/md_theme_secondary" />
 
                 <TextView
                     android:id="@+id/tv_color"
@@ -129,7 +129,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/color_label"
                     android:layout_marginTop="4dp"
-                    android:textColor="@color/text_secondary" />
+                    android:textColor="@color/md_theme_secondary" />
 
                 <TextView
                     android:id="@+id/tv_status"
@@ -137,7 +137,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/status_shared_with"
                     android:layout_marginTop="4dp"
-                    android:textColor="@color/text_secondary" />
+                    android:textColor="@color/md_theme_secondary" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -164,7 +164,7 @@
                     android:text="@string/section_current_user"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    android:textColor="@color/text_primary" />
+                    android:textColor="@color/md_theme_onSurface" />
 
                 <TextView
                     android:id="@+id/tv_user_name"
@@ -172,7 +172,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/current_user_name"
                     android:layout_marginTop="8dp"
-                    android:textColor="@color/text_secondary" />
+                    android:textColor="@color/md_theme_secondary" />
 
                 <TextView
                     android:id="@+id/tv_user_code"
@@ -180,7 +180,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/current_user_code"
                     android:layout_marginTop="4dp"
-                    android:textColor="@color/text_secondary" />
+                    android:textColor="@color/md_theme_secondary" />
 
                 <TextView
                     android:id="@+id/tv_access_granted_date"
@@ -188,7 +188,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/current_user_granted_date"
                     android:layout_marginTop="4dp"
-                    android:textColor="@color/text_secondary" />
+                    android:textColor="@color/md_theme_secondary" />
 
                 <TextView
                     android:id="@+id/tv_access_duration"
@@ -196,7 +196,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/current_user_duration"
                     android:layout_marginTop="4dp"
-                    android:textColor="@color/text_secondary" />
+                    android:textColor="@color/md_theme_secondary" />
 
                 <TextView
                     android:id="@+id/tv_active_status"
@@ -204,7 +204,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/current_user_active"
                     android:layout_marginTop="4dp"
-                    android:textColor="@color/success" />
+                    android:textColor="@color/md_theme_tertiary" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -231,7 +231,7 @@
                     android:text="@string/section_note"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    android:textColor="@color/text_primary" />
+                    android:textColor="@color/md_theme_onSurface" />
 
                 <TextView
                     android:id="@+id/tv_owner_note"
@@ -239,7 +239,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/owner_note_text_recall"
                     android:layout_marginTop="8dp"
-                    android:textColor="@color/text_secondary"
+                    android:textColor="@color/md_theme_secondary"
                     android:textStyle="italic" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -250,7 +250,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/recall_warning"
-            android:textColor="@color/warning"
+            android:textColor="@color/md_theme_tertiary"
             android:layout_marginTop="12dp" />
 
         <!-- Action button -->
@@ -260,8 +260,8 @@
             android:layout_height="48dp"
             android:text="@string/btn_recall_access"
             android:textAllCaps="false"
-            android:backgroundTint="@color/danger"
-            android:textColor="@android:color/white"
+            android:backgroundTint="@color/md_theme_tertiary"
+            android:textColor="@color/md_theme_onTertiary"
             app:cornerRadius="10dp"
             android:layout_marginTop="12dp" />
 

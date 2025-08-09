@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/main"
-    android:background="@color/bg"
     android:padding="16dp">
 
     <LinearLayout
@@ -32,7 +31,7 @@
                     android:src="@drawable/ic_arrow_back"
                     android:contentDescription="@string/cd_back"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    app:tint="@color/primary"
+                    app:tint="@color/md_theme_primary"
                     android:padding="8dp" />
                 <TextView
                     android:layout_width="wrap_content"
@@ -40,7 +39,7 @@
                     android:text="@string/back"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:textColor="@color/primary"
+                    android:textColor="@color/md_theme_primary"
                     android:paddingStart="8dp" />
 
                 <ImageButton
@@ -50,7 +49,7 @@
                     android:src="@drawable/ic_list"
                     android:contentDescription="@string/cd_share"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    app:tint="@color/primary"
+                    app:tint="@color/md_theme_primary"
                     android:padding="8dp" />
             </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
@@ -62,14 +61,15 @@
             android:text="@string/title_user_verification"
             android:textStyle="bold"
             android:textSize="16sp"
-            android:textColor="@color/text_primary" />
+            android:textColor="@color/md_theme_onSurface"
+            />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/desc_user_verification"
             android:textSize="14sp"
-            android:textColor="@color/text_secondary"
+            android:textColor="@color/md_theme_onSurface"
             android:layout_marginBottom="12dp" />
 
         <!-- Section: User Information -->
@@ -92,7 +92,7 @@
                     android:layout_height="56dp"
                     android:src="@drawable/ic_person"
                     android:contentDescription="@string/cd_user_avatar"
-                    app:tint="@color/primary" />
+                    app:tint="@color/md_theme_primary" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -108,7 +108,8 @@
                         android:text="@string/sample_user_name"
                         android:textStyle="bold"
                         android:textSize="15sp"
-                        android:textColor="@color/text_primary" />
+                        android:textColor="@color/md_theme_onSurface"
+                        />
 
                     <TextView
                         android:id="@+id/tvUserCode"
@@ -116,7 +117,8 @@
                         android:layout_height="wrap_content"
                         android:text="@string/sample_user_code"
                         android:textSize="13sp"
-                        android:textColor="@color/text_secondary" />
+                        android:textColor="@color/md_theme_onSurface"
+                        />
 
                     <TextView
                         android:id="@+id/tvMemberSince"
@@ -124,7 +126,8 @@
                         android:layout_height="wrap_content"
                         android:text="@string/sample_member_since"
                         android:textSize="13sp"
-                        android:textColor="@color/text_secondary" />
+                        android:textColor="@color/md_theme_onSurface"
+                        />
                 </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -136,7 +139,8 @@
             android:text="@string/title_vehicle_access"
             android:textStyle="bold"
             android:textSize="16sp"
-            android:textColor="@color/text_primary"
+
+            android:textColor="@color/md_theme_onSurface"
             android:layout_marginBottom="8dp" />
 
         <TextView
@@ -144,7 +148,7 @@
             android:layout_height="wrap_content"
             android:text="@string/sample_vehicle_access"
             android:textSize="14sp"
-            android:textColor="@color/text_secondary"
+            android:textColor="@color/md_theme_onSurface"
             android:layout_marginBottom="16dp" />
 
         <!-- Section: Access Duration -->
@@ -154,7 +158,7 @@
             android:text="@string/title_access_duration"
             android:textStyle="bold"
             android:textSize="15sp"
-            android:textColor="@color/text_primary"
+            android:textColor="@color/md_theme_onSurface"
             android:layout_marginBottom="4dp" />
 
 
@@ -180,7 +184,7 @@
             android:layout_height="wrap_content"
             android:text="@string/warning_confirm_action"
             android:textSize="13sp"
-            android:textColor="@color/color_error"
+            android:textColor="@color/md_theme_error"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="16dp" />
 
@@ -191,7 +195,8 @@
             android:orientation="horizontal"
             android:gravity="center">
 
-            <com.google.android.material.button.MaterialButton
+            <Button
+                style="@style/Widget.Material3.Button.Icon"
                 android:id="@+id/btnGrantAccess"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -199,14 +204,14 @@
                 android:text="@string/action_grant_access"
                 android:textAllCaps="false"
                 android:textSize="15sp"
-                android:backgroundTint="@color/primary"
-                android:textColor="@android:color/white" />
+                />
 
             <View
                 android:layout_width="8dp"
                 android:layout_height="match_parent" />
 
-            <com.google.android.material.button.MaterialButton
+            <Button
+                style="@style/Widget.Material3.Button.ElevatedButton.Icon"
                 android:id="@+id/btnCancel"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -214,8 +219,7 @@
                 android:text="@string/action_cancel"
                 android:textAllCaps="false"
                 android:textSize="15sp"
-                android:backgroundTint="@color/text_secondary"
-                android:textColor="@android:color/white" />
+                />
         </LinearLayout>
 
     </LinearLayout>
