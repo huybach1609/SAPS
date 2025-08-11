@@ -35,6 +35,7 @@ import ParkingHistoryDetail from "./pages/ParkingLotOwner/ParkingHistory/History
 import IncidentDetail from "./pages/ParkingLotOwner/IncidentReports/IncidentDetail";
 import SubscriptionPricingSelect from "./pages/ParkingLotOwner/Subscription/SubscriptionPricingSelect";
 import StaffShiftManagement from "./pages/ParkingLotOwner/StaffShift/StaffShiftManagement";
+import PaymentSubscriptionComponent from "./pages/ParkingLotOwner/Subscription/PaymentSubscriptionComponent";
 // import AdminRequestList from "@/pages/Admin/Requests/AdminRequestList.tsx";
 // import DefaultLayout from "@/layouts/default.tsx";
 
@@ -177,7 +178,7 @@ function App() {
           path="/admin"
           element={
             <ProtectedRoute requiredRole={ADMIN_ROLE}>
-              <DefaultLayout  title="SAPLS Admin Dashboard">
+              <DefaultLayout title="SAPLS Admin Dashboard">
                 <Outlet />
               </DefaultLayout>
             </ProtectedRoute>
@@ -256,6 +257,9 @@ function App() {
             <ActiveRoute requireActive={true}>
               <StaffShiftManagement />
             </ActiveRoute>
+          } />
+          <Route path="subscription/payment/:subscriptionId" element={
+            <PaymentSubscriptionComponent />
           } />
         </Route>
 

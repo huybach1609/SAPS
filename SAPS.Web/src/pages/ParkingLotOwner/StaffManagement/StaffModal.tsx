@@ -39,7 +39,6 @@ export const AddStaffModal = ({ addModalDisclosure, parkingLotId }: { addModalDi
             const response = await addStaff(parkingLotId, formData);
             console.log("succces", response);
             addModalDisclosure.onClose?.();
-
         } catch (error) {
             console.error('Error adding staff:', error);
             // Handle error (show toast notification, etc.)

@@ -8,16 +8,18 @@ import { AdminLayout } from "./AdminLayout";
 export default function DefaultLayout({
   children,
   title = "",
-  className = ""
+  className = "",
+  description = ""
 }: {
   children: React.ReactNode;
   title?: string;
   className?: string;
+  description?: string;
 }) {
   const { user } = useAuth();
 
   if (user?.role === 'parkinglotowner') {
-    return <ParkingLotOwnerLayout title={title} className={className}>
+    return <ParkingLotOwnerLayout title={title} className={className} description={description}>
       {children}
     </ParkingLotOwnerLayout>
   } else {
