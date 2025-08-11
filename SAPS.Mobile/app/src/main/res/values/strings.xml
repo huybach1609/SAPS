@@ -305,4 +305,10 @@
 
     <!-- Reused strings -->
     <string name="btn_return_access">Return</string>
+    <string name="notification_icon_desc">notificationi icon desc</string>
+    <string name="notification_title">notification title</string>
+    <string name="notification_body">notification body</string>
+    <string name="notification_time">01th2</string>
+    <string name="more_actions">more actions</string>
+    <string name="action_bar_notification_mark_all_as_read">Mark all as read</string>
 </resources>

@@ -595,11 +595,7 @@
 <a name='L530'></a><a href='#L530'>530</a>
 <a name='L531'></a><a href='#L531'>531</a>
 <a name='L532'></a><a href='#L532'>532</a>
-<a name='L533'></a><a href='#L533'>533</a>
-<a name='L534'></a><a href='#L534'>534</a>
-<a name='L535'></a><a href='#L535'>535</a>
-<a name='L536'></a><a href='#L536'>536</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L533'></a><a href='#L533'>533</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -745,8 +741,6 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1142,7 +1136,6 @@ import {
   User,
   Calendar,
   Clock,
-&nbsp;
   FolderOpen,
   FileSearch,
   CheckCircle,
@@ -1176,7 +1169,7 @@ import {
 <span class="cstat-no" title="statement not covered" >  const [loading, setLoading] = useState(true);</span>
 <span class="cstat-no" title="statement not covered" >  const [error, setError] = useState&lt;string | null&gt;(null);</span>
 <span class="cstat-no" title="statement not covered" >  const [currentStatus, setCurrentStatus] = useState&lt;IncidentStatus | null&gt;(</span>
-<span class="cstat-no" title="statement not covered" >    null,</span>
+<span class="cstat-no" title="statement not covered" >    null</span>
 <span class="cstat-no" title="statement not covered" >  );</span>
 <span class="cstat-no" title="statement not covered" >  const [modalImageInfo, setModalImageInfo] =</span>
 <span class="cstat-no" title="statement not covered" >    useState&lt;ModalImageInfoContent | null&gt;(null);</span>
@@ -1280,8 +1273,6 @@ import {
 <span class="cstat-no" title="statement not covered" >        return IncidentStatus[status];</span>
 <span class="cstat-no" title="statement not covered" >    }</span>
 <span class="cstat-no" title="statement not covered" >  };</span>
-&nbsp;
-  
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  const formatFileSize = (bytes: number): string =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    if (bytes &lt; 1024) return bytes + " B";</span>
@@ -1406,23 +1397,23 @@ import {
 &nbsp;
 <span class="cstat-no" title="statement not covered" >          &lt;div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-3"&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;div&gt;</span>
-<span class="cstat-no" title="statement not covered" >              &lt;label className="block text-sm font-medium text-gray-700 mb-2"&gt;</span>
+<span class="cstat-no" title="statement not covered" >              &lt;label className="block text-sm font-medium text-gray-700 mb-2" htmlFor="incidentReportedDate"&gt;</span>
                 Date
 <span class="cstat-no" title="statement not covered" >              &lt;/label&gt;</span>
 <span class="cstat-no" title="statement not covered" >              &lt;div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg"&gt;</span>
 <span class="cstat-no" title="statement not covered" >                &lt;Calendar className="w-4 h-4 text-gray-500" /&gt;</span>
-<span class="cstat-no" title="statement not covered" >                &lt;span className="text-gray-900"&gt;</span>
+<span class="cstat-no" title="statement not covered" >                &lt;span id="incidentReportedDate" className="text-gray-900"&gt;</span>
 <span class="cstat-no" title="statement not covered" >                  {formatDate(incident.reportedDate)}</span>
 <span class="cstat-no" title="statement not covered" >                &lt;/span&gt;</span>
 <span class="cstat-no" title="statement not covered" >              &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;div&gt;</span>
-<span class="cstat-no" title="statement not covered" >              &lt;label className="block text-sm font-medium text-gray-700 mb-2"&gt;</span>
+<span class="cstat-no" title="statement not covered" >              &lt;label htmlFor="timeReported" className="block text-sm font-medium text-gray-700 mb-2"&gt;</span>
                 Time
 <span class="cstat-no" title="statement not covered" >              &lt;/label&gt;</span>
 <span class="cstat-no" title="statement not covered" >              &lt;div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg"&gt;</span>
 <span class="cstat-no" title="statement not covered" >                &lt;Clock className="w-4 h-4 text-gray-500" /&gt;</span>
-<span class="cstat-no" title="statement not covered" >                &lt;span className="text-primary-900/80"&gt;</span>
+<span class="cstat-no" title="statement not covered" >                &lt;span className="text-primary-900/80" id="timeReported"&gt;</span>
 <span class="cstat-no" title="statement not covered" >                  {formatTime(incident.reportedDate)}</span>
 <span class="cstat-no" title="statement not covered" >                &lt;/span&gt;</span>
 <span class="cstat-no" title="statement not covered" >              &lt;/div&gt;</span>
@@ -1430,22 +1421,22 @@ import {
 <span class="cstat-no" title="statement not covered" >          &lt;/div&gt;</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >          &lt;div className="mb-3"&gt;</span>
-<span class="cstat-no" title="statement not covered" >            &lt;label className="block text-sm font-medium text-gray-700 mb-2"&gt;</span>
+<span class="cstat-no" title="statement not covered" >            &lt;label htmlFor="reportName" className="block text-sm font-medium text-gray-700 mb-2"&gt;</span>
               Reported By
 <span class="cstat-no" title="statement not covered" >            &lt;/label&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg"&gt;</span>
 <span class="cstat-no" title="statement not covered" >              &lt;User className="w-4 h-4 text-gray-500" /&gt;</span>
-<span class="cstat-no" title="statement not covered" >              &lt;span className="text-gray-900"&gt;</span>
+<span class="cstat-no" title="statement not covered" >              &lt;span id="reportName" className="text-gray-900"&gt;</span>
 <span class="cstat-no" title="statement not covered" >                {incident.reporter.name} ({incident.reporter.role})</span>
 <span class="cstat-no" title="statement not covered" >              &lt;/span&gt;</span>
 <span class="cstat-no" title="statement not covered" >            &lt;/div&gt;</span>
 <span class="cstat-no" title="statement not covered" >          &lt;/div&gt;</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >          &lt;div&gt;</span>
-<span class="cstat-no" title="statement not covered" >            &lt;label className="block text-sm font-medium text-gray-700 mb-2"&gt;</span>
+<span class="cstat-no" title="statement not covered" >            &lt;label  htmlFor="incidentDescription" className="block text-sm font-medium text-gray-700 mb-2"&gt;</span>
               Incident Description
 <span class="cstat-no" title="statement not covered" >            &lt;/label&gt;</span>
-<span class="cstat-no" title="statement not covered" >            &lt;div className="p-4 bg-gray-50 rounded-lg"&gt;</span>
+<span class="cstat-no" title="statement not covered" >            &lt;div className="p-4 bg-gray-50 rounded-lg" id="incidentDescription"&gt;</span>
 <span class="cstat-no" title="statement not covered" >              &lt;p className="text-gray-900 leading-relaxed"&gt;</span>
 <span class="cstat-no" title="statement not covered" >                {incident.description}</span>
 <span class="cstat-no" title="statement not covered" >              &lt;/p&gt;</span>
@@ -1675,7 +1666,7 @@ import {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-07-23T10:10:18.559Z
+                at 2025-08-09T13:59:55.060Z
             </div>
         <script src="../../../../../prettify.js"></script>
         <script>

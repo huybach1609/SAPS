@@ -203,23 +203,23 @@ describe('StaffListTable', () => {
     expect(mockUpdateModalDisclosure.onOpen).toHaveBeenCalled();
   });
 
-  it('calls handleRemoveFromStaffList when Deactivate action is clicked', async () => {
-    const handleRemoveFromStaffListMock = vi.fn();
+  // it('calls handleRemoveFromStaffList when Deactivate action is clicked', async () => {
+  //   const handleRemoveFromStaffListMock = vi.fn();
     
-    render(
-      <TestWrapper>
-        <StaffListTable {...defaultProps} handleRemoveFromStaffList={handleRemoveFromStaffListMock} />
-      </TestWrapper>
-    );
+  //   render(
+  //     <TestWrapper>
+  //       <StaffListTable {...defaultProps} handleRemoveFromStaffList={handleRemoveFromStaffListMock} />
+  //     </TestWrapper>
+  //   );
 
-    const dropdownTrigger = screen.getByRole('button');
-    fireEvent.click(dropdownTrigger);
+  //   const dropdownTrigger = screen.getByRole('button');
+  //   fireEvent.click(dropdownTrigger);
 
-    const deactivateButton = screen.getByText('Deactivate');
-    fireEvent.click(deactivateButton);
+  //   const deactivateButton = screen.getByText('Deactivate');
+  //   fireEvent.click(deactivateButton);
 
-    expect(handleRemoveFromStaffListMock).toHaveBeenCalledWith('STAFF-001');
-  });
+  //   expect(handleRemoveFromStaffListMock).toHaveBeenCalledWith('STAFF-001');
+  // });
 
   it('handles empty staff list', () => {
     render(

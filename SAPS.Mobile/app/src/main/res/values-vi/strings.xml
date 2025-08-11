@@ -29,6 +29,11 @@
     <!--edit profile activity java-->
     <string name="edit_profile_toast_notification_1">Vui lòng chọn cả 2 mặt trước và sau của CCCD</string>
     <string name="edit_profile_toast_notification_2">Không ảnh nào được chọn</string>
+    <string name="notification_icon_desc">notificationi icon desc</string>
+    <string name="notification_title">notification title</string>
+    <string name="notification_body">notification body</string>
+    <string name="notification_time">01th2</string>
+    <string name="action_bar_notification_mark_all_as_read">Mark all as read</string>
 
 
     <string-array name="payment_methods">

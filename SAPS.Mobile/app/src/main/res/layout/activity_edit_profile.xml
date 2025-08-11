@@ -18,21 +18,21 @@
 
 
         <!-- Title -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="start"
-            android:text="@string/edit_profile_heading_main"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+<!--        <TextView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:gravity="start"-->
+<!--            android:text="@string/edit_profile_heading_main"-->
+<!--            android:textSize="20sp"-->
+<!--            android:textStyle="bold" />-->
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:gravity="start"
-            android:text="@string/edit_profile_heading_sub"
-            android:textSize="14sp" />
+<!--        <TextView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginBottom="20dp"-->
+<!--            android:gravity="start"-->
+<!--            android:text="@string/edit_profile_heading_sub"-->
+<!--            android:textSize="14sp" />-->
 
         <!-- Upload Section -->
         <LinearLayout
@@ -69,7 +69,10 @@
                 android:textColor="@color/md_theme_onSecondary"
                 android:gravity="center"
                 android:text="Take a photo or select from gallery to update your information"
-                android:textSize="13sp" />
+                android:textSize="13sp"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+
+                />
 
             <LinearLayout
                 android:layout_width="match_parent"

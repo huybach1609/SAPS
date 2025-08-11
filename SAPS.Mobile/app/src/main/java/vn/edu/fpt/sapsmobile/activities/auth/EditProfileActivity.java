@@ -2,10 +2,13 @@ package vn.edu.fpt.sapsmobile.activities.auth;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,33 +16,39 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 import okhttp3.Call;
-import okhttp3.Callback;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
-import okhttp3.Response;
+import retrofit2.Callback;
+import retrofit2.Response;
+import vn.edu.fpt.sapsmobile.API.ApiService;
+import vn.edu.fpt.sapsmobile.API.ApiTest;
 import vn.edu.fpt.sapsmobile.R;
+import vn.edu.fpt.sapsmobile.models.IdCardResponse;
 import vn.edu.fpt.sapsmobile.models.User;
 import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
 import vn.edu.fpt.sapsmobile.utils.TokenManager;
 
 public class EditProfileActivity extends AppCompatActivity {
 
-    private EditText   phoneInput  ;
+    private EditText phoneInput;
     private TextView nameInput, idNoInput, sexInput,
             nationalityInput, dobInput, placeOriginInput,
-            placeResidenceInput,issueDateInput, issuePlaceInput;
+            placeResidenceInput, issueDateInput, issuePlaceInput;
     private Button saveButton;
     private TokenManager tokenManager;
     private User currentUser;
@@ -59,6 +68,15 @@ public class EditProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
+
+        // action bar
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle(R.string.edit_profile_heading_main);
+            actionBar.setSubtitle(R.string.edit_profile_heading_sub);
+            actionBar.setDisplayHomeAsUpEnabled(true); // Show back arrow
+        }
+
         tokenManager = new TokenManager(this);
         currentUser = tokenManager.getUserData();
         loadingDialog = new LoadingDialog(this);
@@ -74,7 +92,7 @@ public class EditProfileActivity extends AppCompatActivity {
         issueDateInput = findViewById(R.id.input_issue_date); // text view
         issuePlaceInput = findViewById(R.id.input_issue_place); // text view
 
-       // button
+        // button
         saveButton = findViewById(R.id.btn_save_profile);
         previewImage = findViewById(R.id.preview_image);
 
@@ -160,71 +178,73 @@ public class EditProfileActivity extends AppCompatActivity {
         try {
             loadingDialog.show("Uploading ID card images...");
 
-            InputStream frontStream = getContentResolver().openInputStream(frontUri);
-            byte[] frontBytes = new byte[frontStream.available()];
-            frontStream.read(frontBytes);
-            frontStream.close();
+            // Get compressed images as byte arrays
+            byte[] frontBytes = compressImage(frontUri);
+            byte[] backBytes = compressImage(backUri); // Fixed: was using frontUri instead of backUri
 
-            InputStream backStream = getContentResolver().openInputStream(backUri);
-            byte[] backBytes = new byte[backStream.available()];
-            backStream.read(backBytes);
-            backStream.close();
+            // Create multipart parts for Retrofit
+            RequestBody frontBody = RequestBody.create(frontBytes, MediaType.parse("image/jpeg"));
+            RequestBody backBody = RequestBody.create(backBytes, MediaType.parse("image/jpeg"));
 
-            RequestBody requestBody = new MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart("front", "front.jpg", RequestBody.create(frontBytes, MediaType.parse("image/jpeg")))
-                    .addFormDataPart("back", "back.jpg", RequestBody.create(backBytes, MediaType.parse("image/jpeg")))
-                    .build();
+            MultipartBody.Part frontPart = MultipartBody.Part.createFormData("front", "front.jpg", frontBody);
+            MultipartBody.Part backPart = MultipartBody.Part.createFormData("back", "back.jpg", backBody);
 
-            Request request = new Request.Builder()
-                    .url("http://10.35.88.37:8080/api/ocr/full")
-                    .post(requestBody)
-                    .build();
+            // Use Retrofit instead of raw OkHttp
+            ApiService apiService = ApiTest.getServiceMockApi(this).create(ApiService.class);
+            retrofit2.Call<IdCardResponse> call = apiService.getInfoIdCard(frontPart, backPart);
 
-            OkHttpClient client = new OkHttpClient();
-
-            client.newCall(request).enqueue(new Callback() {
+            call.enqueue(new Callback<IdCardResponse>() {
                 @Override
-                public void onFailure(Call call, IOException e) {
-                    runOnUiThread(() -> {
-                        loadingDialog.hide();
-                        Toast.makeText(EditProfileActivity.this, "Upload failed", Toast.LENGTH_SHORT).show();
-                        Log.e("OCR_UPLOAD_ERROR", "Error uploading images: " + e.getMessage());
-                    });
+                public void onResponse(retrofit2.Call<IdCardResponse> call, Response<IdCardResponse> response) {
+                    runOnUiThread(() -> loadingDialog.hide());
+
+                    if (response.isSuccessful() && response.body() != null) {
+                        IdCardResponse idCard = response.body();
+                        runOnUiThread(() -> {
+                            // Populate the fields
+                            nameInput.setText(idCard.getName());
+                            dobInput.setText(idCard.getDateOfBirth());
+                            phoneInput.setText(idCard.getPhone());
+                            placeOriginInput.setText(idCard.getPlaceOfOrigin());
+                            placeResidenceInput.setText(idCard.getPlaceOfResidence());
+                            idNoInput.setText(idCard.getIdNumber());
+                            sexInput.setText(idCard.getSex());
+                            nationalityInput.setText(idCard.getNationality());
+                            issueDateInput.setText(idCard.getIssueDate());
+                            issuePlaceInput.setText(idCard.getIssuePlace());
+                            saveButton.setEnabled(true);
+                            Toast.makeText(EditProfileActivity.this, "Auto-filled from ID card", Toast.LENGTH_SHORT).show();
+                        });
+                    } else {
+                        runOnUiThread(() -> {
+                            String errorMessage = "OCR failed";
+                            if (response.code() == 400) {
+                                errorMessage = "Invalid image format";
+                            } else if (response.code() == 500) {
+                                errorMessage = "Server error occurred";
+                            }
+                            Toast.makeText(EditProfileActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
+                            Log.e("OCR_RESPONSE_ERROR", "Code: " + response.code());
+                        });
+                    }
+
                 }
 
                 @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    runOnUiThread(() -> loadingDialog.hide());
-
-                    if (response.isSuccessful()) {
-                        String json = response.body().string();
-                        try {
-                            JSONObject obj = new JSONObject(json);
-                            runOnUiThread(() -> {
-                                nameInput.setText(obj.optString("name"));
-                                dobInput.setText(obj.optString("date_of_birth"));
-                                phoneInput.setText(obj.optString("phone"));
-                                placeOriginInput.setText(obj.optString("place_of_origin"));
-                                placeResidenceInput.setText(obj.optString("place_of_residence"));
-                                idNoInput.setText(obj.optString("id_number"));
-                                sexInput.setText(obj.optString("sex"));
-                                nationalityInput.setText(obj.optString("nationality"));
-                                issueDateInput.setText(obj.optString("issue_date"));
-                                issuePlaceInput.setText(obj.optString("issue_place"));
-                                saveButton.setEnabled(true);
-                                Toast.makeText(EditProfileActivity.this, "Auto-filled from ID card", Toast.LENGTH_SHORT).show();
-                            });
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                public void onFailure(retrofit2.Call<IdCardResponse> call, Throwable t) {
+                    runOnUiThread(() -> {
+                        loadingDialog.hide();
+                        String errorMessage = "Upload failed";
+                        if (t instanceof java.net.SocketTimeoutException) {
+                            errorMessage = "Request timed out. Please try again.";
+                        } else if (t.getMessage() != null && t.getMessage().contains("Broken pipe")) {
+                            errorMessage = "Connection lost. Please check your internet and try again.";
+                        } else if (t instanceof java.net.ConnectException) {
+                            errorMessage = "Cannot connect to server. Please check your connection.";
                         }
-                    } else {
-                        String errorBody = response.body() != null ? response.body().string() : "null";
-                        runOnUiThread(() -> {
-                            Toast.makeText(EditProfileActivity.this, "OCR failed", Toast.LENGTH_SHORT).show();
-                            Log.e("OCR_RESPONSE_ERROR", "Code: " + response.code() + " | Body: " + errorBody);
-                        });
-                    }
+                        Toast.makeText(EditProfileActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+                        Log.e("OCR_UPLOAD_ERROR", "Error uploading images: " + t.getMessage(), t);
+                    });
                 }
             });
 
@@ -232,6 +252,28 @@ public class EditProfileActivity extends AppCompatActivity {
             e.printStackTrace();
             Toast.makeText(this, "Error reading images", Toast.LENGTH_SHORT).show();
             loadingDialog.hide();
+            Log.e("OCR_UPLOAD_ERROR", "IOException in uploadBothImagesToServer", e);
         }
     }
+
+    // Add this method to compress images
+    private byte[] compressImage(Uri uri) throws IOException {
+        InputStream inputStream = getContentResolver().openInputStream(uri);
+        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+        inputStream.close();
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream); // 80% quality
+        return outputStream.toByteArray();
+    }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }
+
