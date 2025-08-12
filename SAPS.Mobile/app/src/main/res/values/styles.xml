@@ -31,6 +31,171 @@
 
 
 
+    <!-- Display Styles (Large Text) -->
+    <style name="TextAppearance.MyApp.DisplayLarge" parent="TextAppearance.Material3.DisplayLarge">
+        <item name="fontFamily">@font/roboto_serif_family</item>
+        <item name="android:textSize">57sp</item>
+        <item name="android:fontWeight">400</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.DisplayMedium" parent="TextAppearance.Material3.DisplayMedium">
+        <item name="fontFamily">@font/roboto_serif_family</item>
+        <item name="android:textSize">45sp</item>
+        <item name="android:fontWeight">400</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.DisplaySmall" parent="TextAppearance.Material3.DisplaySmall">
+        <item name="fontFamily">@font/roboto_serif_family</item>
+        <item name="android:textSize">36sp</item>
+        <item name="android:fontWeight">400</item>
+    </style>
+
+    <!-- Headline Styles -->
+    <style name="TextAppearance.MyApp.HeadlineLarge" parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="fontFamily">@font/roboto_serif_family</item>
+        <item name="android:textSize">32sp</item>
+        <item name="android:fontWeight">400</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.HeadlineMedium" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="fontFamily">@font/roboto_serif_family</item>
+        <item name="android:textSize">28sp</item>
+        <item name="android:fontWeight">400</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.HeadlineSmall" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="fontFamily">@font/roboto_serif_family</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:fontWeight">400</item>
+    </style>
+
+    <!-- Title Styles -->
+    <style name="TextAppearance.MyApp.TitleLarge" parent="TextAppearance.Material3.TitleLarge">
+        <item name="fontFamily">@font/roboto_serif_family</item>
+        <item name="android:textSize">22sp</item>
+        <item name="android:fontWeight">400</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.TitleMedium" parent="TextAppearance.Material3.TitleMedium">
+        <item name="fontFamily">@font/roboto_serif_family</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontWeight">500</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.TitleSmall" parent="TextAppearance.Material3.TitleSmall">
+        <item name="fontFamily">@font/roboto_serif_family</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontWeight">500</item>
+    </style>
+
+    <!-- Body Styles -->
+    <style name="TextAppearance.MyApp.BodyLarge" parent="TextAppearance.Material3.BodyLarge">
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontWeight">400</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.BodyMedium" parent="TextAppearance.Material3.BodyMedium">
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontWeight">400</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.BodySmall" parent="TextAppearance.Material3.BodySmall">
+        <item name="fontFamily">@font/roboto_serif_family</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontWeight">400</item>
+    </style>
+
+    <!-- Label Styles -->
+    <style name="TextAppearance.MyApp.LabelLarge" parent="TextAppearance.Material3.LabelLarge">
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontWeight">500</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.LabelMedium" parent="TextAppearance.Material3.LabelMedium">
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontWeight">500</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.LabelSmall" parent="TextAppearance.Material3.LabelSmall">
+        <item name="fontFamily">@font/roboto</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:fontWeight">500</item>
+    </style>
+
+    <!-- ================================== -->
+    <!-- Emphasized Styles (Bold/Medium) -->
+    <!-- ================================== -->
+
+    <!-- Display Emphasized -->
+    <style name="TextAppearance.MyApp.DisplayLargeEmphasized" parent="TextAppearance.MyApp.DisplayLarge">
+        <item name="android:fontWeight">500</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.DisplayMediumEmphasized" parent="TextAppearance.MyApp.DisplayMedium">
+        <item name="android:fontWeight">500</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.DisplaySmallEmphasized" parent="TextAppearance.MyApp.DisplaySmall">
+        <item name="android:fontWeight">500</item>
+    </style>
+
+    <!-- Headline Emphasized -->
+    <style name="TextAppearance.MyApp.HeadlineLargeEmphasized" parent="TextAppearance.MyApp.HeadlineLarge">
+        <item name="android:fontWeight">500</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.HeadlineMediumEmphasized" parent="TextAppearance.MyApp.HeadlineMedium">
+        <item name="android:fontWeight">500</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.HeadlineSmallEmphasized" parent="TextAppearance.MyApp.HeadlineSmall">
+        <item name="android:fontWeight">500</item>
+    </style>
+
+    <!-- Title Emphasized -->
+    <style name="TextAppearance.MyApp.TitleLargeEmphasized" parent="TextAppearance.MyApp.TitleLarge">
+        <item name="android:fontWeight">500</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.TitleMediumEmphasized" parent="TextAppearance.MyApp.TitleMedium">
+        <item name="android:fontWeight">700</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.TitleSmallEmphasized" parent="TextAppearance.MyApp.TitleSmall">
+        <item name="android:fontWeight">700</item>
+    </style>
+
+    <!-- Body Emphasized -->
+    <style name="TextAppearance.MyApp.BodyLargeEmphasized" parent="TextAppearance.MyApp.BodyLarge">
+        <item name="android:fontWeight">500</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.BodyMediumEmphasized" parent="TextAppearance.MyApp.BodyMedium">
+        <item name="android:fontWeight">500</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.BodySmallEmphasized" parent="TextAppearance.MyApp.BodySmall">
+        <item name="android:fontWeight">500</item>
+    </style>
+
+    <!-- Label Emphasized -->
+    <style name="TextAppearance.MyApp.LabelLargeEmphasized" parent="TextAppearance.MyApp.LabelLarge">
+        <item name="android:fontWeight">700</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.LabelMediumEmphasized" parent="TextAppearance.MyApp.LabelMedium">
+        <item name="android:fontWeight">700</item>
+    </style>
+
+    <style name="TextAppearance.MyApp.LabelSmallEmphasized" parent="TextAppearance.MyApp.LabelSmall">
+        <item name="android:fontWeight">700</item>
+    </style>
+
+
 
 
 </resources>

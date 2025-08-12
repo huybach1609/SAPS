@@ -35,6 +35,7 @@ import ParkingHistoryDetail from "./pages/ParkingLotOwner/ParkingHistory/History
 import IncidentDetail from "./pages/ParkingLotOwner/IncidentReports/IncidentDetail";
 import SubscriptionPricingSelect from "./pages/ParkingLotOwner/Subscription/SubscriptionPricingSelect";
 import StaffShiftManagement from "./pages/ParkingLotOwner/StaffShift/StaffShiftManagement";
+import PaymentSubscriptionComponent from "./pages/ParkingLotOwner/Subscription/PaymentSubscriptionComponent";
 // import AdminRequestList from "@/pages/Admin/Requests/AdminRequestList.tsx";
 // import DefaultLayout from "@/layouts/default.tsx";
 
@@ -44,8 +45,8 @@ interface ProtectedRouteProps {
   requiredRole?: 'admin' | 'parkinglotowner';
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole }) => {
-  const { user, isAuthenticated, loading } = useAuth();
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
+  const { user, isAuthenticated, loading, getRole } = useAuth();
 
   if (loading) {
     return <div>Loading...</div>;
@@ -54,8 +55,9 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRole 
   if (!isAuthenticated) {
     return <Navigate to="/auth/login" replace />;
   }
+  console.log(getRole());
 
-  if (requiredRole && user?.role !== requiredRole) {
+  if (getRole() !== ADMIN_ROLE && getRole() !== OWNER_ROLE) {
     return <Navigate to="/unauthorized" replace />;
   }
 
@@ -89,14 +91,14 @@ const ActiveRoute: React.FC<ActiveRouteProps> = ({ children, requireActive = tru
 };
 
 const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated, user, loading } = useAuth();
+  const { isAuthenticated, loading, getRole } = useAuth();
 
   if (loading) {
     return <div>Loading...</div>; // Or your loading component
   }
 
   if (isAuthenticated) {
-    switch (user?.role) {
+    switch (getRole()) {
       case 'admin':
         return <Navigate to="/admin/home" replace />;
       case 'parkinglotowner':
@@ -110,7 +112,7 @@ const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 };
 
 const RoleBasedRedirect: React.FC = () => {
-  const { user, isAuthenticated, loading } = useAuth();
+  const { user, isAuthenticated, loading, getRole } = useAuth();
 
   if (loading) {
     return <div>Loading...</div>; // Or your loading component
@@ -120,7 +122,7 @@ const RoleBasedRedirect: React.FC = () => {
     return <Navigate to="/auth/login" replace />;
   }
 
-  switch (user?.role) {
+  switch (getRole()) {
     case 'admin':
       return <Navigate to="/admin/home" replace />;
     case 'parkinglotowner':
@@ -205,7 +207,7 @@ function App() {
         <Route
           path="/owner/*"
           element={
-            <ProtectedRoute requiredRole={OWNER_ROLE}>
+            <ProtectedRoute >
               <OwnerParkingLotProviderWrapper>
                 <Outlet />
               </OwnerParkingLotProviderWrapper>
@@ -256,6 +258,9 @@ function App() {
             <ActiveRoute requireActive={true}>
               <StaffShiftManagement />
             </ActiveRoute>
+          } />
+          <Route path="subscription/payment/:subscriptionId" element={
+            <PaymentSubscriptionComponent />
           } />
         </Route>
 

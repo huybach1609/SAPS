@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">SAPLS</string>
+    <string name="forgot_password"><u>forgot password</u></string>
+    <string name="nav_home">Home</string>
+    <string name="nav_vehicle">Vehicle</string>
+    <string name="nav_history">History</string>
+    <string name="nav_profile">Profile</string>
+    <string name="registernewaccount">Register New Account</string>
+    <string name="login_register_suggestion">Don\'t have an account? <b>Register</b></string>
+
+    <!--edit profile activity string-->
+    <string name="edit_profile_input_no">No</string>
+    <string name="edit_profile_input_sex">Sex</string>
+    <string name="edit_profile_input_nationality">Nationality</string>
+    <string name="edit_profile_input_full_name">Full name</string>
+    <string name="edit_profile_input_date_of_birth">Date of birth</string>
+    <string name="edit_profile_input_number_phone">Number Phone</string>
+    <string name="edit_profile_input_place_of_origin">Place of origin</string>
+    <string name="edit_profile_input_place_of_residence">Place of Residence</string>
+    <string name="edit_profile_input_issue_date">Issue Date</string>
+    <string name="edit_profile_input_issue_place">Issue Place</string>
+    <string name="edit_profile_btn_submit_update">Submit Update</string>
+    <string name="edit_profile_edit_notification">All changes require admin approval. You\'ll be notified once reviewed.</string>
+    <string name="edit_profile_btn_take_photo">Take Photo</string>
+    <string name="edit_profile_btn_front_side">Front Side</string>
+    <string name="edit_profile_btn_back_side">Back Side</string>
+    <string name="edit_profile_heading_main">Edit Personal Information</string>
+    <string name="edit_profile_heading_sub">Update your account details</string>
+    <!--edit profile activity java-->
+    <string name="edit_profile_toast_notification_1">Vui lòng chọn cả 2 mặt trước và sau của CCCD</string>
+    <string name="edit_profile_toast_notification_2">Không ảnh nào được chọn</string>
+    <string name="notification_icon_desc">notificationi icon desc</string>
+    <string name="notification_title">notification title</string>
+    <string name="notification_body">notification body</string>
+    <string name="notification_time">01th2</string>
+    <string name="action_bar_notification_mark_all_as_read">Mark all as read</string>
+    <string name="edit_profile_card_header">Upload New ID Card</string>
+    <string name="change_password_confirm_new_password_hint">Confirm new password</string>
+
+
+    <string-array name="payment_methods">
+        <item>Chuyển khoản</item>
+        <item>Tiền mặt</item>
+    </string-array>
+
+</resources>

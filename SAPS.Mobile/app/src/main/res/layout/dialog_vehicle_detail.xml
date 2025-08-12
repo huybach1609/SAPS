@@ -4,7 +4,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg"
+    android:background="@color/md_theme_surface"
     android:padding="16dp"
     android:fitsSystemWindows="true">
 
@@ -30,7 +30,7 @@
                 android:text="@string/vehicle_details_title"
                 android:gravity="center"
                 android:layout_marginBottom="18dp"
-                android:textColor="@color/text_primary"
+                android:textColor="@color/md_theme_onSurface"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
@@ -53,7 +53,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/label_license_plate"
                         android:textSize="14sp"
-                        android:textColor="@color/text_primary"
+                        android:textColor="@color/md_theme_onSurface"
                         android:textStyle="bold" />
 
                     <TextView
@@ -63,7 +63,7 @@
                         android:layout_weight="1"
                         android:text="@string/placeholder_text"
                         android:textSize="16sp"
-                        android:textColor="@color/text_secondary" />
+                        android:textColor="@color/md_theme_secondary" />
                 </LinearLayout>
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F1F5F9" />
 
@@ -80,7 +80,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/label_brand"
                         android:textSize="14sp"
-                        android:textColor="@color/text_primary"
+                        android:textColor="@color/md_theme_onSurface"
                         android:textStyle="bold" />
 
                     <TextView
@@ -90,7 +90,7 @@
                         android:layout_weight="1"
                         android:text="@string/placeholder_text"
                         android:textSize="16sp"
-                        android:textColor="@color/text_secondary" />
+                        android:textColor="@color/md_theme_secondary" />
                 </LinearLayout>
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F1F5F9" />
 
@@ -107,7 +107,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/label_model"
                         android:textSize="14sp"
-                        android:textColor="@color/text_primary"
+                        android:textColor="@color/md_theme_onSurface"
                         android:textStyle="bold" />
 
                     <TextView
@@ -117,7 +117,7 @@
                         android:layout_weight="1"
                         android:text="@string/placeholder_text"
                         android:textSize="16sp"
-                        android:textColor="@color/text_secondary" />
+                        android:textColor="@color/md_theme_secondary" />
                 </LinearLayout>
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F1F5F9" />
 
@@ -134,7 +134,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/label_color"
                         android:textSize="14sp"
-                        android:textColor="@color/text_primary"
+                        android:textColor="@color/md_theme_onSurface"
                         android:textStyle="bold" />
 
                     <TextView
@@ -144,7 +144,7 @@
                         android:layout_weight="1"
                         android:text="@string/placeholder_text"
                         android:textSize="16sp"
-                        android:textColor="@color/text_secondary" />
+                        android:textColor="@color/md_theme_secondary" />
                 </LinearLayout>
                 <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F1F5F9" />
 
@@ -161,7 +161,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/label_sharing_status"
                         android:textSize="14sp"
-                        android:textColor="@color/text_primary"
+                        android:textColor="@color/md_theme_onSurface"
                         android:textStyle="bold" />
 
                     <TextView
@@ -171,7 +171,7 @@
                         android:layout_weight="1"
                         android:text="@string/placeholder_text"
                         android:textSize="16sp"
-                        android:textColor="@color/text_secondary" />
+                        android:textColor="@color/md_theme_secondary" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -197,9 +197,9 @@
                     app:icon="@drawable/ic_checkout"
                     app:iconGravity="textStart"
                     app:iconPadding="12dp"
-                    app:iconTint="@color/white"
-                    android:backgroundTint="@color/primary"
-                    android:textColor="@color/white" />
+                    app:iconTint="@color/md_theme_onPrimary"
+                    android:backgroundTint="@color/md_theme_primary"
+                    android:textColor="@color/md_theme_onPrimary" />
             </LinearLayout>
 
         </LinearLayout>

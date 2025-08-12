@@ -4,7 +4,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg"
+    android:background="@color/md_theme_surface"
     android:padding="16dp"
     android:fitsSystemWindows="true">
 
@@ -33,7 +33,7 @@
                     android:src="@drawable/ic_arrow_back"
                     android:contentDescription="@string/cd_back"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    app:tint="@color/primary"
+                    app:tint="@color/md_theme_primary"
                     android:padding="8dp" />
                 <TextView
                     android:layout_width="wrap_content"
@@ -41,7 +41,7 @@
                     android:text="@string/back"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    android:textColor="@color/primary"
+                    android:textColor="@color/md_theme_primary"
                     android:paddingStart="8dp" />
 
                 <ImageButton
@@ -51,7 +51,7 @@
                     android:src="@drawable/ic_list"
                     android:contentDescription="@string/cd_share"
                     android:background="?attr/selectableItemBackgroundBorderless"
-                    app:tint="@color/primary"
+                    app:tint="@color/md_theme_primary"
                     android:padding="8dp" />
             </LinearLayout>
         </androidx.appcompat.widget.Toolbar>
@@ -68,7 +68,7 @@
                 android:gravity="center"
                 android:textSize="26sp"
                 android:textStyle="bold"
-                android:textColor="@color/text_primary"
+                android:textColor="@color/md_theme_onSurface"
                 android:paddingStart="8dp" />
         </LinearLayout>
 
@@ -79,7 +79,7 @@
             android:layout_height="wrap_content"
             android:text="Grant parking access to someone else"
             android:textSize="14sp"
-            android:textColor="@color/text_secondary"
+            android:textColor="@color/md_theme_secondary"
             android:layout_marginTop="8dp" />
         <!-- Share Code Input Section -->
         <com.google.android.material.card.MaterialCardView
@@ -104,7 +104,7 @@
                     android:text="Enter User's Share Code"
                     android:textSize="15sp"
                     android:textStyle="bold"
-                    android:textColor="@color/text_primary" />
+                    android:textColor="@color/md_theme_onSurface" />
 
                 <TextView
                     android:id="@+id/tvEnterShareCodeSubtitle"
@@ -112,7 +112,7 @@
                     android:layout_height="wrap_content"
                     android:text="Ask the person for their personal share code, then enter it below to grant them access."
                     android:textSize="13sp"
-                    android:textColor="@color/text_secondary"
+                    android:textColor="@color/md_theme_secondary"
                     android:layout_marginTop="6dp" />
 
                 <!-- Input row -->
@@ -129,7 +129,7 @@
                         android:layout_width="0dp"
                         android:layout_weight="1"
                         android:layout_height="wrap_content"
-                        app:boxStrokeColor="@color/primary"
+                        app:boxStrokeColor="@color/md_theme_primary"
                         app:boxBackgroundMode="outline"
                         app:hintEnabled="true"
                         android:hint="User's Share Code">
@@ -140,7 +140,7 @@
                             android:minHeight="48dp"
                             android:inputType="text"
                             android:text="USER-SARAH2024"
-                            android:textColor="@color/text_primary"
+                            android:textColor="@color/md_theme_primary"
                             android:paddingStart="8dp" />
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -154,7 +154,7 @@
                         app:iconSize="24dp"
                         app:cornerRadius="12dp"
                         app:iconTint="@android:color/white"
-                        android:backgroundTint="@color/primary"
+                        android:backgroundTint="@color/md_theme_primary"
                         style="@style/Widget.MaterialComponents.Button.Icon" />
 
 
@@ -166,7 +166,7 @@
                     android:layout_height="wrap_content"
                     android:text="Each user has their own unique share code"
                     android:textSize="12sp"
-                    android:textColor="@color/text_secondary"
+                    android:textColor="@color/md_theme_secondary"
                     android:layout_marginTop="8dp" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -194,7 +194,7 @@
                     android:layout_height="48dp"
                     android:src="@drawable/ic_person"
                     android:contentDescription="User avatar"
-                    app:tint="@color/primary" />
+                    app:tint="@color/md_theme_primary" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -210,7 +210,7 @@
                         android:text="Sarah Nguyen"
                         android:textSize="15sp"
                         android:textStyle="bold"
-                        android:textColor="@color/text_primary" />
+                        android:textColor="@color/md_theme_primary" />
 
                     <TextView
                         android:id="@+id/tvFoundUserCode"
@@ -218,7 +218,7 @@
                         android:layout_height="wrap_content"
                         android:text="USER-SARAH2024"
                         android:textSize="13sp"
-                        android:textColor="@color/text_secondary" />
+                        android:textColor="@color/md_theme_secondary" />
                 </LinearLayout>
 
                 <com.google.android.material.button.MaterialButton
@@ -230,7 +230,7 @@
                     android:fontFamily="sans-serif-medium"
                     android:textSize="14sp"
                     app:cornerRadius="8dp"
-                    android:backgroundTint="@color/primary"
+                    android:backgroundTint="@color/md_theme_primary"
                     android:textColor="@android:color/white" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
@@ -243,7 +243,7 @@
             android:text="How Vehicle Sharing Works"
             android:textSize="15sp"
             android:textStyle="bold"
-            android:textColor="@color/text_primary"
+            android:textColor="@color/md_theme_onSurface"
             android:layout_marginTop="16dp" />
 
         <!-- Bottom spacing -->
@@ -259,7 +259,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:text="1. Ask the person for their personal share code (e.g., USER-SARAH2024)"
-                android:textColor="@color/text_secondary"
+                android:textColor="@color/md_theme_secondary"
                 android:textSize="13sp" />
 
             <TextView
@@ -267,14 +267,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
                 android:text="2. Enter their code to see their profile"
-                android:textColor="@color/text_secondary"
+                android:textColor="@color/md_theme_secondary"
                 android:textSize="13sp" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="3. Confirm to grant them access to your vehicle"
-                android:textColor="@color/text_secondary"
+                android:textColor="@color/md_theme_secondary"
                 android:textSize="13sp" />
 
             <TextView
@@ -283,7 +283,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:text="Note: Each vehicle can only be shared with one person at a time."
-                android:textColor="@color/text_secondary"
+                android:textColor="@color/md_theme_secondary"
                 android:textSize="12sp" />
         </LinearLayout>
 

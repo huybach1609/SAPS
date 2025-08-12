@@ -15,5 +15,4 @@ public interface VehicleApiService {
     Call<Vehicle> getVehiclebyID(@Path("vehicleID") String vehicleID);
     @GET("/vehicle") // endpoint bạn cần gọi
     Call<List<Vehicle>> getMySharedVehicles();
-
 }

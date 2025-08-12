@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>0/134</span>
+                <span class='fraction'>0/140</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>0/134</span>
+                <span class='fraction'>0/140</span>
             </div>
         
             
@@ -197,7 +197,13 @@
 <a name='L132'></a><a href='#L132'>132</a>
 <a name='L133'></a><a href='#L133'>133</a>
 <a name='L134'></a><a href='#L134'>134</a>
-<a name='L135'></a><a href='#L135'>135</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
+<a name='L135'></a><a href='#L135'>135</a>
+<a name='L136'></a><a href='#L136'>136</a>
+<a name='L137'></a><a href='#L137'>137</a>
+<a name='L138'></a><a href='#L138'>138</a>
+<a name='L139'></a><a href='#L139'>139</a>
+<a name='L140'></a><a href='#L140'>140</a>
+<a name='L141'></a><a href='#L141'>141</a></td><td class="line-coverage quiet"><span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -331,19 +337,31 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >import { heroui } from "@heroui/theme"</span></span></span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js"><span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >import { heroui } from "@heroui/theme";</span></span></span>
 <span class="cstat-no" title="statement not covered" ></span>
 <span class="cstat-no" title="statement not covered" >/** @type {import('tailwindcss').Config} */</span>
 <span class="cstat-no" title="statement not covered" >export default {</span>
 <span class="cstat-no" title="statement not covered" >  content: [</span>
 <span class="cstat-no" title="statement not covered" >    "./index.html",</span>
-<span class="cstat-no" title="statement not covered" >    './src/layouts/**/*.{js,ts,jsx,tsx,mdx}',</span>
-<span class="cstat-no" title="statement not covered" >    './src/pages/**/*.{js,ts,jsx,tsx,mdx}',</span>
-<span class="cstat-no" title="statement not covered" >    './src/components/**/*.{js,ts,jsx,tsx,mdx}',</span>
+<span class="cstat-no" title="statement not covered" >    "./src/layouts/**/*.{js,ts,jsx,tsx,mdx}",</span>
+<span class="cstat-no" title="statement not covered" >    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",</span>
+<span class="cstat-no" title="statement not covered" >    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",</span>
 <span class="cstat-no" title="statement not covered" >    "./node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}",</span>
 <span class="cstat-no" title="statement not covered" >  ],</span>
 <span class="cstat-no" title="statement not covered" >  theme: {</span>
-<span class="cstat-no" title="statement not covered" >    extend: {},</span>
+<span class="cstat-no" title="statement not covered" >    extend: {</span>
+<span class="cstat-no" title="statement not covered" >      colors: {</span>
+<span class="cstat-no" title="statement not covered" >        primary: "#023E8A",</span>
+<span class="cstat-no" title="statement not covered" >        "admin-primary": "#023E8A",</span>
+<span class="cstat-no" title="statement not covered" >        "admin-sidebar": "#023E8A",</span>
+<span class="cstat-no" title="statement not covered" >      },</span>
+<span class="cstat-no" title="statement not covered" >    },</span>
 <span class="cstat-no" title="statement not covered" >  },</span>
 <span class="cstat-no" title="statement not covered" >  darkMode: "class",</span>
 <span class="cstat-no" title="statement not covered" >  plugins: [heroui({</span>
@@ -394,7 +412,7 @@
 <span class="cstat-no" title="statement not covered" >          danger_light: "#FF0000",</span>
 <span class="cstat-no" title="statement not covered" >          success: "#606c38",</span>
 <span class="cstat-no" title="statement not covered" >          success_light: "#dad7cd",</span>
-<span class="cstat-no" title="statement not covered" >          warning: "#c1121f",</span>
+<span class="cstat-no" title="statement not covered" >          warning: "#e85d04",</span>
 <span class="cstat-no" title="statement not covered" >          warning_light: "#fdf0d5",</span>
 <span class="cstat-no" title="statement not covered" >          info: "#457b9d",</span>
 <span class="cstat-no" title="statement not covered" >          info_light: "#f1faee",</span>
@@ -472,7 +490,7 @@
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-07-23T10:10:18.559Z
+                at 2025-08-09T13:59:55.060Z
             </div>
         <script src="../prettify.js"></script>
         <script>
