@@ -16,6 +16,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import vn.edu.fpt.sapsmobile.API.ApiTest;
 import vn.edu.fpt.sapsmobile.API.AuthService;
 import vn.edu.fpt.sapsmobile.BuildConfig;
 import vn.edu.fpt.sapsmobile.models.AuthResponse;
@@ -157,7 +158,6 @@ public class AuthenticationService {
                 });
     }
 
-    // Đăng nhập bằng tài khoản thường - FIXED VERSION
     public void loginWithEmail(String email, String password, AuthCallback callback) {
         // Validate input
         if (email == null || email.trim().isEmpty() || password == null || password.trim().isEmpty()) {
@@ -165,14 +165,17 @@ public class AuthenticationService {
             return;
         }
 
-        // Tạo request từ thông tin người dùng nhập
+
         LoginRequest request = new LoginRequest(email.trim(), password);
 
-        // Dùng Retrofit để gọi API login - SỬ DỤNG MOCK_BASE_URL để test
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BuildConfig.MOCK_BASE_URL) // <-- Dùng MOCK_BASE_URL để test
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl(BuildConfig.MOCK_BASE_URL)
+//                .addConverterFactory(GsonConverterFactory.create())
+//                .build();
+
+
+
+        Retrofit retrofit = ApiTest.getServiceMockApi(context);
 
         AuthService authService = retrofit.create(AuthService.class);
 
@@ -242,7 +245,7 @@ public class AuthenticationService {
             return false;
         }
 
-        if (user.getName() == null || user.getName().trim().isEmpty()) {
+        if (user.getFullName() == null || user.getFullName().trim().isEmpty()) {
             Log.e(TAG, "User name is null or empty");
             return false;
         }

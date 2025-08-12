@@ -21,10 +21,10 @@ public interface AuthService {
     @POST("api/auth/refresh")
     Call<AuthResponse> refreshToken(@Header("Authorization") String bearerToken);
 
-    @POST("login")
+    @POST("api/auth/login")
     Call<LoginResponse> login(@Body LoginRequest request);
 
-    @POST("register")
+    @POST("api/auth/register")
     Call<RegisterResponse> register(@Body RegisterRequest request);
     @FormUrlEncoded
     @POST("/auth/reset-password")

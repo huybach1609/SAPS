@@ -50,17 +50,19 @@
         <activity android:name=".activities.auth.WelcomeActivity" />
         <activity android:name=".activities.auth.RegisterActivity" />
 
-        <activity android:name=".activities.auth.EditProfileActivity"
+        <activity android:name=".activities.profile.EditProfileActivity"
             android:theme="@style/Theme.SAPSMobile.ActionBar"
             />
         <activity
-            android:name=".activities.auth.NotificationsListActivity"
+            android:name=".activities.NotificationsListActivity"
             android:label="Notifications List Screen"
             android:theme="@style/Theme.SAPSMobile.ActionBar"
             />
         <activity
-            android:name=".activities.auth.ChangePasswordActivity"
+            android:name=".activities.profile.ChangePasswordActivity"
             android:label="Change Password Screen"
+            android:theme="@style/Theme.SAPSMobile.ActionBar"
+
             />
 
 

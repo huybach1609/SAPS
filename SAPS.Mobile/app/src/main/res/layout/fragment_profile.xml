@@ -307,12 +307,13 @@
 
     </ScrollView>
 
-    <!-- Bottom Sheet -->
-    <FrameLayout
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/standard_bottom_sheet"
         style="@style/Widget.Material3.BottomSheet"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <!-- Thông tin -->
@@ -458,8 +459,7 @@
                 android:id="@+id/member_since"
                 style="@style/ProfileFieldValue" />
         </LinearLayout>
-
-
     </FrameLayout>
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -34,6 +34,8 @@
     <string name="notification_body">notification body</string>
     <string name="notification_time">01th2</string>
     <string name="action_bar_notification_mark_all_as_read">Mark all as read</string>
+    <string name="edit_profile_card_header">Upload New ID Card</string>
+    <string name="change_password_confirm_new_password_hint">Confirm new password</string>
 
 
     <string-array name="payment_methods">

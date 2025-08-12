@@ -1,119 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="12dp"
-    android:layout_marginBottom="8dp"
-    android:layout_margin="8dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/left_border_card">
+    android:orientation="vertical"
+    android:paddingTop="10dp"
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp"
+    >
 
-    <!-- Parking lot name -->
+    <!-- Main content container -->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/tvParkingLotName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textSize="18sp" />
+        <!-- Project Icon -->
 
-        <TextView
-            android:id="@+id/tvLocation"
-            android:layout_width="wrap_content"
+        <!-- Project Info Container -->
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:ellipsize="end"
-            android:textSize="16sp"
-            android:textColor="#666666" />
+            android:layout_weight="1"
+            android:orientation="vertical">
+            <!-- Project Name with Type Badge -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+                <!-- Parking lot name -->
+                <TextView
+                    android:id="@+id/tvParkingLotName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="Parkinglot name"
+                    android:textColor="@color/md_theme_primary"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvVehicle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:alpha="0.7"
+                    android:text="vehical name"
+                    android:textColor="@color/md_theme_secondary"
+                    android:textSize="14sp" />
+            </LinearLayout>
+            <!-- Location/Subtitle -->
+            <TextView
+                android:id="@+id/tvLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:ellipsize="end"
+                android:singleLine="true"
+                android:text="location"
+                android:textColor="@color/md_theme_secondary"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- Options Menu -->
+        <ImageView
+            android:id="@+id/ivMoreOptions"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginStart="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="4dp"
+            android:src="@drawable/more_vert__1_" />
+
     </LinearLayout>
 
-    <!-- Vehicle -->
+    <!-- Bottom Section -->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/label_vehicle"
-            android:textSize="16sp"
-            android:textColor="#666666" />
-
-        <TextView
-            android:id="@+id/tvVehicle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="#666666" />
-    </LinearLayout>
-
-    <!-- Duration -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/label_duration"
-            android:textSize="16sp"
-            android:textColor="#666666" />
-
-        <TextView
-            android:id="@+id/tvDuration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="16sp"
-            android:textColor="#666666" />
-    </LinearLayout>
-
-    <!-- Date -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/label_date"
-            android:textSize="14sp"
-            android:textColor="#999999" />
-
-        <TextView
-            android:id="@+id/tvDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="14sp"
-            android:textColor="#999999" />
-    </LinearLayout>
-
-    <!-- Amount & Status -->
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="end">
-
-        <TextView
-            android:id="@+id/tvAmount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textColor="#2196F3"
-            android:layout_marginEnd="4dp" />
-
+        <!--status-->
         <TextView
             android:id="@+id/tvStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#2196F3"
-            android:padding="4dp" />
+            android:text="Status"
+            android:textColor="#4CAF50"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+        <!-- Spacer -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <!-- Amount and Date Container -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="end"
+            android:orientation="vertical">
+
+            <!-- Amount -->
+            <TextView
+                android:id="@+id/tvAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="00.000đ"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="1d10h20m"
+                android:textColor="@color/md_theme_onSecondaryContainer"
+                android:textSize="12sp" />
+
+            <!-- Date -->
+            <TextView
+                android:id="@+id/tvDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="Jul 3, 2025"
+                android:textColor="@color/md_theme_onSecondaryContainer"
+                android:textSize="12sp" />
+        </LinearLayout>
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="12dp"
+        android:background="@color/md_theme_outlineVariant" />
+
 </LinearLayout>

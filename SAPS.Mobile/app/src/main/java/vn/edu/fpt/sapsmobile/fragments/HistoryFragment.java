@@ -10,8 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+import android.widget.AutoCompleteTextView;
 
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,30 +31,42 @@ import vn.edu.fpt.sapsmobile.adapter.VehicleAdapter;
 import vn.edu.fpt.sapsmobile.models.ParkingSession;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
 
-
 public class HistoryFragment extends Fragment {
     private RecyclerView rvParkingHistory;
     private ParkingSessionAdapter parkingSessionAdapter;
     private List<ParkingSession> parkingSessionList;
-    Spinner spinner;
+    private TextInputLayout spinnerFilter;
+    private AutoCompleteTextView autoCompleteTextView;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_history, container, false);
+
         // Initialize Adapter
         rvParkingHistory = view.findViewById(R.id.rvParkingHistory);
         parkingSessionAdapter = new ParkingSessionAdapter(new ArrayList<>(), new HistoryFragmentHandler(requireContext()), requireContext(), "historyFragment");
         rvParkingHistory.setAdapter(parkingSessionAdapter);
-
         rvParkingHistory.setLayoutManager(new LinearLayoutManager(getContext()));
-        // Initialize spinner filter
-        spinner = view.findViewById(R.id.spinnerFilter);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+
+        // Initialize Material 3 dropdown filter
+        spinnerFilter = view.findViewById(R.id.spinnerFilter);
+        autoCompleteTextView = (AutoCompleteTextView) spinnerFilter.getEditText();
+
+        // Get filter options from string array resource
+        String[] filterOptions = getResources().getStringArray(R.array.history_view_methods);
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 requireContext(),
-                R.array.history_view_methods,
-                android.R.layout.simple_spinner_item
+                android.R.layout.simple_dropdown_item_1line,
+                filterOptions
         );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
+
+        autoCompleteTextView.setAdapter(adapter);
+
+        // Set default selection (first item)
+        if (filterOptions.length > 0) {
+            autoCompleteTextView.setText(filterOptions[0], false);
+        }
 
         return view;
     }
@@ -61,123 +74,56 @@ public class HistoryFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         // Initialize history list and data loading
         ParkingSessionApiService parkingSessionApi = ApiTest.getService(requireContext()).create(ParkingSessionApiService.class);
-        parkingSessionApi.getParkingSessionListLast30days().enqueue(new Callback<List<ParkingSession>>() {
+
+        // Load initial data (last 30 days)
+        loadParkingSessionData(parkingSessionApi, 0);
+
+        // Handle dropdown selection
+        autoCompleteTextView.setOnItemClickListener((parent, view1, position, id) -> {
+            loadParkingSessionData(parkingSessionApi, position);
+        });
+    }
+
+    private void loadParkingSessionData(ParkingSessionApiService parkingSessionApi, int filterPosition) {
+        Call<List<ParkingSession>> call;
+
+        switch (filterPosition) {
+            case 0:
+                // Last 30 days
+                call = parkingSessionApi.getParkingSessionListLast30days();
+                break;
+            case 1:
+                // Last 3 months
+                call = parkingSessionApi.getParkingSessionListLast3Months();
+                break;
+            case 2:
+                // Last year
+                call = parkingSessionApi.getParkingSessionListLastYear();
+                break;
+            default:
+                // Default to last 30 days
+                call = parkingSessionApi.getParkingSessionListLast30days();
+                break;
+        }
+
+        call.enqueue(new Callback<List<ParkingSession>>() {
             @Override
             public void onResponse(Call<List<ParkingSession>> call, Response<List<ParkingSession>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     if (!isAdded() || getContext() == null) return;
                     parkingSessionList = response.body();
-                    parkingSessionAdapter = new ParkingSessionAdapter(parkingSessionList, new HistoryFragmentHandler(requireContext()), requireContext(),"historyFragment");
+                    parkingSessionAdapter = new ParkingSessionAdapter(parkingSessionList, new HistoryFragmentHandler(requireContext()), requireContext(), "historyFragment");
                     rvParkingHistory.setAdapter(parkingSessionAdapter);
-                } else {
                 }
             }
 
             @Override
             public void onFailure(Call<List<ParkingSession>> call, Throwable t) {
-
+                // Handle error
             }
         });
-
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch (position) {
-                    case 0:
-                        // position 0: last 30 day
-                        parkingSessionApi.getParkingSessionListLast30days().enqueue(new Callback<List<ParkingSession>>() {
-                            @Override
-                            public void onResponse(Call<List<ParkingSession>> call, Response<List<ParkingSession>> response) {
-                                if (response.isSuccessful() && response.body() != null) {
-                                    if (!isAdded() || getContext() == null) return;
-                                    parkingSessionList = response.body();
-                                    parkingSessionAdapter = new ParkingSessionAdapter(parkingSessionList, new HistoryFragmentHandler(requireContext()), requireContext(),"historyFragment");
-                                    rvParkingHistory.setAdapter(parkingSessionAdapter);
-                                } else {
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<List<ParkingSession>> call, Throwable t) {
-
-                            }
-                        });
-                        break;
-                    case 1:
-                        // position 1: last 3 month
-                        parkingSessionApi.getParkingSessionListLast3Months().enqueue(new Callback<List<ParkingSession>>() {
-                            @Override
-                            public void onResponse(Call<List<ParkingSession>> call, Response<List<ParkingSession>> response) {
-                                if (response.isSuccessful() && response.body() != null) {
-                                    if (!isAdded() || getContext() == null) return;
-                                    parkingSessionList = response.body();
-                                    parkingSessionAdapter = new ParkingSessionAdapter(parkingSessionList, new HistoryFragmentHandler(requireContext()), requireContext(),"historyFragment");
-                                    rvParkingHistory.setAdapter(parkingSessionAdapter);
-                                } else {
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<List<ParkingSession>> call, Throwable t) {
-
-                            }
-                        });
-                        break;
-                    case 2:
-                        // position 2: last year
-                        parkingSessionApi.getParkingSessionListLastYear().enqueue(new Callback<List<ParkingSession>>() {
-                            @Override
-                            public void onResponse(Call<List<ParkingSession>> call, Response<List<ParkingSession>> response) {
-                                if (response.isSuccessful() && response.body() != null) {
-                                    if (!isAdded() || getContext() == null) return;
-                                    parkingSessionList = response.body();
-                                    parkingSessionAdapter = new ParkingSessionAdapter(parkingSessionList, new HistoryFragmentHandler(requireContext()), requireContext(),"historyFragment");
-                                    rvParkingHistory.setAdapter(parkingSessionAdapter);
-                                } else {
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<List<ParkingSession>> call, Throwable t) {
-
-                            }
-                        });
-                        break;
-                    default:
-                        parkingSessionApi.getParkingSessionListLast30days().enqueue(new Callback<List<ParkingSession>>() {
-                            @Override
-                            public void onResponse(Call<List<ParkingSession>> call, Response<List<ParkingSession>> response) {
-                                if (response.isSuccessful() && response.body() != null) {
-                                    if (!isAdded() || getContext() == null) return;
-                                    parkingSessionList = response.body();
-                                    parkingSessionAdapter = new ParkingSessionAdapter(parkingSessionList, new HistoryFragmentHandler(requireContext()), requireContext(),"historyFragment");
-                                    rvParkingHistory.setAdapter(parkingSessionAdapter);
-                                } else {
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<List<ParkingSession>> call, Throwable t) {
-
-                            }
-                        });
-                        break;
-                }
-            }
-
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                // Không làm gì nếu không chọn
-            }
-        });
-
-
-
-
-
     }
-
 }

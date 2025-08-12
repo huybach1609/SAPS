@@ -1,14 +1,10 @@
-package vn.edu.fpt.sapsmobile.activities.auth;
+package vn.edu.fpt.sapsmobile.activities;
 
-import static androidx.core.content.ContentProviderCompat.requireContext;
-
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,11 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import vn.edu.fpt.sapsmobile.API.ApiService;
 import vn.edu.fpt.sapsmobile.API.ApiTest;
-import vn.edu.fpt.sapsmobile.API.apiinterface.VehicleApiService;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.adapters.NotificationAdapter;
 import vn.edu.fpt.sapsmobile.models.Notification;
