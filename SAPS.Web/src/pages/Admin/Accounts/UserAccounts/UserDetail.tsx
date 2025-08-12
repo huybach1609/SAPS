@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { Card, Button, Avatar, Spinner } from "@heroui/react";
-import { Ban, Car, Activity, Users } from "lucide-react";
+import { Card, Button, Avatar, Spinner, Pagination } from "@heroui/react";
+import { Ban, Car, Activity } from "lucide-react";
 import blankProfilePicture from "@/assets/Default/blank-profile-picture.webp";
 import { UserDetails } from "@/types/UserClient";
-import { userClientService } from "@/services/userClient/userClientService";
+import {
+  userClientService,
+  ClientDetailsResponse,
+  VehicleResponse,
+  ParkingSessionResponse,
+  SharedVehicleResponse,
+} from "@/services/userClient/userClientService";
 
 const UserDetail: React.FC = () => {
   const navigate = useNavigate();
@@ -17,16 +23,49 @@ const UserDetail: React.FC = () => {
   console.log("URL param ID:", id);
 
   // State management
+  const [clientDetails, setClientDetails] =
+    useState<ClientDetailsResponse | null>(null);
+  const [vehicles, setVehicles] = useState<VehicleResponse[]>([]);
+  const [sharedVehicles, setSharedVehicles] = useState<SharedVehicleResponse[]>(
+    []
+  );
+  const [parkingSessions, setParkingSessions] = useState<
+    ParkingSessionResponse[]
+  >([]);
+  const [paginatedParkingSessions, setPaginatedParkingSessions] = useState<
+    ParkingSessionResponse[]
+  >([]);
   const [user, setUser] = useState<UserDetails | null>(null);
   const [loading, setLoading] = useState(true);
+  const [vehiclesLoading, setVehiclesLoading] = useState(false);
+  const [sharedVehiclesLoading, setSharedVehiclesLoading] = useState(false);
+  const [sessionsLoading, setSessionsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showConfirmBan, setShowConfirmBan] = useState(false);
   const [banLoading, setBanLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  // Fetch user details from API
+  // Vehicle pagination states
+  const [vehiclePage, setVehiclePage] = useState(1);
+  const [vehicleTotalPages, setVehicleTotalPages] = useState(1);
+  const [vehicleTotalItems, setVehicleTotalItems] = useState(0);
+  const vehiclePageSize = 5;
+
+  // Parking session pagination states
+  const [sessionPage, setSessionPage] = useState(1);
+  const sessionPageSize = 5;
+  const [sessionTotalPages, setSessionTotalPages] = useState(1);
+  const [sessionTotalItems, setSessionTotalItems] = useState(0);
+
+  // Shared vehicle pagination states
+  const [sharedVehiclePage, setSharedVehiclePage] = useState(1);
+  const [sharedVehicleTotalPages, setSharedVehicleTotalPages] = useState(1);
+  const [sharedVehicleTotalItems, setSharedVehicleTotalItems] = useState(0);
+  const sharedVehiclePageSize = 5;
+
+  // Fetch client details from new API
   useEffect(() => {
-    const fetchUserDetails = async () => {
+    const fetchClientDetails = async () => {
       if (!id) {
         setError("User ID is required");
         setLoading(false);
@@ -37,28 +76,260 @@ const UserDetail: React.FC = () => {
         setLoading(true);
         setError(null);
 
-        console.log("🔄 Fetching user details from API...");
-        const response = await userClientService.getUserClientDetails(id);
+        console.log("🔄 Fetching client details from new API...");
+        const response = await userClientService.getClientDetails(id);
 
         if (response.success && response.data) {
-          console.log("✅ Successfully fetched user details:", response.data);
-          setUser(response.data);
+          console.log("✅ Successfully fetched client details:", response.data);
+          setClientDetails(response.data);
+
+          // Convert to legacy format for compatibility
+          const legacyUser: UserDetails = {
+            id: response.data.id,
+            fullName: response.data["full-name"],
+            email: response.data.email,
+            status: response.data.status.toLowerCase() as
+              | "active"
+              | "inactive"
+              | "suspended",
+            citizenId: response.data["citizen-id"],
+            dateOfBirth: response.data["date-of-birth"],
+            phone: response.data.phone,
+            address: response.data["place-of-residence"],
+            registrationDate: new Date(
+              response.data["created-at"]
+            ).toLocaleDateString(),
+            profileImageUrl: response.data["profile-image-url"] || undefined,
+            verificationStatus: "Verified",
+            lastLogin: "N/A",
+            vehicles: [],
+            parkingActivity: [],
+            stats: {
+              totalParkingSessions: 0,
+              totalSpent: "$0.00",
+              avgSessionDuration: "0h",
+            },
+          };
+          setUser(legacyUser);
         } else {
-          console.error("❌ Failed to fetch user details:", response.error);
-          setError(response.error || "Failed to load user details");
+          console.error("❌ Failed to fetch client details:", response.error);
+          setError(response.error || "Failed to load client details");
         }
       } catch (err) {
-        console.error("🔥 Exception while fetching user details:", err);
-        setError("An error occurred while fetching user details");
+        console.error("🔥 Exception while fetching client details:", err);
+        setError("An error occurred while fetching client details");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUserDetails();
+    fetchClientDetails();
   }, [id]);
 
-  // Handle ban user
+  // Fetch client vehicles with pagination
+  useEffect(() => {
+    const fetchVehicles = async () => {
+      if (!id) return;
+
+      try {
+        setVehiclesLoading(true);
+        console.log("🔄 Fetching client vehicles...");
+
+        const response = await userClientService.getClientVehicles(
+          id,
+          vehiclePage,
+          vehiclePageSize,
+          1
+        );
+
+        if (response.success && response.data) {
+          console.log("✅ Successfully fetched vehicles:", response.data);
+          setVehicles(response.data.items);
+          setVehicleTotalPages(response.data["total-pages"]);
+          setVehicleTotalItems(response.data["total-count"]);
+        } else {
+          console.error("❌ Failed to fetch vehicles:", response.error);
+        }
+      } catch (err) {
+        console.error("🔥 Exception while fetching vehicles:", err);
+      } finally {
+        setVehiclesLoading(false);
+      }
+    };
+
+    fetchVehicles();
+  }, [id, vehiclePage]);
+
+  // Fetch shared vehicles with pagination
+  useEffect(() => {
+    const fetchSharedVehicles = async () => {
+      if (!id) return;
+
+      try {
+        setSharedVehiclesLoading(true);
+        console.log("🔄 Fetching shared vehicles...");
+
+        const response = await userClientService.getClientSharedVehicles(
+          id,
+          sharedVehiclePage,
+          sharedVehiclePageSize,
+          1
+        );
+
+        if (response.success && response.data) {
+          console.log(
+            "✅ Successfully fetched shared vehicles:",
+            response.data
+          );
+          setSharedVehicles(response.data.items);
+          setSharedVehicleTotalPages(response.data["total-pages"]);
+          setSharedVehicleTotalItems(response.data["total-count"]);
+        } else {
+          console.error("❌ Failed to fetch shared vehicles:", response.error);
+        }
+      } catch (err) {
+        console.error("🔥 Exception while fetching shared vehicles:", err);
+      } finally {
+        setSharedVehiclesLoading(false);
+      }
+    };
+
+    fetchSharedVehicles();
+  }, [id, sharedVehiclePage]);
+
+  // Fetch parking sessions for statistics
+  useEffect(() => {
+    const fetchParkingSessions = async () => {
+      if (!id) return;
+
+      try {
+        setSessionsLoading(true);
+        console.log("🔄 Fetching parking sessions...");
+
+        const response = await userClientService.getClientParkingSessions(id);
+
+        if (response.success && response.data) {
+          console.log(
+            "✅ Successfully fetched parking sessions:",
+            response.data
+          );
+          setParkingSessions(response.data);
+        } else {
+          console.error("❌ Failed to fetch parking sessions:", response.error);
+        }
+      } catch (err) {
+        console.error("🔥 Exception while fetching parking sessions:", err);
+      } finally {
+        setSessionsLoading(false);
+      }
+    };
+
+    fetchParkingSessions();
+  }, [id]);
+
+  // Fetch parking sessions with pagination
+  useEffect(() => {
+    const fetchPaginatedParkingSessions = async () => {
+      if (!id) return;
+
+      try {
+        setSessionsLoading(true);
+        console.log("🔄 Fetching paginated parking sessions...");
+
+        const response =
+          await userClientService.getClientParkingSessionsPaginated(
+            id,
+            sessionPage,
+            sessionPageSize,
+            1
+          );
+
+        if (response.success && response.data) {
+          console.log(
+            "✅ Successfully fetched paginated parking sessions:",
+            response.data
+          );
+          setPaginatedParkingSessions(response.data.items);
+          setSessionTotalPages(response.data["total-pages"]);
+          setSessionTotalItems(response.data["total-count"]);
+        } else {
+          console.error(
+            "❌ Failed to fetch paginated parking sessions:",
+            response.error
+          );
+        }
+      } catch (err) {
+        console.error(
+          "🔥 Exception while fetching paginated parking sessions:",
+          err
+        );
+      } finally {
+        setSessionsLoading(false);
+      }
+    };
+
+    fetchPaginatedParkingSessions();
+  }, [id, sessionPage]);
+
+  // Calculate statistics from parking sessions
+  const calculateStats = () => {
+    if (!parkingSessions || parkingSessions.length === 0) {
+      return {
+        totalSessions: 0,
+        totalSpent: "$0.00",
+        avgDuration: "0h",
+      };
+    }
+
+    const totalSessions = parkingSessions.length;
+    const totalCost = parkingSessions.reduce(
+      (sum, session) => sum + session.cost,
+      0
+    );
+    const totalSpent = `$${(totalCost / 1000).toFixed(2)}`; // Convert from VND to USD for display
+
+    // Calculate average duration
+    let totalMinutes = 0;
+    let validSessions = 0;
+
+    parkingSessions.forEach((session) => {
+      if (session["exit-date-time"]) {
+        const entryTime = new Date(session["entry-date-time"]);
+        const exitTime = new Date(session["exit-date-time"]);
+        const durationMs = exitTime.getTime() - entryTime.getTime();
+        const durationMinutes = durationMs / (1000 * 60);
+        totalMinutes += durationMinutes;
+        validSessions++;
+      }
+    });
+
+    const avgMinutes = validSessions > 0 ? totalMinutes / validSessions : 0;
+    const avgHours = Math.round((avgMinutes / 60) * 10) / 10;
+    const avgDuration = `${avgHours}h`;
+
+    return {
+      totalSessions,
+      totalSpent,
+      avgDuration,
+    };
+  };
+
+  const stats = calculateStats();
+
+  // Handle vehicle page change
+  const handleVehiclePageChange = (page: number) => {
+    setVehiclePage(page);
+  };
+
+  // Handle shared vehicle page change
+  const handleSharedVehiclePageChange = (page: number) => {
+    setSharedVehiclePage(page);
+  };
+
+  // Handle session page change
+  const handleSessionPageChange = (page: number) => {
+    setSessionPage(page);
+  };
   const handleBanUser = async () => {
     if (!id || !user) return;
 
@@ -66,13 +337,19 @@ const UserDetail: React.FC = () => {
       setBanLoading(true);
       setError(null);
 
-      console.log("🔄 Banning user client...");
-      const response = await userClientService.banUserClient(id);
+      // Determine new status based on current status
+      const newStatus: "active" | "inactive" | "suspended" =
+        user.status === "active" ? "inactive" : "active";
+
+      // Map to API status format: "Active" for active, "Inactive" for inactive
+      const apiStatus = user.status === "active" ? "Inactive" : "Active";
+
+      console.log(`🔄 Updating user client status to ${apiStatus}...`);
+      const response = await userClientService.banUserClient(id, apiStatus);
 
       if (response.success) {
-        console.log("✅ User client action completed successfully");
+        console.log("✅ User client status updated successfully");
         const actionText = user.status === "active" ? "banned" : "unbanned";
-        const newStatus = user.status === "active" ? "inactive" : "active";
 
         setSuccessMessage(`User account ${actionText} successfully`);
         setUser({ ...user, status: newStatus }); // Update local state
@@ -309,19 +586,21 @@ const UserDetail: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <p className="text-sm text-gray-500 mb-1">Email Address</p>
-            <div className="border rounded p-3 bg-gray-50">{user.email}</div>
+            <div className="border rounded p-3 bg-gray-50">
+              {clientDetails?.email || user?.email}
+            </div>
           </div>
           <div>
             <p className="text-sm text-gray-500 mb-1">Phone Number</p>
             <div className="border rounded p-3 bg-gray-50">
-              {user.phone || "N/A"}
+              {clientDetails?.phone || user?.phone || "N/A"}
             </div>
           </div>
           <div>
             <p className="text-sm text-gray-500 mb-1">Citizen ID</p>
             <div className="border rounded p-3 bg-gray-50 flex items-center">
-              {user.citizenId || "N/A"}
-              {user.citizenId && (
+              {clientDetails?.["citizen-id"] || user?.citizenId || "N/A"}
+              {(clientDetails?.["citizen-id"] || user?.citizenId) && (
                 <span className="ml-2 text-xs text-gray-500 italic">
                   (number is masked for privacy)
                 </span>
@@ -331,25 +610,45 @@ const UserDetail: React.FC = () => {
           <div>
             <p className="text-sm text-gray-500 mb-1">Date of Birth</p>
             <div className="border rounded p-3 bg-gray-50">
-              {user.dateOfBirth || "N/A"}
+              {clientDetails?.["date-of-birth"]
+                ? new Date(clientDetails["date-of-birth"]).toLocaleDateString()
+                : user?.dateOfBirth || "N/A"}
+            </div>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500 mb-1">Nationality</p>
+            <div className="border rounded p-3 bg-gray-50">
+              {clientDetails?.nationality || "N/A"}
+            </div>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500 mb-1">Place of Origin</p>
+            <div className="border rounded p-3 bg-gray-50">
+              {clientDetails?.["place-of-origin"] || "N/A"}
+            </div>
+          </div>
+          <div>
+            <p className="text-sm text-gray-500 mb-1">Sex</p>
+            <div className="border rounded p-3 bg-gray-50">
+              {clientDetails?.sex !== undefined
+                ? clientDetails.sex
+                  ? "Male"
+                  : "Female"
+                : "N/A"}
             </div>
           </div>
           <div>
             <p className="text-sm text-gray-500 mb-1">Registration Date</p>
             <div className="border rounded p-3 bg-gray-50">
-              {user.registrationDate || "N/A"}
-            </div>
-          </div>
-          <div>
-            <p className="text-sm text-gray-500 mb-1">Last Login</p>
-            <div className="border rounded p-3 bg-gray-50">
-              {user.lastLogin || "Never logged in"}
+              {clientDetails?.["created-at"]
+                ? new Date(clientDetails["created-at"]).toLocaleDateString()
+                : user?.registrationDate || "N/A"}
             </div>
           </div>
           <div className="md:col-span-2">
             <p className="text-sm text-gray-500 mb-1">Address</p>
             <div className="border rounded p-3 bg-gray-50">
-              {user.address || "N/A"}
+              {clientDetails?.["place-of-residence"] || user?.address || "N/A"}
             </div>
           </div>
         </div>
@@ -367,64 +666,159 @@ const UserDetail: React.FC = () => {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
-            <thead className="bg-blue-900 text-white">
-              <tr>
-                <th className="px-4 py-3 text-left text-sm font-medium">
-                  License Plate
-                </th>
-                <th className="px-4 py-3 text-left text-sm font-medium">
-                  Vehicle Model
-                </th>
-                <th className="px-4 py-3 text-left text-sm font-medium">
-                  Color
-                </th>
-                <th className="px-4 py-3 text-left text-sm font-medium">
-                  Registration Date
-                </th>
-                <th className="px-4 py-3 text-left text-sm font-medium">
-                  Status
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {user.vehicles && user.vehicles.length > 0 ? (
-                user.vehicles.map((vehicle) => (
-                  <tr key={vehicle.licensePlate} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 text-sm font-medium text-blue-600">
-                      {vehicle.licensePlate}
-                    </td>
-                    <td className="px-4 py-3 text-sm">{vehicle.model}</td>
-                    <td className="px-4 py-3 text-sm">{vehicle.color}</td>
-                    <td className="px-4 py-3 text-sm">
-                      {vehicle.registrationDate}
-                    </td>
-                    <td className="px-4 py-3 text-sm">
-                      <span
-                        className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${
-                          vehicle.status === "active"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-yellow-100 text-yellow-800"
-                        }`}
-                      >
-                        {vehicle.status.charAt(0).toUpperCase() +
-                          vehicle.status.slice(1)}
-                      </span>
-                    </td>
+          {vehiclesLoading ? (
+            <div className="flex justify-center items-center py-8">
+              <Spinner size="lg" color="primary" />
+              <span className="ml-2">Loading vehicles...</span>
+            </div>
+          ) : (
+            <>
+              <table className="w-full border-collapse">
+                <thead className="bg-blue-900 text-white">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
+                      License Plate
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
+                      Brand
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
+                      Model
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
+                      Color
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
+                      Status
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
+                      Sharing Status
+                    </th>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td
-                    colSpan={5}
-                    className="px-4 py-6 text-center text-gray-500"
-                  >
-                    No registered vehicles found
-                  </td>
-                </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {vehicles && vehicles.length > 0 ? (
+                    vehicles.map((vehicle) => (
+                      <tr key={vehicle.id} className="hover:bg-gray-50">
+                        <td className="px-4 py-3 text-sm font-medium text-blue-600">
+                          {vehicle["license-plate"]}
+                        </td>
+                        <td className="px-4 py-3 text-sm">{vehicle.brand}</td>
+                        <td className="px-4 py-3 text-sm">{vehicle.model}</td>
+                        <td className="px-4 py-3 text-sm">{vehicle.color}</td>
+                        <td className="px-4 py-3 text-sm">
+                          <span
+                            className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${
+                              vehicle.status.toLowerCase() === "active"
+                                ? "bg-green-100 text-green-800"
+                                : "bg-yellow-100 text-yellow-800"
+                            }`}
+                          >
+                            {vehicle.status}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-sm">
+                          <span
+                            className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${
+                              vehicle["sharing-status"].toLowerCase() ===
+                              "available"
+                                ? "bg-blue-100 text-blue-800"
+                                : vehicle["sharing-status"].toLowerCase() ===
+                                    "shared"
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-yellow-100 text-yellow-800"
+                            }`}
+                          >
+                            {vehicle["sharing-status"]}
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan={6}
+                        className="px-4 py-6 text-center text-gray-500"
+                      >
+                        No registered vehicles found
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+
+              {/* Vehicle Pagination */}
+              {vehicleTotalItems > 0 && (
+                <div className="mt-4 flex justify-between items-center">
+                  <div className="text-sm text-gray-500">
+                    Showing {(vehiclePage - 1) * vehiclePageSize + 1} to{" "}
+                    {Math.min(vehiclePage * vehiclePageSize, vehicleTotalItems)}{" "}
+                    of {vehicleTotalItems} vehicles
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      size="sm"
+                      variant="light"
+                      color="primary"
+                      className="rounded-full flex items-center"
+                      isDisabled={vehiclePage === 1}
+                      onPress={() => handleVehiclePageChange(vehiclePage - 1)}
+                    >
+                      <svg
+                        className="w-4 h-4 mr-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 19l-7-7 7-7"
+                        />
+                      </svg>
+                      Previous
+                    </Button>
+                    <Pagination
+                      total={vehicleTotalPages}
+                      page={vehiclePage}
+                      onChange={handleVehiclePageChange}
+                      size="sm"
+                      classNames={{
+                        item: "text-black",
+                        cursor: "bg-blue-900 text-white",
+                      }}
+                    />
+                    <Button
+                      size="sm"
+                      variant="light"
+                      color="primary"
+                      className="rounded-full flex items-center"
+                      isDisabled={vehiclePage === vehicleTotalPages}
+                      onPress={() => handleVehiclePageChange(vehiclePage + 1)}
+                    >
+                      Next
+                      <svg
+                        className="w-4 h-4 ml-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </Button>
+                  </div>
+                </div>
               )}
-            </tbody>
-          </table>
+            </>
+          )}
         </div>
       </Card>
 
@@ -432,71 +826,161 @@ const UserDetail: React.FC = () => {
       <Card className="p-6 w-full border border-gray-200 shadow-sm">
         <div className="border-l-4 border-blue-600 pl-4 mb-6">
           <div className="flex items-center">
-            <Users className="w-5 h-5 mr-2 text-blue-600" />
+            <Car className="w-5 h-5 mr-2 text-blue-600" />
             <h2 className="text-xl font-bold text-gray-800">Shared Vehicles</h2>
           </div>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
-            <thead className="bg-blue-900 text-white">
-              <tr>
-                <th className="px-4 py-3 text-left text-sm font-medium">
-                  License Plate
-                </th>
-                <th className="px-4 py-3 text-left text-sm font-medium">
-                  Vehicle Model
-                </th>
-                <th className="px-4 py-3 text-left text-sm font-medium">
-                  Owner
-                </th>
-                <th className="px-4 py-3 text-left text-sm font-medium">
-                  Access Type
-                </th>
-                <th className="px-4 py-3 text-left text-sm font-medium">
-                  Status
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {user.sharedVehicles && user.sharedVehicles.length > 0 ? (
-                user.sharedVehicles.map((vehicle) => (
-                  <tr key={vehicle.licensePlate} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 text-sm font-medium text-blue-600">
-                      {vehicle.licensePlate}
-                    </td>
-                    <td className="px-4 py-3 text-sm">{vehicle.model}</td>
-                    <td className="px-4 py-3 text-sm">{vehicle.owner}</td>
-                    <td className="px-4 py-3 text-sm">{vehicle.accessType}</td>
-                    <td className="px-4 py-3 text-sm">
-                      <span
-                        className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${
-                          vehicle.status === "active"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-yellow-100 text-yellow-800"
-                        }`}
-                      >
-                        {vehicle.status.charAt(0).toUpperCase() +
-                          vehicle.status.slice(1)}
-                      </span>
-                    </td>
+          {sharedVehiclesLoading ? (
+            <div className="flex justify-center items-center py-8">
+              <Spinner size="lg" color="primary" />
+              <span className="ml-2">Loading shared vehicles...</span>
+            </div>
+          ) : (
+            <>
+              <table className="w-full border-collapse">
+                <thead className="bg-blue-900 text-white">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
+                      License Plate
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
+                      Brand
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
+                      Model
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
+                      Color
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
+                      Owner
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
+                      Status
+                    </th>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td
-                    colSpan={5}
-                    className="px-4 py-6 text-center text-gray-500"
-                  >
-                    No shared vehicles found
-                  </td>
-                </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {sharedVehicles && sharedVehicles.length > 0 ? (
+                    sharedVehicles.map((vehicle) => (
+                      <tr key={vehicle.id} className="hover:bg-gray-50">
+                        <td className="px-4 py-3 text-sm font-medium text-blue-600">
+                          {vehicle["license-plate"]}
+                        </td>
+                        <td className="px-4 py-3 text-sm">{vehicle.brand}</td>
+                        <td className="px-4 py-3 text-sm">{vehicle.model}</td>
+                        <td className="px-4 py-3 text-sm">{vehicle.color}</td>
+                        <td className="px-4 py-3 text-sm">
+                          {vehicle["owner-name"]}
+                        </td>
+                        <td className="px-4 py-3 text-sm">
+                          <span
+                            className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${
+                              vehicle.status.toLowerCase() === "active"
+                                ? "bg-green-100 text-green-800"
+                                : "bg-yellow-100 text-yellow-800"
+                            }`}
+                          >
+                            {vehicle.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan={6}
+                        className="px-4 py-6 text-center text-gray-500"
+                      >
+                        No shared vehicles found
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+
+              {/* Shared Vehicle Pagination */}
+              {sharedVehicleTotalItems > 0 && (
+                <div className="mt-4 flex justify-between items-center">
+                  <div className="text-sm text-gray-500">
+                    Showing{" "}
+                    {(sharedVehiclePage - 1) * sharedVehiclePageSize + 1} to{" "}
+                    {Math.min(
+                      sharedVehiclePage * sharedVehiclePageSize,
+                      sharedVehicleTotalItems
+                    )}{" "}
+                    of {sharedVehicleTotalItems} shared vehicles
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      size="sm"
+                      variant="light"
+                      color="primary"
+                      className="rounded-full flex items-center"
+                      isDisabled={sharedVehiclePage === 1}
+                      onPress={() =>
+                        handleSharedVehiclePageChange(sharedVehiclePage - 1)
+                      }
+                    >
+                      <svg
+                        className="w-4 h-4 mr-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 19l-7-7 7-7"
+                        />
+                      </svg>
+                      Previous
+                    </Button>
+                    <Pagination
+                      total={sharedVehicleTotalPages}
+                      page={sharedVehiclePage}
+                      onChange={handleSharedVehiclePageChange}
+                      size="sm"
+                      classNames={{
+                        item: "text-black",
+                        cursor: "bg-blue-900 text-white",
+                      }}
+                    />
+                    <Button
+                      size="sm"
+                      variant="light"
+                      color="primary"
+                      className="rounded-full flex items-center"
+                      isDisabled={sharedVehiclePage === sharedVehicleTotalPages}
+                      onPress={() =>
+                        handleSharedVehiclePageChange(sharedVehiclePage + 1)
+                      }
+                    >
+                      Next
+                      <svg
+                        className="w-4 h-4 ml-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </Button>
+                  </div>
+                </div>
               )}
-            </tbody>
-          </table>
-          <div className="text-sm text-gray-500 mt-2">
-            Vehicles that other users have shared with this account
-          </div>
+            </>
+          )}
         </div>
       </Card>
 
@@ -515,7 +999,7 @@ const UserDetail: React.FC = () => {
           <div className="bg-[#40bcd8] rounded-lg p-5 text-white w-full">
             <div className="text-center">
               <div className="text-4xl font-bold mb-1">
-                {user.stats?.totalParkingSessions || 0}
+                {sessionsLoading ? "..." : stats.totalSessions}
               </div>
               <div className="text-sm">Total Parking Sessions</div>
             </div>
@@ -524,7 +1008,7 @@ const UserDetail: React.FC = () => {
           <div className="bg-[#40bcd8] rounded-lg p-5 text-white w-full">
             <div className="text-center">
               <div className="text-4xl font-bold mb-1">
-                {user.stats?.totalSpent || "$0.00"}
+                {sessionsLoading ? "..." : stats.totalSpent}
               </div>
               <div className="text-sm">Total Spent</div>
             </div>
@@ -533,7 +1017,7 @@ const UserDetail: React.FC = () => {
           <div className="bg-[#40bcd8] rounded-lg p-5 text-white w-full">
             <div className="text-center">
               <div className="text-4xl font-bold mb-1">
-                {user.stats?.avgSessionDuration || "0h"}
+                {sessionsLoading ? "..." : stats.avgDuration}
               </div>
               <div className="text-sm">Avg Session Duration</div>
             </div>
@@ -547,53 +1031,175 @@ const UserDetail: React.FC = () => {
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse">
-            <thead className="bg-blue-900 text-white">
-              <tr>
-                <th className="px-4 py-3 text-left text-sm font-medium">
-                  Date
-                </th>
-                <th className="px-4 py-3 text-left text-sm font-medium">
-                  Location
-                </th>
-                <th className="px-4 py-3 text-left text-sm font-medium">
-                  Vehicle
-                </th>
-                <th className="px-4 py-3 text-left text-sm font-medium">
-                  Duration
-                </th>
-                <th className="px-4 py-3 text-left text-sm font-medium">
-                  Amount
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {user.parkingActivity && user.parkingActivity.length > 0 ? (
-                user.parkingActivity.map((activity, index) => (
-                  <tr key={index} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 text-sm">{activity.date}</td>
-                    <td className="px-4 py-3 text-sm">{activity.location}</td>
-                    <td className="px-4 py-3 text-sm font-medium text-blue-600">
-                      {activity.vehicle}
-                    </td>
-                    <td className="px-4 py-3 text-sm">{activity.duration}</td>
-                    <td className="px-4 py-3 text-sm font-medium">
-                      {activity.amount}
-                    </td>
+          {sessionsLoading ? (
+            <div className="flex justify-center items-center py-8">
+              <Spinner size="lg" color="primary" />
+              <span className="ml-2">Loading parking activity...</span>
+            </div>
+          ) : (
+            <>
+              <table className="w-full border-collapse">
+                <thead className="bg-blue-900 text-white">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
+                      Date
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
+                      Location
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
+                      Vehicle
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
+                      Duration
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
+                      Amount
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
+                      Status
+                    </th>
                   </tr>
-                ))
-              ) : (
-                <tr>
-                  <td
-                    colSpan={5}
-                    className="px-4 py-6 text-center text-gray-500"
-                  >
-                    No parking activity found
-                  </td>
-                </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {paginatedParkingSessions &&
+                  paginatedParkingSessions.length > 0 ? (
+                    paginatedParkingSessions.map((session) => {
+                      const entryDate = new Date(session["entry-date-time"]);
+                      const exitDate = session["exit-date-time"]
+                        ? new Date(session["exit-date-time"])
+                        : null;
+
+                      let duration = "Ongoing";
+                      if (exitDate) {
+                        const durationMs =
+                          exitDate.getTime() - entryDate.getTime();
+                        const hours = Math.floor(durationMs / (1000 * 60 * 60));
+                        const minutes = Math.floor(
+                          (durationMs % (1000 * 60 * 60)) / (1000 * 60)
+                        );
+                        duration = `${hours}h ${minutes}m`;
+                      }
+
+                      return (
+                        <tr key={session.id} className="hover:bg-gray-50">
+                          <td className="px-4 py-3 text-sm">
+                            {entryDate.toLocaleDateString()}
+                            <div className="text-xs text-gray-500">
+                              {entryDate.toLocaleTimeString()}
+                            </div>
+                          </td>
+                          <td className="px-4 py-3 text-sm">
+                            {session["parking-lot-name"]}
+                          </td>
+                          <td className="px-4 py-3 text-sm font-medium text-blue-600">
+                            {session["license-plate"]}
+                          </td>
+                          <td className="px-4 py-3 text-sm">{duration}</td>
+                          <td className="px-4 py-3 text-sm font-medium">
+                            ${(session.cost / 1000).toFixed(2)}
+                          </td>
+                          <td className="px-4 py-3 text-sm">
+                            <span
+                              className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${
+                                session.status.toLowerCase() === "finished"
+                                  ? "bg-green-100 text-green-800"
+                                  : session.status.toLowerCase() === "active"
+                                    ? "bg-blue-100 text-blue-800"
+                                    : "bg-yellow-100 text-yellow-800"
+                              }`}
+                            >
+                              {session.status}
+                            </span>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  ) : (
+                    <tr>
+                      <td
+                        colSpan={6}
+                        className="px-4 py-6 text-center text-gray-500"
+                      >
+                        No parking activity found
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+
+              {/* Parking Sessions Pagination */}
+              {sessionTotalItems > 0 && (
+                <div className="mt-4 flex justify-between items-center">
+                  <div className="text-sm text-gray-500">
+                    Showing {(sessionPage - 1) * sessionPageSize + 1} to{" "}
+                    {Math.min(sessionPage * sessionPageSize, sessionTotalItems)}{" "}
+                    of {sessionTotalItems} parking sessions
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Button
+                      size="sm"
+                      variant="light"
+                      color="primary"
+                      className="rounded-full flex items-center"
+                      isDisabled={sessionPage === 1}
+                      onPress={() => handleSessionPageChange(sessionPage - 1)}
+                    >
+                      <svg
+                        className="w-4 h-4 mr-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M15 19l-7-7 7-7"
+                        />
+                      </svg>
+                      Previous
+                    </Button>
+                    <Pagination
+                      total={sessionTotalPages}
+                      page={sessionPage}
+                      onChange={handleSessionPageChange}
+                      size="sm"
+                      classNames={{
+                        item: "text-black",
+                        cursor: "bg-blue-900 text-white",
+                      }}
+                    />
+                    <Button
+                      size="sm"
+                      variant="light"
+                      color="primary"
+                      className="rounded-full flex items-center"
+                      isDisabled={sessionPage === sessionTotalPages}
+                      onPress={() => handleSessionPageChange(sessionPage + 1)}
+                    >
+                      Next
+                      <svg
+                        className="w-4 h-4 ml-1"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M9 5l7 7-7 7"
+                        />
+                      </svg>
+                    </Button>
+                  </div>
+                </div>
               )}
-            </tbody>
-          </table>
+            </>
+          )}
         </div>
       </Card>
 
