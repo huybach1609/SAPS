@@ -2,6 +2,7 @@
 import { useAuth } from "@/services/auth/AuthContext";
 import { ParkingLotOwnerLayout } from "./ParkingLotOwnerLayout";
 import { AdminLayout } from "./AdminLayout";
+import { OWNER_ROLE } from "@/config/base";
 
 // import { useNavigate } from "react-router-dom";
 
@@ -14,9 +15,9 @@ export default function DefaultLayout({
   title?: string;
   className?: string;
 }) {
-  const { user } = useAuth();
+  const { getRole } = useAuth();
 
-  if (user?.role === 'parkinglotowner') {
+  if (getRole() === OWNER_ROLE) {
     return <ParkingLotOwnerLayout title={title} className={className}>
       {children}
     </ParkingLotOwnerLayout>

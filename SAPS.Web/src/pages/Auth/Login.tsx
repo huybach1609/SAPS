@@ -5,9 +5,10 @@ import { Button } from '@heroui/button';
 import { Lock } from 'lucide-react';
 import { Input } from '@heroui/input';
 import { Checkbox } from '@heroui/react';
+import { OWNER_ROLE } from '@/config/base';
 
 export default function LoginPage() {
-    const { login, loading } = useAuth();
+    const { login, loading, getRole } = useAuth();
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -22,12 +23,15 @@ export default function LoginPage() {
 
         try {
             await login(email, password, remember);
-            // Optionally handle 'remember me' logic here
-            console.log(email + " " + password);
-            // navigate('/admin/dashboard');
+            window.location.reload();
         } catch (err) {
             console.log(err);
-            setError('Invalid email or password');
+            const message = err instanceof Error
+                ? err.message
+                : (typeof err === 'object' && err && 'message' in (err as any))
+                    ? String((err as any).message)
+                    : 'Invalid email or password';
+            setError(message);
         } finally {
             setSubmitting(false);
         }
