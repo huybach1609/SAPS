@@ -231,7 +231,7 @@ const HeadingBar: React.FC = () => {
           <DropdownItem key="changeThemes" textValue="Change Themes">
             <ThemeSwitch className="w-full" showLabel={true} variant="button" />
           </DropdownItem>
-          {user?.role === OWNER_ROLE ? (
+          {getRole() === OWNER_ROLE ? (
             <DropdownItem key="subscription" textValue="Subscription">
               <button
                 className="flex items-center gap-2 w-full text-left transition-opacity hover:opacity-80 "
