@@ -7,11 +7,13 @@ import { useParkingLot } from "@/pages/ParkingLotOwner/ParkingLotContext";
 export function ParkingLotOwnerLayout({
   children,
   title = "",
-  className = ""
+  className = "",
+  description = ""
 }: {
   children: React.ReactNode;
   title?: string;
   className?: string;
+  description?: string;
 }) {
   // Initialize state from localStorage
   const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
@@ -63,7 +65,10 @@ export function ParkingLotOwnerLayout({
             >
               <Menu size={20} />
             </Button>
-            <h1 className="ml-4 text-lg font-semibold">{title}</h1>
+            <div className="flex flex-col ml-4">
+              <span className="text-lg font-semibold">{title}</span>
+              <span className="text-sm text-gray-600">{description}</span>
+            </div>
           </div>
 
           {/* Parking Lot Selector */}

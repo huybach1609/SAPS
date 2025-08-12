@@ -9,11 +9,13 @@ import { OWNER_ROLE } from "@/config/base";
 export default function DefaultLayout({
   children,
   title = "",
-  className = ""
+  className = "",
+  description = ""
 }: {
   children: React.ReactNode;
   title?: string;
   className?: string;
+  description?: string;
 }) {
   const { getRole } = useAuth();
 

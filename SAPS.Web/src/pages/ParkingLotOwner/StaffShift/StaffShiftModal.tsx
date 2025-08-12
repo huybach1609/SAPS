@@ -10,7 +10,7 @@ import { Trash } from 'lucide-react';
 interface StaffShiftModalProps {
     isOpen: boolean;
     onOpenChange: () => void;
-    onSave: (shiftData:  StaffShift | CreateStaffShift) => void;
+    onSave: (shiftData: StaffShift | CreateStaffShift) => void;
     shift?: StaffShift | null;
     mode: 'add' | 'edit';
     parkingLotId: string;
@@ -174,7 +174,7 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
     const handleStaffSelection = (staffId: string, staff: StaffProfile) => {
         // Check if staff is already selected
         const isAlreadySelected = selectedStaffs.some(selectedStaff => selectedStaff.staffId === staffId);
-        
+
         if (isAlreadySelected) {
             // If already selected, remove from selection
             setSelectedStaffs(prev => prev.filter(s => s.staffId !== staffId));
@@ -187,7 +187,7 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
             handleInputChange('staffIds', [...selectedStaffs.map(s => s.staffId), staffId]);
             setSelectedStaffs(prev => [...prev, staff]);
         }
-        
+
         // Clear the search input after selection
         setKeySearchStaff('');
         setStaffList([]);
@@ -253,13 +253,21 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
         if (mode === 'add') {
             onSave(formData as CreateStaffShift);
         } else {
+            const newStaffIds = selectedStaffs.map(s => s.staffId);
+
             if (formData.shiftType === 'Regular') {
                 handleInputChange('specificDate', null);
             } else if (formData.shiftType === 'Emergency') {
                 handleInputChange('dayOfWeeks', null);
             }
-            onSave(formData as StaffShift);
+            const updatedFormData = {
+                ...formData,
+                staffIds: newStaffIds
+            };
+
+            onSave(updatedFormData as StaffShift);
         }
+
     };
 
     const formatTimeForInput = (minutes: number) => {
