@@ -1,17 +1,21 @@
 package vn.edu.fpt.sapsmobile.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.NumberFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -39,6 +43,11 @@ public class ParkingSessionAdapter extends RecyclerView.Adapter<ParkingSessionAd
         this.context = context;
         this.fragment = fragment;
 
+    }
+    public void updateItems(List<ParkingSession> newList) {
+        this.sessions.clear();
+        this.sessions.addAll(newList);
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -84,7 +93,7 @@ public class ParkingSessionAdapter extends RecyclerView.Adapter<ParkingSessionAd
             // Set thời lượng
             if (session.getExitDateTime() == null) {
                 LocalDateTime now = LocalDateTime.now();
-                tvDuration.setText(DateTimeHelper.calculateDuration(session.getEntryDateTime(),now.toString())+" onGoing");
+                tvDuration.setText(DateTimeHelper.calculateDuration(session.getEntryDateTime(),now.toString()));
             } else {
                 tvDuration.setText(DateTimeHelper.calculateDuration(session.getEntryDateTime(), session.getExitDateTime()));
             }
@@ -93,17 +102,34 @@ public class ParkingSessionAdapter extends RecyclerView.Adapter<ParkingSessionAd
             tvDate.setText(DateTimeHelper.formatDate(session.getEntryDateTime()));
 
             // Set amount + status
-            tvAmount.setText(String.format("$%.2f", session.getCost()));
-            tvStatus.setText(session.getTransactionId() == null ? "Pending" : "Paid");
+            NumberFormat vndFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
+            tvAmount.setText(vndFormat.format(session.getCost()));
+
+            // Set status
+
+            String statusCheck = session.getTransactionId() == null ? "Pending" : "Paid";
+            tvStatus.setTextColor(
+                    ContextCompat.getColor(itemView.getContext(), R.color.md_theme_onTertiaryFixedVariant)
+            );
+            if (session.getExitDateTime() == null) {
+                statusCheck = "On Going";
+                tvStatus.setTextColor(
+                        ContextCompat.getColor(itemView.getContext(), R.color.md_theme_tertiaryFixedDim_mediumContrast)
+                );
+            }
+            tvStatus.setText(statusCheck);
 
             // Call API lấy Vehicle
             VehicleApiService vehicleApiService = ApiTest.getService(context).create(VehicleApiService.class);
+
             vehicleApiService.getVehiclebyID(session.getVehicleId()).enqueue(new Callback<Vehicle>() {
                 @Override
                 public void onResponse(Call<Vehicle> call, Response<Vehicle> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         vehicle = response.body();
                         tvVehicle.setText(vehicle.getBrand() + " " + vehicle.getModel() + " " + vehicle.getLicensePlate());
+                        // set vehical
+                        session.setVehicle(vehicle);
                     }
                 }
 
@@ -118,7 +144,7 @@ public class ParkingSessionAdapter extends RecyclerView.Adapter<ParkingSessionAd
                 public void onResponse(Call<ParkingLot> call, Response<ParkingLot> response) {
                     if (response.isSuccessful() && response.body() != null) {
                         parkingLot = response.body();
-                        tvParkingLotName.setText(parkingLot.getName() + " - ");
+                        tvParkingLotName.setText(parkingLot.getName());
                         tvLocation.setText(parkingLot.getAddress());
                     }
                 }
@@ -128,15 +154,17 @@ public class ParkingSessionAdapter extends RecyclerView.Adapter<ParkingSessionAd
             });
 
             itemView.setOnClickListener(v -> {
-                if (listener != null && session != null && vehicle != null && parkingLot != null) {
-                    if(fragment=="historyFragment"){
+                if (listener != null && vehicle != null && parkingLot != null) {
+                    if(fragment.equals("historyFragment")){
+                        Log.i("ParkingSessionAdapter", session.toString());
                         listener.onParkingSessionSeeDetailClick(session, vehicle, parkingLot);
-                    }else if (fragment=="homeFragment") {
+                    }else if (fragment.equals("homeFragment")) {
                         listener.onParkingSessionClickToCheckOut(session, vehicle, parkingLot);
                     }
                 }
             });
         }
+
 
 
     }

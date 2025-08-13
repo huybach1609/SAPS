@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:padding="24dp"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:gravity="center"
-    android:background="@drawable/rounded_alert_background"
-    android:backgroundTint="@color/md_theme_onPrimary"
     >
 
     <com.google.android.material.loadingindicator.LoadingIndicator
@@ -21,4 +19,4 @@
         android:text="Loading..."
         android:textSize="16sp"
         android:textColor="@color/md_theme_primary" />
-</LinearLayout>
+</GridLayout>

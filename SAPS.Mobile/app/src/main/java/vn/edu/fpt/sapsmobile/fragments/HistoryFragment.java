@@ -30,6 +30,7 @@ import vn.edu.fpt.sapsmobile.adapter.ParkingSessionAdapter;
 import vn.edu.fpt.sapsmobile.adapter.VehicleAdapter;
 import vn.edu.fpt.sapsmobile.models.ParkingSession;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
+import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
 
 public class HistoryFragment extends Fragment {
     private RecyclerView rvParkingHistory;
@@ -37,15 +38,27 @@ public class HistoryFragment extends Fragment {
     private List<ParkingSession> parkingSessionList;
     private TextInputLayout spinnerFilter;
     private AutoCompleteTextView autoCompleteTextView;
+    private LoadingDialog loadingDialog;
+
+    private Call<List<ParkingSession>> currentCall;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_history, container, false);
 
+
+        loadingDialog = new LoadingDialog(getActivity());
         // Initialize Adapter
         rvParkingHistory = view.findViewById(R.id.rvParkingHistory);
-        parkingSessionAdapter = new ParkingSessionAdapter(new ArrayList<>(), new HistoryFragmentHandler(requireContext()), requireContext(), "historyFragment");
+
+        parkingSessionAdapter = new ParkingSessionAdapter(
+                new ArrayList<>(),
+                new HistoryFragmentHandler(requireContext()),
+                requireContext(),
+                "historyFragment");
+
         rvParkingHistory.setAdapter(parkingSessionAdapter);
+
         rvParkingHistory.setLayoutManager(new LinearLayoutManager(getContext()));
 
         // Initialize Material 3 dropdown filter
@@ -87,43 +100,47 @@ public class HistoryFragment extends Fragment {
         });
     }
 
-    private void loadParkingSessionData(ParkingSessionApiService parkingSessionApi, int filterPosition) {
-        Call<List<ParkingSession>> call;
+    private void loadParkingSessionData(ParkingSessionApiService api, int filterPosition) {
+        if (currentCall != null) currentCall.cancel(); // cancel previous request
 
         switch (filterPosition) {
-            case 0:
-                // Last 30 days
-                call = parkingSessionApi.getParkingSessionListLast30days();
-                break;
-            case 1:
-                // Last 3 months
-                call = parkingSessionApi.getParkingSessionListLast3Months();
-                break;
-            case 2:
-                // Last year
-                call = parkingSessionApi.getParkingSessionListLastYear();
-                break;
-            default:
-                // Default to last 30 days
-                call = parkingSessionApi.getParkingSessionListLast30days();
-                break;
+            case 0: currentCall = api.getParkingSessionListLast30days(); break;
+            case 1: currentCall = api.getParkingSessionListLast3Months(); break;
+            case 2: currentCall = api.getParkingSessionListLastYear(); break;
+            default: currentCall = api.getParkingSessionListLast30days(); break;
         }
 
-        call.enqueue(new Callback<List<ParkingSession>>() {
+        loadingDialog.show("");
+
+        currentCall.enqueue(new Callback<List<ParkingSession>>() {
             @Override
             public void onResponse(Call<List<ParkingSession>> call, Response<List<ParkingSession>> response) {
+                if (!isAdded()) { loadingDialog.hide(); return; }
+
                 if (response.isSuccessful() && response.body() != null) {
-                    if (!isAdded() || getContext() == null) return;
                     parkingSessionList = response.body();
-                    parkingSessionAdapter = new ParkingSessionAdapter(parkingSessionList, new HistoryFragmentHandler(requireContext()), requireContext(), "historyFragment");
-                    rvParkingHistory.setAdapter(parkingSessionAdapter);
+                    parkingSessionAdapter.updateItems(parkingSessionList);
                 }
+                loadingDialog.hide();
             }
 
             @Override
             public void onFailure(Call<List<ParkingSession>> call, Throwable t) {
-                // Handle error
+                // If call was cancelled due to navigation, just ensure dialog is hidden
+                loadingDialog.hide();
             }
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (loadingDialog != null) loadingDialog.hide();
+        if (currentCall != null) currentCall.cancel(); // explained below
+    }
+
+    public void onStop() {
+        super.onStop();
+        if (loadingDialog != null) loadingDialog.hide();
     }
 }

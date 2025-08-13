@@ -101,4 +101,19 @@ public class ParkingLot implements Serializable {
     public void setParkingLotOwnerId(String parkingLotOwnerId) {
         this.parkingLotOwnerId = parkingLotOwnerId;
     }
+
+    @Override
+    public String toString() {
+        return "ParkingLot{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", address='" + address + '\'' +
+                ", totalParkingSlot=" + totalParkingSlot +
+                ", createdAt='" + createdAt + '\'' +
+                ", updatedAt='" + updatedAt + '\'' +
+                ", status='" + status + '\'' +
+                ", parkingLotOwnerId='" + parkingLotOwnerId + '\'' +
+                '}';
+    }
 }

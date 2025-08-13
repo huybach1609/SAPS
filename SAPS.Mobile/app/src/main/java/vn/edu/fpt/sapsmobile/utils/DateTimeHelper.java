@@ -41,23 +41,23 @@ public class DateTimeHelper {
      * Nếu exit = null => dùng thời điểm hiện tại.
      * Nếu parse fail => trả về "".
      */
-    public static String calculateDuration(String entry, String exit) {
-        if (entry == null || entry.trim().isEmpty()) return "";
+    public static String calculateDuration(String entryDateTimeStr, String exitDateTimeStr) {
+        LocalDateTime entry = LocalDateTime.parse(entryDateTimeStr);
+        LocalDateTime exit = LocalDateTime.parse(exitDateTimeStr);
 
-        LocalDateTime entryTime = tryParseToLocalDateTime(entry);
-        LocalDateTime exitTime;
-        if (exit == null || exit.trim().isEmpty()) {
-            exitTime = LocalDateTime.now();
-        } else {
-            exitTime = tryParseToLocalDateTime(exit);
-        }
+        Duration duration = Duration.between(entry, exit);
 
-        if (entryTime == null || exitTime == null) return "";
+        long totalMinutes = duration.toMinutes();
+        long days = totalMinutes / (24 * 60);
+        long hours = (totalMinutes % (24 * 60)) / 60;
+        long minutes = totalMinutes % 60;
 
-        Duration d = Duration.between(entryTime, exitTime).abs(); // đảm bảo không âm
-        long hours = d.toHours();
-        long minutes = d.toMinutes() % 60;
-        return hours + "h " + minutes + "m";
+        StringBuilder result = new StringBuilder();
+        if (days > 0) result.append(days).append("d");
+        if (hours > 0) result.append(hours).append("h");
+        if (minutes > 0) result.append(minutes).append("m");
+
+        return result.toString();
     }
 
     /**
