@@ -20,6 +20,9 @@ public class ParkingSession implements Serializable {
     private String transactionId;         // nullable
     private String paymentMethod;         // not null
     private double cost;                  // not null
+
+    private Transaction transaction;
+    private Vehicle vehicle;
     // 🔸 Constructor đầy đủ
     public ParkingSession(String id, String vehicleId, String parkingLotId,
                           String entryDateTime, String exitDateTime, String checkOutTime,
@@ -104,6 +107,22 @@ public class ParkingSession implements Serializable {
 
     public double getCost() { return cost; }
     public void setCost(double cost) { this.cost = cost; }
+
+    public Transaction getTransaction() {
+        return transaction;
+    }
+
+    public void setTransaction(Transaction transaction) {
+        this.transaction = transaction;
+    }
+
+    public Vehicle getVehicle() {
+        return vehicle;
+    }
+
+    public void setVehicle(Vehicle vehicle) {
+        this.vehicle = vehicle;
+    }
 
     @Override
     public String toString() {

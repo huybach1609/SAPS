@@ -118,12 +118,12 @@
     <string name="sample_vehicle_model">Toyota Camry</string>
 
     <string name="time_details_title">Time details</string>
-    <string name="sample_entry_date">Entry Date: Jun 2, 2025</string>
-    <string name="sample_entry_time">Entry Time: 14:30</string>
-    <string name="sample_exit_date">Exit Date: Jun 2, 2025</string>
-    <string name="sample_exit_time">Exit Time: 16:45</string>
+    <string name="sample_entry_date">Jun 2, 2025</string>
+    <string name="sample_entry_time">14:30</string>
+    <string name="sample_exit_date">Jun 2, 2025</string>
+    <string name="sample_exit_time">16:45</string>
 
-    <string name="sample_duration">Total Duration: 2 hours 15 minutes</string>
+    <string name="sample_duration">2 hours 15 minutes</string>
 
     <string name="payment_details_title">Payment details</string>
     <string name="base_rate">Base rate</string>
@@ -138,11 +138,11 @@
     <string name="total_value">$12.38</string>
 
     <string name="transaction_details_title">Transaction details</string>
-    <string name="sample_txn_id">Transaction ID: TXN-20250602-089</string>
-    <string name="sample_payment_method">Payment Method: Bank Transfer</string>
-    <string name="sample_payment_status">Payment Status: Paid</string>
-    <string name="sample_payment_date">Payment Date: Jun 2, 2025 - 16:47</string>
-    <string name="sample_reference_code">Reference Code: PARK-ABC1234-020625</string>
+    <string name="sample_txn_id">TXN-20250602-089</string>
+    <string name="sample_payment_method">Bank Transfer</string>
+    <string name="sample_payment_status">Paid</string>
+    <string name="sample_payment_date">Jun 2, 2025 - 16:47</string>
+    <string name="sample_reference_code">PARK-ABC1234-020625</string>
 
     <string name="email_receipt">Email receipt</string>
     <string name="report_issue">Report issue</string>
@@ -317,4 +317,5 @@
     <string name="change_password_current_password_hint">Current Passsword</string>
     <string name="change_password_confirm_new_password_hint">Confirm new password</string>
     <string name="change_password_new_password_hint">New password</string>
+    <string name="profile_fragment_notifications_header">Notifications</string>
 </resources>

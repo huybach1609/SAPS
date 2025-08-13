@@ -37,7 +37,8 @@
                         android:background="@drawable/circle_background"
                         android:padding="16dp"
                         android:scaleType="centerInside"
-                        android:src="@drawable/account_circle_24" />
+                        android:src="@drawable/account_circle_24"
+                        app:tint="@color/md_theme_onPrimaryContainer" />
 
                     <ImageView
                         android:id="@+id/verify_icon"
@@ -95,7 +96,7 @@
                     android:layout_marginTop="8dp"
                     android:clickable="true"
                     android:focusable="true"
-                    app:cardBackgroundColor="?attr/colorSurface"
+                    app:cardBackgroundColor="@color/md_theme_secondaryContainer"
                     app:cardElevation="0dp"
                     app:strokeWidth="0dp">
 
@@ -109,21 +110,23 @@
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            app:tint="@color/md_theme_onSurfaceVariant" 
+                            app:tint="@color/md_theme_onSecondaryContainer"
                             android:src="@drawable/notifications_24px" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
+                            android:textSize="16sp"
                             android:layout_weight="1"
-                            android:text="Notifications"
+                            android:text="@string/profile_fragment_notifications_header"
+                            android:textColor="@color/md_theme_onSecondaryContainer"
                             android:textAppearance="?attr/textAppearanceBodyLarge" />
 
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            app:tint="@color/md_theme_onSurfaceVariant" 
+                            app:tint="@color/md_theme_onSecondaryContainer"
                             android:src="@drawable/chevron_right_" />
 
                     </LinearLayout>
@@ -136,7 +139,7 @@
                     android:layout_marginTop="8dp"
                     android:clickable="true"
                     android:focusable="true"
-                    app:cardBackgroundColor="?attr/colorSurface"
+                    app:cardBackgroundColor="@color/md_theme_secondaryContainer"
                     app:cardElevation="0dp"
                     app:strokeWidth="0dp">
 
@@ -150,21 +153,24 @@
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            app:tint="@color/md_theme_onSurfaceVariant" 
-                            android:src="@drawable/edit_24px" />
+                            app:tint="@color/md_theme_onSecondaryContainer"
+                            android:src="@drawable/edit_24px"
+                            />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_weight="1"
+                            android:textSize="16sp"
                             android:text="Edit"
-                            android:textAppearance="?attr/textAppearanceBodyLarge" />
+                            android:textColor="@color/md_theme_onSecondaryContainer"
+                            />
 
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            app:tint="@color/md_theme_onSurfaceVariant" 
+                            app:tint="@color/md_theme_onSecondaryContainer"
                             android:src="@drawable/chevron_right_" />
 
                     </LinearLayout>
@@ -177,8 +183,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:clickable="true"
+                    app:cardBackgroundColor="@color/md_theme_secondaryContainer"
                     android:focusable="true"
-                    app:cardBackgroundColor="?attr/colorSurface"
                     app:cardElevation="0dp"
                     app:strokeWidth="0dp">
 
@@ -192,21 +198,23 @@
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            app:tint="@color/md_theme_onSurfaceVariant"
+                            app:tint="@color/md_theme_onSecondaryContainer"
                             android:src="@drawable/lock_24px" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
+                            android:textSize="16sp"
                             android:layout_weight="1"
+                            android:textColor="@color/md_theme_onSecondaryContainer"
                             android:text="Change Password"
-                            android:textAppearance="?attr/textAppearanceBodyLarge" />
+                            />
 
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            app:tint="@color/md_theme_onSurfaceVariant"
+                            app:tint="@color/md_theme_onSecondaryContainer"
                             android:src="@drawable/chevron_right_" />
 
                     </LinearLayout>
@@ -219,8 +227,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:clickable="true"
+                    app:cardBackgroundColor="@color/md_theme_secondaryContainer"
                     android:focusable="true"
-                    app:cardBackgroundColor="?attr/colorSurface"
                     app:cardElevation="0dp"
                     app:strokeWidth="0dp">
 
@@ -234,7 +242,7 @@
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            app:tint="@color/md_theme_onSurfaceVariant"
+                            app:tint="@color/md_theme_onSecondaryContainer"
                             android:src="@drawable/notifications_24px" />
 
                         <TextView
@@ -242,14 +250,16 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_weight="1"
+                            android:textSize="16sp"
+                            android:textColor="@color/md_theme_onSecondaryContainer"
                             android:text="Profile Information"
-                            android:textAppearance="?attr/textAppearanceBodyLarge" />
+                            />
 
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:src="@drawable/chevron_right_"
-                        app:tint="@color/md_theme_onSurfaceVariant" />
+                        app:tint="@color/md_theme_onSecondaryContainer" />
 
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -259,10 +269,10 @@
                     android:id="@+id/logout_cardview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@color/md_theme_secondaryContainer"
                     android:layout_marginTop="8dp"
                     android:clickable="true"
                     android:focusable="true"
-                    app:cardBackgroundColor="?attr/colorSurface"
                     app:cardElevation="0dp"
                     app:strokeWidth="0dp">
 
@@ -277,22 +287,23 @@
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:src="@drawable/logout_24dp"
-                            app:tint="@color/md_theme_onSurfaceVariant" />
+                            app:tint="@color/md_theme_onSecondaryContainer" />
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
+                            android:textSize="16sp"
                             android:layout_weight="1"
                             android:text="LogOut"
-                            android:textColor="@color/md_theme_onSurfaceVariant"
+                            android:textColor="@color/md_theme_onSecondaryContainer"
                         android:textAppearance="?attr/textAppearanceBodyLarge" />
 
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
                             android:src="@drawable/chevron_right_"
-                            app:tint="@color/md_theme_onSurfaceVariant" />
+                            app:tint="@color/md_theme_onSecondaryContainer" />
 
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
