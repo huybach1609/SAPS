@@ -45,8 +45,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import vn.edu.fpt.sapsmobile.utils.TokenManager;
 
 public class ApiTest {
-    private static final String BASE_URL = "https://192.168.1.24:3001/";
-    private static final String BASE_URL_MOCKAPI = "https://192.168.1.24:7136/";
+    private static final String BASE_URL = "https://192.168.1.25:3001/";
+    private static final String BASE_URL_MOCKAPI = "https://192.168.1.25:7136/";
     private static Retrofit retrofit;
     private static Retrofit mockApiRetrofit; // Separate instance
 

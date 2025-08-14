@@ -1,13 +1,18 @@
 package vn.edu.fpt.sapsmobile.fragments;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -46,6 +51,20 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        // Set status bar color
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = requireActivity().getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(
+                    ContextCompat.getColor(getContext(), R.color.md_theme_primary));
+            View decor = window.getDecorView();
+            int flags = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+            decor.setSystemUiVisibility(flags);
+        }
+
+
         rvParkingHistory = view.findViewById(R.id.rvParkingHistory);
         rvParkingHistory.setLayoutManager(new LinearLayoutManager(getContext()));
 
@@ -70,62 +89,63 @@ public class HomeFragment extends Fragment {
 
         // Gọi API lấy session mới nhất
         ParkingSessionApiService parkingSessionApi = ApiTest.getService(requireContext()).create(ParkingSessionApiService.class);
-        parkingSessionApi.getParkingSessionLastestVehicleParking().enqueue(new Callback<ParkingSession>() {
-            @Override
-            public void onResponse(Call<ParkingSession> call, Response<ParkingSession> response) {
-                if (!isAdded() || getContext() == null) return;
-
-                if (response.isSuccessful() && response.body() != null) {
-                    session = response.body();
-
-//                     Hiển thị thời gian
-
-                    tvEntryTime.setText(DateTimeHelper.formatDateTime(session.getEntryDateTime()));
-                    LocalDateTime now = LocalDateTime.now();
-                    tvDuration.setText(DateTimeHelper.calculateDuration(session.getEntryDateTime(),now.toString())+" onGoing");
-
-                    // Gọi tiếp API lấy Vehicle
-                    VehicleApiService vehicleApiService = ApiTest.getService(requireContext()).create(VehicleApiService.class);
-                    vehicleApiService.getVehiclebyID(session.getVehicleId()).enqueue(new Callback<Vehicle>() {
-                        @Override
-                        public void onResponse(Call<Vehicle> call, Response<Vehicle> response) {
-                            if (response.isSuccessful() && response.body() != null) {
-                                vehicle = response.body();
-                                tvVehicle.setText(vehicle.getBrand() + " " + vehicle.getModel() + " " + vehicle.getLicensePlate());
-
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<Vehicle> call, Throwable t) { }
-                    });
-
-                    // Gọi tiếp API lấy ParkingLot
-                    ParkingLotApiService parkingLotApiService = ApiTest.getService(requireContext()).create(ParkingLotApiService.class);
-                    parkingLotApiService.getParkingLotById(session.getParkingLotId()).enqueue(new Callback<ParkingLot>() {
-                        @Override
-                        public void onResponse(Call<ParkingLot> call, Response<ParkingLot> response) {
-                            if (response.isSuccessful() && response.body() != null) {
-                                parkingLot = response.body();
-                                tvLocation.setText(parkingLot.getName() + " - " + parkingLot.getAddress());
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<ParkingLot> call, Throwable t) { }
-                    });
-                    btnCheckOut.setOnClickListener(v -> {
-                        HistoryFragmentHandler handler = new HistoryFragmentHandler(requireContext());
-                        handler.onParkingSessionClickToCheckOut(session,vehicle,parkingLot);
-                    });
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ParkingSession> call, Throwable t) {
-
-            }
-        });
+//        parkingSessionApi.getParkingSessionLastestVehicleParking().enqueue(new Callback<ParkingSession>() {
+//            @Override
+//            public void onResponse(Call<ParkingSession> call, Response<ParkingSession> response) {
+//                if (!isAdded() || getContext() == null) return;
+//
+//                if (response.isSuccessful() && response.body() != null) {
+//                    session = response.body();
+//
+//                    //show time
+//                    tvEntryTime.setText(DateTimeHelper.formatDateTime(session.getEntryDateTime()));
+//                    LocalDateTime now = LocalDateTime.now();
+//                    tvDuration.setText(DateTimeHelper.calculateDuration(session.getEntryDateTime(), now.toString()) + " onGoing");
+//
+//                    // fetch API get Vehicle
+//                    VehicleApiService vehicleApiService = ApiTest.getService(requireContext()).create(VehicleApiService.class);
+//                    vehicleApiService.getVehiclebyID(session.getVehicleId()).enqueue(new Callback<Vehicle>() {
+//                        @Override
+//                        public void onResponse(Call<Vehicle> call, Response<Vehicle> response) {
+//                            if (response.isSuccessful() && response.body() != null) {
+//                                vehicle = response.body();
+//                                tvVehicle.setText(vehicle.getBrand() + " " + vehicle.getModel() + " " + vehicle.getLicensePlate());
+//
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onFailure(Call<Vehicle> call, Throwable t) {
+//                        }
+//                    });
+//
+//                    // Gọi tiếp API lấy ParkingLot
+//                    ParkingLotApiService parkingLotApiService = ApiTest.getService(requireContext()).create(ParkingLotApiService.class);
+//                    parkingLotApiService.getParkingLotById(session.getParkingLotId()).enqueue(new Callback<ParkingLot>() {
+//                        @Override
+//                        public void onResponse(Call<ParkingLot> call, Response<ParkingLot> response) {
+//                            if (response.isSuccessful() && response.body() != null) {
+//                                parkingLot = response.body();
+//                                tvLocation.setText(parkingLot.getName() + " - " + parkingLot.getAddress());
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onFailure(Call<ParkingLot> call, Throwable t) {
+//                        }
+//                    });
+//                    btnCheckOut.setOnClickListener(v -> {
+//                        HistoryFragmentHandler handler = new HistoryFragmentHandler(requireContext());
+//                        handler.onParkingSessionClickToCheckOut(session, vehicle, parkingLot);
+//                    });
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ParkingSession> call, Throwable t) {
+//
+//            }
+//        });
 
 
         // Lấy lịch sử
