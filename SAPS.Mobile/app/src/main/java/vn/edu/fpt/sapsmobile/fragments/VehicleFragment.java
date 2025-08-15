@@ -32,7 +32,9 @@ import vn.edu.fpt.sapsmobile.API.ApiTest;
 import vn.edu.fpt.sapsmobile.API.apiinterface.VehicleApiService;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.actionhandler.VehicleFragmentHandler;
+import vn.edu.fpt.sapsmobile.activities.sharevehicle.ListOfSharedInvites;
 import vn.edu.fpt.sapsmobile.activities.sharevehicle.ShareVehicleAccessActivity;
+import vn.edu.fpt.sapsmobile.activities.sharevehicle.SharedInvitationDetailActivity;
 import vn.edu.fpt.sapsmobile.adapter.VehicleAdapter;
 import vn.edu.fpt.sapsmobile.dialog.AddVehicleDialog;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
@@ -44,7 +46,7 @@ public class VehicleFragment extends Fragment {
     private VehicleAdapter vehicleAdapter;
     private List<Vehicle> vehicleList;
     private TextView tv_share_code;
-    private Button btn_copy_code;
+    private Button btn_copy_code,btnShareVehicle;
     private Button btnSharedVehicles, btn_add_vehicle;
     private Button btnMyVehicles;
 
@@ -70,6 +72,7 @@ public class VehicleFragment extends Fragment {
         rvVehicles = view.findViewById(R.id.rvVehicles);
         rvVehicles.setLayoutManager(new LinearLayoutManager(getContext()));
         tv_share_code = view.findViewById(R.id.tv_share_code);
+        btnShareVehicle = view.findViewById(R.id.btnShareVehicle);
         btn_copy_code = view.findViewById(R.id.btn_copy_code);
         btnSharedVehicles = view.findViewById(R.id.btnSharedVehicles);
         btnMyVehicles = view.findViewById(R.id.btnMyVehicles);
@@ -84,7 +87,7 @@ public class VehicleFragment extends Fragment {
 
                 @Override
                 public void onReceiveFromShareCode() {
-                    Intent intent = new Intent(requireContext(), ShareVehicleAccessActivity.class);
+                    Intent intent = new Intent(requireContext(), ListOfSharedInvites.class);
                     startActivity(intent);
                 }
             });
@@ -94,7 +97,10 @@ public class VehicleFragment extends Fragment {
         vehicleAdapter = new VehicleAdapter(new ArrayList<>(), handler);
         rvVehicles.setAdapter(vehicleAdapter);
 
-
+        btnShareVehicle.setOnClickListener(v -> {
+            Intent intent = new Intent(requireContext(), ShareVehicleAccessActivity.class);
+            startActivity(intent);
+        });
         btn_copy_code.setOnClickListener(v -> {
             String code = tv_share_code.getText().toString();
 

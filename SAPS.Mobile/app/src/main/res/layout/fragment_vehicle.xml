@@ -117,6 +117,16 @@
                     android:textAllCaps="false"
                     android:textColor="#FFFFFF"
                     android:contentDescription="@string/btn_copy_share_code_desc" />
+                <Button
+                    android:id="@+id/btnShareVehicle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:backgroundTint="#0066CC"
+                    android:text="Share my Vehicle"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:contentDescription="@string/btn_copy_share_code_desc" />
             </LinearLayout>
         </LinearLayout>
 

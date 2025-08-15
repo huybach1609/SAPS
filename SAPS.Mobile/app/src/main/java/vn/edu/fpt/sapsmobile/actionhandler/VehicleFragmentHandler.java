@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.widget.Toast;
 
 import vn.edu.fpt.sapsmobile.activities.checkout.CheckoutActivity;
+import vn.edu.fpt.sapsmobile.activities.sharevehicle.RecallVehicleAccessActivity;
+import vn.edu.fpt.sapsmobile.activities.sharevehicle.SharedVehicleDetailsActivity;
 import vn.edu.fpt.sapsmobile.dialog.VehicleDetailDialog;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
 import vn.edu.fpt.sapsmobile.listener.VehicleFragmentListener;
@@ -48,6 +50,25 @@ public class VehicleFragmentHandler implements VehicleFragmentListener {
 
         // Khởi chạy Activity
         context.startActivity(intent);
+    }
+
+    @Override
+    public void onSharingStatus(Vehicle vehicle, AlertDialog dialog) {
+        // check vehicle co phai Vehicle cua minh khong
+        boolean isMyVehicle = true;
+
+        if(isMyVehicle){
+            Intent intent = new Intent(context, RecallVehicleAccessActivity.class);
+            intent.putExtra("vehicle", vehicle);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        }else {
+            Intent intent = new Intent(context, SharedVehicleDetailsActivity.class);
+            intent.putExtra("vehicle", vehicle);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        }
+
     }
 
 }

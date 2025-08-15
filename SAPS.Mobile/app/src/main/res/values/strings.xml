@@ -31,10 +31,16 @@
     <string name="edit_profile_toast_notification_2">No photo selected</string>
 
 
-
     <string-array name="payment_methods">
         <item>Bank Transfer</item>
         <item>By Cash</item>
+    </string-array>
+    <string-array name="access_duration">
+        <item>Permanent Access</item>
+        <item>1 Day</item>
+        <item>1 Week</item>
+        <item>1 Month</item>
+        <item>3 Months</item>
     </string-array>
     <string-array name="history_view_methods">
         <item>Last 30 days</item>
