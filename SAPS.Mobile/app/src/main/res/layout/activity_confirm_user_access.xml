@@ -132,24 +132,6 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Section: Vehicle Access -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/title_vehicle_access"
-            android:textStyle="bold"
-            android:textSize="16sp"
-
-            android:textColor="@color/md_theme_onSurface"
-            android:layout_marginBottom="8dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/sample_vehicle_access"
-            android:textSize="14sp"
-            android:textColor="@color/md_theme_onSurface"
-            android:layout_marginBottom="16dp" />
 
         <!-- Section: Access Duration -->
         <TextView
@@ -160,7 +142,14 @@
             android:textSize="15sp"
             android:textColor="@color/md_theme_onSurface"
             android:layout_marginBottom="4dp" />
-
+        <Spinner
+            android:id="@+id/spinnerPaymentMethod"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:entries="@array/access_duration"
+            android:minHeight="48dp"
+            android:padding="8dp"
+            android:spinnerMode="dropdown" />
 
         <!-- Section: Notes -->
         <com.google.android.material.textfield.TextInputLayout

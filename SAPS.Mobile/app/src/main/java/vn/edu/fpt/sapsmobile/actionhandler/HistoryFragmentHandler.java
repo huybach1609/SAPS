@@ -51,4 +51,9 @@ public class HistoryFragmentHandler implements HistoryFragmentListener {
         // Khởi chạy Activity
         context.startActivity(intent);
     }
+
+    @Override
+    public void onSharingStatus(Vehicle vehicle, AlertDialog dialog) {
+
+    }
 }

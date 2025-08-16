@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.listener.Listener;
-import vn.edu.fpt.sapsmobile.listener.VehicleFragmentListener;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
 
 public class VehicleDetailDialog {
@@ -22,6 +21,7 @@ public class VehicleDetailDialog {
         TextView tvColor = dialogView.findViewById(R.id.tvDetailColor);
         TextView tvStatus = dialogView.findViewById(R.id.tvDetailStatus);
         Button btnCheckout = dialogView.findViewById(R.id.btnCheckout);
+        Button btnSharingStatus = dialogView.findViewById(R.id.btnSharingStatus);
 
         tvLicense.setText(vehicle.getLicensePlate());
         tvBrand.setText(vehicle.getBrand());
@@ -36,6 +36,10 @@ public class VehicleDetailDialog {
         btnCheckout.setOnClickListener(v -> {
             //gọi qua biến instance listener
             listener.onCheckout(vehicle, dialog);
+        });
+        btnSharingStatus.setOnClickListener(v -> {
+            //gọi qua biến instance listener
+            listener.onSharingStatus(vehicle, dialog);
         });
 
         dialog.show();
