@@ -1,30 +1,30 @@
 package vn.edu.fpt.sapsmobile.models;
 
 public class ChangePasswordRequest {
-    private String userId;
-    private String currentPassword;
+    private String id;
+    private String oldPassword;
     private String newPassword;
 
-    public ChangePasswordRequest(String userId, String currentPassword, String newPassword) {
-        this.userId = userId;
-        this.currentPassword = currentPassword;
+    public ChangePasswordRequest(String id, String oldPassword, String newPassword) {
+        this.id = id;
+        this.oldPassword = oldPassword;
         this.newPassword = newPassword;
     }
 
-    public String getUserId() {
-        return userId;
+    public String getId() {
+        return id;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getCurrentPassword() {
-        return currentPassword;
+    public String getOldPassword() {
+        return oldPassword;
     }
 
-    public void setCurrentPassword(String currentPassword) {
-        this.currentPassword = currentPassword;
+    public void setOldPassword(String oldPassword) {
+        this.oldPassword = oldPassword;
     }
 
     public String getNewPassword() {

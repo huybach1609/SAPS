@@ -36,7 +36,11 @@
     <string name="action_bar_notification_mark_all_as_read">Mark all as read</string>
     <string name="edit_profile_card_header">Upload New ID Card</string>
     <string name="change_password_confirm_new_password_hint">Confirm new password</string>
+    <string name="share_vehicle_access_subheader">Grant parking access to someone else</string>
 
+    <!-- Tabs -->
+    <string name="tab_my_vehicles">Xe của tôi</string>
+    <string name="tab_shared_vehicles">Xe được chia sẻ</string>
 
     <string-array name="payment_methods">
         <item>Chuyển khoản</item>

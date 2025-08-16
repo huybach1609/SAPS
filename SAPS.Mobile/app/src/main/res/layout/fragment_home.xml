@@ -1,208 +1,479 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/swipeRefreshLayout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="false">
-    <!-- on check out -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
+    android:layout_height="match_parent">
 
-        <LinearLayout
+
+    <!-- Single child: NestedScrollView containing all content -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/bgImage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/bg_header_gradient"
+            android:scaleType="centerCrop"
+            android:src="@drawable/landing_image" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#80000000" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
-            <!-- Header Section -->
+
+            <!-- Header Section with gradient background -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="20dp">
+                android:background="@drawable/bg_header_gradient"
+                android:orientation="vertical">
 
-                <!-- Profile Image -->
-                <ImageView
-                    android:id="@+id/profileImage"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:src="@drawable/circle_background" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="12dp"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/tvGreeting"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Hello UserName!"
-                        android:textColor="@color/md_theme_onPrimary"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvWelcome"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/home_welcome_back"
-                        android:textColor="@color/md_theme_onSecondary"
-                        android:textSize="14sp" />
-
-                </LinearLayout>
-
-                <!-- Notification Bell -->
-                <ImageView
-                    android:id="@+id/btnNotification"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:padding="4dp"
-                    android:src="@drawable/notification_24dp"
-                    app:tint="@color/md_theme_onPrimary" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/bg_card_corner"
-                android:backgroundTint="@color/md_theme_onPrimary"
-                android:orientation="vertical"
-                android:padding="12dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:letterSpacing="0.1"
-                    android:text="Current session"
-                    android:textColor="@color/md_theme_tertiary"
-                    android:textSize="12sp" />
+                <!-- Profile and Notification Header -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:padding="20dp">
 
-                    <!-- Project Icon -->
+                    <!-- Profile Image -->
+                    <ImageView
+                        android:id="@+id/profileImage"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:src="@drawable/circle_background" />
 
-                    <!-- Project Info Container -->
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
                         android:layout_weight="1"
                         android:orientation="vertical">
-                        <!-- Project Name with Type Badge -->
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
-                            <!-- Parking lot name -->
-                            <TextView
-                                android:id="@+id/tvParkingLotName"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="8dp"
-                                android:text="Parkinglot name"
-                                android:textColor="@color/md_theme_primary"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
 
-                            <TextView
-                                android:id="@+id/tvVehicle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:alpha="0.7"
-                                android:text="vehical name"
-                                android:textColor="@color/md_theme_secondary"
-                                android:textSize="14sp" />
-                        </LinearLayout>
-                        <!-- Location/Subtitle -->
                         <TextView
-                            android:id="@+id/tvLocation"
+                            android:id="@+id/tvGreeting"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:ellipsize="end"
-                            android:singleLine="true"
-                            android:text="location"
-                            android:textColor="@color/md_theme_secondary"
+                            style="?attr/textAppearanceDisplayMedium"
+                            android:text="Hello UserName!"
+                            android:textColor="@color/md_theme_onPrimary"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvWelcome"
+                            style="?attr/textAppearanceDisplayMedium"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/home_welcome_back"
+                            android:textColor="@color/md_theme_onSecondary"
                             android:textSize="14sp" />
+
                     </LinearLayout>
 
-                    <!-- Options Menu -->
-                    <ImageView
-                        android:id="@+id/ivMoreOptions"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_marginStart="8dp"
-                        android:background="?attr/selectableItemBackgroundBorderless"
-                        android:padding="4dp"
-                        android:src="@drawable/more_vert__1_"
-                        app:tint="@color/md_theme_onSecondaryContainer"
-                        />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnNotification"
+                            style="?attr/materialIconButtonFilledStyle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:backgroundTint="@color/md_theme_primary"
+                            app:icon="@drawable/notification_24dp"
+                            app:iconTint="@color/md_theme_onPrimary"
+                            app:iconSize="24dp"
+                            app:cornerRadius="100dp"
+                            app:rippleColor="@color/md_theme_onPrimary"
+                            android:padding="8dp" />
+
 
                 </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <!-- Current Session Card Container -->
+                <LinearLayout
+                    android:id="@+id/parkingSessionContainer"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/label_entry_time"
-                    android:textStyle="bold" />
+                    android:layout_margin="20dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/bg_card_corner"
+                    android:backgroundTint="@color/md_theme_surface"
+                    android:orientation="vertical"
+                    android:padding="12dp">
 
-                <TextView
-                    android:id="@+id/tvEntryTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=""
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:letterSpacing="0.1"
+                        android:text="Current session"
+                        android:textColor="@color/md_theme_tertiary"
+                        android:textSize="12sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="@string/label_duration"
-                    android:textStyle="bold" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/tvDuration"
-                    android:layout_width="wrap_content"
+                        <!-- Project Info Container -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <!-- Project Name with Type Badge -->
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <!-- Parking lot name -->
+                                <TextView
+                                    android:id="@+id/tvParkingLotName"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="8dp"
+                                    android:text="Parkinglot name"
+                                    android:textColor="@color/md_theme_primary"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tvVehicle"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:alpha="0.7"
+                                    android:text="vehical name"
+                                    android:textColor="@color/md_theme_secondary"
+                                    android:textSize="14sp" />
+                            </LinearLayout>
+
+                            <!-- Location/Subtitle -->
+                            <TextView
+                                android:id="@+id/tvLocation"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:ellipsize="end"
+                                android:singleLine="true"
+                                android:text="location"
+                                android:textColor="@color/md_theme_secondary"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="14dp"
+                                android:layout_height="14dp"
+                                android:src="@drawable/timer"
+                                app:tint="@color/md_theme_secondary" />
+
+                            <TextView
+                                android:id="@+id/tvEntryTime"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="12:30 12/03/2025"
+                                android:textColor="@color/md_theme_secondary"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_weight="1"
+                            android:gravity="end|center"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:layout_width="14dp"
+                                android:layout_height="14dp"
+                                android:src="@drawable/hourglass"
+                                app:tint="@color/md_theme_secondary" />
+
+                            <TextView
+                                android:id="@+id/tvDuration"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="2h30m"
+                                android:textColor="@color/md_theme_secondary"
+                                android:textSize="14sp" />
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btnCheckOut"
+                        style="@style/Widget.Material3.Button.ElevatedButton.Icon"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:backgroundTint="@color/md_theme_tertiary"
+                        android:elevation="8dp"
+                        android:text="@string/btn_check_out"
+                        android:textColor="@color/md_theme_onTertiary"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:translationZ="4dp" />
+                </LinearLayout>
+
+                <!-- No Session Message -->
+                <LinearLayout
+                    android:id="@+id/noSessionContainer"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=""
-                    android:textSize="16sp"
-                    android:textStyle="bold" />
-                <!-- Nút tròn "Check Out" -->
-                <Button
-                    style="@style/Widget.Material3.Button.ElevatedButton.Icon"
-                    android:id="@+id/btnCheckOut"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:elevation="8dp"
-                    android:text="@string/btn_check_out"
-                    android:textColor="@color/md_theme_onTertiary"
-                    android:backgroundTint="@color/md_theme_tertiary"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:translationZ="4dp" />
+                    android:layout_margin="20dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/bg_card_corner"
+                    android:backgroundTint="@color/md_theme_surface"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="24dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginBottom="16dp"
+                        android:src="@drawable/ic_car"
+                        app:tint="@color/md_theme_secondary" />
+
+                    <TextView
+                        android:id="@+id/tvNoSessionMessage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="Let's start your new parking lot session!"
+                        android:textColor="@color/md_theme_primary"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:text="No active parking session found"
+                        android:textColor="@color/md_theme_secondary"
+                        android:textSize="14sp" />
+
+                </LinearLayout>
+
             </LinearLayout>
+
+
+
+
+            <!-- Additional Content Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="20dp"
+                android:orientation="vertical">
+
+                <!-- SAPLS Title Section -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:layout_marginBottom="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="SAPLS"
+                        android:textSize="28sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/md_theme_surface"
+                        android:letterSpacing="0.05" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Semi-Automatic Parking Lot System"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/md_theme_surface"
+                        android:layout_marginTop="4dp"
+                        android:gravity="center" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Advanced parking management platform with automated license plate recognition, real-time monitoring, and comprehensive analytics."
+                        android:textSize="14sp"
+                        android:textColor="@color/md_theme_surface"
+                        android:layout_marginTop="8dp"
+                        android:gravity="center"
+                        android:lineSpacingExtra="2dp" />
+
+                </LinearLayout>
+
+                <!-- Features Grid -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="20dp">
+
+                    <!-- First Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="12dp">
+
+                        <!-- AI Recognition -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="6dp"
+                            android:background="@drawable/bg_card_corner"
+                            android:backgroundTint="@color/md_theme_surfaceVariant"
+                            android:padding="16dp"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="📷"
+                                android:textSize="24sp"
+                                android:layout_marginBottom="8dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="AI Recognition"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/md_theme_onSurfaceVariant"
+                                android:gravity="center" />
+
+                        </LinearLayout>
+
+
+                    </LinearLayout>
+
+                    <!-- Second Row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <!-- Secure -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="6dp"
+                            android:background="@drawable/bg_card_corner"
+                            android:backgroundTint="@color/md_theme_surfaceVariant"
+                            android:padding="16dp"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="🔒"
+                                android:textSize="24sp"
+                                android:layout_marginBottom="8dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Secure"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/md_theme_onSurfaceVariant"
+                                android:gravity="center" />
+
+                        </LinearLayout>
+
+                        <!-- Fast -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="6dp"
+                            android:background="@drawable/bg_card_corner"
+                            android:backgroundTint="@color/md_theme_surfaceVariant"
+                            android:padding="16dp"
+                            android:orientation="vertical"
+                            android:gravity="center">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="⚡"
+                                android:textSize="24sp"
+                                android:layout_marginBottom="8dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Fast"
+                                android:textSize="12sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/md_theme_onSurfaceVariant"
+                                android:gravity="center" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- Parking Lot Illustration -->
+                <LinearLayout
+
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- RecyclerView for History -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvParkingHistory"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:nestedScrollingEnabled="false" />
+
         </LinearLayout>
 
+        </FrameLayout>
+    </androidx.core.widget.NestedScrollView>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvParkingHistory"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="12dp" />
-    </LinearLayout>
-</ScrollView>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

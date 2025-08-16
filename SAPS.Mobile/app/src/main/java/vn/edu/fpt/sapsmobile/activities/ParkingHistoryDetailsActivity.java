@@ -134,6 +134,9 @@ public class ParkingHistoryDetailsActivity extends AppCompatActivity {
         // Action buttons
         btnEmailReceipt = findViewById(R.id.btnEmailReceipt);
         btnReportIssue = findViewById(R.id.btnReportIssue);
+        // hide button
+        btnEmailReceipt.setVisibility(View.GONE);
+        btnReportIssue.setVisibility(View.GONE);
     }
 
     private void initDetails() {

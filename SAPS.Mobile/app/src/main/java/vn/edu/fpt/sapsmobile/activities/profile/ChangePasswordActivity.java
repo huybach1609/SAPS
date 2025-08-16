@@ -89,7 +89,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         loadingDialog.show("Changing password...");
 
         // NOTE: change them to ApiClient
-        Retrofit retrofit = ApiTest.getServiceMockApi(this);
+        Retrofit retrofit = ApiTest.getServiceLast(this);
         UserApiService usersApiService = retrofit.create(UserApiService.class);
 
         ChangePasswordRequest body = new ChangePasswordRequest(userId, current, newPass);

@@ -15,31 +15,28 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 import vn.edu.fpt.sapsmobile.API.ApiTest;
-import vn.edu.fpt.sapsmobile.API.AuthService;
+import vn.edu.fpt.sapsmobile.API.AuthApi;
+import vn.edu.fpt.sapsmobile.API.apiinterface.UserApiService;
+import vn.edu.fpt.sapsmobile.API.apiinterface.ClientApiService;
 import vn.edu.fpt.sapsmobile.BuildConfig;
-import vn.edu.fpt.sapsmobile.models.AuthResponse;
-import vn.edu.fpt.sapsmobile.models.GoogleTokenRequest;
-import vn.edu.fpt.sapsmobile.models.User;
+import vn.edu.fpt.sapsmobile.models.*;
+import vn.edu.fpt.sapsmobile.utils.JwtUtils;
 import vn.edu.fpt.sapsmobile.utils.TokenManager;
-import vn.edu.fpt.sapsmobile.API.ApiClient;
-import vn.edu.fpt.sapsmobile.models.LoginRequest;
-import vn.edu.fpt.sapsmobile.models.LoginResponse;
-import vn.edu.fpt.sapsmobile.models.RegisterRequest;
-import vn.edu.fpt.sapsmobile.models.RegisterResponse;
 
 public class AuthenticationService {
     private static final String TAG = "AuthenticationService";
     private static final String SERVER_CLIENT_ID = BuildConfig.SERVER_CLIENT_ID;
-    private static final String SERVER_BASE_URL = BuildConfig.SERVER_BASE_URL;
 
-    private Context context;
-    private GoogleSignInClient mGoogleSignInClient;
-    private AuthService authService;
-    private TokenManager tokenManager;
+    private final Context context;
+    private final GoogleSignInClient googleSignInClient;
+    private final AuthApi authApi;
+    private final UserApiService userApiService;
+    private final ClientApiService clientApiService;
+    private final TokenManager tokenManager;
     private AuthCallback authCallback;
 
+    // Interfaces
     public interface AuthCallback {
         void onAuthSuccess(User user);
         void onAuthFailure(String error);
@@ -50,333 +47,373 @@ public class AuthenticationService {
         void onFailure(String error);
     }
 
+    public interface ClientProfileCallback {
+        void onSuccess(User user);
+        void onFailure(String error);
+    }
+
+    // Constructors
     public AuthenticationService(Context context, AuthCallback callback) {
-        this.context = context;
+        this(context);
         this.authCallback = callback;
-        this.tokenManager = new TokenManager(context);
-        setupGoogleSignIn();
-        setupRetrofit();
     }
 
     public AuthenticationService(Context context) {
         this.context = context;
         this.tokenManager = new TokenManager(context);
-        setupRetrofit();
+        this.googleSignInClient = initializeGoogleSignInClient();
+
+        Retrofit retrofit = ApiTest.getServiceLast(context);
+        this.authApi = retrofit.create(AuthApi.class);
+        this.userApiService = retrofit.create(UserApiService.class);
+        this.clientApiService = retrofit.create(ClientApiService.class);
     }
 
-    private void setupGoogleSignIn() {
+    // Google Sign-In Setup
+    private GoogleSignInClient initializeGoogleSignInClient() {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(SERVER_CLIENT_ID)
                 .requestEmail()
                 .build();
-
-        mGoogleSignInClient = GoogleSignIn.getClient(context, gso);
-    }
-
-    private void setupRetrofit() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(SERVER_BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        authService = retrofit.create(AuthService.class);
+        return GoogleSignIn.getClient(context, gso);
     }
 
     public Intent getSignInIntent() {
-        return mGoogleSignInClient.getSignInIntent();
+        return googleSignInClient.getSignInIntent();
     }
 
+    //region Google Sign-In Flow
     public void handleSignInResult(Intent data) {
+        if (authCallback == null) {
+            Log.e(TAG, "AuthCallback is null");
+            return;
+        }
+
         Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
         try {
             GoogleSignInAccount account = task.getResult(ApiException.class);
-            processSignInResult(account);
+            processGoogleSignIn(account);
         } catch (ApiException e) {
-            Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
-            Log.e(TAG, "Error message: " + e.getMessage());
-            authCallback.onAuthFailure("Google Sign-In failed: " + e.getMessage());
+            Log.w(TAG, "Google Sign-In failed", e);
+            authCallback.onAuthFailure("Google Sign-In failed: " + getGoogleSignInErrorMessage(e.getStatusCode()));
         }
     }
 
-    private void processSignInResult(GoogleSignInAccount account) {
-        if (account != null) {
-            String idToken = account.getIdToken();
-            if (idToken != null) {
-                verifyTokenWithBackend(idToken);
-            } else {
-                authCallback.onAuthFailure("Failed to get ID token");
-            }
+    private void processGoogleSignIn(GoogleSignInAccount account) {
+        if (account.getIdToken() != null) {
+            verifyGoogleTokenWithBackend(account.getIdToken());
         } else {
-            authCallback.onAuthFailure("Google account is null");
+            authCallback.onAuthFailure("Failed to get Google ID token");
         }
     }
 
-    private void verifyTokenWithBackend(String idToken) {
+    private void verifyGoogleTokenWithBackend(String idToken) {
         GoogleTokenRequest request = new GoogleTokenRequest(idToken);
 
-        Call<AuthResponse> call = authService.verifyGoogleToken(request);
-        call.enqueue(new Callback<AuthResponse>() {
+        executeApiCall(authApi.verifyGoogleToken(request), new ApiResponseHandler<AuthResponse>() {
             @Override
-            public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
-                Log.d(TAG, "Response Code: " + response.code());
-                Log.d(TAG, "Response Message: " + response.message());
-
-                if (response.isSuccessful() && response.body() != null) {
-                    AuthResponse authResponse = response.body();
-                    Log.d(TAG, "Success: Access Token exists: " + (authResponse.getAccessToken() != null));
-                    Log.d(TAG, "Success: User exists: " + (authResponse.getUser() != null));
-
-                    // Save tokens and user data
-                    tokenManager.saveTokens(
-                            authResponse.getAccessToken(),
-                            authResponse.getRefreshToken()
-                    );
-                    tokenManager.saveUserData(authResponse.getUser());
-
-                    authCallback.onAuthSuccess(authResponse.getUser());
-                } else {
-                    Log.e(TAG, "Backend verification failed");
-                    authCallback.onAuthFailure("Backend verification failed");
-                }
+            public void onSuccess(AuthResponse response) {
+                handleAuthSuccess(response.getAccessToken(), response.getRefreshToken(), response.getUser());
             }
 
             @Override
-            public void onFailure(Call<AuthResponse> call, Throwable t) {
-                Log.e(TAG, "Network error: " + t.getMessage());
-                authCallback.onAuthFailure("Network error: " + t.getMessage());
+            public void onError(String error) {
+                authCallback.onAuthFailure("Google authentication failed: " + error);
             }
         });
     }
 
-    public void signOut(Runnable onComplete) {
-        mGoogleSignInClient.signOut()
-                .addOnCompleteListener(task -> {
-                    tokenManager.clearTokens();
-                    if (onComplete != null) {
-                        onComplete.run();
-                    }
-                });
-    }
+    //endregion
 
+    // Email/Password Login
     public void loginWithEmail(String email, String password, AuthCallback callback) {
-        // Validate input
-        if (email == null || email.trim().isEmpty() || password == null || password.trim().isEmpty()) {
-            callback.onAuthFailure("Email and password cannot be empty");
-            return;
-        }
-
+        if (!validateCredentials(email, password, callback)) return;
 
         LoginRequest request = new LoginRequest(email.trim(), password);
-
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl(BuildConfig.MOCK_BASE_URL)
-//                .addConverterFactory(GsonConverterFactory.create())
-//                .build();
-
-
-
-        Retrofit retrofit = ApiTest.getServiceMockApi(context);
-
-        AuthService authService = retrofit.create(AuthService.class);
-
         Log.d(TAG, "Attempting login with email: " + email);
 
-        authService.login(request).enqueue(new Callback<LoginResponse>() {
+        executeApiCall(authApi.login(request), new ApiResponseHandler<LoginResponse>() {
             @Override
-            public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                Log.d(TAG, "Login response code: " + response.code());
-                Log.d(TAG, "Login response message: " + response.message());
+            public void onSuccess(LoginResponse response) {
+                if (isValidLoginResponse(response)) {
+                    String accessToken = response.getAccessToken();
+                    String refreshToken = response.getRefreshToken();
+                    User user = response.getUser();
 
-                if (response.isSuccessful() && response.body() != null) {
-                    LoginResponse loginResponse = response.body();
+                    tokenManager.saveTokens(accessToken, refreshToken);
 
-                    Log.d(TAG, "Access token received: " + (loginResponse.getAccessToken() != null));
-                    Log.d(TAG, "User data received: " + (loginResponse.getUser() != null));
-
-                    // Kiểm tra kỹ càng response data
-                    if (isValidLoginResponse(loginResponse)) {
-                        // Lưu token và user data vào TokenManager
-                        tokenManager.saveTokens(loginResponse.getAccessToken(), loginResponse.getRefreshToken());
-                        tokenManager.saveUserData(loginResponse.getUser());
-
-                        Log.d(TAG, "Login successful for user: " + loginResponse.getUser().getEmail());
-                        // Gọi callback thành công
-                        callback.onAuthSuccess(loginResponse.getUser());
+                    if (user != null) {
+                        tokenManager.saveUserData(user);
+                        callback.onAuthSuccess(user);
                     } else {
-                        Log.e(TAG, "Invalid login response data");
-                        callback.onAuthFailure("Invalid response from server");
+                        fetchUserDataFromToken(accessToken, callback);
                     }
                 } else {
-                    // Xử lý các mã lỗi HTTP cụ thể
-                    String errorMessage = getErrorMessage(response.code());
-                    Log.e(TAG, "Login failed with code: " + response.code() + ", message: " + errorMessage);
-                    callback.onAuthFailure(errorMessage);
+                    callback.onAuthFailure("Invalid response from server");
                 }
             }
 
             @Override
-            public void onFailure(Call<LoginResponse> call, Throwable t) {
-                Log.e(TAG, "Login network error: " + t.getMessage());
-                callback.onAuthFailure("Network error: " + t.getMessage());
+            public void onError(String error) {
+                callback.onAuthFailure(error);
             }
         });
     }
 
-    // Kiểm tra response có hợp lệ không
-    private boolean isValidLoginResponse(LoginResponse loginResponse) {
-        if (loginResponse == null) {
-            Log.e(TAG, "LoginResponse is null");
-            return false;
-        }
-
-        if (loginResponse.getAccessToken() == null || loginResponse.getAccessToken().trim().isEmpty()) {
-            Log.e(TAG, "Access token is null or empty");
-            return false;
-        }
-
-        if (loginResponse.getUser() == null) {
-            Log.e(TAG, "User data is null");
-            return false;
-        }
-
-        User user = loginResponse.getUser();
-        if (user.getEmail() == null || user.getEmail().trim().isEmpty()) {
-            Log.e(TAG, "User email is null or empty");
-            return false;
-        }
-
-        if (user.getFullName() == null || user.getFullName().trim().isEmpty()) {
-            Log.e(TAG, "User name is null or empty");
-            return false;
-        }
-
-        return true;
-    }
-
-    // Lấy thông điệp lỗi dựa trên HTTP status code
-    private String getErrorMessage(int statusCode) {
-        switch (statusCode) {
-            case 400:
-                return "Bad request. Please check your input.";
-            case 401:
-                return "Invalid email or password";
-            case 403:
-                return "Access forbidden";
-            case 404:
-                return "Service not found";
-            case 422:
-                return "Invalid data provided";
-            case 500:
-                return "Server error. Please try again later.";
-            case 503:
-                return "Service unavailable. Please try again later.";
-            default:
-                return "Login failed. Please try again.";
-        }
-    }
-
-    // Đăng ký tài khoản mới - FIXED VERSION
+    // Registration
     public void register(String name, String email, String password, RegisterCallback callback) {
-        // Validate input
-        if (name == null || name.trim().isEmpty() ||
-                email == null || email.trim().isEmpty() ||
-                password == null || password.trim().isEmpty()) {
-            callback.onFailure("All fields are required");
-            return;
-        }
+        if (!validateRegistrationData(name, email, password, callback)) return;
 
         RegisterRequest request = new RegisterRequest(name.trim(), email.trim(), password);
-
-        // Sử dụng MOCK_BASE_URL để test
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BuildConfig.MOCK_BASE_URL) // <-- Dùng MOCK_BASE_URL để test
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        AuthService authService = retrofit.create(AuthService.class);
-
         Log.d(TAG, "Attempting registration with email: " + email);
 
-        authService.register(request).enqueue(new Callback<RegisterResponse>() {
+        executeApiCall(authApi.register(request), new ApiResponseHandler<RegisterResponse>() {
             @Override
-            public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
-                Log.d(TAG, "Register response code: " + response.code());
-                Log.d(TAG, "Register response message: " + response.message());
-
-                if (response.isSuccessful() && response.body() != null) {
-                    RegisterResponse registerResponse = response.body();
-
-                    if (registerResponse.getMessage() != null && !registerResponse.getMessage().trim().isEmpty()) {
-                        Log.d(TAG, "Registration successful: " + registerResponse.getMessage());
-                        callback.onSuccess(registerResponse.getMessage());
-                    } else {
-                        Log.e(TAG, "Registration response message is empty");
-                        callback.onFailure("Registration completed but no confirmation message received");
-                    }
+            public void onSuccess(RegisterResponse response) {
+                String message = response.getMessage();
+                if (message != null && !message.trim().isEmpty()) {
+                    callback.onSuccess(message);
                 } else {
-                    String errorMessage = getRegisterErrorMessage(response.code());
-                    Log.e(TAG, "Registration failed with code: " + response.code() + ", message: " + errorMessage);
-                    callback.onFailure(errorMessage);
+                    callback.onFailure("Registration completed but no confirmation received");
                 }
             }
 
             @Override
-            public void onFailure(Call<RegisterResponse> call, Throwable t) {
-                Log.e(TAG, "Register network error: " + t.getMessage());
-                callback.onFailure("Network error: " + t.getMessage());
+            public void onError(String error) {
+                callback.onFailure(error);
             }
         });
     }
 
-
+    // Password Reset
     public void resetPassword(String email, AuthCallback callback) {
-        if (email == null || email.trim().isEmpty()) {
-            callback.onAuthFailure("Email is required");
+        if (!validateEmail(email)) {
+            callback.onAuthFailure("Valid email is required");
             return;
         }
 
-        Call<Void> call = authService.resetPassword(email.trim());
-        call.enqueue(new Callback<Void>() {
+        executeApiCall(authApi.resetPassword(email.trim()), new ApiResponseHandler<Void>() {
             @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful()) {
-                    callback.onAuthSuccess(null);
-                } else {
-                    callback.onAuthFailure("Reset failed: " + response.code());
-                }
+            public void onSuccess(Void response) {
+                callback.onAuthSuccess(null);
             }
 
             @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                callback.onAuthFailure("Network error: " + t.getMessage());
+            public void onError(String error) {
+                callback.onAuthFailure("Password reset failed: " + error);
             }
         });
     }
 
-
-    // Lấy thông điệp lỗi đăng ký dựa trên HTTP status code
-    private String getRegisterErrorMessage(int statusCode) {
-        switch (statusCode) {
-            case 400:
-                return "Bad request. Please check your input.";
-            case 409:
-                return "Email already exists. Please use a different email.";
-            case 422:
-                return "Invalid data provided. Please check your information.";
-            case 500:
-                return "Server error. Please try again later.";
-            case 503:
-                return "Service unavailable. Please try again later.";
-            default:
-                return "Registration failed. Please try again.";
-        }
+    // Sign Out
+    public void signOut(Runnable onComplete) {
+        googleSignInClient.signOut().addOnCompleteListener(task -> {
+            tokenManager.clearTokens();
+            if (onComplete != null) onComplete.run();
+        });
     }
 
+    // Utility Methods
     public boolean isLoggedIn() {
         return tokenManager.isLoggedIn();
     }
 
     public User getCurrentUser() {
         return tokenManager.getUserData();
+    }
+
+    // Private Helper Methods
+    private void fetchUserDataFromToken(String accessToken, AuthCallback callback) {
+        String userId = JwtUtils.getUserIdFromToken(accessToken);
+
+        if (userId == null) {
+            Log.e(TAG, "Could not extract userId from JWT token");
+            callback.onAuthFailure("Invalid token format");
+            return;
+        }
+
+        Log.d(TAG, "Fetching user data for userId: " + userId);
+
+        executeApiCall(userApiService.getUserById(userId), new ApiResponseHandler<User>() {
+            @Override
+            public void onSuccess(User user) {
+                fetchClientProfile();
+                tokenManager.saveUserData(user);
+                callback.onAuthSuccess(user);
+            }
+
+            @Override
+            public void onError(String error) {
+                callback.onAuthFailure("Failed to fetch user data: " + error);
+            }
+        });
+    }
+
+    public void fetchClientProfile(ClientProfileCallback callback) {
+        User currentUser = tokenManager.getUserData();
+        if (currentUser == null || currentUser.getId() == null) {
+            Log.e(TAG, "Cannot fetch client profile: User data is null or missing user ID");
+            if (callback != null) {
+                callback.onFailure("User data is null or missing user ID");
+            }
+            return;
+        }
+
+        Call<ClientProfileResponse> call = clientApiService.getClientProfile(currentUser.getId());
+        executeApiCall(call, new ApiResponseHandler<ClientProfileResponse>() {
+            @Override
+            public void onSuccess(ClientProfileResponse response) {
+                Log.d(TAG, "Client profile fetched successfully");
+                
+                // Update the current user with the fetched profile data
+                if (response != null) {
+                    // Create a new ClientProfile object from the response
+                    ClientProfile clientProfile = new ClientProfile();
+                    clientProfile.setUserId(response.getId());
+                    clientProfile.setCitizenId(response.getCitizenId());
+                    clientProfile.setDateOfBirth(response.getDateOfBirth());
+                    clientProfile.setSex(response.isSex());
+                    clientProfile.setNationality(response.getNationality());
+                    clientProfile.setPlaceOfOrigin(response.getPlaceOfOrigin());
+                    clientProfile.setPlaceOfResidence(response.getPlaceOfResidence());
+                    clientProfile.setGoogleId(response.getGoogleId());
+                    
+                    // Set the client profile to the current user
+                    currentUser.setClientProfile(clientProfile);
+                    
+                    // Save updated user data to token manager
+                    tokenManager.saveUserData(currentUser);
+                    Log.d(TAG, "Updated user data saved to token manager");
+                    
+                    if (callback != null) {
+                        callback.onSuccess(currentUser);
+                    }
+                } else {
+                    if (callback != null) {
+                        callback.onFailure("Received null response from server");
+                    }
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+                Log.e(TAG, "Failed to fetch client profile: " + error);
+                if (callback != null) {
+                    callback.onFailure(error);
+                }
+            }
+        });
+    }
+
+    // Overloaded method without callback for backward compatibility
+    public void fetchClientProfile() {
+        fetchClientProfile(null);
+    }
+
+    private void handleAuthSuccess(String accessToken, String refreshToken, User user) {
+        if (authCallback == null) return;
+
+        tokenManager.saveTokens(accessToken, refreshToken);
+        if (user != null) {
+            tokenManager.saveUserData(user);
+        }
+        authCallback.onAuthSuccess(user);
+    }
+
+    // Generic API Call Handler
+    private <T> void executeApiCall(Call<T> call, ApiResponseHandler<T> handler) {
+        call.enqueue(new Callback<T>() {
+            @Override
+            public void onResponse(Call<T> call, Response<T> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    handler.onSuccess(response.body());
+                } else {
+                    String error = parseErrorResponse(response);
+                    Log.e(TAG, "API call failed: " + error);
+                    handler.onError(error);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<T> call, Throwable t) {
+                String error = "Network error: " + t.getMessage();
+                Log.e(TAG, error, t);
+                handler.onError(error);
+            }
+        });
+    }
+
+    // Response Handler Interface
+    private interface ApiResponseHandler<T> {
+        void onSuccess(T response);
+        void onError(String error);
+    }
+
+    // Validation Methods
+    private boolean validateCredentials(String email, String password, AuthCallback callback) {
+        if (!isValidString(email) || !isValidString(password)) {
+            callback.onAuthFailure("Email and password cannot be empty");
+            return false;
+        }
+        if (!validateEmail(email)) {
+            callback.onAuthFailure("Please enter a valid email address");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateRegistrationData(String name, String email, String password, RegisterCallback callback) {
+        if (!isValidString(name) || !isValidString(email) || !isValidString(password)) {
+            callback.onFailure("All fields are required");
+            return false;
+        }
+        if (!validateEmail(email)) {
+            callback.onFailure("Please enter a valid email address");
+            return false;
+        }
+        if (password.length() < 6) {
+            callback.onFailure("Password must be at least 6 characters long");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean validateEmail(String email) {
+        return email != null && android.util.Patterns.EMAIL_ADDRESS.matcher(email.trim()).matches();
+    }
+
+    private boolean isValidString(String str) {
+        return str != null && !str.trim().isEmpty();
+    }
+
+    private boolean isValidLoginResponse(LoginResponse response) {
+        return response != null && isValidString(response.getAccessToken());
+    }
+
+    // Error Handling
+    private String parseErrorResponse(Response<?> response) {
+        int code = response.code();
+        switch (code) {
+            case 400: return "Bad request. Please check your input.";
+            case 401: return "Invalid email or password";
+            case 403: return "Access forbidden";
+            case 404: return "Service not found";
+            case 409: return "Email already exists";
+            case 422: return "Invalid data provided";
+            case 500: return "Server error. Please try again later.";
+            case 503: return "Service unavailable. Please try again later.";
+            default: return "Request failed. Please try again.";
+        }
+    }
+
+    private String getGoogleSignInErrorMessage(int statusCode) {
+        switch (statusCode) {
+            case 7: return "Network error occurred";
+            case 8: return "Internal error occurred";
+            case 10: return "Developer error in configuration";
+            case 12501: return "Sign-in was cancelled";
+            case 12502: return "Sign-in currently in progress";
+            default: return "Unknown error occurred";
+        }
     }
 }

@@ -22,6 +22,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.google.android.material.button.MaterialButtonToggleGroup;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,14 +34,19 @@ import vn.edu.fpt.sapsmobile.API.ApiTest;
 import vn.edu.fpt.sapsmobile.API.apiinterface.VehicleApiService;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.actionhandler.VehicleFragmentHandler;
+import vn.edu.fpt.sapsmobile.activities.auth.RegisterPhase3Activity;
 import vn.edu.fpt.sapsmobile.activities.sharevehicle.ShareVehicleAccessActivity;
 import vn.edu.fpt.sapsmobile.adapter.VehicleAdapter;
 import vn.edu.fpt.sapsmobile.dialog.AddVehicleDialog;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
+import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
 import vn.edu.fpt.sapsmobile.utils.RecyclerUtils;
 
 
 public class VehicleFragment extends Fragment {
+
+    LoadingDialog loadingDialog;
+
     private RecyclerView rvVehicles;
     private VehicleAdapter vehicleAdapter;
     private List<Vehicle> vehicleList;
@@ -55,6 +62,7 @@ public class VehicleFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+
         // Set status bar color
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = requireActivity().getWindow();
@@ -62,13 +70,15 @@ public class VehicleFragment extends Fragment {
             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.TRANSPARENT);
-
-
         }
 
+
+        loadingDialog = new LoadingDialog(getActivity());
         View view = inflater.inflate(R.layout.fragment_vehicle, container, false);
+
         rvVehicles = view.findViewById(R.id.rvVehicles);
         rvVehicles.setLayoutManager(new LinearLayoutManager(getContext()));
+
         tv_share_code = view.findViewById(R.id.tv_share_code);
         btn_copy_code = view.findViewById(R.id.btn_copy_code);
         btnSharedVehicles = view.findViewById(R.id.btnSharedVehicles);
@@ -78,7 +88,7 @@ public class VehicleFragment extends Fragment {
             AddVehicleDialog.show(getContext(), new AddVehicleDialog.AddVehicleListener() {
                 @Override
                 public void onRegisterMyVehicle() {
-                    Intent intent = new Intent(requireContext(), RegisterPhase3Fragment.class);
+                    Intent intent = new Intent(requireContext(), RegisterPhase3Activity.class);
                     startActivity(intent);
                 }
 
@@ -128,6 +138,7 @@ public class VehicleFragment extends Fragment {
         vehicleApi.getListVehicles().enqueue(new Callback<List<Vehicle>>() {
             @Override
             public void onResponse(Call<List<Vehicle>> call, Response<List<Vehicle>> response) {
+
                 if (!isAdded() || getContext() == null) return;
                 if (response.isSuccessful() && response.body() != null) {
                     vehicleList = response.body();
@@ -147,56 +158,71 @@ public class VehicleFragment extends Fragment {
 //            DummyData dataSample = new DummyData();
 //            RecyclerUtils.updateRecyclerView(rvVehicles, dataSample.getSampleVehicles());
 
-        //btn Myvehicle
-        btnMyVehicles.setOnClickListener(v -> {
-            updateToggle(true);
-            vehicleApi.getListVehicles().enqueue(new Callback<List<Vehicle>>() {
-                @Override
-                public void onResponse(Call<List<Vehicle>> call, Response<List<Vehicle>> response) {
-                    if (!isAdded() || getContext() == null) return;
-                    if (response.isSuccessful() && response.body() != null) {
-                        vehicleList = response.body();
-                        RecyclerUtils.updateRecyclerView(rvVehicles, vehicleList);
-                    } else {
-                        tv_share_code.setText(getString(R.string.error_code, response.code()));
-                    }
+        MaterialButtonToggleGroup toggleTabs = view.findViewById(R.id.toggleTabs);
+
+        toggleTabs.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+            if (isChecked) {
+                if (checkedId == R.id.btnMyVehicles) {
+                    Call<List<Vehicle>> call = vehicleApi.getListVehicles();
+                    loadingDialog.show("Loading vehicles...", true, () -> {
+                        // Cancel the API call here
+                        if (call != null) {
+                            call.cancel();
+                        }
+                        Toast.makeText(getActivity(), "Loading cancelled", Toast.LENGTH_SHORT).show();
+                    });
+                    // Load my vehicles
+                    call.enqueue(new Callback<List<Vehicle>>() {
+                        @Override
+                        public void onResponse(Call<List<Vehicle>> call, Response<List<Vehicle>> response) {
+                            if (!isAdded() || getContext() == null) return;
+                            if (response.isSuccessful() && response.body() != null) {
+                                vehicleList = response.body();
+                                RecyclerUtils.updateRecyclerView(rvVehicles, vehicleList);
+                            } else {
+                                tv_share_code.setText(getString(R.string.error_code, response.code()));
+                            }
+                            loadingDialog.hide();
+                        }
+                        @Override
+                        public void onFailure(Call<List<Vehicle>> call, Throwable t) {
+                            if (!isAdded() || getContext() == null) return;
+                            tv_share_code.setText(getString(R.string.connection_error, t.getMessage()));
+                            loadingDialog.hide();
+                        }
+                    });
+                } else if (checkedId == R.id.btnSharedVehicles) {
+                    Call<List<Vehicle>> call = vehicleApi.getMySharedVehicles();
+                    loadingDialog.show("Loading vehicles...", true, () -> {
+                        // Cancel the API call here
+                        if (call != null) {
+                            call.cancel();
+                        }
+                        Toast.makeText(getActivity(), "Loading cancelled", Toast.LENGTH_SHORT).show();
+                    });
+                    // Load shared vehicles
+                    vehicleApi.getMySharedVehicles().enqueue(new Callback<List<Vehicle>>() {
+                        @Override
+                        public void onResponse(Call<List<Vehicle>> call, Response<List<Vehicle>> response) {
+                            if (!isAdded() || getContext() == null) return;
+                            if (response.isSuccessful() && response.body() != null) {
+                                vehicleList = response.body();
+                                RecyclerUtils.updateRecyclerView(rvVehicles, vehicleList);
+                            } else {
+                                tv_share_code.setText(getString(R.string.error_code, response.code()));
+                            }
+                            loadingDialog.hide();
+                        }
+                        @Override
+                        public void onFailure(Call<List<Vehicle>> call, Throwable t) {
+                            if (!isAdded() || getContext() == null) return;
+                            Log.i("Check", "onFailure:" + t.getMessage());
+                            tv_share_code.setText(getString(R.string.connection_error, t.getMessage()));
+                            loadingDialog.hide();
+                        }
+                    });
                 }
-
-                @Override
-                public void onFailure(Call<List<Vehicle>> call, Throwable t) {
-                    if (!isAdded() || getContext() == null) return;
-                    tv_share_code.setText(getString(R.string.connection_error, t.getMessage()));
-                }
-            });
-//                RecyclerUtils.updateRecyclerView(rvVehicles, dataSample.getSampleVehicles());
-
-        });
-
-        //btn shared vehicle
-        btnSharedVehicles.setOnClickListener(v -> {
-            updateToggle(false);
-            vehicleApi.getMySharedVehicles().enqueue(new Callback<List<Vehicle>>() {
-                @Override
-                public void onResponse(Call<List<Vehicle>> call, Response<List<Vehicle>> response) {
-                    if (!isAdded() || getContext() == null) return;
-                    if (response.isSuccessful() && response.body() != null) {
-                        vehicleList = response.body();
-                        RecyclerUtils.updateRecyclerView(rvVehicles, vehicleList);
-                    } else {
-                        tv_share_code.setText(getString(R.string.error_code, response.code()));
-                    }
-                }
-
-                @Override
-                public void onFailure(Call<List<Vehicle>> call, Throwable t) {
-                    if (!isAdded() || getContext() == null) return;
-                    Log.i("Check", "onFailure:" + t.getMessage());
-                    tv_share_code.setText(getString(R.string.connection_error, t.getMessage()));
-                }
-            });
-//                RecyclerUtils.updateRecyclerView(rvVehicles, dataSample.getSampleVehicles2());
-
-
+            }
         });
     }
 

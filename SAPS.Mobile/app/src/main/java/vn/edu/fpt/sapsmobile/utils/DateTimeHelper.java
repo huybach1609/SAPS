@@ -31,10 +31,14 @@ public class DateTimeHelper {
         if (input == null || input.trim().isEmpty()) return "";
 
         LocalDateTime dt = tryParseToLocalDateTime(input);
-        if (dt == null) return input; // hoặc return "" / "—" tùy ý
+        if (dt == null) return input; // or "", or "—"
 
-        return dt.format(OUTPUT_FORMAT);
+        // Pattern without hardcoded language words
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm, dd MMMM yyyy", Locale.getDefault());
+
+        return dt.format(formatter);
     }
+
 
     /**
      * Trả về duration giữa entry và exit theo format "Xh Ym".

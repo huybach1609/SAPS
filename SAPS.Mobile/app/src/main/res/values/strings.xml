@@ -41,6 +41,8 @@
         <item>Last 3 months</item>
         <item>Last year</item>
     </string-array>
+    <string name="history_session_filter">Filter</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <!-- Group & Logo -->
@@ -56,7 +58,7 @@
     <!-- Buttons -->
     <string name="btn_check_out">Check Out</string>
     <!-- Header / Title -->
-    <string name="title_my_vehicles">🚗 My Vehicles</string>
+    <string name="title_my_vehicles">My Vehicles</string>
     <string name="btn_add_vehicle">+ Add Vehicle</string>
     <string name="btn_add_vehicle_desc">Thêm xe mới</string>
 
@@ -64,12 +66,12 @@
     <string name="label_share_code">🔑 Your Share Code</string>
     <string name="example_share_code">USER-JOHN2025</string>
     <string name="share_code_description">Give this code to vehicle owners to grant you access to their vehicles.</string>
-    <string name="btn_copy_my_share_code">📋 Copy My Share Code</string>
+    <string name="btn_copy_my_share_code">Copy My Share Code</string>
     <string name="btn_copy_share_code_desc">Sao chép mã chia sẻ</string>
 
     <!-- Tabs -->
-    <string name="tab_my_vehicles">Xe của tôi</string>
-    <string name="tab_shared_vehicles">Xe được chia sẻ</string>
+    <string name="tab_my_vehicles">My Car</string>
+    <string name="tab_shared_vehicles">Shared Cars</string>
 
     <!-- Content descriptions -->
     <string name="cd_share_code_card">Thẻ mã chia sẻ</string>
@@ -319,4 +321,9 @@
     <string name="change_password_new_password_hint">New password</string>
     <string name="profile_fragment_notifications_header">Notifications</string>
     <string name="home_welcome_back">Welcome back</string>
+    <string name="parking_lot_session_heading_bar">Parking Lot Session</string>
+    <string name="home_fragment_hello">Hello %1$s</string>
+    <string name="share_vehicle_access_subheader">Grant parking access to someone else</string>
+    <string name="profile_fragment_please_verify_account_messsage">Please verify your account</string>
+
 </resources>

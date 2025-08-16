@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -89,6 +90,7 @@ public class ProfileFragment extends Fragment {
     private void initializeActivity() {
         mainActivity = (MainActivity) requireActivity();
         user = mainActivity.getTokenManager().getUserData();
+        Log.i("check", "initializeActivity: " + user);
     }
 
     private void initializeViews(View view) {
@@ -129,7 +131,9 @@ public class ProfileFragment extends Fragment {
         setTextSafely(profileEmail, user.getEmail());
         setTextSafely(phone, user.getPhone());
 
+
         loadProfileImage(user.getProfileImageUrl());
+
         setupVerificationStatus();
         setupProfileInformation();
         setupMemberSince();
@@ -184,7 +188,9 @@ public class ProfileFragment extends Fragment {
         setTextSafely(profileName, NOT_AVAILABLE);
         setTextSafely(profileEmail, NOT_AVAILABLE);
         setTextSafely(phone, NOT_AVAILABLE);
+
         profileImageView.setImageResource(R.drawable.account_circle_24);
+
         verifyIcon.setVisibility(View.GONE);
         verifyText.setVisibility(View.VISIBLE);
         setDefaultProfileInformation();
@@ -212,17 +218,18 @@ public class ProfileFragment extends Fragment {
     }
 
     private void loadProfileImage(String profileUrl) {
-        if (profileImageView == null) return;
-
-        if (isValidUrl(profileUrl)) {
-            Glide.with(this)
-                    .load(profileUrl)
-                    .apply(new RequestOptions()
-                            .placeholder(R.drawable.account_circle_24)
-                            .error(R.drawable.account_circle_24))
-                    .into(profileImageView);
-        } else {
-            profileImageView.setImageResource(R.drawable.account_circle_24);
+        if (profileImageView != null) {
+            if (profileUrl != null && !profileUrl.isEmpty()) {
+                Log.i("ProfileImage", profileUrl);
+                Glide.with(this)
+                        .load(user.getProfileImageUrl())
+                        .placeholder(R.drawable.ic_person)
+                        .error(R.drawable.ic_person)
+                        .circleCrop()
+                        .into(profileImageView);
+            } else {
+                profileImageView.setImageResource(R.drawable.ic_person);
+            }
         }
     }
 

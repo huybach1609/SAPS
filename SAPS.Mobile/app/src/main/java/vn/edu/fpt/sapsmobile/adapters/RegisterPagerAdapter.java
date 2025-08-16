@@ -7,7 +7,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import vn.edu.fpt.sapsmobile.fragments.RegisterPhase1Fragment;
 import vn.edu.fpt.sapsmobile.fragments.RegisterPhase2Fragment;
-import vn.edu.fpt.sapsmobile.fragments.RegisterPhase3Fragment;
+import vn.edu.fpt.sapsmobile.activities.auth.RegisterPhase3Activity;
 
 public class RegisterPagerAdapter extends FragmentStateAdapter {
 
@@ -21,7 +21,6 @@ public class RegisterPagerAdapter extends FragmentStateAdapter {
         switch (position) {
             case 0: return new RegisterPhase1Fragment();
             case 1: return new RegisterPhase2Fragment();
-            case 2: return new RegisterPhase3Fragment();
             default: return new RegisterPhase1Fragment();
         }
     }
