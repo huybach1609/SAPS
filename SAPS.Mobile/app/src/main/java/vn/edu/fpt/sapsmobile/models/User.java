@@ -143,6 +143,9 @@ public class User implements Serializable {
     @SerializedName("fullName")
     private String fullName;
 
+    @SerializedName("phoneNumber")
+    private String phoneNumber;
+
     @SerializedName("phone")
     private String phone;
 
@@ -152,12 +155,20 @@ public class User implements Serializable {
     @SerializedName("profileImageUrl")
     private String profileImageUrl;
 
+    @SerializedName("status")
+    private String status;
+
+    @SerializedName("googleId")
+    private String googleId;
+
     @SerializedName("isActive")
     private boolean isActive;
 
     @SerializedName("createdAt")
     private Date createdAt;
 
+    @SerializedName("updatedAt")
+    private Date updatedAt;
 
     @SerializedName("clientProfile")
     private ClientProfile clientProfile;
@@ -205,6 +216,14 @@ public class User implements Serializable {
         this.fullName = fullName;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     public String getPhone() {
         return phone;
     }
@@ -229,6 +248,22 @@ public class User implements Serializable {
         this.profileImageUrl = profileImageUrl;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getGoogleId() {
+        return googleId;
+    }
+
+    public void setGoogleId(String googleId) {
+        this.googleId = googleId;
+    }
+
     public boolean isActive() {
         return isActive;
     }
@@ -245,7 +280,13 @@ public class User implements Serializable {
         this.createdAt = createdAt;
     }
 
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
 
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
     public ClientProfile getClientProfile() {
         return clientProfile;
@@ -264,11 +305,15 @@ public class User implements Serializable {
                 ", email='" + email + '\'' +
                 ", role='" + role + '\'' +
                 ", fullName='" + fullName + '\'' +
+                ", phoneNumber='" + phoneNumber + '\'' +
                 ", phone='" + phone + '\'' +
                 ", address='" + address + '\'' +
                 ", profileImageUrl='" + profileImageUrl + '\'' +
+                ", status='" + status + '\'' +
+                ", googleId='" + googleId + '\'' +
                 ", isActive=" + isActive +
                 ", createdAt=" + createdAt +
+                ", updatedAt=" + updatedAt +
                 '}';
     }
 }

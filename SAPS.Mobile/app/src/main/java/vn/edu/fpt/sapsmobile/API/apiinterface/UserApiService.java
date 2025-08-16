@@ -4,13 +4,14 @@ import retrofit2.http.Body;
 import retrofit2.http.GET;
 
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import vn.edu.fpt.sapsmobile.models.ChangePasswordRequest;
-import vn.edu.fpt.sapsmobile.models.ParkingLot;
+import vn.edu.fpt.sapsmobile.models.User;
 public interface UserApiService {
-    @GET("/user/{userID}")
-    Call<ParkingLot> getUserById(@Path("userID") String userID);
+    @GET("/api/user/{userID}")
+    Call<User> getUserById(@Path("userID") String userID);
 
-    @POST("api/user/change-password")
+    @PUT("api/password")
     Call<Void> changePassword(@Body ChangePasswordRequest request);
 }

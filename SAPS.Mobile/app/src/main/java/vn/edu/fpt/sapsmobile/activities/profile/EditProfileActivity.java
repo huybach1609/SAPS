@@ -20,9 +20,13 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -34,6 +38,7 @@ import vn.edu.fpt.sapsmobile.API.ApiTest;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.models.ClientProfile;
 import vn.edu.fpt.sapsmobile.models.IdCardResponse;
+import vn.edu.fpt.sapsmobile.models.UpdateClientProfileRequest;
 import vn.edu.fpt.sapsmobile.models.User;
 import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
 import vn.edu.fpt.sapsmobile.utils.TokenManager;
@@ -44,10 +49,10 @@ public class EditProfileActivity extends AppCompatActivity {
     private TextView nameInput, idNoInput, sexInput,
             nationalityInput, dobInput, placeOriginInput,
             placeResidenceInput, issueDateInput, issuePlaceInput;
-    private Button saveButton;
+    private Button saveButton, btnFetchAgain;
     private TokenManager tokenManager;
     private User currentUser;
-    private ImageView previewImage;
+    private ImageView previewImage, previewImageBack;
 
     private LoadingDialog loadingDialog;
 
@@ -96,7 +101,9 @@ public class EditProfileActivity extends AppCompatActivity {
         issuePlaceInput = findViewById(R.id.input_issue_place);   // TextView
 
         saveButton = findViewById(R.id.btn_save_profile);
+        btnFetchAgain = findViewById(R.id.btn_fetchdata_again);
         previewImage = findViewById(R.id.preview_image);
+        previewImageBack = findViewById(R.id.preview_image_back);
     }
 
     private void loadUserAndFill() {
@@ -107,47 +114,127 @@ public class EditProfileActivity extends AppCompatActivity {
             return;
         }
 
-        // Ensure ClientProfile is never null while we’re on this screen.
+        // Ensure ClientProfile is never null while we're on this screen.
         ensureClientProfile(currentUser);
 
         // Fill UI (all getters are null-safe via getOrEmpty / safe reads)
         nameInput.setText(getOrEmpty(currentUser.getFullName()));
         phoneInput.setText(getOrEmpty(currentUser.getPhone()));
 
-        ClientProfile cp = currentUser.getClientProfile();
-        idNoInput.setText(getOrEmpty(cp.getCitizenId()));
-        sexInput.setText(getOrEmpty(cp.getSexDisplay())); // assumes your model returns "Nam"/"Nữ"
-        nationalityInput.setText(getOrEmpty(cp.getNationality()));
-        dobInput.setText(getOrEmpty(cp.getDateOfBirth()));
-        placeOriginInput.setText(getOrEmpty(cp.getPlaceOfOrigin()));
-        placeResidenceInput.setText(getOrEmpty(cp.getPlaceOfResidence()));
+            ClientProfile cp = currentUser.getClientProfile();
+            idNoInput.setText(getOrEmpty(cp.getCitizenId()));
+            sexInput.setText(getOrEmpty(cp.getSexDisplay())); // assumes your model returns "Nam"/"Nữ"
+            nationalityInput.setText(getOrEmpty(cp.getNationality()));
+            dobInput.setText(getOrEmpty(cp.getDateOfBirth()));
+            placeOriginInput.setText(getOrEmpty(cp.getPlaceOfOrigin()));
+            placeResidenceInput.setText(getOrEmpty(cp.getPlaceOfResidence()));
 
-        // If you later add these fields to ClientProfile, just map them here
-        // issueDateInput.setText(getOrEmpty(cp.getIssueDate()));
-        // issuePlaceInput.setText(getOrEmpty(cp.getIssuePlace()));
+
+
+    }
+
+    private void fetchPutClientProfile() {
+        if (currentUser == null) return;
+        
+        // Show loading dialog
+        loadingDialog.show("Updating profile...");
+        
+        // Check if we have ID card images to upload
+        if (frontImageUri != null && backImageUri != null) {
+            // Use multipart upload with images
+            uploadProfileWithImages();
+        } else {
+            Toast.makeText(this, "Please upload Image", Toast.LENGTH_SHORT).show();
+            // Use simple JSON upload without images
+//            uploadProfileWithoutImages();
+        }
+    }
+    
+    private void uploadProfileWithImages() {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            try {
+                // Heavy work on background thread
+                byte[] frontBytes = readAllBytesFromUri(frontImageUri);
+                byte[] backBytes = readAllBytesFromUri(backImageUri);
+
+                // Continue with API call on main thread
+                runOnUiThread(() -> {
+                    RequestBody frontBody = RequestBody.create(frontBytes, MediaType.parse("image/jpeg"));
+                    RequestBody backBody = RequestBody.create(backBytes, MediaType.parse("image/jpeg"));
+
+                    MultipartBody.Part frontPart = MultipartBody.Part.createFormData("frontIdCardImage", "front.jpg", frontBody);
+                    MultipartBody.Part backPart = MultipartBody.Part.createFormData("backIdCardImage", "back.jpg", backBody);
+
+                    ApiService apiService = ApiTest.getServiceLast(this).create(ApiService.class);
+                    retrofit2.Call<User> call = apiService.updateClientProfileWithImages(
+                            frontPart, backPart,
+                            getText(nameInput),
+                            getText(phoneInput),
+                            getText(idNoInput),
+                            getText(dobInput),
+                            "Nam".equalsIgnoreCase(getText(sexInput)),
+                            getText(nationalityInput),
+                            getText(placeOriginInput),
+                            getText(placeResidenceInput)
+                    );
+
+                    call.enqueue(new retrofit2.Callback<User>() {
+                        @Override
+                        public void onResponse(retrofit2.Call<User> call, retrofit2.Response<User> response) {
+                            loadingDialog.hide();
+
+                            if (response.isSuccessful() && response.body() != null) {
+                                User updatedUser = response.body();
+                                tokenManager.saveUserData(updatedUser);
+                                Toast.makeText(EditProfileActivity.this, "Profile updated successfully!", Toast.LENGTH_SHORT).show();
+                                finish();
+                            } else {
+                                String errorMessage = "Failed to update profile";
+                                if (response.code() == 400) {
+                                    errorMessage = "Invalid data provided";
+                                } else if (response.code() == 401) {
+                                    errorMessage = "Unauthorized. Please login again.";
+                                } else if (response.code() == 500) {
+                                    errorMessage = "Server error occurred";
+                                }
+                                Toast.makeText(EditProfileActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+                                Log.e("PROFILE_UPDATE_ERROR", "Code: " + response.code() + ", Message: " + response.message());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(retrofit2.Call<User> call, Throwable t) {
+                            loadingDialog.hide();
+                            String errorMessage = "Network error occurred";
+                            if (t instanceof java.net.SocketTimeoutException) {
+                                errorMessage = "Request timed out. Please try again.";
+                            } else if (t.getMessage() != null && t.getMessage().contains("Broken pipe")) {
+                                errorMessage = "Connection lost. Please check your internet and try again.";
+                            } else if (t instanceof java.net.ConnectException) {
+                                errorMessage = "Cannot connect to server. Please check your connection.";
+                            }
+                            Toast.makeText(EditProfileActivity.this, errorMessage, Toast.LENGTH_LONG).show();
+                            Log.e("PROFILE_UPDATE_ERROR", "Error updating profile: " + t.getMessage(), t);
+                        }
+                    });
+                });
+
+            } catch (IOException e) {
+                runOnUiThread(() -> {
+                    loadingDialog.hide();
+                    Log.e("PROFILE_UPDATE_ERROR", "Error reading images: " + e.getMessage(), e);
+                    Toast.makeText(EditProfileActivity.this, "Error reading images", Toast.LENGTH_SHORT).show();
+                });
+            } finally {
+                executor.shutdown();
+            }
+        });
     }
 
     private void setupButtons() {
         saveButton.setOnClickListener(v -> {
-            if (currentUser == null) return;
-            ensureClientProfile(currentUser);
-            ClientProfile cp = currentUser.getClientProfile();
-
-            currentUser.setFullName(getText(nameInput));
-            currentUser.setPhone(getText(phoneInput));
-
-            cp.setCitizenId(getText(idNoInput));
-            cp.setSex("Nam".equalsIgnoreCase(getText(sexInput))); // adjust to your logic
-            cp.setNationality(getText(nationalityInput));
-            cp.setDateOfBirth(getText(dobInput));
-            cp.setPlaceOfOrigin(getText(placeOriginInput));
-            cp.setPlaceOfResidence(getText(placeResidenceInput));
-            // cp.setIssueDate(getText(issueDateInput));
-            // cp.setIssuePlace(getText(issuePlaceInput));
-
-            tokenManager.saveUserData(currentUser);
-            Toast.makeText(this, "Profile updated!", Toast.LENGTH_SHORT).show();
-            finish();
+            fetchPutClientProfile();
         });
 
         Button btnTakePhoto = findViewById(R.id.btn_take_photo);
@@ -157,6 +244,14 @@ public class EditProfileActivity extends AppCompatActivity {
         btnTakePhoto.setOnClickListener(v -> openCamera());
         btnPickFront.setOnClickListener(v -> pickPhoto(REQUEST_PICK_FRONT));
         btnPickBack.setOnClickListener(v -> pickPhoto(REQUEST_PICK_BACK));
+
+        btnFetchAgain.setOnClickListener(v -> {
+            if (frontImageUri != null && backImageUri != null) {
+                uploadBothImagesToServer(frontImageUri, backImageUri);
+            } else {
+                Toast.makeText(this, "Vui lòng chọn cả 2 mặt trước và sau của căn cước công dân", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void ensureClientProfile(User user) {
@@ -174,8 +269,13 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void pickPhoto(int requestCode) {
-        Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(pickPhoto, requestCode);
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE); // Only pick files you can open
+        intent.setType("*/*"); // Allow any file type
+//        startActivityForResult(intent, REQUEST_PICK_FRONT);
+
+//        Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intent, requestCode);
     }
 
     private void openCamera() {
@@ -195,15 +295,20 @@ public class EditProfileActivity extends AppCompatActivity {
         Uri imageUri = data.getData();
         if (requestCode == REQUEST_PICK_FRONT) {
             frontImageUri = imageUri;
-            previewImage.setImageURI(frontImageUri);
+            // Use Glide for optimized image loading
+            Glide.with(this)
+                    .load(frontImageUri)
+                    .override(800, 600) // Resize to reasonable dimensions
+                    .into(previewImage);
             previewImage.setVisibility(View.VISIBLE);
         } else if (requestCode == REQUEST_PICK_BACK) {
             backImageUri = imageUri;
-            ImageView previewBack = findViewById(R.id.preview_image_back);
-            if (previewBack != null) {
-                previewBack.setImageURI(backImageUri);
-                previewBack.setVisibility(View.VISIBLE);
-            }
+            // Use Glide for optimized image loading
+            Glide.with(this)
+                    .load(backImageUri)
+                    .override(800, 600) // Resize to reasonable dimensions
+                    .into(previewImageBack);
+            previewImageBack.setVisibility(View.VISIBLE);
         }
 
         if (frontImageUri != null && backImageUri != null) {
@@ -213,19 +318,31 @@ public class EditProfileActivity extends AppCompatActivity {
         }
     }
 
+    //region ID Card upload Image
     private void uploadBothImagesToServer(Uri frontUri, Uri backUri) {
-        try {
-            loadingDialog.show("Uploading ID card images...");
+        loadingDialog.show("Uploading ID card images...");
 
-            byte[] frontBytes = compressImage(frontUri);
-            byte[] backBytes = compressImage(backUri);
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        executor.execute(() -> {
+            try {
+                // Heavy work on background thread
+                byte[] frontBytes = readAllBytesFromUri(frontUri);
+                byte[] backBytes = readAllBytesFromUri(backUri);
 
-            if (frontBytes == null || backBytes == null) {
-                loadingDialog.hide();
-                Toast.makeText(this, "Unable to read selected images.", Toast.LENGTH_LONG).show();
-                return;
+                // Continue with API call on main thread
+                runOnUiThread(() -> fetchOcrData(frontBytes, backBytes));
+
+            } catch (IOException e) {
+                runOnUiThread(() -> handleError(e));
+            } finally {
+                executor.shutdown(); // Clean up the executor
             }
+        });
+    }
 
+
+    private void fetchOcrData(byte[] frontBytes, byte[] backBytes) {
+        try {
             RequestBody frontBody = RequestBody.create(frontBytes, MediaType.parse("image/jpeg"));
             RequestBody backBody = RequestBody.create(backBytes, MediaType.parse("image/jpeg"));
 
@@ -245,6 +362,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         fillFromOcr(idCard);
                         saveButton.setEnabled(true);
                         Toast.makeText(EditProfileActivity.this, "Auto-filled from ID card", Toast.LENGTH_SHORT).show();
+                        Log.i("check", "onResponse: " + response.body());
                     } else {
                         String errorMessage = "OCR failed";
                         if (response.code() == 400) errorMessage = "Invalid image format";
@@ -270,17 +388,22 @@ public class EditProfileActivity extends AppCompatActivity {
                     Log.e("OCR_UPLOAD_ERROR", "Error uploading images: " + t.getMessage(), t);
                 }
             });
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Error reading images", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
             loadingDialog.hide();
-            Log.e("OCR_UPLOAD_ERROR", "IOException in uploadBothImagesToServer", e);
+            Log.e("OCR_API_ERROR", "Error creating API call: " + e.getMessage());
+            Toast.makeText(EditProfileActivity.this, "Error preparing upload", Toast.LENGTH_SHORT).show();
         }
     }
 
+    private void handleError(IOException e) {
+        loadingDialog.hide();
+        Log.e("OCR_IO_ERROR", e.getMessage(), e);
+        Toast.makeText(EditProfileActivity.this, "Error reading images", Toast.LENGTH_SHORT).show();
+    }
+    //endregion
+
     private void fillFromOcr(IdCardResponse idCard) {
-        // Defensive: don’t assume any field exists
+        // Defensive: don't assume any field exists
         nameInput.setText(getOrEmpty(idCard.getName()));
         dobInput.setText(getOrEmpty(idCard.getDateOfBirth()));
         phoneInput.setText(getOrEmpty(idCard.getPhone()));
@@ -293,20 +416,18 @@ public class EditProfileActivity extends AppCompatActivity {
         issuePlaceInput.setText(getOrEmpty(idCard.getIssuePlace()));
     }
 
-    // Returns null if decoding failed, otherwise compressed bytes
-    private byte[] compressImage(Uri uri) throws IOException {
-        if (uri == null) return null;
-        InputStream inputStream = getContentResolver().openInputStream(uri);
-        if (inputStream == null) return null;
+    private byte[] readAllBytesFromUri(Uri uri) throws IOException {
+        // Compress image before reading
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 2; // Reduce size by half
+        options.inJustDecodeBounds = false;
 
-        Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-        inputStream.close();
-
-        if (bitmap == null) return null;
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream);
-        return outputStream.toByteArray();
+        try (InputStream is = getContentResolver().openInputStream(uri)) {
+            Bitmap bitmap = BitmapFactory.decodeStream(is, null, options);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos); // 80% quality
+            return baos.toByteArray();
+        }
     }
 
     @Override

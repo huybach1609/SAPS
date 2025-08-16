@@ -19,7 +19,7 @@ public interface ParkingSessionApiService {
     Call<List<ParkingSession>> getParkingSessionListLastYear();
     @GET("/getParkingSessionOf5VehicleLastest")
     Call<List<ParkingSession>> getParkingSessionOf5VehicleLastest();
-    @GET("/parkingsessionLastestVehicleParking")
-    Call<ParkingSession> getParkingSessionLastestVehicleParking();
+    @GET("/parkingSession/{userId}/LastestVehicleParking")
+    Call<ParkingSession> getParkingSessionLastestVehicleParking(@Path("userId") String userId);
 
 }
