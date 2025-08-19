@@ -41,6 +41,16 @@
     <!-- Tabs -->
     <string name="tab_my_vehicles">Xe của tôi</string>
     <string name="tab_shared_vehicles">Xe được chia sẻ</string>
+    <string name="no_code_to_copy">empty\n</string>
+    <string name="add_vehicle_action_bar_header">Add New Vehicle</string>
+    <string name="activity_check_out_not_available">Parking session data is not available</string>
+    <string name="payement_activity_payment_detail_display">Chi tiết thanh toán</string>
+    <string name="payment_activity_display_amount">Amount</string>
+    <string name="payment_activity_content_description_account_number">Số tài khoản</string>
+    <string name="payment_activity_display_account_number">Account Number</string>
+    <string name="payment_activity_content_description_account_name">icon account name</string>
+    <string name="payment_activity_display_account_name">Account Name</string>
+    <string name="payment_activity_display_reference_code">Description</string>
 
     <string-array name="payment_methods">
         <item>Chuyển khoản</item>

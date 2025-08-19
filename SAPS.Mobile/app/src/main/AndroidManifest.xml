@@ -31,12 +31,14 @@
             android:exported="false" />
         <activity
             android:name=".activities.sharevehicle.ShareVehicleAccessActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.SAPSMobile.ActionBar"
+
+            />
         <activity
             android:name=".activities.ParkingHistoryDetailsActivity"
             android:exported="false"
-            android:theme="@style/Theme.SAPSMobile.ActionBar"
-            />
+            android:theme="@style/Theme.SAPSMobile.ActionBar" />
         <activity
             android:name=".activities.checkout.PaymentResultActivity"
             android:exported="false" />
@@ -47,22 +49,30 @@
         <activity
             android:name=".activities.checkout.CheckoutActivity"
             android:exported="false"
-            android:parentActivityName=".activities.main.MainActivity" />
+            android:parentActivityName=".activities.main.MainActivity"
+            android:theme="@style/Theme.SAPSMobile"
+            />
         <activity android:name=".activities.auth.LoginActivity" />
         <activity android:name=".activities.auth.WelcomeActivity" />
         <activity android:name=".activities.auth.RegisterActivity" />
 
-        <activity android:name=".activities.profile.EditProfileActivity"
-            android:theme="@style/Theme.SAPSMobile.ActionBar"
-            />
+        <activity
+            android:name=".activities.profile.EditProfileActivity"
+            android:theme="@style/Theme.SAPSMobile.ActionBar" />
         <activity
             android:name=".activities.NotificationsListActivity"
             android:label="Notifications List Screen"
-            android:theme="@style/Theme.SAPSMobile.ActionBar"
-            />
+            android:theme="@style/Theme.SAPSMobile.ActionBar" />
         <activity
             android:name=".activities.profile.ChangePasswordActivity"
             android:label="Change Password Screen"
+            android:theme="@style/Theme.SAPSMobile.ActionBar"
+
+            />
+
+        <activity
+            android:name=".activities.auth.AddVehicleActivity"
+            android:label="Add vehicle"
             android:theme="@style/Theme.SAPSMobile.ActionBar"
 
             />

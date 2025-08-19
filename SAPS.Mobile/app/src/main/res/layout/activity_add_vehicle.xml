@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:clipToPadding="false">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingTop="30dp"
+        android:paddingBottom="30dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
+
+<!--        <TextView-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Register your vehicle information"-->
+<!--            android:textSize="14sp"-->
+<!--            android:textColor="@color/md_theme_onSecondary"-->
+<!--            android:gravity="start"-->
+<!--            android:layout_marginBottom="20dp" />-->
+
+        <!-- Upload Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@drawable/rounded_alert_background"
+            android:backgroundTint="@color/md_theme_onPrimaryContainer"
+            android:padding="20dp"
+            android:layout_marginBottom="20dp"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="📄"
+                android:textSize="40sp"
+                android:textColor="@color/md_theme_primary"
+                android:gravity="center"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Upload Vehicle Registration"
+                android:textColor="@color/md_theme_primary"
+                android:textSize="16sp"
+                android:layout_marginTop="10dp"
+                android:gravity="center" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Take a photo or select from gallery to update your information"
+                android:textSize="13sp"
+                android:textColor="@color/md_theme_onSecondary"
+                android:layout_marginTop="5dp"
+                android:gravity="center" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="10dp">
+
+                <Button
+                    android:id="@+id/btn_take_photo_vehicle"
+                    style="@style/Widget.Material3.Button.Icon"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:icon="@drawable/photo_camera_24dp"
+                    android:text="Take Photo" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="5dp"
+                    android:gravity="center">
+
+                    <Button
+                        android:id="@+id/btn_pick_front_vehicle"
+                        style="@style/Widget.Material3.Button.TonalButton.Icon"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:icon="@drawable/id_card_24dp"
+                        android:text="Front Side"
+                        android:layout_marginEnd="2dp" />
+
+                    <Button
+                        android:id="@+id/btn_pick_back_vehicle"
+                        style="@style/Widget.Material3.Button.TonalButton.Icon"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        app:icon="@drawable/credit_card_24dp"
+                        android:text="Back Side"
+                        android:layout_marginStart="2dp" />
+
+                    <Button
+                        android:id="@+id/btn_fetchdata_again"
+                        style="@style/Widget.Material3.Button.IconButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        app:icon="@drawable/ic_retry"
+                        android:layout_marginLeft="2dp" />
+<!--                    <com.google.android.material.button.MaterialButton-->
+<!--                        android:id="@+id/btn_fetchdata_again"-->
+<!--                        style="@style/Widget.Material3.Button.TonalButton.Icon"-->
+<!--                        android:layout_width="40dp"-->
+<!--                        android:layout_height="40dp"-->
+<!--                        android:minWidth="0dp"-->
+<!--                        android:insetLeft="0dp"-->
+<!--                        android:insetRight="0dp"-->
+<!--                        android:paddingHorizontal="8dp"-->
+<!--                        app:icon="@drawable/ic_retry"-->
+<!--                        app:iconSize="18dp"-->
+<!--                        app:iconPadding="0dp"-->
+<!--                        app:cornerRadius="999dp"-->
+<!--                        android:layout_marginStart="2dp" />-->
+
+
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="15dp"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/preview_vehicle_image_front"
+                    android:layout_width="0dp"
+                    android:layout_height="180dp"
+                    android:layout_weight="1"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone"
+                    android:layout_marginEnd="5dp"
+                    android:background="@color/md_theme_outlineVariant" />
+
+                <ImageView
+                    android:id="@+id/preview_vehicle_image_back"
+                    android:layout_width="0dp"
+                    android:layout_height="180dp"
+                    android:layout_weight="1"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone"
+                    android:layout_marginStart="5dp"
+                    android:background="@color/md_theme_outlineVariant" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Auto-fill Fields -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="📋 Information will be auto-filled after vehicle registration upload"
+            android:textSize="12sp"
+            android:textColor="@color/md_theme_onSurface"
+            android:gravity="center"
+            android:layout_marginBottom="10dp"/>
+
+        <!-- Auto-filled fields -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/md_theme_surfaceContainerLow"
+            android:padding="10dp"
+            android:layout_marginBottom="20dp">
+
+            <!-- Owner's Name -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingStart="16dp"
+                    android:text="Owner's Full Name"
+                    android:textColor="@color/md_theme_onSecondaryContainer"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/input_owner_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:background="@android:color/transparent"
+                    android:enabled="false"
+                    android:gravity="end"
+                    android:paddingEnd="16dp"
+                    android:textColor="@color/md_theme_onSurface"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/md_theme_outlineVariant" />
+
+            <!-- License Plate -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingStart="16dp"
+                    android:text="License Plate Number"
+                    android:textColor="@color/md_theme_onSecondaryContainer"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/input_license_plate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:background="@android:color/transparent"
+                    android:enabled="false"
+                    android:gravity="end"
+                    android:paddingEnd="16dp"
+                    android:textColor="@color/md_theme_onSurface"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/md_theme_outlineVariant" />
+
+            <!-- Vehicle Model -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingStart="16dp"
+                    android:text="Vehicle Model"
+                    android:textColor="@color/md_theme_onSecondaryContainer"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/input_vehicle_model"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:background="@android:color/transparent"
+                    android:enabled="false"
+                    android:gravity="end"
+                    android:paddingEnd="16dp"
+                    android:textColor="@color/md_theme_onSurface"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/md_theme_outlineVariant" />
+
+            <!-- Vehicle Color -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingStart="16dp"
+                    android:text="Color"
+                    android:textColor="@color/md_theme_onSecondaryContainer"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/input_vehicle_color"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+
+                    android:background="@android:color/transparent"
+                    android:enabled="false"
+                    android:gravity="end"
+                    android:paddingEnd="16dp"
+                    android:textColor="@color/md_theme_onSurface"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/md_theme_outlineVariant" />
+
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/md_theme_outlineVariant" />
+
+            <!-- Brand -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingStart="16dp"
+                    android:text="Brand"
+                    android:textColor="@color/md_theme_onSecondaryContainer"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/input_vehicle_brand"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:background="@android:color/transparent"
+                    android:enabled="false"
+                    android:gravity="end"
+                    android:paddingEnd="16dp"
+                    android:textColor="@color/md_theme_onSurface"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/md_theme_outlineVariant" />
+
+            <!-- Engine Number -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingStart="16dp"
+                    android:text="Engine Number"
+                    android:textColor="@color/md_theme_onSecondaryContainer"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/input_engine_number"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:background="@android:color/transparent"
+                    android:enabled="false"
+                    android:gravity="end"
+                    android:paddingEnd="16dp"
+                    android:textColor="@color/md_theme_onSurface"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/md_theme_outlineVariant" />
+
+            <!-- Chassis Number -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingStart="16dp"
+                    android:text="Chassis Number"
+                    android:textColor="@color/md_theme_onSecondaryContainer"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/input_chassis_number"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:background="@android:color/transparent"
+                    android:enabled="false"
+                    android:gravity="end"
+                    android:paddingEnd="16dp"
+                    android:textColor="@color/md_theme_onSurface"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/md_theme_outlineVariant" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="✓ Auto-extracted from vehicle registration"
+                android:textColor="@color/md_theme_primary"
+                android:textSize="12sp"
+                android:gravity="end"
+                android:layout_marginTop="5dp" />
+        </LinearLayout>
+
+
+
+        <!-- Buttons -->
+        <Button
+            android:id="@+id/button_complete_registration"
+            style="@style/Widget.Material3.Button.ElevatedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Complete Registration"
+            android:backgroundTint="@color/md_theme_primaryContainer"
+            android:textColor="@color/md_theme_onPrimaryContainer" />
+
+<!--        <Button-->
+<!--            android:id="@+id/button_skip_phase"-->
+<!--            style="@style/Widget.Material3.Button.TonalButton"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="Can"-->
+<!--            android:layout_marginTop="10dp" />-->
+    </LinearLayout>
+</ScrollView>

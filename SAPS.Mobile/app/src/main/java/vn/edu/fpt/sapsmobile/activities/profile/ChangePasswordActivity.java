@@ -17,10 +17,9 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import vn.edu.fpt.sapsmobile.API.ApiClient;
-import vn.edu.fpt.sapsmobile.API.ApiTest;
-import vn.edu.fpt.sapsmobile.API.apiinterface.UserApiService;
-import vn.edu.fpt.sapsmobile.models.ChangePasswordRequest;
+import vn.edu.fpt.sapsmobile.network.client.ApiTest;
+import vn.edu.fpt.sapsmobile.network.service.UserApiService;
+import vn.edu.fpt.sapsmobile.dtos.ChangePasswordRequest;
 import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
 import vn.edu.fpt.sapsmobile.utils.TokenManager;
 

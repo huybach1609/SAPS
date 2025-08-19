@@ -1,5 +1,8 @@
 <resources>
     <style name="Theme.SAPSMobile" parent="Theme.Material3Expressive.Dark.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+
         <item name="colorPrimary">@color/md_theme_primary</item>
         <item name="colorOnPrimary">@color/md_theme_onPrimary</item>
         <item name="colorPrimaryContainer">@color/md_theme_primaryContainer</item>
@@ -95,6 +98,9 @@
         <item name="textAppearanceOverline">@style/TextAppearance.MyApp.LabelSmall</item>
     </style>
     <style name="Theme.SAPSMobile.ActionBar" parent="Theme.Material3Expressive.Dark">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+
         <item name="colorPrimary">@color/md_theme_primary</item>
         <item name="colorOnPrimary">@color/md_theme_onPrimary</item>
         <item name="colorPrimaryContainer">@color/md_theme_primaryContainer</item>

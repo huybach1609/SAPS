@@ -178,58 +178,10 @@ const ParkingHistoryStatistics: React.FC<{ parkingLotId: string }> = ({ parkingL
                     </div>
                 </div>
 
+
                 {/* Performance Statistics */}
-                <div className="bg-background-100/20 rounded-xl shadow-lg p-4 mb-8">
-                    <div className="flex items-center mb-6">
-                        <BarChart3 className="w-6 h-6 text-blue-600 mr-2" />
-                        <div className=" font-bold">Performance Statistics</div>
-                    </div>
-
-                    {/* Range Selector */}
-                    <div className="flex flex-wrap gap-2 mb-6">
-                        {rangeOptions.map((option) => (
-                            <button
-                                key={option.value}
-                                onClick={() => setSelectedRange(option.value)}
-                                className={`px-4 py-2 rounded-lg font-medium transition-colors ${selectedRange === option.value
-                                        ? 'bg-blue-600 text-white'
-                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                                    }`}
-                            >
-                                {option.label}
-                            </button>
-                        ))}
-                    </div>
-
-                    {/* Statistics Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div className="rounded-xl p-4 bg-background-100/70">
-                            <div className="text-2xl font-bold text-blue-900 mb-1">
-                                {statistics?.totalParkingSessions.toLocaleString() || '0'}
-                            </div>
-                            <div className="text-blue-700 text-sm">Total Parking Sessions</div>
-                        </div>
-                        <div className="rounded-xl p-4 bg-background-100/70">
-                            <div className="text-2xl font-bold text-blue-900 mb-1">
-                                {formatCurrency(statistics?.totalRevenue || 0)}
-                            </div>
-                            <div className="text-blue-700 text-sm">Total Revenue</div>
-                        </div>
-                        <div className="rounded-xl p-4 bg-background-100/70">
-                            <div className="text-2xl font-bold text-blue-900 mb-1">
-                                {statistics?.uniqueVehicles.toLocaleString() || '0'}
-                            </div>
-                            <div className="text-blue-700 text-sm">Unique Vehicles</div>
-                        </div>
-                        <div className="rounded-xl p-4 bg-background-100/70">
-                            <div className="text-2xl font-bold text-blue-900 mb-1">
-                                {formatDuration(statistics?.averageSessionTime || 0)}
-                            </div>
-                            <div className="text-blue-700 text-sm">Average Session Time</div>
-                        </div>
-                    </div>
-                </div>
-
+                
+               
                 {/* Peak Hours Analysis */}
                 <div className="bg-background-100/20 rounded-xl shadow-lg p-4">
                     <div className="flex items-center mb-6">

@@ -9,8 +9,6 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,33 +21,34 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import vn.edu.fpt.sapsmobile.API.ApiTest;
-import vn.edu.fpt.sapsmobile.API.apiinterface.ParkingLotApiService;
-import vn.edu.fpt.sapsmobile.API.apiinterface.ParkingSessionApiService;
+import vn.edu.fpt.sapsmobile.network.client.ApiTest;
+import vn.edu.fpt.sapsmobile.network.service.ParkingSessionApiService;
+import vn.edu.fpt.sapsmobile.network.service.IVehicleApi;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.actionhandler.HistoryFragmentHandler;
 import vn.edu.fpt.sapsmobile.activities.NotificationsListActivity;
-import vn.edu.fpt.sapsmobile.adapter.ParkingSessionAdapter;
-import vn.edu.fpt.sapsmobile.models.ParkingLot;
+import vn.edu.fpt.sapsmobile.adapters.ParkingSessionParkingAdapter;
 import vn.edu.fpt.sapsmobile.models.ParkingSession;
 import vn.edu.fpt.sapsmobile.models.User;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
-import vn.edu.fpt.sapsmobile.utils.DateTimeHelper;
+import vn.edu.fpt.sapsmobile.dtos.VehicleSummaryDto;
+import vn.edu.fpt.sapsmobile.dtos.OwnedSessionRequest;
+import vn.edu.fpt.sapsmobile.dtos.OwnedSessionResponse;
 import vn.edu.fpt.sapsmobile.utils.TokenManager;
 
 public class HomeFragment extends Fragment {
 
     // UI Components
-    private RecyclerView rvParkingHistory;
+//    private RecyclerView rvParkingHistory;
+    private RecyclerView rvCurrentSessions;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private TextView tvVehicle, tvLocation, tvEntryTime, tvDuration, tvGreating;
+    private TextView tvGreating;
     private Button btnCheckOut, btnNotification;
 
     private ImageView imageViewProfile;
@@ -57,16 +56,11 @@ public class HomeFragment extends Fragment {
     private TextView tvNoSessionMessage;
 
     // Data & Adapters
-    private ParkingSessionAdapter parkingSessionAdapter;
+    private ParkingSessionParkingAdapter parkingSessionAdapter;
     private List<ParkingSession> parkingSessionList;
-    private ParkingSession session;
-    private Vehicle vehicle;
-    private ParkingLot parkingLot;
+
     private TokenManager tokenManager;
 
-    // Timer for duration updates
-    private Handler durationHandler;
-    private Runnable durationRunnable;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -76,7 +70,6 @@ public class HomeFragment extends Fragment {
         setupStatusBar();
         setupSwipeRefresh(view);
         setupRecyclerView(view);
-        setupDurationTimer();
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
             ImageView bg = view.findViewById(R.id.bgImage);
@@ -101,7 +94,7 @@ public class HomeFragment extends Fragment {
 
     private void initializeComponents(View view) {
         tokenManager = new TokenManager(getActivity());
-        durationHandler = new Handler(Looper.getMainLooper());
+//        durationHandler = new Handler(Looper.getMainLooper());
     }
 
     private void setupStatusBar() {
@@ -125,36 +118,35 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupRecyclerView(View view) {
-        rvParkingHistory = view.findViewById(R.id.rvParkingHistory);
-        rvParkingHistory.setLayoutManager(new LinearLayoutManager(getContext()));
+        // current sessions list inside the card container
+        rvCurrentSessions = view.findViewById(R.id.rvCurrentSessions);
+        if (rvCurrentSessions != null) {
+            rvCurrentSessions.setLayoutManager(new LinearLayoutManager(getContext()));
+        }
 
-        parkingSessionAdapter = new ParkingSessionAdapter(
+        // keep history recycler reference (hidden in layout)
+//        rvParkingHistory = view.findViewById(R.id.rvParkingHistory);
+
+        parkingSessionAdapter = new ParkingSessionParkingAdapter(
                 new ArrayList<>(),
                 new HistoryFragmentHandler(requireContext()),
                 requireContext(),
                 "homeFragment"
         );
-        rvParkingHistory.setAdapter(parkingSessionAdapter);
+
+        if (rvCurrentSessions != null) {
+            rvCurrentSessions.setAdapter(parkingSessionAdapter);
+        }
+
     }
 
-    private void setupDurationTimer() {
-        durationRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if (session != null && tvDuration != null) {
-                    LocalDateTime now = LocalDateTime.now();
-                    tvDuration.setText(DateTimeHelper.calculateDuration(session.getEntryDateTime(), now.toString()));
-                }
-                durationHandler.postDelayed(this, 1000);
-            }
-        };
-    }
+
 
     private void findViews(View view) {
-        tvVehicle = view.findViewById(R.id.tvVehicle);
-        tvLocation = view.findViewById(R.id.tvLocation);
-        tvEntryTime = view.findViewById(R.id.tvEntryTime);
-        tvDuration = view.findViewById(R.id.tvDuration);
+//        tvVehicle = view.findViewById(R.id.tvVehicle);
+//        tvLocation = view.findViewById(R.id.tvLocation);
+//        tvEntryTime = view.findViewById(R.id.tvEntryTime);
+//        tvDuration = view.findViewById(R.id.tvDuration);
         btnCheckOut = view.findViewById(R.id.btnCheckOut);
         btnNotification = view.findViewById(R.id.btnNotification);
         tvGreating = view.findViewById(R.id.tvGreeting);
@@ -162,6 +154,7 @@ public class HomeFragment extends Fragment {
         parkingSessionContainer = view.findViewById(R.id.parkingSessionContainer);
         noSessionContainer = view.findViewById(R.id.noSessionContainer);
         tvNoSessionMessage = view.findViewById(R.id.tvNoSessionMessage);
+//       tvCurrentCost = view.findViewById(R.id.tvCurrentCost);
 
         setupBtnNotification();
     }
@@ -191,7 +184,7 @@ public class HomeFragment extends Fragment {
     private void loadParkingSessionData() {
         startRefreshing();
         resetSessionData();
-        fetchLatestParkingSession();
+        fetchOwnedSessions();
     }
 
     private void startRefreshing() {
@@ -199,55 +192,134 @@ public class HomeFragment extends Fragment {
             swipeRefreshLayout.setRefreshing(true);
         }
 
-        if (durationHandler != null && durationRunnable != null) {
-            durationHandler.removeCallbacks(durationRunnable);
-        }
+
     }
 
     private void resetSessionData() {
-        session = null;
-        vehicle = null;
-        parkingLot = null;
     }
 
-    private void fetchLatestParkingSession() {
-        ParkingSessionApiService parkingSessionApi = ApiTest.getService(requireContext())
+    private void fetchOwnedSessions() {
+        ParkingSessionApiService parkingSessionApi = ApiTest.getServiceLast(requireContext())
                 .create(ParkingSessionApiService.class);
 
-        parkingSessionApi.getParkingSessionLastestVehicleParking(tokenManager.getUserData().getId())
-                .enqueue(new Callback<ParkingSession>() {
+        OwnedSessionRequest request = new OwnedSessionRequest("Asc", "entryDateTime", "Parking");
+
+        parkingSessionApi.getOwnedSessions(tokenManager.getUserData().getId(), request)
+                .enqueue(new Callback<OwnedSessionResponse>() {
                     @Override
-                    public void onResponse(Call<ParkingSession> call, Response<ParkingSession> response) {
+                    public void onResponse(Call<OwnedSessionResponse> call, Response<OwnedSessionResponse> response) {
                         if (!isAdded() || getContext() == null) {
                             swipeRefreshLayout.setRefreshing(false);
                             return;
                         }
 
-                        if (response.isSuccessful() && response.body() != null) {
-                            handleSuccessfulSessionResponse(response.body());
+                        if (response.isSuccessful() && response.body() != null && response.body().getData() != null && !response.body().getData().isEmpty()) {
+                            List<OwnedSessionResponse.OwnedParkingSessionDto> dtoList = response.body().getData();
+                            fetchVehiclesAndBind(dtoList);
                         } else {
-                            handleNoSessionFound();
+                            showNoSessionMessage();
+                            swipeRefreshLayout.setRefreshing(false);
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<ParkingSession> call, Throwable t) {
+                    public void onFailure(Call<OwnedSessionResponse> call, Throwable t) {
                         if (isAdded() && getContext() != null) {
                             swipeRefreshLayout.setRefreshing(false);
+                            showNoSessionMessage();
                         }
                     }
                 });
     }
 
-    private void handleSuccessfulSessionResponse(ParkingSession parkingSession) {
-        session = parkingSession;
+    private void fetchVehiclesAndBind(List<OwnedSessionResponse.OwnedParkingSessionDto> dtoList) {
+        IVehicleApi vehicleApi = ApiTest.getServiceLast(requireContext()).create(IVehicleApi.class);
+        vehicleApi.getMyVehicles(null, null).enqueue(new Callback<List<VehicleSummaryDto>>() {
+            @Override
+            public void onResponse(Call<List<VehicleSummaryDto>> call, Response<List<VehicleSummaryDto>> response) {
+                if (!isAdded() || getContext() == null) {
+                    swipeRefreshLayout.setRefreshing(false);
+                    return;
+                }
 
-        showParkingSessionInfo();
-        updateSessionUI();
-        startDurationTimer();
-        fetchParkingLotDetails();
-        setupCheckoutButton();
+                List<VehicleSummaryDto> vehicles = response.isSuccessful() && response.body() != null ? response.body() : new ArrayList<>();
+                List<ParkingSession> mapped = mapDtosToSessions(dtoList, vehicles);
+                parkingSessionList = mapped;
+                parkingSessionAdapter.updateItems(parkingSessionList);
+
+                if (parkingSessionContainer != null) {
+                    parkingSessionContainer.setVisibility(View.GONE);
+                }
+                if (noSessionContainer != null) {
+                    noSessionContainer.setVisibility(View.GONE);
+                }
+
+                swipeRefreshLayout.setRefreshing(false);
+            }
+
+            @Override
+            public void onFailure(Call<List<VehicleSummaryDto>> call, Throwable t) {
+                if (!isAdded() || getContext() == null) {
+                    return;
+                }
+                List<ParkingSession> mapped = mapDtosToSessions(dtoList, new ArrayList<>());
+                parkingSessionList = mapped;
+                parkingSessionAdapter.updateItems(parkingSessionList);
+
+                if (parkingSessionContainer != null) {
+                    parkingSessionContainer.setVisibility(View.GONE);
+                }
+                if (noSessionContainer != null) {
+                    noSessionContainer.setVisibility(View.GONE);
+                }
+
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
+
+    private List<ParkingSession> mapDtosToSessions(List<OwnedSessionResponse.OwnedParkingSessionDto> dtoList, List<VehicleSummaryDto> vehicles) {
+        List<ParkingSession> result = new ArrayList<>();
+        for (OwnedSessionResponse.OwnedParkingSessionDto dto : dtoList) {
+            ParkingSession ps = new ParkingSession();
+            ps.setId(dto.getId());
+            ps.setEntryDateTime(dto.getEntryDateTime());
+            ps.setExitDateTime(dto.getExitDateTime());
+            ps.setCost(dto.getCost());
+            ps.setParkingLotName(dto.getParkingLotName());
+
+            // map vehicle by license plate
+            VehicleSummaryDto match = null;
+            for (VehicleSummaryDto v : vehicles) {
+                if (v.getLicensePlate() != null && v.getLicensePlate().equalsIgnoreCase(dto.getLicensePlate())) {
+                    match = v; break;
+                }
+            }
+            if (match != null) {
+                Vehicle v = new Vehicle();
+                v.setId(match.getId());
+                v.setLicensePlate(match.getLicensePlate());
+                v.setBrand(match.getBrand());
+                v.setModel(match.getModel());
+                ps.setVehicle(v);
+                ps.setVehicleId(v.getId());
+            } else {
+                Vehicle v = new Vehicle();
+                v.setLicensePlate(dto.getLicensePlate());
+                ps.setVehicle(v);
+            }
+            result.add(ps);
+        }
+        return result;
+    }
+
+    // Removed parking lot fetch for owned sessions
+
+    // No longer used for multiple sessions
+
+    // No longer used for multiple sessions
+
+
 
     private void setupBtnNotification() {
         btnNotification.setOnClickListener(v-> {
@@ -256,59 +328,15 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void updateSessionUI() {
-        tvEntryTime.setText(DateTimeHelper.formatDateTime(session.getEntryDateTime()));
-
-        LocalDateTime now = LocalDateTime.now();
-        tvDuration.setText(DateTimeHelper.calculateDuration(session.getEntryDateTime(), now.toString()));
-
-        String vehicleInfo = session.getVehicle().getBrand() + " " +
-                session.getVehicle().getModel() + " " +
-                session.getVehicle().getLicensePlate();
-        tvVehicle.setText(vehicleInfo);
-    }
+    // No longer used for multiple sessions
 
     private void startDurationTimer() {
-        durationHandler.post(durationRunnable);
+        // Not used in multiple sessions view
     }
 
-    private void fetchParkingLotDetails() {
-        ParkingLotApiService parkingLotApiService = ApiTest.getService(requireContext())
-                .create(ParkingLotApiService.class);
 
-        parkingLotApiService.getParkingLotById(session.getParkingLotId())
-                .enqueue(new Callback<ParkingLot>() {
-                    @Override
-                    public void onResponse(Call<ParkingLot> call, Response<ParkingLot> response) {
-                        if (!isAdded() || getContext() == null) {
-                            swipeRefreshLayout.setRefreshing(false);
-                            return;
-                        }
 
-                        if (response.isSuccessful() && response.body() != null) {
-                            parkingLot = response.body();
-                            tvLocation.setText(parkingLot.getName() + " - " + parkingLot.getAddress());
-                        }
-
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-
-                    @Override
-                    public void onFailure(Call<ParkingLot> call, Throwable t) {
-                        if (isAdded() && getContext() != null) {
-                            swipeRefreshLayout.setRefreshing(false);
-                        }
-                    }
-                });
-    }
-
-    private void setupCheckoutButton() {
-        btnCheckOut.setOnClickListener(v -> {
-            HistoryFragmentHandler handler = new HistoryFragmentHandler(requireContext());
-            handler.onParkingSessionClickToCheckOut(session, vehicle, parkingLot);
-        });
-
-    }
+    // Removed checkout button for single session card
 
     private void handleNoSessionFound() {
         showNoSessionMessage();
@@ -331,36 +359,26 @@ public class HomeFragment extends Fragment {
             parkingSessionContainer.setVisibility(View.GONE);
         }
         if (noSessionContainer != null) {
-            noSessionContainer.setVisibility(View.VISIBLE);
+            noSessionContainer.setVisibility(View.GONE);
         }
-        stopDurationTimer();
     }
 
-    private void stopDurationTimer() {
-        if (durationHandler != null && durationRunnable != null) {
-            durationHandler.removeCallbacks(durationRunnable);
-        }
-    }
+
 
     // ================ LIFECYCLE METHODS ================
 
     @Override
     public void onPause() {
         super.onPause();
-        stopDurationTimer();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (session != null && durationHandler != null && durationRunnable != null) {
-            durationHandler.post(durationRunnable);
-        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        stopDurationTimer();
     }
 }

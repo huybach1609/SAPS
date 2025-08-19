@@ -7,6 +7,7 @@ public class ParkingSession implements Serializable {
     private String id;
     private String vehicleId;
     private String parkingLotId;
+    private String parkingLotName;
 
     private String entryDateTime;         // not null
     private String exitDateTime;          // nullable
@@ -115,6 +116,14 @@ public class ParkingSession implements Serializable {
 
     public void setVehicle(Vehicle vehicle) {
         this.vehicle = vehicle;
+    }
+
+    public String getParkingLotName() {
+        return parkingLotName;
+    }
+
+    public void setParkingLotName(String parkingLotName) {
+        this.parkingLotName = parkingLotName;
     }
 
     @Override

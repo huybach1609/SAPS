@@ -15,16 +15,25 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import vn.edu.fpt.sapsmobile.API.ApiTest;
-import vn.edu.fpt.sapsmobile.API.AuthApi;
-import vn.edu.fpt.sapsmobile.API.apiinterface.UserApiService;
-import vn.edu.fpt.sapsmobile.API.apiinterface.ClientApiService;
+import vn.edu.fpt.sapsmobile.dtos.AuthResponse;
+import vn.edu.fpt.sapsmobile.dtos.GoogleTokenRequest;
+import vn.edu.fpt.sapsmobile.dtos.LoginRequest;
+import vn.edu.fpt.sapsmobile.dtos.LoginResponse;
+import vn.edu.fpt.sapsmobile.dtos.RegisterRequest;
+import vn.edu.fpt.sapsmobile.dtos.RegisterResponse;
+import vn.edu.fpt.sapsmobile.network.client.ApiTest;
+import vn.edu.fpt.sapsmobile.network.service.ClientApiService;
+import vn.edu.fpt.sapsmobile.network.service.AuthApi;
+import vn.edu.fpt.sapsmobile.network.service.UserApiService;
 import vn.edu.fpt.sapsmobile.BuildConfig;
+import vn.edu.fpt.sapsmobile.activities.auth.LoginActivity;
+import vn.edu.fpt.sapsmobile.dtos.ClientProfileResponse;
 import vn.edu.fpt.sapsmobile.models.*;
 import vn.edu.fpt.sapsmobile.utils.JwtUtils;
+import vn.edu.fpt.sapsmobile.utils.SessionActions;
 import vn.edu.fpt.sapsmobile.utils.TokenManager;
 
-public class AuthenticationService {
+public class AuthenticationService implements SessionActions {
     private static final String TAG = "AuthenticationService";
     private static final String SERVER_CLIENT_ID = BuildConfig.SERVER_CLIENT_ID;
 
@@ -35,6 +44,22 @@ public class AuthenticationService {
     private final ClientApiService clientApiService;
     private final TokenManager tokenManager;
     private AuthCallback authCallback;
+
+    @Override
+    public void logoutNow(String reason) {
+        // Optional: Log the reason
+        Log.w(TAG, "Logging out: " + reason);
+
+        // Clear Google + local tokens
+        googleSignInClient.signOut().addOnCompleteListener(task -> {
+            tokenManager.clearTokens();
+
+            // Navigate to login screen (adjust class name)
+            Intent i = new Intent(context, LoginActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            context.startActivity(i);
+        });
+    }
 
     // Interfaces
     public interface AuthCallback {
@@ -277,7 +302,8 @@ public class AuthenticationService {
                     clientProfile.setPlaceOfOrigin(response.getPlaceOfOrigin());
                     clientProfile.setPlaceOfResidence(response.getPlaceOfResidence());
                     clientProfile.setGoogleId(response.getGoogleId());
-                    
+
+
                     // Set the client profile to the current user
                     currentUser.setClientProfile(clientProfile);
                     

@@ -79,16 +79,16 @@
     <string name="title_parking_history">📋 Parking History</string>
     <string name="label_date">Date: </string>
     <!-- Summary -->
-    <string name="summary_title">Parking Session Overview</string>
+    <string name="checkout_activity_actionbar_title">Parking Session Overview</string>
 
     <!-- Vehicle info -->
     <string name="vehicle_sample">ABC-1234 — Toyota Camry</string>
     <string name="location_sample">Downtown Mall — Slot A-15</string>
 
     <!-- Time -->
-    <string name="entry_time">Entry: 14:30</string>
-    <string name="exit_time">Exit: 16:45</string>
-    <string name="duration_time">Duration: 2h 15m</string>
+    <string name="entry_time">00:00</string>
+    <string name="check_out_time">00:00</string>
+    <string name="duration_time">2h 15m</string>
     <string name="session_id">ID: SESS-20250806-001</string>
 
     <!-- Payment breakdown -->
@@ -325,5 +325,19 @@
     <string name="home_fragment_hello">Hello %1$s</string>
     <string name="share_vehicle_access_subheader">Grant parking access to someone else</string>
     <string name="profile_fragment_please_verify_account_messsage">Please verify your account</string>
+    <string name="no_code_to_copy">empty\n</string>
+    <string name="add_vehicle_action_bar_header">Add New Vehicle</string>
+    <string name="activity_check_out_not_available">Parking session data is not available</string>
+    <string name="payement_activity_payment_detail_display">Chi tiết thanh toán</string>
+    <string name="payment_activity_display_amount">Amount</string>
+    <string name="payment_activity_display_note">Vui lòng chuyển đúng số tiền để tự động đối soát</string>
+    <string name="payment_activity_content_description_account_number">Số tài khoản</string>
+    <string name="payment_activity_display_account_number">Account Number</string>
+    <string name="payment_activity_content_description_account_name">icon account name</string>
+    <string name="payment_activity_display_account_name">Account Name</string>
+    <string name="payment_activity_content_description_reference_code">note\n</string>
+    <string name="payment_activity_display_reference_code">Description</string>
+    <string name="payment_activity_btn_text_display">Xác nhận thanh toán</string>
+    <string name="payment_activity_actionbar_title">Payment Process</string>
 
 </resources>

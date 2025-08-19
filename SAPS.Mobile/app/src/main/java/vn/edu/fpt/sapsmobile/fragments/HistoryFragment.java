@@ -1,7 +1,5 @@
 package vn.edu.fpt.sapsmobile.fragments;
 
-import androidx.appcompat.app.ActionBar;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
@@ -26,16 +23,12 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import vn.edu.fpt.sapsmobile.API.ApiTest;
-import vn.edu.fpt.sapsmobile.API.apiinterface.ParkingSessionApiService;
-import vn.edu.fpt.sapsmobile.API.apiinterface.VehicleApiService;
+import vn.edu.fpt.sapsmobile.network.client.ApiTest;
+import vn.edu.fpt.sapsmobile.network.service.ParkingSessionApiService;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.actionhandler.HistoryFragmentHandler;
-import vn.edu.fpt.sapsmobile.actionhandler.VehicleFragmentHandler;
-import vn.edu.fpt.sapsmobile.adapter.ParkingSessionAdapter;
-import vn.edu.fpt.sapsmobile.adapter.VehicleAdapter;
+import vn.edu.fpt.sapsmobile.adapters.ParkingSessionAdapter;
 import vn.edu.fpt.sapsmobile.models.ParkingSession;
-import vn.edu.fpt.sapsmobile.models.Vehicle;
 import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
 
 public class HistoryFragment extends Fragment {
@@ -63,8 +56,6 @@ public class HistoryFragment extends Fragment {
             window.setStatusBarColor(Color.TRANSPARENT);
 
         }
-
-
 
         loadingDialog = new LoadingDialog(getActivity());
         // Initialize Adapter
