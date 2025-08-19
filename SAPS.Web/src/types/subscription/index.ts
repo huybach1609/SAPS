@@ -1,8 +1,9 @@
 export interface Subscription {
   id: string;
   name: string;
-  duration: number; // milliseconds
-  description: string | null;
+  duration: number; // days
+  description?: string | null;
+  note?: string | null;
   price: number;
   status: "active" | "inactive";
   createdAt?: string;
@@ -13,14 +14,14 @@ export interface Subscription {
 export interface CreateSubscriptionDto {
   name: string;
   duration: number;
-  description: string;
+  note: string;
   price: number;
   status: "active" | "inactive";
 }
 
 export interface UpdateSubscriptionDto {
   name?: string;
-  description?: string;
+  note?: string;
   price?: number;
   status?: "active" | "inactive";
 }

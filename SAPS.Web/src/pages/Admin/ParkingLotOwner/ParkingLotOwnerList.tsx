@@ -1,157 +1,15 @@
 import { Button, Card, Input, Pagination } from "@heroui/react";
 import { Building2, UserPlus, Eye } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AddParkingLotOwner from "./AddParkingLotOwner";
+import {
+  ParkingLotOwner,
+  parkingLotOwnerService,
+} from "../../../services/parkingLotOwner/parkingLotOwnerService";
+import { format } from "date-fns";
 
-// Fake data for demonstration
-const parkingLotOwners = [
-  {
-    id: "PO001",
-    parkingLotName: "Downtown Mall Parking",
-    ownerName: "Downtown Mall Corporation",
-    email: "owner@downtownmall.com",
-    joinDate: "Mar 15, 2024",
-    status: "Active",
-    details: {
-      slots: "150 slots",
-      operation: "24/7 operation",
-    },
-  },
-  {
-    id: "PO002",
-    parkingLotName: "Airport Parking Complex",
-    ownerName: "City Airport Authority",
-    email: "parking@cityairport.com",
-    joinDate: "Jan 05, 2024",
-    status: "Active",
-    details: {
-      slots: "300 slots",
-      operation: "24/7 operation",
-    },
-  },
-  {
-    id: "PO003",
-    parkingLotName: "Central Park Garage",
-    ownerName: "CityParking Inc.",
-    email: "info@cityparking.com",
-    joinDate: "Apr 22, 2024",
-    status: "Pending",
-    details: {
-      slots: "85 slots",
-      operation: "8am-10pm",
-    },
-  },
-  {
-    id: "PO004",
-    parkingLotName: "University Campus Parking",
-    ownerName: "State University",
-    email: "facilities@stateuni.edu",
-    joinDate: "Feb 28, 2024",
-    status: "Active",
-    details: {
-      slots: "500 slots",
-      operation: "24/7 operation",
-    },
-  },
-  {
-    id: "PO005",
-    parkingLotName: "Metro Station Parking",
-    ownerName: "Metro Transportation Co.",
-    email: "parking@metrotrans.com",
-    joinDate: "Apr 5, 2024",
-    status: "Suspended",
-    details: {
-      slots: "80 slots",
-      operation: "5AM-12AM",
-    },
-  },
-  {
-    id: "PO006",
-    parkingLotName: "Business District Garage",
-    ownerName: "Business Park Management",
-    email: "info@businesspark.com",
-    joinDate: "Jun 1, 2024",
-    status: "Pending",
-    details: {
-      slots: "400 slots",
-      operation: "Mon-Fri 7AM-8PM",
-    },
-  },
-  {
-    id: "PO007",
-    parkingLotName: "Seaside Beach Parking",
-    ownerName: "Coastal Resorts Ltd",
-    email: "parking@coastalresorts.com",
-    joinDate: "May 12, 2024",
-    status: "Active",
-    details: {
-      slots: "120 slots",
-      operation: "9AM-11PM",
-    },
-  },
-  {
-    id: "PO008",
-    parkingLotName: "Highland Shopping Center",
-    ownerName: "Highland Retail Group",
-    email: "admin@highlandretail.com",
-    joinDate: "Feb 03, 2024",
-    status: "Active",
-    details: {
-      slots: "250 slots",
-      operation: "8AM-10PM",
-    },
-  },
-  {
-    id: "PO009",
-    parkingLotName: "Grand Hotel Valet",
-    ownerName: "Luxury Hotels International",
-    email: "valet@grandhotel.com",
-    joinDate: "Jan 15, 2024",
-    status: "Active",
-    details: {
-      slots: "75 slots",
-      operation: "24/7 operation",
-    },
-  },
-  {
-    id: "PO010",
-    parkingLotName: "Medical Center Parking",
-    ownerName: "City Health Services",
-    email: "parking@cityhealth.org",
-    joinDate: "Mar 22, 2024",
-    status: "Active",
-    details: {
-      slots: "180 slots",
-      operation: "24/7 operation",
-    },
-  },
-  {
-    id: "PO011",
-    parkingLotName: "Sports Arena Parking",
-    ownerName: "Metropolitan Sports Authority",
-    email: "parking@metrosports.com",
-    joinDate: "Apr 10, 2024",
-    status: "Active",
-    details: {
-      slots: "600 slots",
-      operation: "Event days only",
-    },
-  },
-  {
-    id: "PO012",
-    parkingLotName: "Riverside Park & Ride",
-    ownerName: "City Transit Authority",
-    email: "transit@citygovt.org",
-    joinDate: "May 05, 2024",
-    status: "Pending",
-    details: {
-      slots: "220 slots",
-      operation: "6AM-8PM",
-    },
-  },
-];
-
+// We'll use the API instead of fallback data
 // Status options for filter
 const statusOptions = [
   { label: "All Status", value: "All" },
@@ -166,40 +24,123 @@ export default function AdminParkingLotOwnerList() {
   const [statusFilter, setStatusFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const [showAddOwner, setShowAddOwner] = useState(false);
-  const itemsPerPage = 4; // Số lượng items trên mỗi trang
+  const itemsPerPage = 5; // Matching API pageSize
+
+  // State for API data
+  const [loading, setLoading] = useState(false);
+  const [owners, setOwners] = useState<ParkingLotOwner[]>([]);
+  const [totalOwners, setTotalOwners] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [hasNextPage, setHasNextPage] = useState(false);
+  const [hasPreviousPage, setHasPreviousPage] = useState(false);
 
   // Stats
-  const totalOwners = parkingLotOwners.length;
-  const activeOwners = parkingLotOwners.filter(
-    (owner) => owner.status === "Active"
-  ).length;
-  const pendingApproval = parkingLotOwners.filter(
-    (owner) => owner.status === "Pending"
-  ).length;
-  const totalParkingLots = parkingLotOwners.length; // For demo, assuming 1 lot per owner
+  const [activeOwners, setActiveOwners] = useState(0);
+  const [pendingOwners, setPendingOwners] = useState(0);
+  const [suspendedOwners, setSuspendedOwners] = useState(0);
 
-  // Filter parking lot owners based on search term and status
-  const filteredOwners = parkingLotOwners.filter((owner) => {
-    const matchesSearch =
-      owner.ownerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      owner.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      owner.parkingLotName.toLowerCase().includes(searchTerm.toLowerCase());
+  // Function to fetch owners
+  const fetchOwners = async () => {
+    setLoading(true);
+    try {
+      const response = await parkingLotOwnerService.getParkingLotOwners({
+        pageNumber: currentPage,
+        pageSize: itemsPerPage,
+        status: statusFilter !== "All" ? statusFilter : undefined,
+        order: 1, // Ascending order
+        searchCriteria: searchTerm || undefined,
+      });
 
-    const matchesStatus =
-      statusFilter === "All" || owner.status === statusFilter;
+      // Safely handle response data
+      setOwners(response?.items || []);
+      setTotalOwners(response?.["total-count"] || 0);
+      setTotalPages(response?.["total-pages"] || 1);
+      setHasNextPage(response?.["has-next-page"] || false);
+      setHasPreviousPage(response?.["has-previous-page"] || false);
+    } catch (error) {
+      console.error("Error fetching parking lot owners:", error);
+      // Reset to safe defaults on error
+      setOwners([]);
+      setTotalOwners(0);
+      setTotalPages(1);
+      setHasNextPage(false);
+      setHasPreviousPage(false);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    return matchesSearch && matchesStatus;
-  });
+  // Fetch summary statistics
+  const fetchStats = async () => {
+    try {
+      // Get active owners count
+      const activeResponse = await parkingLotOwnerService.getParkingLotOwners({
+        pageNumber: 1,
+        pageSize: 1,
+        status: "Active",
+        order: 1,
+      });
+      setActiveOwners(activeResponse?.["total-count"] || 0);
 
-  // Phân trang
-  const totalPages = Math.ceil(filteredOwners.length / itemsPerPage);
-  const currentItems = filteredOwners.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+      // Get pending owners count
+      const pendingResponse = await parkingLotOwnerService.getParkingLotOwners({
+        pageNumber: 1,
+        pageSize: 1,
+        status: "Pending",
+        order: 1,
+      });
+      setPendingOwners(pendingResponse?.["total-count"] || 0);
 
+      // Get suspended owners count
+      const suspendedResponse =
+        await parkingLotOwnerService.getParkingLotOwners({
+          pageNumber: 1,
+          pageSize: 1,
+          status: "Suspended",
+          order: 1,
+        });
+      setSuspendedOwners(suspendedResponse?.["total-count"] || 0);
+    } catch (error) {
+      console.error("Error fetching stats:", error);
+      // Reset to safe defaults on error
+      setActiveOwners(0);
+      setPendingOwners(0);
+      setSuspendedOwners(0);
+    }
+  };
+
+  // Initial data fetch
+  useEffect(() => {
+    fetchOwners();
+    fetchStats();
+  }, []);
+
+  // Fetch when filters or pagination change
+  useEffect(() => {
+    fetchOwners();
+  }, [currentPage, statusFilter]);
+
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchOwners();
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
+  // Format date string
+  const formatDate = (dateString: string) => {
+    try {
+      return format(new Date(dateString), "MMM dd, yyyy");
+    } catch (e) {
+      return dateString;
+    }
+  };
+
+  // Calculate start and end items for pagination display
   const startItem = (currentPage - 1) * itemsPerPage + 1;
-  const endItem = Math.min(currentPage * itemsPerPage, filteredOwners.length);
+  const endItem = Math.min(currentPage * itemsPerPage, totalOwners);
 
   // Đã xóa bỏ tất cả các action buttons khác, chỉ giữ lại View Details
 
@@ -247,14 +188,14 @@ export default function AdminParkingLotOwnerList() {
         </Card>
         <Card className="p-4 bg-[#00B4D8] text-white">
           <div className="text-center">
-            <div className="text-4xl font-bold mb-1">{pendingApproval}</div>
+            <div className="text-4xl font-bold mb-1">{pendingOwners}</div>
             <div className="text-sm">Pending Approval</div>
           </div>
         </Card>
         <Card className="p-4 bg-[#00B4D8] text-white">
           <div className="text-center">
-            <div className="text-4xl font-bold mb-1">{totalParkingLots}</div>
-            <div className="text-sm">Total Parking Lots</div>
+            <div className="text-4xl font-bold mb-1">{suspendedOwners}</div>
+            <div className="text-sm">Suspended Owners</div>
           </div>
         </Card>
       </div>
@@ -339,8 +280,9 @@ export default function AdminParkingLotOwnerList() {
                 </svg>
               }
               onPress={() => {
-                // Apply filters
-                setCurrentPage(1); // Reset to first page when applying new filters
+                // Apply filters and reset to first page
+                setCurrentPage(1);
+                fetchOwners();
               }}
             >
               Search
@@ -355,6 +297,7 @@ export default function AdminParkingLotOwnerList() {
                 setSearchTerm("");
                 setStatusFilter("All");
                 setCurrentPage(1);
+                fetchOwners();
               }}
             >
               Clear Filters
@@ -403,28 +346,37 @@ export default function AdminParkingLotOwnerList() {
                 <th className="px-4 py-3 text-left text-sm font-medium w-[5%]">
                   #
                 </th>
-                <th className="px-4 py-3 text-left text-sm font-medium w-[22%]">
-                  Parking Lot Name
+                <th className="px-4 py-3 text-left text-sm font-medium w-[20%]">
+                  Owner ID
                 </th>
-                <th className="px-4 py-3 text-left text-sm font-medium w-[18%]">
+                <th className="px-4 py-3 text-left text-sm font-medium w-[25%]">
                   Owner Name
                 </th>
                 <th className="px-4 py-3 text-left text-sm font-medium w-[20%]">
                   Contact Email
                 </th>
-                <th className="px-4 py-3 text-left text-sm font-medium w-[12%]">
+                <th className="px-4 py-3 text-left text-sm font-medium w-[15%]">
                   Join Date
                 </th>
                 <th className="px-4 py-3 text-left text-sm font-medium w-[10%]">
                   Status
                 </th>
-                <th className="px-4 py-3 text-center text-sm font-medium w-[13%]">
+                <th className="px-4 py-n3 text-center text-sm font-medium w-[10%]">
                   Actions
                 </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {currentItems.length === 0 ? (
+              {loading ? (
+                <tr>
+                  <td colSpan={7} className="px-4 py-12 text-center">
+                    <div className="flex justify-center items-center">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-900"></div>
+                      <span className="ml-2">Loading...</span>
+                    </div>
+                  </td>
+                </tr>
+              ) : !owners || owners.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-4 py-12 text-center">
                     <div className="text-center py-6">
@@ -454,27 +406,24 @@ export default function AdminParkingLotOwnerList() {
                   </td>
                 </tr>
               ) : (
-                currentItems.map((owner, index) => (
+                (owners || []).map((owner, index) => (
                   <tr key={owner.id} className="hover:bg-gray-50">
                     <td className="px-4 py-3 text-sm font-medium text-blue-600">
-                      {(currentPage - 1) * itemsPerPage + index + 1}
+                      {startItem + index}
                     </td>
                     <td className="px-4 py-3 text-sm font-medium">
                       <div className="flex items-center">
                         <div className="bg-primary p-2 rounded mr-2">
                           <Building2 size={24} className="text-white" />
                         </div>
-                        <div>
-                          <div>{owner.parkingLotName}</div>
-                          <div className="text-xs text-gray-500">
-                            {owner.details.slots} • {owner.details.operation}
-                          </div>
-                        </div>
+                        <div>{owner["parking-lot-owner-id"]}</div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-sm">{owner.ownerName}</td>
+                    <td className="px-4 py-3 text-sm">{owner["full-name"]}</td>
                     <td className="px-4 py-3 text-sm">{owner.email}</td>
-                    <td className="px-4 py-3 text-sm">{owner.joinDate}</td>
+                    <td className="px-4 py-3 text-sm">
+                      {formatDate(owner["created-at"])}
+                    </td>
                     <td className="px-4 py-3 text-sm">
                       <span
                         className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${
@@ -485,8 +434,7 @@ export default function AdminParkingLotOwnerList() {
                               : "bg-red-200 text-red-800"
                         }`}
                       >
-                        {owner.status.charAt(0).toUpperCase() +
-                          owner.status.slice(1)}
+                        {owner.status}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-sm text-center">
@@ -522,7 +470,9 @@ export default function AdminParkingLotOwnerList() {
         {/* Pagination */}
         <div className="mt-4 flex flex-col md:flex-row justify-between items-center text-sm w-full">
           <div className="mb-2 md:mb-0">
-            Showing {startItem} to {endItem} of {filteredOwners.length} entries
+            {owners && owners.length > 0
+              ? `Showing ${startItem} to ${endItem} of ${totalOwners} entries`
+              : "No entries to show"}
           </div>
 
           <div className="flex justify-end w-full md:w-auto items-center gap-2">
@@ -531,8 +481,8 @@ export default function AdminParkingLotOwnerList() {
               variant="light"
               color="primary"
               className="rounded-full flex items-center"
-              isDisabled={currentPage === 1}
-              onPress={() => setCurrentPage(Math.max(1, currentPage - 1))}
+              isDisabled={!hasPreviousPage}
+              onPress={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
             >
               <svg
                 className="w-4 h-4 ml-1"
@@ -566,9 +516,9 @@ export default function AdminParkingLotOwnerList() {
               variant="light"
               color="primary"
               className="rounded-full flex items-center"
-              isDisabled={currentPage === totalPages}
+              isDisabled={!hasNextPage}
               onPress={() =>
-                setCurrentPage(Math.min(totalPages, currentPage + 1))
+                setCurrentPage((prev) => Math.min(totalPages, prev + 1))
               }
             >
               Next
@@ -608,6 +558,8 @@ export default function AdminParkingLotOwnerList() {
           onSuccess={() => {
             // Refresh owner list or show success message
             setCurrentPage(1); // Reset to first page to show new owner
+            fetchOwners();
+            fetchStats();
           }}
         />
       )}
