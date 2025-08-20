@@ -111,7 +111,7 @@ export const ThemeSwitch: FC<ThemeSwitchProps> = ({
         })}
       >
         <div className="flex items-center gap-2">
-          {isSelected ? <SunFilledIcon size={16} /> : <MoonFilledIcon size={16} />}
+          {isSelected ? <Sun size={16} /> : <Moon size={16} />}
           {showLabel && (
             <p>{isSelected ? "Light" : "Dark"}</p>
           )}

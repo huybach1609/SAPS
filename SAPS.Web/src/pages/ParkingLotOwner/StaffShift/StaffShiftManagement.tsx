@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { Button, Spinner, useDisclosure } from '@heroui/react';
-import { Plus, Calendar, Users, Clock } from 'lucide-react';
+import { Spinner, useDisclosure } from '@heroui/react';
+import { Users, Clock } from 'lucide-react';
 import StaffShiftWeeklyView from './StaffShiftWeeklyView';
 import StaffShiftModal from './StaffShiftModal';
 import StaffShiftConflictModal, { ShiftConflict } from './StaffShiftConflictModal';
 import { StaffShift, CreateStaffShift, fetchStaffShifts, createStaffShift, updateStaffShift, deleteStaffShift } from '@/services/parkinglot/staffShift';
-import { StaffShiftValidator, TimeUtils } from '@/components/utils/staffShiftValidator';
+import { StaffShiftValidator } from '@/components/utils/staffShiftValidator';
 import DefaultLayout from '@/layouts/default';
 import { useParkingLot } from '../ParkingLotContext';
 import { AxiosError } from 'axios';

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Clock, Edit2, Loader2, Plus, Trash2, User, AlertTriangle, RefreshCw } from 'lucide-react';
+import React, { useState } from 'react';
+import { Clock, Edit2, Plus, Trash2, User, AlertTriangle, RefreshCw } from 'lucide-react';
 import { StaffShift } from '@/services/parkinglot/staffShift';
-import { Button, Select, SelectItem, Skeleton } from '@heroui/react';
+import { Button } from '@heroui/react';
 import { TimeUtils } from '@/components/utils/staffShiftValidator';
 
 export interface StaffShiftWeeklyViewProps {
@@ -24,12 +24,12 @@ const StaffShiftWeeklyView: React.FC<StaffShiftWeeklyViewProps> = ({
     loading = false
 }) => {
     const [hoveredShift, setHoveredShift] = useState<string | null>(null);
-    const [shiftTypeFilter, setShiftTypeFilter] = useState<'Regular' | 'Emergency' | 'All'>(selectedShiftType);
+    const [shiftTypeFilter] = useState<'Regular' | 'Emergency' | 'All'>(selectedShiftType);
 
 
 
     const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    const hours = Array.from({ length: 24 }, (_, i) => i);
+    // const hours = Array.from({ length: 24 }, (_, i) => i);
 
     const minutesToTime = (minutes: number): string => {
         return TimeUtils.minutesToTime(minutes);
@@ -54,14 +54,7 @@ const StaffShiftWeeklyView: React.FC<StaffShiftWeeklyViewProps> = ({
         });
     };
 
-    const getTimePosition = (minutes: number) => {
-        return (minutes / 1440) * 100; // 1440 minutes in a day
-    };
 
-    const getShiftWidth = (startTime: number, endTime: number) => {
-        const duration = endTime - startTime;
-        return (duration / 1440) * 100;
-    };
 
     const getShiftStyle = (shift: StaffShift) => {
         const baseStyle = {
@@ -83,11 +76,7 @@ const StaffShiftWeeklyView: React.FC<StaffShiftWeeklyViewProps> = ({
         return baseStyle;
     };
 
-    const shiftTypeOptions = [
-        { label: 'All Shifts', key: 'All' },
-        { label: 'Regular', key: 'Regular' },
-        { label: 'Emergency', key: 'Emergency' }
-    ];
+
 
     return (
         <div className="rounded-xl shadow-sm border border-primary-200/10 my-3 p-3">
@@ -212,7 +201,7 @@ const StaffShiftWeeklyView: React.FC<StaffShiftWeeklyViewProps> = ({
                                             return (
                                                 <div key={`${day}-${slotIndex}`} className="relative min-h-16 bg-gray-50 rounded-md border border-gray-200 p-1">
                                                     {/* Shifts in this time slot */}
-                                                    {timeSlotShifts.map((shift, shiftIndex) => (
+                                                    {timeSlotShifts.map((shift) => (
                                                         <div
                                                             key={shift.id}
                                                             className={`relative w-full mb-1 p-2 rounded-md border-2 cursor-pointer transition-all duration-200 ${hoveredShift === shift.id ? 'z-10 scale-105 shadow-lg' : ''
@@ -291,7 +280,7 @@ const StaffShiftWeeklyView: React.FC<StaffShiftWeeklyViewProps> = ({
             <div className="mt-6 p-4 bg-gray-50 rounded-lg">
                 <h3 className="text-sm font-medium text-gray-700 mb-2">Shift Details</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-                    {getFilteredShifts().map((shift, index) => (
+                    {getFilteredShifts().map((shift) => (
                         <div
                             key={shift.id}
                             className="p-2 rounded-md border-2"

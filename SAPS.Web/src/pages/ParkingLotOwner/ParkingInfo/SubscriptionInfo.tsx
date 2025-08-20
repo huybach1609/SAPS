@@ -230,7 +230,7 @@ const SubscriptionInfo: React.FC<{ selectedParkingLot: ParkingLot, user: User, p
             </div>
 
             <div className="space-y-4">
-               {parkingLots.map((item, index) => {
+               {parkingLots.map((item) => {
                   const parkingLotSubscription = listParkingLotSubscription.find(subscription => subscription.parkingLotId === item.id);
                   const progress = calcProgress(parkingLotSubscription?.startedDate, parkingLotSubscription?.subscription?.duration);
                   const remaining = calcRemainingDays(parkingLotSubscription?.startedDate, parkingLotSubscription?.subscription?.duration);

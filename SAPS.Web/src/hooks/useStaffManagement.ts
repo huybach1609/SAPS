@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { StaffStatus, User } from '@/types/User';
 import { PaginationInfo } from '@/types/Whitelist';
-import { fetchStaffList, removeStaff, updateStaff } from '@/services/parkinglot/staffService';
+import { fetchStaffList,  updateStaff } from '@/services/parkinglot/staffService';
 
 export const useStaffManagement = (parkingLotId: string | undefined) => {
   const [stafflist, setStafflist] = useState<User[]>([]);
@@ -41,7 +41,7 @@ export const useStaffManagement = (parkingLotId: string | undefined) => {
     }
   };
 
-  const handleDeactivateStaff = async (staffId: string, user: User) => {
+  const handleDeactivateStaff = async ( user: User) => {
     if (!parkingLotId) return;
 
     if (window.confirm('Are you sure you want to deactivate this user ?')) {

@@ -46,7 +46,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { user, isAuthenticated, loading, getRole } = useAuth();
+  const { isAuthenticated, loading, getRole } = useAuth();
 
   if (loading) {
     return <div>Loading...</div>;
@@ -55,7 +55,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   if (!isAuthenticated) {
     return <Navigate to="/auth/login" replace />;
   }
-  console.log(getRole());
+  // console.log(getRole());
 
   if (getRole() !== ADMIN_ROLE && getRole() !== OWNER_ROLE) {
     return <Navigate to="/unauthorized" replace />;
@@ -112,7 +112,7 @@ const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 };
 
 const RoleBasedRedirect: React.FC = () => {
-  const { user, isAuthenticated, loading, getRole } = useAuth();
+  const {  isAuthenticated, loading, getRole } = useAuth();
 
   if (loading) {
     return <div>Loading...</div>; // Or your loading component
@@ -178,7 +178,7 @@ function App() {
         <Route
           path="/admin"
           element={
-            <ProtectedRoute requiredRole={ADMIN_ROLE}>
+            <ProtectedRoute >
               <DefaultLayout  title="SAPLS Admin Dashboard">
                 <Outlet />
               </DefaultLayout>

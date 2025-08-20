@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Check, Star, Clock, Crown, DollarSign } from 'lucide-react';
+import { Check, Clock, Crown, DollarSign } from 'lucide-react';
 import DefaultLayout from '@/layouts/default';
 import { Button, Card, CardBody, CardFooter, CardHeader } from '@heroui/react';
 import { Subscription } from '@/types/ParkingLot';
@@ -31,13 +31,13 @@ const SubscriptionComponent: React.FC = () => {
     return (price / months).toFixed(2);
   };
 
-  // Get savings percentage compared to monthly
-  const getSavings = (price: number, duration: number): number => {
-    const monthlyEquivalent = parseFloat(getMonthlyPrice(price, duration));
-    const baseMonthlyCost = 29.99; // Reference monthly price
-    const savings = ((baseMonthlyCost - monthlyEquivalent) / baseMonthlyCost) * 100;
-    return savings > 0 ? Math.round(savings) : 0;
-  };
+  // // Get savings percentage compared to monthly
+  // const getSavings = (price: number, duration: number): number => {
+  //   const monthlyEquivalent = parseFloat(getMonthlyPrice(price, duration));
+  //   const baseMonthlyCost = 29.99; // Reference monthly price
+  //   const savings = ((baseMonthlyCost - monthlyEquivalent) / baseMonthlyCost) * 100;
+  //   return savings > 0 ? Math.round(savings) : 0;
+  // };
 
   // Sort subscriptions by duration (shortest to longest)
   const sortedSubscriptions = [...subscriptions].sort((a, b) => a.duration - b.duration);
@@ -52,8 +52,8 @@ const SubscriptionComponent: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-        {sortedSubscriptions.map((subscription, index) => {
-          const savings = getSavings(subscription.price, subscription.duration);
+        {sortedSubscriptions.map((subscription) => {
+          
           const monthlyEquivalent = getMonthlyPrice(subscription.price, subscription.duration);
 
           return (

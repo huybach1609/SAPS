@@ -31,11 +31,11 @@ const StaffShiftConflictModal: React.FC<StaffShiftConflictModalProps> = ({
    conflicts,
    onRetry
 }) => {
-   const formatTime = (minutes: number) => {
-      const hours = Math.floor(minutes / 60);
-      const mins = minutes % 60;
-      return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
-   };
+   // const formatTime = (minutes: number) => {
+   //    const hours = Math.floor(minutes / 60);
+   //    const mins = minutes % 60;
+   //    return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+   // };
 
    const formatDays = (daysString: string | null | undefined) => {
       if (!daysString) return 'N/A';

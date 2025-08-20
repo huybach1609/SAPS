@@ -63,7 +63,7 @@ const RequestDetails: React.FC = () => {
       );
 
       if (response.success) {
-        setRequest(response.data);
+        setRequest(response.data as RequestDetail);
         setShowConfirm(null);
       } else {
         setError(`Failed to ${status.toLowerCase()} request`);

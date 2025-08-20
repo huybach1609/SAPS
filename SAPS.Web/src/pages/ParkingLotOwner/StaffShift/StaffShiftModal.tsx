@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Spinner, Textarea, useDisclosure, Checkbox, ScrollShadow, Divider } from '@heroui/react';
+import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Spinner, Textarea, Checkbox, ScrollShadow, Divider } from '@heroui/react';
 import { StaffShift, CreateStaffShift } from '@/services/parkinglot/staffShift';
-import { StaffShiftValidator, TimeUtils } from '@/components/utils/staffShiftValidator';
+import { StaffShiftValidator } from '@/components/utils/staffShiftValidator';
 import { searchStaff } from '@/services/parkinglot/staffService';
-import { StaffProfile, User } from '@/types/User';
+import { StaffProfile } from '@/types/User';
 import { formatPhoneNumber } from '@/components/utils/stringUtils';
 import { Trash } from 'lucide-react';
 
@@ -58,6 +58,7 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
 
     useEffect(() => {
         const handleSearchUser = async (term: string) => {
+            console.log(term);
             if (keySearchStaff === '') {
                 setStaffList([]);
                 setSearchError('');
@@ -194,18 +195,18 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
         setSearchError('');
     };
 
-    const handleTimeChange = (field: 'startTime' | 'endTime', timeString: string) => {
-        if (TimeUtils.isValidTimeFormat(timeString)) {
-            const minutes = TimeUtils.timeToMinutes(timeString);
-            handleInputChange(field, minutes);
-            // Clear any existing time format errors
-            if (errors[field]) {
-                setErrors(prev => ({ ...prev, [field]: '' }));
-            }
-        } else {
-            setErrors(prev => ({ ...prev, [field]: 'Invalid time format (HH:MM)' }));
-        }
-    };
+    // const handleTimeChange = (field: 'startTime' | 'endTime', timeString: string) => {
+    //     if (TimeUtils.isValidTimeFormat(timeString)) {
+    //         const minutes = TimeUtils.timeToMinutes(timeString);
+    //         handleInputChange(field, minutes);
+    //         // Clear any existing time format errors
+    //         if (errors[field]) {
+    //             setErrors(prev => ({ ...prev, [field]: '' }));
+    //         }
+    //     } else {
+    //         setErrors(prev => ({ ...prev, [field]: 'Invalid time format (HH:MM)' }));
+    //     }
+    // };
 
     const validateForm = () => {
         if (mode === 'add') {
@@ -270,9 +271,9 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
 
     };
 
-    const formatTimeForInput = (minutes: number) => {
-        return TimeUtils.minutesToTime(minutes);
-    };
+    // const formatTimeForInput = (minutes: number) => {
+    //     return TimeUtils.minutesToTime(minutes);
+    // };
 
     return (
         <Modal isOpen={isOpen} onOpenChange={onOpenChange} size='xl'>

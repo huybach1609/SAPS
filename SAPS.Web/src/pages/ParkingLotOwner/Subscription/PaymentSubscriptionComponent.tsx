@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { CreditCard, Check, Clock, MapPin, User, Building, Copy, CheckCircle, XCircle } from 'lucide-react';
+import { CreditCard, Check, Clock, MapPin, User, Copy } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import DefaultLayout from '@/layouts/default';
 import { useParkingLot } from '../ParkingLotContext';
 import QRCode from 'qrcode';
-import { Button, Card, CardBody, CardHeader, Spinner, Tab, Tabs } from '@heroui/react';
+import { Button, Spinner, Tab, Tabs } from '@heroui/react';
 import { formatPrice } from '@/components/utils/stringUtils';
-import { ParkingLotSubscription, PayOsResponse } from '@/types/ParkingLot';
+import { PayOsResponse } from '@/types/ParkingLot';
 import { fetchSubscriptionById } from '@/services/parkinglot/subscriptionService';
 import PaymentStatusChecker from './PaymentStatusChecker';
 
@@ -79,6 +79,7 @@ const PaymentSubscriptionComponent: React.FC = () => {
 
 
    const [paymentComplete, setPaymentComplete] = useState(false);
+   console.log(paymentComplete);
 
    useEffect(() => {
       const fetchSubscription = async () => {
@@ -392,48 +393,48 @@ const PaymentSubscriptionComponent: React.FC = () => {
 
 
    // Helper functions for status display
-   function getStatusColor(status: string): "success" | "warning" | "danger" | "default" {
-      switch (status) {
-         case 'PAID':
-            return 'success';
-         case 'PENDING':
-            return 'warning';
-         case 'CANCELLED':
-         case 'EXPIRED':
-            return 'danger';
-         default:
-            return 'default';
-      }
-   }
+   // function getStatusColor(status: string): "success" | "warning" | "danger" | "default" {
+   //    switch (status) {
+   //       case 'PAID':
+   //          return 'success';
+   //       case 'PENDING':
+   //          return 'warning';
+   //       case 'CANCELLED':
+   //       case 'EXPIRED':
+   //          return 'danger';
+   //       default:
+   //          return 'default';
+   //    }
+   // }
 
-   function getStatusIcon(status: string) {
-      switch (status) {
-         case 'PAID':
-            return <CheckCircle className="w-4 h-4" />;
-         case 'PENDING':
-            return <Clock className="w-4 h-4" />;
-         case 'CANCELLED':
-         case 'EXPIRED':
-            return <XCircle className="w-4 h-4" />;
-         default:
-            return <Clock className="w-4 h-4" />;
-      }
-   }
+   // function getStatusIcon(status: string) {
+   //    switch (status) {
+   //       case 'PAID':
+   //          return <CheckCircle className="w-4 h-4" />;
+   //       case 'PENDING':
+   //          return <Clock className="w-4 h-4" />;
+   //       case 'CANCELLED':
+   //       case 'EXPIRED':
+   //          return <XCircle className="w-4 h-4" />;
+   //       default:
+   //          return <Clock className="w-4 h-4" />;
+   //    }
+   // }
 
-   function getStatusText(status: string): string {
-      switch (status) {
-         case 'PAID':
-            return 'Đã thanh toán';
-         case 'PENDING':
-            return 'Đang chờ thanh toán';
-         case 'CANCELLED':
-            return 'Đã hủy';
-         case 'EXPIRED':
-            return 'Đã hết hạn';
-         default:
-            return 'Không xác định';
-      }
-   }
+   // function getStatusText(status: string): string {
+   //    switch (status) {
+   //       case 'PAID':
+   //          return 'Đã thanh toán';
+   //       case 'PENDING':
+   //          return 'Đang chờ thanh toán';
+   //       case 'CANCELLED':
+   //          return 'Đã hủy';
+   //       case 'EXPIRED':
+   //          return 'Đã hết hạn';
+   //       default:
+   //          return 'Không xác định';
+   //    }
+   // }
 };
 
 export default PaymentSubscriptionComponent;
