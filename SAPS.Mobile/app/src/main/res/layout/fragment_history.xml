@@ -2,33 +2,50 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
-    <!-- Spinner Filter -->
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/spinnerFilter"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:layout_width="180dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end"
-        android:layout_margin="10dp"
-        android:hint="Filter"
-        android:backgroundTint="@color/md_theme_secondaryContainer"
-        >
-        <AutoCompleteTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="none"
-            android:padding="10dp" />
-    </com.google.android.material.textfield.TextInputLayout>
+    android:orientation="vertical">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <!-- Spinner Filter -->
+        <TextView
+            style="?attr/textAppearanceDisplayMedium"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:fontFamily="@font/roboto_serif_family"
+            android:gravity="center"
+            android:padding="20dp"
+            android:text="@string/parking_lot_session_heading_bar"
+            android:textColor="@color/md_theme_onSurface"
+            android:textSize="16sp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/spinnerFilter"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:layout_gravity="center"
+            android:backgroundTint="@color/md_theme_secondaryContainer"
+            android:hint="@string/history_session_filter">
+
+            <AutoCompleteTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:padding="10dp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
     <!-- RecyclerView -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvParkingHistory"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="12dp"
-        android:padding="8dp"
-        />
+        android:padding="8dp" />
 
 </LinearLayout>

@@ -45,12 +45,7 @@ public class MainActivity extends AppCompatActivity implements AuthenticationSer
 
         // Check login info
         tokenManager = new TokenManager(this);
-//        if (!tokenManager.isLoggedIn()) {
-//            Intent loginIntent = new Intent(this, LoginActivity.class);
-//            startActivity(loginIntent);
-//            finish(); // Prevent going back to MainActivity without login
-//            return;
-//        }
+
         if (!tokenManager.isLoggedIn()) {
             Intent welcome = new Intent(this, WelcomeActivity.class);
             startActivity(welcome);
@@ -60,6 +55,24 @@ public class MainActivity extends AppCompatActivity implements AuthenticationSer
 
 
         authService = new AuthenticationService(this, this);
+        
+        // Fetch client profile if user is already logged in
+        if (tokenManager.isLoggedIn()) {
+            authService.fetchClientProfile(new AuthenticationService.ClientProfileCallback() {
+                @Override
+                public void onSuccess(User userWithProfile) {
+                    // Client profile fetched and saved successfully
+                    // You can update UI here if needed
+                }
+
+                @Override
+                public void onFailure(String error) {
+                    // Handle profile fetch failure
+                    // This won't affect the main app flow
+                }
+            });
+        }
+        
         initializeBottomNavigation();
     }
 
@@ -184,6 +197,20 @@ public class MainActivity extends AppCompatActivity implements AuthenticationSer
     @Override
     public void onAuthSuccess(User user) {
         // Handle successful authentication
+        // Fetch client profile after successful authentication
+        authService.fetchClientProfile(new AuthenticationService.ClientProfileCallback() {
+            @Override
+            public void onSuccess(User userWithProfile) {
+                // Client profile fetched and saved successfully
+                // You can update UI here if needed
+            }
+
+            @Override
+            public void onFailure(String error) {
+                // Handle profile fetch failure
+                // This won't affect the main authentication flow
+            }
+        });
     }
 
     @Override

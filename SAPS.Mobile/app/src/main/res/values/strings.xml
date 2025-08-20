@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">SAPLS</string>
-    <string name="forgot_password"><u>forgot password</u></string>
+    <string name="forgot_password"><u>Forgot password</u></string>
     <string name="nav_home">Home</string>
     <string name="nav_vehicle">Vehicle</string>
     <string name="nav_history">History</string>
@@ -12,13 +12,13 @@
     <string name="edit_profile_input_no">No</string>
     <string name="edit_profile_input_sex">Sex</string>
     <string name="edit_profile_input_nationality">Nationality</string>
-    <string name="edit_profile_input_full_name">Full name</string>
-    <string name="edit_profile_input_date_of_birth">Date of birth</string>
-    <string name="edit_profile_input_number_phone">Number Phone</string>
-    <string name="edit_profile_input_place_of_origin">Place of origin</string>
+    <string name="edit_profile_input_full_name">Full Name</string>
+    <string name="edit_profile_input_date_of_birth">Date of Birth</string>
+    <string name="edit_profile_input_number_phone">Phone Number</string>
+    <string name="edit_profile_input_place_of_origin">Place of Origin</string>
     <string name="edit_profile_input_place_of_residence">Place of Residence</string>
     <string name="edit_profile_input_issue_date">Issue Date</string>
-    <string name="edit_profile_input_issue_place">Issue Place</string>
+    <string name="edit_profile_input_issue_place">Place of Issue</string>
     <string name="edit_profile_btn_submit_update">Submit Update</string>
     <string name="edit_profile_edit_notification">All changes require admin approval. You\'ll be notified once reviewed.</string>
     <string name="edit_profile_btn_take_photo">Take Photo</string>
@@ -41,11 +41,13 @@
         <item>Last 3 months</item>
         <item>Last year</item>
     </string-array>
+    <string name="history_session_filter">Filter</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <!-- Group & Logo -->
     <string name="app_group_name">SAPLS</string>
-    <string name="logo_description">Logo nhóm</string>
+    <string name="logo_description">Group logo</string>
 
     <!-- Parking session info labels -->
     <string name="label_vehicle">Vehicle:</string>
@@ -56,37 +58,37 @@
     <!-- Buttons -->
     <string name="btn_check_out">Check Out</string>
     <!-- Header / Title -->
-    <string name="title_my_vehicles">🚗 My Vehicles</string>
+    <string name="title_my_vehicles">My Vehicles</string>
     <string name="btn_add_vehicle">+ Add Vehicle</string>
-    <string name="btn_add_vehicle_desc">Thêm xe mới</string>
+    <string name="btn_add_vehicle_desc">Add a new vehicle</string>
 
     <!-- Share code card -->
     <string name="label_share_code">🔑 Your Share Code</string>
     <string name="example_share_code">USER-JOHN2025</string>
     <string name="share_code_description">Give this code to vehicle owners to grant you access to their vehicles.</string>
-    <string name="btn_copy_my_share_code">📋 Copy My Share Code</string>
-    <string name="btn_copy_share_code_desc">Sao chép mã chia sẻ</string>
+    <string name="btn_copy_my_share_code">Copy My Share Code</string>
+    <string name="btn_copy_share_code_desc">Copy share code</string>
 
     <!-- Tabs -->
-    <string name="tab_my_vehicles">Xe của tôi</string>
-    <string name="tab_shared_vehicles">Xe được chia sẻ</string>
+    <string name="tab_my_vehicles">My Car</string>
+    <string name="tab_shared_vehicles">Shared Cars</string>
 
     <!-- Content descriptions -->
-    <string name="cd_share_code_card">Thẻ mã chia sẻ</string>
+    <string name="cd_share_code_card">Share code card</string>
     <!-- Parking History Screen -->
     <string name="title_parking_history">📋 Parking History</string>
     <string name="label_date">Date: </string>
     <!-- Summary -->
-    <string name="summary_title">Parking Session Overview</string>
+    <string name="checkout_activity_actionbar_title">Parking Session Overview</string>
 
     <!-- Vehicle info -->
     <string name="vehicle_sample">ABC-1234 — Toyota Camry</string>
     <string name="location_sample">Downtown Mall — Slot A-15</string>
 
     <!-- Time -->
-    <string name="entry_time">Entry: 14:30</string>
-    <string name="exit_time">Exit: 16:45</string>
-    <string name="duration_time">Duration: 2h 15m</string>
+    <string name="entry_time">00:00</string>
+    <string name="check_out_time">00:00</string>
+    <string name="duration_time">2h 15m</string>
     <string name="session_id">ID: SESS-20250806-001</string>
 
     <!-- Payment breakdown -->
@@ -305,17 +307,38 @@
 
     <!-- Reused strings -->
     <string name="btn_return_access">Return</string>
-    <string name="notification_icon_desc">notificationi icon desc</string>
+    <string name="notification_icon_desc">Notification icon description</string>
     <string name="notification_title">notification title</string>
     <string name="notification_body">notification body</string>
-    <string name="notification_time">01th2</string>
+    <string name="notification_time">Feb 01</string>
     <string name="more_actions">more actions</string>
     <string name="action_bar_notification_mark_all_as_read">Mark all as read</string>
     <string name="change_password_notes">Password Requirements:\n• At least 8 characters\n• Include uppercase and lowercase letters\n• Include numbers and symbols\n• No spaces allowed</string>
     <string name="edit_profile_card_sub">Take a photo or select from gallery to update your information</string>
     <string name="edit_profile_card_header">Upload New ID Card</string>
-    <string name="change_password_current_password_hint">Current Passsword</string>
+    <string name="change_password_current_password_hint">Current Password</string>
     <string name="change_password_confirm_new_password_hint">Confirm new password</string>
     <string name="change_password_new_password_hint">New password</string>
     <string name="profile_fragment_notifications_header">Notifications</string>
+    <string name="home_welcome_back">Welcome back</string>
+    <string name="parking_lot_session_heading_bar">Parking Lot Session</string>
+    <string name="home_fragment_hello">Hello %1$s</string>
+    <string name="share_vehicle_access_subheader">Grant parking access to someone else</string>
+    <string name="profile_fragment_please_verify_account_messsage">Please verify your account</string>
+    <string name="no_code_to_copy">Empty</string>
+    <string name="add_vehicle_action_bar_header">Add New Vehicle</string>
+    <string name="activity_check_out_not_available">Parking session data is not available</string>
+    <string name="payement_activity_payment_detail_display">Payment Details</string>
+    <string name="payment_activity_display_amount">Amount</string>
+    <string name="payment_activity_display_note">Please transfer the exact amount for automatic reconciliation</string>
+    <string name="payment_activity_content_description_account_number">Account number</string>
+    <string name="payment_activity_display_account_number">Account Number</string>
+    <string name="payment_activity_content_description_account_name">Account name icon</string>
+    <string name="payment_activity_display_account_name">Account Name</string>
+    <string name="payment_activity_content_description_reference_code">Reference code</string>
+    <string name="payment_activity_display_reference_code">Description</string>
+    <string name="payment_activity_btn_text_display">Confirm Payment</string>
+    <string name="payment_activity_actionbar_title">Payment Process</string>
+    <string name="payment_activity_qr_code_title">Open your banking app, choose the QR scan function, and scan the code above.</string>
+
 </resources>

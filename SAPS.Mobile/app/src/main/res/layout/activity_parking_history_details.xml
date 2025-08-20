@@ -95,7 +95,7 @@
                         android:textColor="@color/md_theme_onPrimary" />
 
                     <TextView
-                        android:id="@+id/tvExitTime"
+                        android:id="@+id/tvCheckOutTime"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -345,6 +345,7 @@
 
         <!-- Transaction details -->
         <LinearLayout
+            android:id="@+id/transaction_details_line"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
@@ -527,7 +528,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="Reference code"
+                        android:text="Order code:"
                         android:textAppearance="@style/TextAppearance.Material3.BodySmall"
                         android:textColor="@color/md_theme_onSurfaceVariant" />
                     <TextView

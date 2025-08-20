@@ -1,207 +1,187 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/md_theme_surface"
-    android:padding="16dp"
-    android:fitsSystemWindows="true">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
 
-    <com.google.android.material.card.MaterialCardView
+    <!-- Title -->
+    <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="6dp"
-        app:cardBackgroundColor="@android:color/white">
+        android:text="Vehicle Details"
+        android:textAppearance="?attr/textAppearanceHeadlineSmall"
+        android:layout_marginBottom="16dp"
+        android:gravity="start" />
+
+    <!-- Vehicle Information Card -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:padding="16dp">
 
-            <!-- Title -->
-            <TextView
-                android:id="@+id/tvTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/vehicle_details_title"
-                android:gravity="center"
-                android:layout_marginBottom="18dp"
-                android:textColor="@color/md_theme_onSurface"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <!-- Info rows -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <!-- License Plate -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingVertical="8dp"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="120dp"
-                        android:layout_height="wrap_content"
-                        android:text="@string/label_license_plate"
-                        android:textSize="14sp"
-                        android:textColor="@color/md_theme_onSurface"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvDetailLicense"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/placeholder_text"
-                        android:textSize="16sp"
-                        android:textColor="@color/md_theme_secondary" />
-                </LinearLayout>
-                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F1F5F9" />
-
-                <!-- Brand -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingVertical="8dp"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="120dp"
-                        android:layout_height="wrap_content"
-                        android:text="@string/label_brand"
-                        android:textSize="14sp"
-                        android:textColor="@color/md_theme_onSurface"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvDetailBrand"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/placeholder_text"
-                        android:textSize="16sp"
-                        android:textColor="@color/md_theme_secondary" />
-                </LinearLayout>
-                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F1F5F9" />
-
-                <!-- Model -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingVertical="8dp"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="120dp"
-                        android:layout_height="wrap_content"
-                        android:text="@string/label_model"
-                        android:textSize="14sp"
-                        android:textColor="@color/md_theme_onSurface"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvDetailModel"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/placeholder_text"
-                        android:textSize="16sp"
-                        android:textColor="@color/md_theme_secondary" />
-                </LinearLayout>
-                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F1F5F9" />
-
-                <!-- Color -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingVertical="8dp"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="120dp"
-                        android:layout_height="wrap_content"
-                        android:text="@string/label_color"
-                        android:textSize="14sp"
-                        android:textColor="@color/md_theme_onSurface"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvDetailColor"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/placeholder_text"
-                        android:textSize="16sp"
-                        android:textColor="@color/md_theme_secondary" />
-                </LinearLayout>
-                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#F1F5F9" />
-
-                <!-- Sharing Status -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:paddingVertical="8dp"
-                    android:gravity="center_vertical">
-
-                    <TextView
-                        android:layout_width="120dp"
-                        android:layout_height="wrap_content"
-                        android:text="@string/label_sharing_status"
-                        android:textSize="14sp"
-                        android:textColor="@color/md_theme_onSurface"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvDetailStatus"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="@string/placeholder_text"
-                        android:textSize="16sp"
-                        android:textColor="@color/md_theme_secondary" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Action button -->
+            <!-- License Plate -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:gravity="center"
-                android:layout_marginTop="20dp">
+                android:layout_marginBottom="12dp">
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnCheckout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="48dp"
-                    android:layout_marginEnd="8dp"
-                    android:text="@string/button_checkout"
-                    android:textAllCaps="false"
-                    android:textSize="16sp"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
-                    app:cornerRadius="12dp"
-                    app:icon="@drawable/ic_checkout"
-                    app:iconGravity="textStart"
-                    app:iconPadding="12dp"
-                    app:iconTint="@color/md_theme_onPrimary"
-                    android:backgroundTint="@color/md_theme_primary"
-                    android:textColor="@color/md_theme_onPrimary" />
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="License Plate:"
+                    android:textAppearance="?attr/textAppearanceLabelMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tvDetailLicense"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurface"
+                    android:gravity="end" />
+            </LinearLayout>
+
+            <!-- Brand -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Brand:"
+                    android:textAppearance="?attr/textAppearanceLabelMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tvDetailBrand"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurface"
+                    android:gravity="end" />
+            </LinearLayout>
+
+            <!-- Model -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Model:"
+                    android:textAppearance="?attr/textAppearanceLabelMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tvDetailModel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurface"
+                    android:gravity="end" />
+            </LinearLayout>
+
+            <!-- Color -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Color:"
+                    android:textAppearance="?attr/textAppearanceLabelMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tvDetailColor"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurface"
+                    android:gravity="end" />
+            </LinearLayout>
+
+            <!-- Status -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Status:"
+                    android:textAppearance="?attr/textAppearanceLabelMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tvDetailStatus"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurface"
+                    android:gravity="end" />
             </LinearLayout>
 
         </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-</ScrollView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+       android:layout_gravity="end"
+        >
+     <!-- Action Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:layout_weight="1"
+        android:textFontWeight="600"
+        style="@style/Widget.Material3.Button.TextButton.Dialog"
+        />
+
+    <!-- Action Button -->
+    <com.google.android.material.button.MaterialButton
+        android:layout_weight="1"
+        android:id="@+id/btnCheckout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textFontWeight="600"
+        android:text="Checkout"
+        style="@style/Widget.Material3.Button.TextButton.Dialog"
+        />
+
+    </LinearLayout>
+</LinearLayout>

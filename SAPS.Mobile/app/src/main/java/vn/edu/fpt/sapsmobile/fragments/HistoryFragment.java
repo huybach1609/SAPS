@@ -4,11 +4,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
@@ -20,16 +23,12 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import vn.edu.fpt.sapsmobile.API.ApiTest;
-import vn.edu.fpt.sapsmobile.API.apiinterface.ParkingSessionApiService;
-import vn.edu.fpt.sapsmobile.API.apiinterface.VehicleApiService;
+import vn.edu.fpt.sapsmobile.network.client.ApiTest;
+import vn.edu.fpt.sapsmobile.network.service.ParkingSessionApiService;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.actionhandler.HistoryFragmentHandler;
-import vn.edu.fpt.sapsmobile.actionhandler.VehicleFragmentHandler;
-import vn.edu.fpt.sapsmobile.adapter.ParkingSessionAdapter;
-import vn.edu.fpt.sapsmobile.adapter.VehicleAdapter;
+import vn.edu.fpt.sapsmobile.adapters.ParkingSessionAdapter;
 import vn.edu.fpt.sapsmobile.models.ParkingSession;
-import vn.edu.fpt.sapsmobile.models.Vehicle;
 import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
 
 public class HistoryFragment extends Fragment {
@@ -46,6 +45,17 @@ public class HistoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_history, container, false);
 
+
+
+        // Set status bar color
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = requireActivity().getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(Color.TRANSPARENT);
+
+        }
 
         loadingDialog = new LoadingDialog(getActivity());
         // Initialize Adapter

@@ -1,16 +1,17 @@
 package vn.edu.fpt.sapsmobile.actionhandler;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
+
 import vn.edu.fpt.sapsmobile.activities.checkout.CheckoutActivity;
 import vn.edu.fpt.sapsmobile.dialog.VehicleDetailDialog;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
-import vn.edu.fpt.sapsmobile.listener.VehicleFragmentListener;
+import vn.edu.fpt.sapsmobile.listener.VehicleFragmentVehicleDetailListener;
 
-public class VehicleFragmentHandler implements VehicleFragmentListener {
+public class VehicleFragmentHandler implements VehicleFragmentVehicleDetailListener {
 
     private final Context context;
 
@@ -48,6 +49,12 @@ public class VehicleFragmentHandler implements VehicleFragmentListener {
 
         // Khởi chạy Activity
         context.startActivity(intent);
+    }
+
+    @Override
+    public void onClose(Vehicle vehicle, AlertDialog dialog) {
+
+        dialog.dismiss();
     }
 
 }

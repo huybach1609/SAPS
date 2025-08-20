@@ -13,7 +13,9 @@ import androidx.core.view.WindowInsetsCompat;
 
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.activities.main.MainActivity;
+import vn.edu.fpt.sapsmobile.enums.PaymentStatus;
 import vn.edu.fpt.sapsmobile.models.Transaction;
+import vn.edu.fpt.sapsmobile.models.Vehicle;
 
 public class PaymentResultActivity extends AppCompatActivity {
 
@@ -22,9 +24,11 @@ public class PaymentResultActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
 
-        String status = getIntent().getStringExtra("status");
+//        vehicle = (Vehicle) intent.getSerializableExtra("vehicle");
 
-        if ("SUCCESS".equals(status)) {
+        PaymentStatus status = (PaymentStatus) getIntent().getSerializableExtra("status");
+
+        if (status == PaymentStatus.PAID) {
             setContentView(R.layout.activity_payment_success);
 
             // Lấy dữ liệu Transaction
@@ -51,7 +55,53 @@ public class PaymentResultActivity extends AppCompatActivity {
                 });
             }
 
-        } else {
+        } else if (status == PaymentStatus.CANCELLED || status == PaymentStatus.EXPIRED || status == PaymentStatus.FAILED) {
+//            case PAID:
+//                navigateToResultActivity(status);
+//                break;
+//
+//            case CANCELLED:
+//            case EXPIRED:
+//            case FAILED:
+//                navigateToResultActivity(status);
+//                break;
+//
+//            case PENDING:
+//            case PROCESSING:
+//            case UNDERPAID:
+//                showPaymentStatusToast(status);
+//                break;
+//
+//            case UNKNOWN:
+//            default:
+//                navigateToResultActivity(status);
+//                break;
+
+            setContentView(R.layout.activity_payment_fail);
+            Button btnBack = findViewById(R.id.btnBack);
+            btnBack.setOnClickListener(v -> {
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                this.startActivity(intent);
+            });
+            Button btnTryAgain = findViewById(R.id.btn_try_again);
+            btnTryAgain.setOnClickListener(v -> {
+                // Tạo Intent
+                Intent intent = new Intent(PaymentResultActivity.this, PaymentActivity.class);
+
+                // Nếu muốn truyền kèm dữ liệu:
+
+//                intent.putExtra("vehicleId", parkingSessionToCheckOut.getVehicleId());
+//                intent.putExtra("sessionId", parkingSessionToCheckOut.getId());
+
+                // Chạy Activity mới
+                startActivity(intent);
+
+                // Optionally: đóng activity hiện tại
+                finish();
+            });
+        }
+        else {
             setContentView(R.layout.activity_payment_fail);
             Button btnBack = findViewById(R.id.btnBack);
             btnBack.setOnClickListener(v -> {

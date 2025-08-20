@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#f8f9fa">
@@ -34,11 +35,10 @@
                         android:id="@+id/profile_image"
                         android:layout_width="80dp"
                         android:layout_height="80dp"
-                        android:background="@drawable/circle_background"
-                        android:padding="16dp"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/account_circle_24"
-                        app:tint="@color/md_theme_onPrimaryContainer" />
+                        android:src="@drawable/circle_background"
+                        />
+
+
 
                     <ImageView
                         android:id="@+id/verify_icon"
@@ -61,7 +61,7 @@
                     android:paddingTop="2dp"
                     android:paddingRight="6dp"
                     android:paddingBottom="2dp"
-                    android:text="Please verify your account"
+                    android:text="@string/profile_fragment_please_verify_account_messsage"
                     android:textSize="12sp"
                     android:visibility="gone" />
 
@@ -72,14 +72,18 @@
                     android:layout_marginTop="10dp"
                     android:textColor="#2c3e50"
                     android:textSize="18sp"
-                    android:textStyle="bold" />
+                    android:text="Name"
+                    android:textStyle="bold"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:id="@+id/profile_email"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:text="example@mail.com"
                     android:textColor="#7f8c8d"
-                    android:textSize="14sp" />
+                    android:textSize="14sp"
+                    tools:ignore="HardcodedText" />
             </LinearLayout>
 
 

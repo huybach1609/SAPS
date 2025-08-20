@@ -65,6 +65,7 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationSe
         initializeViews();
         setupClickListeners();
         setupRegisterText();
+        handlePrefilledCredentials();
     }
 
     private void checkExistingLogin() {
@@ -294,5 +295,21 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationSe
 
     private void showSuccessMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
+    private void handlePrefilledCredentials() {
+        Intent intent = getIntent();
+        if (intent != null) {
+            String prefilledEmail = intent.getStringExtra("prefilled_email");
+            String prefilledPassword = intent.getStringExtra("prefilled_password");
+            
+            if (prefilledEmail != null && !prefilledEmail.isEmpty()) {
+                emailInput.setText(prefilledEmail);
+            }
+            
+            if (prefilledPassword != null && !prefilledPassword.isEmpty()) {
+                passwordInput.setText(prefilledPassword);
+            }
+        }
     }
 }
