@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BarChart3, Clock, DollarSign,  Car, Activity } from 'lucide-react';
+import { Clock, DollarSign,  Car, Activity } from 'lucide-react';
 import { apiUrl } from '@/config/base';
 
 // Types for the API responses
@@ -44,7 +44,7 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, icon, className = '' 
 );
 
 const ParkingHistoryStatistics: React.FC<{ parkingLotId: string }> = ({ parkingLotId }) => {
-    const [selectedRange, setSelectedRange] = useState<number>(0);
+    const [selectedRange] = useState<number>(0);
     const [status, setStatus] = useState<ParkingStatus | null>(null);
     const [statistics, setStatistics] = useState<ParkingStatistics | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
@@ -52,12 +52,12 @@ const ParkingHistoryStatistics: React.FC<{ parkingLotId: string }> = ({ parkingL
 
     // Replace with your actual API base URL
 
-    const rangeOptions = [
-        { label: 'Today', value: 0 },
-        { label: 'This Week', value: 1 },
-        { label: 'This Month', value: 2 },
-        { label: 'This Year', value: 3 }
-    ];
+    // const rangeOptions = [
+    //     { label: 'Today', value: 0 },
+    //     { label: 'This Week', value: 1 },
+    //     { label: 'This Month', value: 2 },
+    //     { label: 'This Year', value: 3 }
+    // ];
 
     const fetchParkingData = async () => {
         setLoading(true);
