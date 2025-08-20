@@ -15,19 +15,20 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import vn.edu.fpt.sapsmobile.dtos.AuthResponse;
-import vn.edu.fpt.sapsmobile.dtos.GoogleTokenRequest;
-import vn.edu.fpt.sapsmobile.dtos.LoginRequest;
-import vn.edu.fpt.sapsmobile.dtos.LoginResponse;
-import vn.edu.fpt.sapsmobile.dtos.RegisterRequest;
-import vn.edu.fpt.sapsmobile.dtos.RegisterResponse;
+import vn.edu.fpt.sapsmobile.dtos.auth.AuthResponse;
+import vn.edu.fpt.sapsmobile.dtos.auth.GoogleTokenRequest;
+import vn.edu.fpt.sapsmobile.dtos.auth.LoginRequest;
+import vn.edu.fpt.sapsmobile.dtos.auth.LoginResponse;
+import vn.edu.fpt.sapsmobile.dtos.auth.RegisterRequest;
+import vn.edu.fpt.sapsmobile.dtos.auth.RegisterResponse;
+import vn.edu.fpt.sapsmobile.dtos.auth.RefreshTokenRequest;
 import vn.edu.fpt.sapsmobile.network.client.ApiTest;
 import vn.edu.fpt.sapsmobile.network.service.ClientApiService;
 import vn.edu.fpt.sapsmobile.network.service.AuthApi;
 import vn.edu.fpt.sapsmobile.network.service.UserApiService;
 import vn.edu.fpt.sapsmobile.BuildConfig;
 import vn.edu.fpt.sapsmobile.activities.auth.LoginActivity;
-import vn.edu.fpt.sapsmobile.dtos.ClientProfileResponse;
+import vn.edu.fpt.sapsmobile.dtos.profile.ClientProfileResponse;
 import vn.edu.fpt.sapsmobile.models.*;
 import vn.edu.fpt.sapsmobile.utils.JwtUtils;
 import vn.edu.fpt.sapsmobile.utils.SessionActions;
@@ -44,21 +45,22 @@ public class AuthenticationService implements SessionActions {
     private final ClientApiService clientApiService;
     private final TokenManager tokenManager;
     private AuthCallback authCallback;
+    private static final int LEEWAY_SECONDS = 30;
 
     @Override
     public void logoutNow(String reason) {
         // Optional: Log the reason
         Log.w(TAG, "Logging out: " + reason);
 
-        // Clear Google + local tokens
-        googleSignInClient.signOut().addOnCompleteListener(task -> {
-            tokenManager.clearTokens();
+//         Clear Google + local tokens
+         googleSignInClient.signOut().addOnCompleteListener(task -> {
+             tokenManager.clearTokens();
 
-            // Navigate to login screen (adjust class name)
-            Intent i = new Intent(context, LoginActivity.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            context.startActivity(i);
-        });
+             // Navigate to login screen (adjust class name)
+             Intent i = new Intent(context, LoginActivity.class);
+             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+             context.startActivity(i);
+         });
     }
 
     // Interfaces
@@ -86,7 +88,7 @@ public class AuthenticationService implements SessionActions {
     public AuthenticationService(Context context) {
         this.context = context;
         this.tokenManager = new TokenManager(context);
-        this.googleSignInClient = initializeGoogleSignInClient();
+         this.googleSignInClient = initializeGoogleSignInClient();
 
         Retrofit retrofit = ApiTest.getServiceLast(context);
         this.authApi = retrofit.create(AuthApi.class);
@@ -235,6 +237,35 @@ public class AuthenticationService implements SessionActions {
         googleSignInClient.signOut().addOnCompleteListener(task -> {
             tokenManager.clearTokens();
             if (onComplete != null) onComplete.run();
+        });
+    }
+
+    // Refresh access token if expired
+    public void refreshAccessTokenIfNeeded() {
+        String accessToken = tokenManager.getAccessToken();
+        String refreshToken = tokenManager.getRefreshToken();
+
+        if (refreshToken == null || accessToken == null) {
+            return;
+        }
+
+        if (!JwtUtils.isExpired(accessToken, LEEWAY_SECONDS)) {
+            return; // still valid
+        }
+
+        RefreshTokenRequest request = new RefreshTokenRequest(refreshToken);
+        executeApiCall(authApi.refreshToken(request), new ApiResponseHandler<LoginResponse>() {
+            @Override
+            public void onSuccess(LoginResponse response) {
+                if (response != null && response.getAccessToken() != null) {
+                    tokenManager.saveTokens(response.getAccessToken(), response.getRefreshToken());
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+                Log.e(TAG, "Token refresh failed: " + error);
+            }
         });
     }
 

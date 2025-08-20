@@ -8,11 +8,11 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Body;
-import vn.edu.fpt.sapsmobile.dtos.UpdateClientProfileRequest;
-import vn.edu.fpt.sapsmobile.dtos.VehicleRegistrationInfo;
-import vn.edu.fpt.sapsmobile.dtos.VehicleRegistrationResponse;
-import vn.edu.fpt.sapsmobile.dtos.IdCardResponse;
-import vn.edu.fpt.sapsmobile.dtos.NotificationsResponse;
+import vn.edu.fpt.sapsmobile.dtos.profile.UpdateClientProfileRequest;
+import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleRegistrationInfo;
+import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleRegistrationResponse;
+import vn.edu.fpt.sapsmobile.dtos.profile.IdCardResponse;
+import vn.edu.fpt.sapsmobile.dtos.profile.NotificationsResponse;
 import vn.edu.fpt.sapsmobile.models.User;
 
 public interface ApiService {

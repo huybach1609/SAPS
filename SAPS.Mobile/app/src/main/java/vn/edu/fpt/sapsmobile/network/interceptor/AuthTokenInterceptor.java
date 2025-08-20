@@ -27,10 +27,10 @@ public class AuthTokenInterceptor implements Interceptor {
             return chain.proceed(chain.request());
         }
 
-        // If expired (or nearly), force logout and cancel call.
+        // If expired (or nearly), let higher-level client attempt refresh; proceed without forcing logout here.
         if (JwtUtils.isExpired(access, LEEWAY_SECONDS)) {
-            sessionActions.logoutNow("Access token expired");
-            throw new IOException("Access token expired"); // stop this request
+            // Proceed without attaching stale token; server may return 401 which can be handled upstream
+            return chain.proceed(chain.request());
         }
 
         // Attach Authorization header if missing

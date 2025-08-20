@@ -23,6 +23,7 @@ import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -37,9 +38,9 @@ import vn.edu.fpt.sapsmobile.adapters.ParkingSessionParkingAdapter;
 import vn.edu.fpt.sapsmobile.models.ParkingSession;
 import vn.edu.fpt.sapsmobile.models.User;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
-import vn.edu.fpt.sapsmobile.dtos.VehicleSummaryDto;
-import vn.edu.fpt.sapsmobile.dtos.OwnedSessionRequest;
-import vn.edu.fpt.sapsmobile.dtos.OwnedSessionResponse;
+import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleSummaryDto;
+import vn.edu.fpt.sapsmobile.dtos.parkingsession.OwnedSessionRequest;
+import vn.edu.fpt.sapsmobile.dtos.parkingsession.OwnedSessionResponse;
 import vn.edu.fpt.sapsmobile.utils.TokenManager;
 
 public class HomeFragment extends Fragment {
@@ -124,8 +125,6 @@ public class HomeFragment extends Fragment {
             rvCurrentSessions.setLayoutManager(new LinearLayoutManager(getContext()));
         }
 
-        // keep history recycler reference (hidden in layout)
-//        rvParkingHistory = view.findViewById(R.id.rvParkingHistory);
 
         parkingSessionAdapter = new ParkingSessionParkingAdapter(
                 new ArrayList<>(),
@@ -143,10 +142,7 @@ public class HomeFragment extends Fragment {
 
 
     private void findViews(View view) {
-//        tvVehicle = view.findViewById(R.id.tvVehicle);
-//        tvLocation = view.findViewById(R.id.tvLocation);
-//        tvEntryTime = view.findViewById(R.id.tvEntryTime);
-//        tvDuration = view.findViewById(R.id.tvDuration);
+
         btnCheckOut = view.findViewById(R.id.btnCheckOut);
         btnNotification = view.findViewById(R.id.btnNotification);
         tvGreating = view.findViewById(R.id.tvGreeting);
@@ -154,7 +150,6 @@ public class HomeFragment extends Fragment {
         parkingSessionContainer = view.findViewById(R.id.parkingSessionContainer);
         noSessionContainer = view.findViewById(R.id.noSessionContainer);
         tvNoSessionMessage = view.findViewById(R.id.tvNoSessionMessage);
-//       tvCurrentCost = view.findViewById(R.id.tvCurrentCost);
 
         setupBtnNotification();
     }
@@ -191,8 +186,6 @@ public class HomeFragment extends Fragment {
         if (!swipeRefreshLayout.isRefreshing()) {
             swipeRefreshLayout.setRefreshing(true);
         }
-
-
     }
 
     private void resetSessionData() {
@@ -202,34 +195,69 @@ public class HomeFragment extends Fragment {
         ParkingSessionApiService parkingSessionApi = ApiTest.getServiceLast(requireContext())
                 .create(ParkingSessionApiService.class);
 
-        OwnedSessionRequest request = new OwnedSessionRequest("Asc", "entryDateTime", "Parking");
+        List<OwnedSessionResponse.OwnedParkingSessionDto> sessionDtoList = new ArrayList<>();
 
-        parkingSessionApi.getOwnedSessions(tokenManager.getUserData().getId(), request)
-                .enqueue(new Callback<OwnedSessionResponse>() {
-                    @Override
-                    public void onResponse(Call<OwnedSessionResponse> call, Response<OwnedSessionResponse> response) {
-                        if (!isAdded() || getContext() == null) {
-                            swipeRefreshLayout.setRefreshing(false);
-                            return;
-                        }
+        final AtomicInteger completedCalls = new AtomicInteger(0);
+        final int totalCalls = 2;
 
-                        if (response.isSuccessful() && response.body() != null && response.body().getData() != null && !response.body().getData().isEmpty()) {
-                            List<OwnedSessionResponse.OwnedParkingSessionDto> dtoList = response.body().getData();
-                            fetchVehiclesAndBind(dtoList);
-                        } else {
-                            showNoSessionMessage();
-                            swipeRefreshLayout.setRefreshing(false);
-                        }
+        Runnable onCallComplete = () -> {
+            if (completedCalls.incrementAndGet() == totalCalls) {
+                swipeRefreshLayout.setRefreshing(false);
+                if (sessionDtoList.isEmpty()) {
+                    showNoSessionMessage();
+                } else {
+                    fetchVehiclesAndBind(sessionDtoList);
+                }
+            }
+        };
+
+        // Generic callback for both calls
+        Callback<OwnedSessionResponse> sessionCallback = new Callback<OwnedSessionResponse>() {
+            @Override
+            public void onResponse(Call<OwnedSessionResponse> call, Response<OwnedSessionResponse> response) {
+                if (!isAdded() || getContext() == null) {
+                    swipeRefreshLayout.setRefreshing(false);
+                    return;
+                }
+
+                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+                    synchronized (sessionDtoList) {
+                        addUniqueItems(sessionDtoList, response.body().getData());
                     }
+                }
+                onCallComplete.run();
+            }
 
-                    @Override
-                    public void onFailure(Call<OwnedSessionResponse> call, Throwable t) {
-                        if (isAdded() && getContext() != null) {
-                            swipeRefreshLayout.setRefreshing(false);
-                            showNoSessionMessage();
-                        }
-                    }
-                });
+            @Override
+            public void onFailure(Call<OwnedSessionResponse> call, Throwable t) {
+                if (isAdded() && getContext() != null) {
+                    // Continue even if one call fails
+                    onCallComplete.run();
+                } else {
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        };
+
+        // Make both calls simultaneously
+        String userId = tokenManager.getUserData().getId();
+
+        OwnedSessionRequest parkingRequest = new OwnedSessionRequest("Asc", "entryDateTime", "Parking");
+        parkingSessionApi.getOwnedSessions(userId, parkingRequest).enqueue(sessionCallback);
+
+        OwnedSessionRequest checkedOutRequest = new OwnedSessionRequest("Asc", "entryDateTime", "CheckedOut");
+        parkingSessionApi.getOwnedSessions(userId, checkedOutRequest).enqueue(sessionCallback);
+    }
+
+    private void addUniqueItems(List<OwnedSessionResponse.OwnedParkingSessionDto> target,
+                                List<OwnedSessionResponse.OwnedParkingSessionDto> source) {
+        for (OwnedSessionResponse.OwnedParkingSessionDto dto : source) {
+            boolean exists = target.stream()
+                    .anyMatch(existing -> existing.getId() != null && existing.getId().equals(dto.getId()));
+            if (!exists) {
+                target.add(dto);
+            }
+        }
     }
 
     private void fetchVehiclesAndBind(List<OwnedSessionResponse.OwnedParkingSessionDto> dtoList) {
@@ -313,12 +341,6 @@ public class HomeFragment extends Fragment {
         return result;
     }
 
-    // Removed parking lot fetch for owned sessions
-
-    // No longer used for multiple sessions
-
-    // No longer used for multiple sessions
-
 
 
     private void setupBtnNotification() {
@@ -328,31 +350,9 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    // No longer used for multiple sessions
-
-    private void startDurationTimer() {
-        // Not used in multiple sessions view
-    }
+   // ================ UI STATE METHODS ================
 
 
-
-    // Removed checkout button for single session card
-
-    private void handleNoSessionFound() {
-        showNoSessionMessage();
-        swipeRefreshLayout.setRefreshing(false);
-    }
-
-    // ================ UI STATE METHODS ================
-
-    private void showParkingSessionInfo() {
-        if (parkingSessionContainer != null) {
-            parkingSessionContainer.setVisibility(View.VISIBLE);
-        }
-        if (noSessionContainer != null) {
-            noSessionContainer.setVisibility(View.GONE);
-        }
-    }
 
     private void showNoSessionMessage() {
         if (parkingSessionContainer != null) {

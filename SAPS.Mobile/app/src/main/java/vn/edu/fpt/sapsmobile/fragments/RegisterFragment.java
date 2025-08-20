@@ -22,8 +22,8 @@ import vn.edu.fpt.sapsmobile.network.client.ApiTest;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.activities.auth.LoginActivity;
 import vn.edu.fpt.sapsmobile.activities.auth.RegisterActivity;
-import vn.edu.fpt.sapsmobile.dtos.UserRegisterRequest;
-import vn.edu.fpt.sapsmobile.dtos.UserRegisterResponse;
+import vn.edu.fpt.sapsmobile.dtos.profile.UserRegisterRequest;
+import vn.edu.fpt.sapsmobile.dtos.profile.UserRegisterResponse;
 import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
 
 public class RegisterFragment extends Fragment {

@@ -6,9 +6,13 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Body;
 import retrofit2.http.Path;
+import vn.edu.fpt.sapsmobile.dtos.payment.PaymentApiResponseDTO;
 import vn.edu.fpt.sapsmobile.models.ParkingSession;
-import vn.edu.fpt.sapsmobile.dtos.OwnedSessionRequest;
-import vn.edu.fpt.sapsmobile.dtos.OwnedSessionResponse;
+import vn.edu.fpt.sapsmobile.dtos.payment.CheckoutRequest;
+import vn.edu.fpt.sapsmobile.dtos.payment.CheckoutResponse;
+import vn.edu.fpt.sapsmobile.dtos.payment.PaymentResponseDTO;
+import vn.edu.fpt.sapsmobile.dtos.parkingsession.OwnedSessionRequest;
+import vn.edu.fpt.sapsmobile.dtos.parkingsession.OwnedSessionResponse;
 
 public interface ParkingSessionApiService {
     @GET("/parkingsession/{vehicleID}")
@@ -29,5 +33,11 @@ public interface ParkingSessionApiService {
             @Path("clientId") String clientId,
             @Body OwnedSessionRequest request
     );
+
+    @POST("/api/parkingsession/check-out")
+    Call<CheckoutResponse> checkout(@Body CheckoutRequest request);
+
+    @GET("/api/parkingSession/{sessionId}/payment-info")
+    Call<PaymentApiResponseDTO> getPaymentInfo(@Path("sessionId") String sessionId);
 
 }

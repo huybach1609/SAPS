@@ -7,7 +7,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 import retrofit2.http.Path;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
-import vn.edu.fpt.sapsmobile.dtos.VehicleSummaryDto;
+import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleSummaryDto;
 
 public interface IVehicleApi {
     // mock api

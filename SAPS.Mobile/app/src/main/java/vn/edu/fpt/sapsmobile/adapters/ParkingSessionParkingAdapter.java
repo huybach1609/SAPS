@@ -106,11 +106,14 @@ public class ParkingSessionParkingAdapter extends RecyclerView.Adapter<ParkingSe
 
             // Set status
 
+
             String statusCheck = session.getTransactionId() == null ? "Pending" : "Paid";
+
             tvStatus.setTextColor(
                     ContextCompat.getColor(itemView.getContext(), R.color.md_theme_onTertiaryFixedVariant)
             );
-            if (session.getExitDateTime() == null) {
+
+           if (session.getExitDateTime() == null) {
                 statusCheck = "On Going";
                 tvStatus.setTextColor(
                         ContextCompat.getColor(itemView.getContext(), R.color.md_theme_tertiaryFixedDim_mediumContrast)

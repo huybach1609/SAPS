@@ -351,16 +351,15 @@
                         android:layout_width="220dp"
                         android:layout_height="220dp"
                         android:contentDescription="QR Code"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/ic_qr"
-                        app:tint="@color/md_theme_onSurface" />
+                        android:scaleType="fitCenter"
+                        android:background="@android:color/white" />
 
                     <TextView
                         android:id="@+id/tvQrHint"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
-                        android:text="Mở app ngân hàng, chọn chức năng quét QR và quét mã trên đây."
+                        android:text="@string/payment_activity_qr_code_title"
                         android:textAlignment="center"
                         android:textColor="@color/md_theme_onSurfaceVariant"
                         android:textSize="12sp" />
@@ -392,18 +391,18 @@
                     app:iconSize="24dp"
                     app:iconTint="@color/md_theme_background" />
 
-<!--                <com.google.android.material.button.MaterialButton-->
-<!--                    android:id="@+id/btnReportIssue"-->
-<!--                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"-->
-<!--                    android:layout_width="match_parent"-->
-<!--                    android:layout_height="56dp"-->
-<!--                    android:fontFamily="sans-serif-medium"-->
-<!--                    android:text="Báo lỗi thanh toán"-->
-<!--                    android:textAllCaps="false"-->
-<!--                    android:textColor="@color/md_theme_onSurface"-->
-<!--                    android:textSize="16sp"-->
-<!--                    app:cornerRadius="5dp"-->
-<!--                    app:strokeColor="@color/md_theme_outline" />-->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnBrowse"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Open in Browse"
+                    android:textAllCaps="false"
+                    android:textColor="@color/md_theme_onSurface"
+                    android:textSize="16sp"
+                    app:cornerRadius="5dp"
+                    app:strokeColor="@color/md_theme_outline" />
             </LinearLayout>
 
             <!-- Small footer note -->

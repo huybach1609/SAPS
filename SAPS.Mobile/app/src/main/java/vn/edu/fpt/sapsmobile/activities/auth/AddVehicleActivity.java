@@ -37,8 +37,8 @@ import vn.edu.fpt.sapsmobile.network.client.ApiTest;
 import vn.edu.fpt.sapsmobile.network.service.ApiService;
 import vn.edu.fpt.sapsmobile.network.service.IVehicleRegistraionCertOrcApi;
 import vn.edu.fpt.sapsmobile.R;
-import vn.edu.fpt.sapsmobile.dtos.VehicleRegistrationResponse;
-import vn.edu.fpt.sapsmobile.dtos.VehicleResponse;
+import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleRegistrationResponse;
+import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleResponse;
 import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
 
 public class AddVehicleActivity extends AppCompatActivity {

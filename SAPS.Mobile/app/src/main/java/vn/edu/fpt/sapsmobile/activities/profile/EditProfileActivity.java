@@ -36,7 +36,7 @@ import vn.edu.fpt.sapsmobile.network.service.ApiService;
 import vn.edu.fpt.sapsmobile.network.client.ApiTest;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.models.ClientProfile;
-import vn.edu.fpt.sapsmobile.dtos.IdCardResponse;
+import vn.edu.fpt.sapsmobile.dtos.profile.IdCardResponse;
 import vn.edu.fpt.sapsmobile.models.User;
 import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
 import vn.edu.fpt.sapsmobile.utils.TokenManager;

@@ -1,5 +1,7 @@
 package vn.edu.fpt.sapsmobile.network.interceptor;
 
+import android.util.Log;
+
 import okhttp3.*;
 import vn.edu.fpt.sapsmobile.utils.SessionActions;
 
@@ -7,10 +9,9 @@ import org.jetbrains.annotations.Nullable;
 import java.io.IOException;
 
 public class LogoutOnUnauthorizedAuthenticator implements Authenticator {
-    private final SessionActions sessionActions;
+    private  String TAG = "LogoutOnUnauthorizedAuthenticator";
 
-    public LogoutOnUnauthorizedAuthenticator(SessionActions actions) {
-        this.sessionActions = actions;
+    public LogoutOnUnauthorizedAuthenticator() {
     }
 
     @Nullable
@@ -19,8 +20,8 @@ public class LogoutOnUnauthorizedAuthenticator implements Authenticator {
         // Avoid retry loops
         if (responseCount(response) >= 1) return null;
 
+        Log.i(TAG, "authenticate: return 401"  );
         // Server says unauthorized -> logout and do NOT retry
-        sessionActions.logoutNow("Unauthorized (401) from server");
         return null; // null = give up; caller gets 401
     }
 

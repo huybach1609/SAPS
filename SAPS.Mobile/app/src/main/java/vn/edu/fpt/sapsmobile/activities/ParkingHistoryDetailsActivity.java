@@ -23,15 +23,18 @@ import java.util.Locale;
 
 import retrofit2.Callback;
 import retrofit2.Response;
+import vn.edu.fpt.sapsmobile.dtos.payment.PaymentStatusDataDTO;
+import vn.edu.fpt.sapsmobile.dtos.payment.PaymentStatusResponseDTO;
 import vn.edu.fpt.sapsmobile.network.client.ApiTest;
 import vn.edu.fpt.sapsmobile.network.service.TransactionApiService;
 import vn.edu.fpt.sapsmobile.R;
-import vn.edu.fpt.sapsmobile.dtos.PaymentDataDTO;
-import vn.edu.fpt.sapsmobile.dtos.PaymentResponseDTO;
+import vn.edu.fpt.sapsmobile.dtos.payment.PaymentDataDTO;
+import vn.edu.fpt.sapsmobile.dtos.payment.PaymentResponseDTO;
 import vn.edu.fpt.sapsmobile.models.ParkingLot;
 import vn.edu.fpt.sapsmobile.models.ParkingSession;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
 import vn.edu.fpt.sapsmobile.utils.DateTimeHelper;
+import vn.edu.fpt.sapsmobile.utils.StringUtils;
 
 public class ParkingHistoryDetailsActivity extends AppCompatActivity {
 
@@ -307,13 +310,13 @@ public class ParkingHistoryDetailsActivity extends AppCompatActivity {
         }
 
         TransactionApiService apiService = ApiTest.getService(this).create(TransactionApiService.class);
-        retrofit2.Call<PaymentResponseDTO> call = apiService.getTransactionPayOsById(parkingSession.getTransactionId());
+        retrofit2.Call<PaymentStatusResponseDTO> call = apiService.getTransactionPayOsById(parkingSession.getTransactionId());
 
-        call.enqueue(new Callback<PaymentResponseDTO>() {
+        call.enqueue(new Callback<PaymentStatusResponseDTO>() {
             @Override
-            public void onResponse(retrofit2.Call<PaymentResponseDTO> call, Response<PaymentResponseDTO> response) {
+            public void onResponse(retrofit2.Call<PaymentStatusResponseDTO> call, Response<PaymentStatusResponseDTO> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    PaymentResponseDTO paymentResponse = response.body();
+                    PaymentStatusResponseDTO paymentResponse = response.body();
                     Log.d("FetchTransaction", "Transaction fetched successfully: " + paymentResponse.getCode());
                     
                     // Update UI with fetched transaction data
@@ -336,7 +339,7 @@ public class ParkingHistoryDetailsActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(retrofit2.Call<PaymentResponseDTO> call, Throwable t) {
+            public void onFailure(retrofit2.Call<PaymentStatusResponseDTO> call, Throwable t) {
 
                 String errorMessage = "Failed to fetch transaction";
                 if (t instanceof java.net.SocketTimeoutException) {
@@ -353,28 +356,28 @@ public class ParkingHistoryDetailsActivity extends AppCompatActivity {
         });
     }
 
-    private void updateTransactionDetails(PaymentResponseDTO paymentResponse) {
+    private void updateTransactionDetails(PaymentStatusResponseDTO paymentResponse) {
         if (paymentResponse == null || paymentResponse.getData() == null) {
             Log.w("UpdateTransaction", "Payment response or data is null");
             return;
         }
 
-        PaymentDataDTO paymentData = paymentResponse.getData();
+        PaymentStatusDataDTO paymentData = paymentResponse.getData();
         NumberFormat vndFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
 
         // Update transaction details
-        if (paymentData.getPaymentLinkId() != null) {
-            tvTransactionId.setText(paymentData.getPaymentLinkId());
+        if (paymentData.getOrderCode() != null) {
+            tvTransactionId.setText(paymentData.getOrderCode());
         }
 
         // Update payment method based on account info
-        if (paymentData.getAccountName() != null && !paymentData.getAccountName().isEmpty()) {
-            String paymentMethod = paymentData.getAccountName();
-            if (paymentData.getBin() != null && !paymentData.getBin().isEmpty()) {
-                paymentMethod += " (" + paymentData.getBin() + ")";
-            }
-            tvPaymentMethod.setText(paymentMethod);
-        }
+//        if (paymentData.getAccountName() != null && !paymentData.getAccountName().isEmpty()) {
+//            String paymentMethod = paymentData.();
+//            if (paymentData.getBin() != null && !paymentData.getBin().isEmpty()) {
+//                paymentMethod += " (" + paymentData.getBin() + ")";
+//            }
+            tvPaymentMethod.setText("Bank");
+//        }
 
         // Update payment status
         if (paymentData.getStatus() != null) {
@@ -401,12 +404,12 @@ public class ParkingHistoryDetailsActivity extends AppCompatActivity {
         }
 
         // Update payment date (use expiredAt if available, otherwise keep existing)
-        if (paymentData.getExpiredAt() > 0) {
+        if (paymentData.getStatus().equals("EXPIRED")) {
             // Convert timestamp to readable date
-            java.time.Instant instant = java.time.Instant.ofEpochMilli(paymentData.getExpiredAt());
-            java.time.LocalDateTime dateTime = java.time.LocalDateTime.ofInstant(instant, java.time.ZoneId.systemDefault());
-            String formattedDate = DateTimeHelper.formatDateTime(dateTime.toString());
-            tvPaymentDate.setText(formattedDate);
+//            java.time.Instant instant = java.time.Instant.ofEpochMilli(paymentData.getExpiredAt());
+//            java.time.LocalDateTime dateTime = java.time.LocalDateTime.ofInstant(instant, java.time.ZoneId.systemDefault());
+//            String formattedDate = DateTimeHelper.formatDateTime(dateTime.toString());
+            tvPaymentDate.setText(paymentData.getCreatedAt());
         }
 
         // Update reference code (use orderCode if available)

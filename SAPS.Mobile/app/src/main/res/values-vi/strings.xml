@@ -1,60 +1,341 @@
 <resources>
     <string name="app_name">SAPLS</string>
-    <string name="forgot_password"><u>forgot password</u></string>
-    <string name="nav_home">Home</string>
-    <string name="nav_vehicle">Vehicle</string>
-    <string name="nav_history">History</string>
-    <string name="nav_profile">Profile</string>
-    <string name="registernewaccount">Register New Account</string>
-    <string name="login_register_suggestion">Don\'t have an account? <b>Register</b></string>
+    <string name="forgot_password"><u>quên mật khẩu</u></string>
+    <string name="nav_home">Trang chủ</string>
+    <string name="nav_vehicle">Xe</string>
+    <string name="nav_history">Lịch sử</string>
+    <string name="nav_profile">Hồ sơ</string>
+    <string name="registernewaccount">Đăng ký tài khoản mới</string>
+    <string name="login_register_suggestion">Chưa có tài khoản? <b>Đăng ký</b></string>
 
     <!--edit profile activity string-->
-    <string name="edit_profile_input_no">No</string>
-    <string name="edit_profile_input_sex">Sex</string>
-    <string name="edit_profile_input_nationality">Nationality</string>
-    <string name="edit_profile_input_full_name">Full name</string>
-    <string name="edit_profile_input_date_of_birth">Date of birth</string>
-    <string name="edit_profile_input_number_phone">Number Phone</string>
-    <string name="edit_profile_input_place_of_origin">Place of origin</string>
-    <string name="edit_profile_input_place_of_residence">Place of Residence</string>
-    <string name="edit_profile_input_issue_date">Issue Date</string>
-    <string name="edit_profile_input_issue_place">Issue Place</string>
-    <string name="edit_profile_btn_submit_update">Submit Update</string>
-    <string name="edit_profile_edit_notification">All changes require admin approval. You\'ll be notified once reviewed.</string>
-    <string name="edit_profile_btn_take_photo">Take Photo</string>
-    <string name="edit_profile_btn_front_side">Front Side</string>
-    <string name="edit_profile_btn_back_side">Back Side</string>
-    <string name="edit_profile_heading_main">Edit Personal Information</string>
-    <string name="edit_profile_heading_sub">Update your account details</string>
+    <string name="edit_profile_input_no">Số</string>
+    <string name="edit_profile_input_sex">Giới tính</string>
+    <string name="edit_profile_input_nationality">Quốc tịch</string>
+    <string name="edit_profile_input_full_name">Họ và tên</string>
+    <string name="edit_profile_input_date_of_birth">Ngày sinh</string>
+    <string name="edit_profile_input_number_phone">Số điện thoại</string>
+    <string name="edit_profile_input_place_of_origin">Nơi sinh</string>
+    <string name="edit_profile_input_place_of_residence">Nơi cư trú</string>
+    <string name="edit_profile_input_issue_date">Ngày cấp</string>
+    <string name="edit_profile_input_issue_place">Nơi cấp</string>
+    <string name="edit_profile_btn_submit_update">Gửi cập nhật</string>
+    <string name="edit_profile_edit_notification">Mọi thay đổi cần được quản trị viên phê duyệt. Bạn sẽ được thông báo khi đã xem xét.</string>
+    <string name="edit_profile_btn_take_photo">Chụp ảnh</string>
+    <string name="edit_profile_btn_front_side">Mặt trước</string>
+    <string name="edit_profile_btn_back_side">Mặt sau</string>
+    <string name="edit_profile_heading_main">Chỉnh sửa thông tin cá nhân</string>
+    <string name="edit_profile_heading_sub">Cập nhật chi tiết tài khoản của bạn</string>
     <!--edit profile activity java-->
-    <string name="edit_profile_toast_notification_1">Vui lòng chọn cả 2 mặt trước và sau của CCCD</string>
-    <string name="edit_profile_toast_notification_2">Không ảnh nào được chọn</string>
-    <string name="notification_icon_desc">notificationi icon desc</string>
-    <string name="notification_title">notification title</string>
-    <string name="notification_body">notification body</string>
-    <string name="notification_time">01th2</string>
-    <string name="action_bar_notification_mark_all_as_read">Mark all as read</string>
-    <string name="edit_profile_card_header">Upload New ID Card</string>
-    <string name="change_password_confirm_new_password_hint">Confirm new password</string>
-    <string name="share_vehicle_access_subheader">Grant parking access to someone else</string>
+    <string name="edit_profile_toast_notification_1">Vui lòng chọn cả mặt trước và mặt sau của thẻ căn cước</string>
+    <string name="edit_profile_toast_notification_2">Chưa chọn ảnh</string>
+
+    <string-array name="payment_methods">
+        <item>Chuyển khoản ngân hàng</item>
+        <item>Tiền mặt</item>
+    </string-array>
+    <string-array name="history_view_methods">
+        <item>30 ngày qua</item>
+        <item>3 tháng qua</item>
+        <item>Năm qua</item>
+    </string-array>
+    <string name="history_session_filter">Bộ lọc</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Xin chào fragment trống</string>
+    <!-- Group & Logo -->
+    <string name="app_group_name">SAPLS</string>
+    <string name="logo_description">Group logo</string>
+
+    <!-- Parking session info labels -->
+    <string name="label_vehicle">Xe:</string>
+    <string name="label_location">Vị trí:</string>
+    <string name="label_entry_time">Thời gian vào:</string>
+    <string name="label_duration">Thời lượng:</string>
+
+    <!-- Buttons -->
+    <string name="btn_check_out">Check Out</string>
+    <!-- Header / Title -->
+    <string name="title_my_vehicles">Xe của tôi</string>
+    <string name="btn_add_vehicle">+ Thêm xe</string>
+    <string name="btn_add_vehicle_desc">Add new vehicle</string>
+
+    <!-- Share code card -->
+    <string name="label_share_code">🔑 Mã chia sẻ của bạn</string>
+    <string name="example_share_code">USER-JOHN2025</string>
+    <string name="share_code_description">Đưa mã này cho chủ xe để cấp quyền truy cập vào xe của họ.</string>
+    <string name="btn_copy_my_share_code">Sao chép mã chia sẻ</string>
+    <string name="btn_copy_share_code_desc">Copy share code</string>
 
     <!-- Tabs -->
     <string name="tab_my_vehicles">Xe của tôi</string>
     <string name="tab_shared_vehicles">Xe được chia sẻ</string>
-    <string name="no_code_to_copy">empty\n</string>
-    <string name="add_vehicle_action_bar_header">Add New Vehicle</string>
-    <string name="activity_check_out_not_available">Parking session data is not available</string>
-    <string name="payement_activity_payment_detail_display">Chi tiết thanh toán</string>
-    <string name="payment_activity_display_amount">Amount</string>
-    <string name="payment_activity_content_description_account_number">Số tài khoản</string>
-    <string name="payment_activity_display_account_number">Account Number</string>
-    <string name="payment_activity_content_description_account_name">icon account name</string>
-    <string name="payment_activity_display_account_name">Account Name</string>
-    <string name="payment_activity_display_reference_code">Description</string>
 
-    <string-array name="payment_methods">
-        <item>Chuyển khoản</item>
-        <item>Tiền mặt</item>
-    </string-array>
+    <!-- Content descriptions -->
+    <string name="cd_share_code_card">Share code card</string>
+    <!-- Parking History Screen -->
+    <string name="title_parking_history">📋 Lịch sử đỗ xe</string>
+    <string name="label_date">Ngày: </string>
+    <!-- Summary -->
+    <string name="checkout_activity_actionbar_title">Tổng quan phiên đỗ xe</string>
+
+    <!-- Vehicle info -->
+    <string name="vehicle_sample">ABC-1234 — Toyota Camry</string>
+    <string name="location_sample">Downtown Mall — Slot A-15</string>
+
+    <!-- Time -->
+    <string name="entry_time">00:00</string>
+    <string name="check_out_time">00:00</string>
+    <string name="duration_time">2h 15m</string>
+    <string name="session_id">ID: SESS-20250806-001</string>
+
+    <!-- Payment breakdown -->
+    <string name="payment_breakdown_title">Chi tiết thanh toán</string>
+    <string name="time_parked">Thời gian</string>
+    <string name="time_parked_value">2.25 giờ</string>
+    <string name="total_amount">Tổng cộng</string>
+    <string name="total_amount_value">$12.38</string>
+    <string name="back">Quay lại</string>
+    <!-- Payment method -->
+    <string name="payment_method_title">Phương thức thanh toán</string>
+
+    <!-- Buttons -->
+    <string name="confirm_checkout">Xác nhận thanh toán</string>
+    <!-- Footer note -->
+    <string name="footer_note">Lưu ý: Giao dịch có thể mất vài phút để hoàn tất. Liên hệ hỗ trợ nếu mất hơn 15 phút.</string>
+
+    <!-- Content descriptions -->
+    <string name="cd_vehicle_icon">vehicle icon</string>
+    <string name="cd_bank_icon">bank icon</string>
+    <string name="session_details_title">Phiên đỗ xe</string>
+    <string name="session_details_heading">Chi tiết phiên đỗ xe</string>
+    <string name="session_details_subheading">Thông tin đầy đủ về phiên đỗ xe của bạn</string>
+
+    <string name="session_info_title">Thông tin phiên</string>
+    <string name="sample_location">Vị trí: Downtown Mall</string>
+    <string name="sample_slot">Chỗ đỗ xe: A-15</string>
+    <string name="sample_vehicle_plate">ABC-1234</string>
+    <string name="sample_vehicle_model">Toyota Camry</string>
+
+    <string name="time_details_title">Chi tiết thời gian</string>
+    <string name="sample_entry_date">Jun 2, 2025</string>
+    <string name="sample_entry_time">14:30</string>
+    <string name="sample_exit_date">Jun 2, 2025</string>
+    <string name="sample_exit_time">16:45</string>
+
+    <string name="sample_duration">2 giờ 15 phút</string>
+
+    <string name="payment_details_title">Chi tiết thanh toán</string>
+    <string name="base_rate">Giá cơ bản</string>
+    <string name="base_rate_value">$5.00 / giờ</string>
+    <string name="time_charged">Thời gian tính phí</string>
+    <string name="time_charged_value">2.25 giờ</string>
+    <string name="subtotal">Tạm tính</string>
+    <string name="subtotal_value">$11.25</string>
+    <string name="tax">Thuế</string>
+    <string name="tax_value">$1.13</string>
+    <string name="total">Tổng cộng</string>
+    <string name="total_value">$12.38</string>
+
+    <string name="transaction_details_title">Chi tiết giao dịch</string>
+    <string name="sample_txn_id">TXN-20250602-089</string>
+    <string name="sample_payment_method">Chuyển khoản ngân hàng</string>
+    <string name="sample_payment_status">Đã thanh toán</string>
+    <string name="sample_payment_date">Jun 2, 2025 - 16:47</string>
+    <string name="sample_reference_code">PARK-ABC1234-020625</string>
+
+    <string name="email_receipt">Gửi hóa đơn qua email</string>
+    <string name="report_issue">Báo cáo sự cố</string>
+    <string name="vehicle_details_title">Chi tiết xe</string>
+    <string name="vehicle_details_heading">Chi tiết xe</string>
+
+    <string name="label_license_plate">Biển số xe</string>
+    <string name="label_brand">Hãng</string>
+    <string name="label_model">Mẫu xe</string>
+    <string name="label_color">Màu sắc</string>
+    <string name="label_sharing_status">Trạng thái chia sẻ</string>
+
+    <string name="placeholder_text">—</string>
+
+    <string name="button_checkout">Check out</string>
+    <string name="button_cancel">Hủy</string>
+    <string name="copied_code_label">Đã sao chép mã</string>
+    <string name="copied_to_clipboard">Mã đã được sao chép vào clipboard!</string>
+    <string name="loading_data">Đang tải dữ liệu...</string>
+    <string name="error_code">Lỗi: %1$d</string>
+    <string name="connection_error">Lỗi kết nối: %1$s</string>
+    <string name="dialog_add_vehicle_title">Thêm xe</string>
+    <string name="option_register_my_vehicle">Đăng ký xe của tôi</string>
+    <string name="option_receive_from_share_code">Nhận từ mã chia sẻ</string>
+    <string name="cd_find_user">Tìm người dùng</string>
+    <string name="label_color_prefix">Màu sắc: %1$s</string>
+    <!-- Content Descriptions -->
+    <string name="cd_back">Nút quay lại</string>
+    <string name="cd_user_avatar">Ảnh đại diện người dùng</string>
+
+    <!-- Labels -->
+    <string name="label_back">Quay lại</string>
+    <string name="title_user_verification">👤 Xác minh người dùng</string>
+    <string name="desc_user_verification">Xác nhận bạn muốn chia sẻ với người dùng này</string>
+    <string name="title_vehicle_access">🚗 Quyền truy cập xe</string>
+    <string name="title_access_duration">Thời lượng truy cập</string>
+
+    <!-- Sample Data -->
+    <string name="sample_user_name">Sarah Johnson</string>
+    <string name="sample_user_code">Share Code: USER-SARAH2024</string>
+    <string name="sample_member_since">Thành viên từ: March 2024</string>
+    <string name="sample_vehicle_access">Cấp quyền truy cập cho: ABC-1234 (Toyota Camry)</string>
+
+    <!-- Options -->
+    <string name="option_permanent_access">Truy cập vĩnh viễn</string>
+
+    <!-- Notes -->
+    <string name="hint_notes_optional">Ghi chú (Tùy chọn)</string>
+    <string name="hint_notes_detail">Thêm ghi chú hoặc hạn chế...</string>
+
+    <!-- Warning -->
+    <string name="warning_confirm_action">⚠️ Xác nhận hành động: Người dùng này sẽ có thể đỗ xe bằng xe của bạn cho đến khi bạn thu hồi quyền truy cập.</string>
+
+    <!-- Actions -->
+    <string name="action_grant_access">✅ Cấp quyền truy cập</string>
+    <string name="action_cancel">❌ Hủy</string>
+    <!-- Top bar -->
+    <string name="cd_share">Chia sẻ</string>
+
+    <string name="title_shared_vehicle_access">Chia sẻ quyền truy cập xe</string>
+    <string name="title_shared_vehicle">Chi tiết xe được chia sẻ</string>
+    <string name="sub_shared_vehicle">Quản lý quyền truy cập xe được chia sẻ của bạn</string>
+
+    <!-- Vehicle section -->
+    <string name="section_vehicle_info">Thông tin xe</string>
+    <string name="license_plate_label">Biển số xe: GHI-3456</string>
+    <string name="model_label">Mẫu xe: 2018 Ford Focus</string>
+    <string name="color_label">Màu sắc: Đỏ</string>
+    <string name="status_label">Trạng thái: Quyền truy cập đang hoạt động</string>
+
+    <!-- Owner section -->
+    <string name="section_owner">Chủ xe</string>
+    <string name="owner_name">Sarah Johnson</string>
+    <string name="owner_share_code">USER-SARAH2024</string>
+    <string name="owner_member_since">Thành viên từ: March 2024</string>
+
+    <!-- Access details -->
+    <string name="section_access_details">Chi tiết quyền truy cập</string>
+    <string name="access_duration_label">Thời lượng truy cập: Truy cập vĩnh viễn</string>
+    <string name="access_granted_label">Quyền truy cập được cấp: May 20, 2025</string>
+    <string name="access_expires_label">Hết hạn: Không bao giờ (cho đến khi trả lại hoặc thu hồi)</string>
+    <string name="access_last_used_label">Sử dụng lần cuối: June 2, 2025</string>
+
+    <!-- Owner note -->
+    <string name="section_note">Ghi chú từ chủ xe</string>
+    <string name="owner_note_text">"Cảm ơn bạn đã sử dụng xe của tôi một cách có trách nhiệm! Hãy thoải mái sử dụng bất cứ lúc nào. Chỉ cần nhớ giữ xe sạch sẽ và đổ đầy xăng khi cần. Chúc bạn một ngày tuyệt vời!"</string>
+
+    <!-- Usage -->
+    <string name="section_usage">Tóm tắt sử dụng của bạn</string>
+    <string name="usage_total_uses_label">Tổng số lần sử dụng:</string>
+    <string name="usage_total_uses">12 lần</string>
+    <string name="usage_total_hours_label">Tổng số giờ:</string>
+    <string name="usage_total_hours">18.5 giờ</string>
+    <string name="usage_avg_label">Thời lượng trung bình:</string>
+    <string name="usage_avg_value">1.5 giờ</string>
+    <string name="usage_fav_location_label">Địa điểm yêu thích:</string>
+    <string name="usage_fav_location">Downtown Mall</string>
+
+    <!-- Footer -->
+    <string name="return_warning">Trả lại quyền truy cập: Nếu bạn không còn cần quyền truy cập vào xe này, bạn có thể trả lại cho chủ xe. Hành động này không thể hoàn tác.</string>
+    <string name="btn_return_access_to_owner">↩️ Trả lại quyền truy cập cho chủ xe</string>
+    <string name="btn_cancel">Hủy</string>
+
+    <!-- Recall Access Screen -->
+    <string name="title_recall_access">🔤 Thu hồi quyền truy cập xe</string>
+    <string name="sub_recall_access">Xóa quyền truy cập được chia sẻ khỏi người dùng</string>
+
+    <!-- Vehicle Info -->
+    <string name="status_shared_with">Trạng thái: Hiện đang chia sẻ với Sarah Johnson</string>
+
+    <!-- Current User -->
+    <string name="section_current_user">👤 Người dùng hiện có quyền truy cập</string>
+    <string name="current_user_name">Sarah Johnson</string>
+    <string name="current_user_code">USER-SARAH2024</string>
+    <string name="current_user_granted_date">Quyền truy cập được cấp: May 15, 2025</string>
+    <string name="current_user_duration">Thời lượng: Truy cập vĩnh viễn</string>
+    <string name="current_user_active">Đang hoạt động</string>
+
+    <!-- Note -->
+    <string name="owner_note_text_recall">
+        "Vui lòng sử dụng xe này một cách có trách nhiệm. Có sẵn cho các chuyến đi cuối tuần và sử dụng khẩn cấp. Liên hệ với tôi trước khi sử dụng cho việc di chuyển đường dài."
+    </string>
+
+    <!-- Warning -->
+    <string name="recall_warning">⚠️ Cảnh báo: Thu hồi quyền truy cập sẽ ngay lập tức xóa khả năng đỗ xe này của người dùng. Hành động này không thể hoàn tác.</string>
+
+    <!-- Buttons -->
+    <string name="btn_recall_access">🔤 Thu hồi quyền truy cập</string>
+    <!-- Accessibility / common -->
+
+    <!-- Page / toolbar -->
+    <string name="sub_shared_vehicle_access">Xem xét chi tiết xe được chia sẻ</string>
+
+    <!-- Sections -->
+    <string name="license_plate_def">Biển số xe: DEF-9012</string>
+    <string name="model_altima">Mẫu xe: 2021 Nissan Altima</string>
+    <string name="color_black">Màu sắc: Đen</string>
+    <string name="status_pending">Trạng thái: Đang chờ phản hồi của bạn</string>
+
+    <string name="owner_john_smith">John Smith</string>
+    <string name="owner_code_john">USER-JOHN2023</string>
+    <string name="member_since_jan">Thành viên từ: January 2023</string>
+
+    <string name="access_duration_perm">Thời lượng truy cập: Truy cập vĩnh viễn</string>
+    <string name="access_invitation_date">Ngày mời: June 3, 2025</string>
+    <string name="access_expires_never">Hết hạn: Không bao giờ (cho đến khi thu hồi)</string>
+
+    <string name="section_note_owner">Ghi chú từ chủ xe</string>
+    <string name="owner_note_text_access">"Xin chào Sarah! Hãy thoải mái sử dụng xe của tôi để đi làm hàng ngày. Vui lòng giữ xe sạch sẽ và cho tôi biết nếu bạn cần dùng cho các chuyến đi dài. Cảm ơn!"</string>
+
+    <string name="section_important_notes">Ghi chú quan trọng</string>
+    <string name="note_parking">• Bạn có thể sử dụng xe này để đỗ tại bất kỳ địa điểm SAPLS nào</string>
+    <string name="note_revoke">• Chủ xe có thể thu hồi quyền truy cập bất cứ lúc nào</string>
+    <string name="note_return">• Bạn có thể tự nguyện trả lại quyền truy cập bằng nút "Trả lại"</string>
+
+    <!-- Buttons -->
+    <string name="btn_accept_access">Chấp nhận quyền truy cập</string>
+    <string name="btn_decline_access">Từ chối quyền truy cập</string>
+
+    <!-- Reused strings -->
+    <string name="btn_return_access">Trả lại</string>
+    <string name="notification_icon_desc">notification icon desc</string>
+    <string name="notification_title">tiêu đề thông báo</string>
+    <string name="notification_body">nội dung thông báo</string>
+    <string name="notification_time">01th2</string>
+    <string name="more_actions">thêm hành động</string>
+    <string name="action_bar_notification_mark_all_as_read">Đánh dấu tất cả đã đọc</string>
+    <string name="change_password_notes">Yêu cầu mật khẩu:\n• Ít nhất 8 ký tự\n• Bao gồm chữ cái hoa và thường\n• Bao gồm số và ký hiệu\n• Không được có dấu cách</string>
+    <string name="edit_profile_card_sub">Chụp ảnh hoặc chọn từ thư viện để cập nhật thông tin của bạn</string>
+    <string name="edit_profile_card_header">Tải lên thẻ căn cước mới</string>
+    <string name="change_password_current_password_hint">Mật khẩu hiện tại</string>
+    <string name="change_password_confirm_new_password_hint">Xác nhận mật khẩu mới</string>
+    <string name="change_password_new_password_hint">Mật khẩu mới</string>
+    <string name="profile_fragment_notifications_header">Thông báo</string>
+    <string name="home_welcome_back">Chào mừng trở lại</string>
+    <string name="parking_lot_session_heading_bar">Phiên đỗ xe</string>
+    <string name="home_fragment_hello">Xin chào %1$s</string>
+    <string name="share_vehicle_access_subheader">Cấp quyền đỗ xe cho người khác</string>
+    <string name="profile_fragment_please_verify_account_messsage">Vui lòng xác minh tài khoản của bạn</string>
+    <string name="no_code_to_copy">trống\n</string>
+    <string name="add_vehicle_action_bar_header">Thêm xe mới</string>
+    <string name="activity_check_out_not_available">Dữ liệu phiên đỗ xe không có sẵn</string>
+    <string name="payement_activity_payment_detail_display">Payment details</string>
+    <string name="payment_activity_display_amount">Số tiền</string>
+    <string name="payment_activity_display_note">Please transfer the exact amount for automatic reconciliation</string>
+    <string name="payment_activity_content_description_account_number">Account number</string>
+    <string name="payment_activity_display_account_number">Số tài khoản</string>
+    <string name="payment_activity_content_description_account_name">biểu tượng tên tài khoản</string>
+    <string name="payment_activity_display_account_name">Tên tài khoản</string>
+    <string name="payment_activity_content_description_reference_code">ghi chú\n</string>
+    <string name="payment_activity_display_reference_code">Mô tả</string>
+    <string name="payment_activity_btn_text_display">Confirm payment</string>
+    <string name="payment_activity_actionbar_title">Quy trình thanh toán</string>
+    <string name="payment_activity_qr_code_title">Open banking app, select QR scan function and scan the code above.</string>
 
 </resources>

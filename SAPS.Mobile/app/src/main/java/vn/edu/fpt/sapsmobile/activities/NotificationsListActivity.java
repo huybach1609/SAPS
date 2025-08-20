@@ -20,7 +20,7 @@ import vn.edu.fpt.sapsmobile.network.client.ApiTest;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.adapters.NotificationAdapter;
 import vn.edu.fpt.sapsmobile.models.Notification;
-import vn.edu.fpt.sapsmobile.dtos.NotificationsResponse;
+import vn.edu.fpt.sapsmobile.dtos.profile.NotificationsResponse;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -14,6 +14,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -33,6 +34,8 @@ import vn.edu.fpt.sapsmobile.models.ParkingSession;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
 import vn.edu.fpt.sapsmobile.utils.DateTimeHelper;
 import vn.edu.fpt.sapsmobile.utils.StringUtils;
+import vn.edu.fpt.sapsmobile.dtos.payment.CheckoutRequest;
+import vn.edu.fpt.sapsmobile.dtos.payment.CheckoutResponse;
 
 public class CheckoutActivity extends AppCompatActivity {
     private static final String TAG = "CheckoutActivity";
@@ -290,20 +293,71 @@ public class CheckoutActivity extends AppCompatActivity {
 
     private void setupButtonListeners() {
         btnBack.setOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
-        
-        btnConfirmCheckout.setOnClickListener(v -> {
-            if (parkingSessionToCheckOut == null) {
-                Toast.makeText(this, R.string.activity_check_out_not_available, Toast.LENGTH_SHORT).show();
-                return;
+        btnConfirmCheckout.setOnClickListener(v -> fetchTransactionDetails());
+    }
+
+    private void fetchTransactionDetails(){
+        if (parkingSessionToCheckOut == null) {
+            Toast.makeText(this, R.string.activity_check_out_not_available, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        ParkingSessionApiService api = ApiTest.getServiceLast(this).create(ParkingSessionApiService.class);
+        CheckoutRequest request = new CheckoutRequest(parkingSessionToCheckOut.getId(), "Bank");
+        api.checkout(request).enqueue(new Callback<CheckoutResponse>() {
+            @Override
+            public void onResponse(Call<CheckoutResponse> call, Response<CheckoutResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    // Handle successful response (199-299 status codes)
+                    CheckoutResponse body = response.body();
+                    String message = body.getMessage();
+
+                    if (message != null && message.equals("PARKING_SESSION_CHECKOUT_UPDATED_SUCCESSFULLY")) {
+                        Toast.makeText(CheckoutActivity.this, "Checkout successful", Toast.LENGTH_SHORT).show();
+                        navigateToPayment();
+                        return;
+                    }
+                    Toast.makeText(CheckoutActivity.this, "Checkout failed", Toast.LENGTH_SHORT).show();
+
+                } else if (response.code() == 400) {
+                    try {
+                        if (response.errorBody() != null) {
+                            String errorJson = response.errorBody().string();
+                            // Parse the error JSON manually or use Gson
+                            if (errorJson.contains("PARKING_SESSION_ALREADY_CHECKED_OUT")) {
+                                Toast.makeText(CheckoutActivity.this, "Session already checked out", Toast.LENGTH_SHORT).show();
+                                navigateToPayment();
+                                return;
+                            }
+                        }
+                        Toast.makeText(CheckoutActivity.this, "Invalid checkout request", Toast.LENGTH_SHORT).show();
+                    } catch (IOException e) {
+                        Log.e(TAG, "Error reading error response", e);
+                        Toast.makeText(CheckoutActivity.this, "Checkout failed", Toast.LENGTH_SHORT).show();
+                    }
+
+                } else {
+                    // Handle other error status codes
+                    Toast.makeText(CheckoutActivity.this, "Checkout failed", Toast.LENGTH_SHORT).show();
+                }
             }
 
-            Intent intent = new Intent(this, PaymentActivity.class);
-            intent.putExtra("vehicleId", parkingSessionToCheckOut.getVehicleId());
-            intent.putExtra("sessionId", parkingSessionToCheckOut.getId());
-            
-            startActivity(intent);
-            finish();
+            @Override
+            public void onFailure(Call<CheckoutResponse> call, Throwable t) {
+                Log.e(TAG, "Checkout API error", t);
+                Toast.makeText(CheckoutActivity.this, "Network error during checkout", Toast.LENGTH_SHORT).show();
+            }
         });
+
+
+    }
+
+    private void navigateToPayment() {
+        if (parkingSessionToCheckOut == null) return;
+        Intent intent = new Intent(this, PaymentActivity.class);
+        intent.putExtra("vehicleId", parkingSessionToCheckOut.getVehicleId());
+        intent.putExtra("sessionId", parkingSessionToCheckOut.getId());
+        startActivity(intent);
+        finish();
     }
 
     private void setupWindowInsets() {
