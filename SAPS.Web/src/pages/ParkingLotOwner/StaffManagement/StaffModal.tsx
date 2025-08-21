@@ -26,6 +26,7 @@ export const AddStaffModal = ({ addModalDisclosure, parkingLotId }: { addModalDi
     };
 
     async function handleAddUser(e: PressEvent): Promise<void> {
+        console.log(e);
         // Validation
         if (!formData.fullName.trim() || !formData.email.trim() || !formData.phone.trim() || !formData.employeeId.trim()) {
             addToast({
@@ -228,6 +229,7 @@ export const UpdateStaffModal = ({ updateModalDisclosure, parkingLotId, user }: 
     };
 
     async function handleUpdateUser(e: PressEvent): Promise<void> {
+        console.log(e);
         // Validation
         if (!formData.fullName.trim() || !formData.email.trim() || !formData.phone.trim() || !formData.employeeId.trim()) {
             addToast({

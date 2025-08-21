@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Trash2, Clock, Car, DollarSign, Edit2, BikeIcon, ChartNoAxesColumn } from 'lucide-react';
+import { Plus, Clock, Car, Edit2, BikeIcon, Trash2 } from 'lucide-react';
 import DefaultLayout from '@/layouts/default';
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Button, ButtonGroup, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, addToast, Tabs, Tab } from '@heroui/react';
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Tabs, Tab } from '@heroui/react';
 import { FeeScheduleModal, VehicleTypeText } from './FeeScheduleModal';
 import { useParkingLot } from '../ParkingLotContext';
 import {
@@ -484,7 +484,7 @@ const FeeSchedulesTab: React.FC<{
     onAdd: () => void;
 }> = ({ schedules, onEdit, onDelete, onAdd }) => {
 
-    const [selectSchedule, setSelectSchedule] = useState<ParkingFeeSchedule | null>(null);
+    // const [selectSchedule, setSelectSchedule] = useState<ParkingFeeSchedule | null>(null);
 
       return (
         <div>

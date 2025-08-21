@@ -3,18 +3,12 @@ import { Eye, FolderSearch, RefreshCcw } from "lucide-react";
 import { useParkingLot } from "../../ParkingLotContext";
 import {
   Button,
-  ButtonGroup,
   Card,
   CardBody,
   CardHeader,
   DateRangePicker,
   DateValue,
   Input,
-  Modal,
-  ModalBody,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
   Pagination,
   RangeValue,
   SelectItem,
@@ -26,7 +20,6 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
-  useDisclosure,
 } from "@heroui/react";
 import { PaginationInfo } from "@/types/Whitelist";
 import { useNavigate } from "react-router-dom";
@@ -124,6 +117,7 @@ const ParkingHistory: React.FC = () => {
 
   // Search parking sessions
   const handleSearch = async (term: string) => {
+    console.log(term);
     try {
       setCurrentPage(1);
       loadParkingSessions();
@@ -334,6 +328,8 @@ function ParkingHistoryTable({
   setSelectedSession,
   handleViewSessionDetails,
 }: ParkingHistoryTableProps) {
+  console.log(selectedSession);
+  console.log(setSelectedSession);
   const getStatusBadge = (status: ParkingSessionStatus) => {
     const baseClasses = "px-3 py-1 rounded-full text-sm font-medium";
     switch (status) {
@@ -420,7 +416,7 @@ function ParkingHistoryTable({
           </TableColumn>
         </TableHeader>
         <TableBody>
-          {parkingSessions.map((session, index) => {
+          {parkingSessions.map((session) => {
             return (
               <TableRow key={`${session.id}`}>
                 {/* session id */}

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Car, Camera, CreditCard, Clock, MapPin, User, Calendar } from 'lucide-react';
+import { Car, Camera, CreditCard, Clock, Calendar } from 'lucide-react';
 import { ParkingSession } from '@/services/parkinglot/parkingHistoryService';
 import { ParkingSessionStatus } from '@/types/ParkingSession';
 import DefaultLayout from '@/layouts/default';
-import { Card, CardFooter, CardBody, Button, Image, Modal, ModalContent, ModalBody, ModalFooter, ModalHeader } from '@heroui/react';
+import { Card, CardFooter, Button, Modal, ModalContent, ModalBody, ModalFooter, ModalHeader } from '@heroui/react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { apiUrl } from '@/config/base';
@@ -55,7 +55,7 @@ const ParkingHistoryDetail: React.FC = () => {
                 setSession(res.data);
                 setLoading(false);
             })
-            .catch(err => {
+            .catch(() => {
                 setError('Failed to fetch session data');
                 setLoading(false);
             });
@@ -492,6 +492,7 @@ export const ModalImageInfo = ({ imageUrl, time, licensePlate = '', isOpen, onCl
             <ModalContent>
                 {(close) => (
                     <>
+                    {console.log(close)}
                         <ModalHeader>
                             <h2 className="text-xl font-bold text-gray-800">Image Information</h2>
                         </ModalHeader>
@@ -507,7 +508,6 @@ export const ModalImageInfo = ({ imageUrl, time, licensePlate = '', isOpen, onCl
                                 <div className="font-semibold">{licensePlate}</div>
                                 <div className="text-xs">{time ? `${formatDateTime(time)} ${formatTime(time)}` : ''}</div>
                             </div>
-
                         </ModalFooter>
                     </>
                 )}

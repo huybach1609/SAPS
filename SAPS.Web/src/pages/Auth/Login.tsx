@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/services/auth/AuthContext';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { Button } from '@heroui/button';
 import { Lock } from 'lucide-react';
 import { Input } from '@heroui/input';
 import { Checkbox } from '@heroui/react';
-import { OWNER_ROLE } from '@/config/base';
+// import { OWNER_ROLE } from '@/config/base';
 
 export default function LoginPage() {
-    const { login, loading, getRole } = useAuth();
-    const navigate = useNavigate();
+    const { login, loading } = useAuth();
+    // const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [remember, setRemember] = useState(false);
@@ -42,7 +42,7 @@ export default function LoginPage() {
         <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-secondary to-primary">
             <div className="bg-white rounded-lg shadow-lg flex w-full max-w-4xl overflow-hidden">
                 {/* Left side */}
-                <div className="flex-1 flex flex-col items-center justify-center p-10 bg-gradient-to-b from-primary to-secondary text-white md:block hidden">
+                <div className="flex-1 flex flex-col items-center justify-center p-10 bg-gradient-to-b from-primary to-secondary text-white md:block ">
                     <div className="mb-6">
                         <span className="inline-block bg-blue-100 p-4 rounded-full">
                             <span role="img" aria-label="car" className="text-4xl">🚗</span>

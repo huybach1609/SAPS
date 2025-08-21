@@ -92,7 +92,7 @@ export default function IncidentReports() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("");
   const [priority, setPriority] = useState("");
-  const [date, setDate] = useState("");
+  // const [date, setDate] = useState("");
   const [loading, setLoading] = useState(false);
   const [incidents, setIncidents] = useState<IncidentReport[]>([]);
   const [pagination, setPagination] = useState<PaginationInfo | null>(null);
@@ -140,7 +140,7 @@ export default function IncidentReports() {
         setIncidents(res.data);
         setPagination(res.pagination);
       })
-      .catch((err) => {
+      .catch(() => {
         setIncidents([]);
         setPagination(null);
       })
@@ -150,7 +150,7 @@ export default function IncidentReports() {
     search,
     status,
     priority,
-    date,
+    // date,
     currentPage,
     dateRange,
   ]);

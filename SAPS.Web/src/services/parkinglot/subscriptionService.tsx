@@ -1,6 +1,6 @@
 import axios from "axios";
 import { apiUrl } from "@/config/base";
-import { ParkingLotSubscription, PayOsResponse, Subscription } from "@/types/ParkingLot";
+import { PayOsResponse, Subscription } from "@/types/ParkingLot";
 
 
 const getAuthHeaders = () => ({

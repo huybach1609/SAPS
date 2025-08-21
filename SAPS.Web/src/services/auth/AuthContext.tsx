@@ -63,6 +63,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const login = async (email: string, password: string, remember: boolean = false) => {
+    console.log(remember);
     
     try {
       const url = `${apiUrl}/api/auth/login`;

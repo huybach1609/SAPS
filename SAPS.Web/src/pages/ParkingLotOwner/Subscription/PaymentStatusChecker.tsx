@@ -47,7 +47,7 @@ const PaymentStatusChecker: React.FC<PaymentStatusCheckerProps> = ({
   paymentId,
   onPaymentSuccess,
   onPaymentFailed,
-  onNewPayment,
+  // onNewPayment,
   onTimeout,
   autoStart = true,
   className = '',
@@ -368,9 +368,9 @@ const PaymentStatusChecker: React.FC<PaymentStatusCheckerProps> = ({
     }
   };
 
-  const handleNewPayment = useCallback(() => {
-    onNewPayment?.();
-  }, [onNewPayment]);
+  // const handleNewPayment = useCallback(() => {
+  //   onNewPayment?.();
+  // }, [onNewPayment]);
 
   return (
     <div className={`p-4 bg-gray-50 rounded-lg border ${className}`}>

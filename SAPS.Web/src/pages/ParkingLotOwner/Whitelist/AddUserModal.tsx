@@ -1,4 +1,4 @@
-import { Input, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Spinner, useDisclosure } from "@heroui/react";
+import { Input, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Spinner} from "@heroui/react";
 import { User } from "@/types/User";
 import React, { useState, useEffect } from "react";
 import { searchUser } from "@/services/parkinglot/whitelistService";
