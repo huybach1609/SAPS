@@ -336,6 +336,14 @@
     <string name="payment_activity_display_reference_code">Mô tả</string>
     <string name="payment_activity_btn_text_display">Confirm payment</string>
     <string name="payment_activity_actionbar_title">Quy trình thanh toán</string>
-    <string name="payment_activity_qr_code_title">Open banking app, select QR scan function and scan the code above.</string>
+    <string name="payment_activity_qr_code_title">Mở ứng dụng ngân hàng, chọn chức năng quét QR và quét mã bên trên.</string>
+
+    <string name="vehicle_fragment_menu_register">Đăng ký xe</string>
+    <string name="vehicle_fragment_menu_receive">Lấy xe bằng mã chia sẻ</string>
+    <string name="vehicle_fragment_menu_share_your_vehicle">Chia sẻ xe của bạn</string>
+    <string name="vehicle_fragment_btn_view_invitation">Xem lời mời</string>
+    <string name="invitation_activity_actionbar_title">Lời mời của bạn</string>
+    <string name="item_vehicle_invitation_notification">%1$s đã mời bạn sử dụng xe</string>
+
 
 </resources>

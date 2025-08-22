@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menu_register_own"
+        android:title="@string/vehicle_fragment_menu_register" />
+    <item
+        android:id="@+id/menu_receive_share"
+        android:title="@string/vehicle_fragment_menu_receive" />
+<!--    <item-->
+<!--        android:id="@+id/menu_share_vehicle"-->
+<!--        android:title="@string/vehicle_fragment_menu_share_your_vehicle" />-->
+</menu>

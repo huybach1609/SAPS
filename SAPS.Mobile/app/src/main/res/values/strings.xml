@@ -340,5 +340,14 @@
     <string name="payment_activity_btn_text_display">Confirm Payment</string>
     <string name="payment_activity_actionbar_title">Payment Process</string>
     <string name="payment_activity_qr_code_title">Open your banking app, choose the QR scan function, and scan the code above.</string>
+    <string name="vehicle_fragment_menu_register">Register my own vehicle</string>
+    <string name="vehicle_fragment_menu_receive">Receive from share code</string>
+    <string name="vehicle_fragment_menu_share_your_vehicle">Share your vehicle</string>
+    <string name="vehicle_fragment_btn_view_invitation">View invitation</string>
+    <string name="invitation_activity_actionbar_title">You Invitation</string>
+    <string name="item_vehicle_invitation_notification">%1$s invited you to use the car</string>
+    <string name="item_vehicle_invitation_label_owner">Vehicle owner</string>
+    <string name="item_vehicle_invitation_label_color">Color</string>
+    <string name="item_vehicle_invitation_btn_details">Accept</string>
 
 </resources>

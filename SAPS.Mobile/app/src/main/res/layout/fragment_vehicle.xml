@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         >
 
-        <!-- Header: Cuộn mất -->
+        <!-- In your layout XML -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -24,8 +24,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                >
+                android:orientation="horizontal">
+
                 <!-- Spinner Filter -->
                 <TextView
                     style="?attr/textAppearanceDisplayMedium"
@@ -34,19 +34,31 @@
                     android:fontFamily="@font/roboto_serif_family"
                     android:gravity="center_vertical|start"
                     android:text="@string/title_my_vehicles"
-
                     android:textColor="@color/md_theme_onSurface"
                     android:layout_weight="1"
                     android:textSize="16sp" />
-                <Button
-                    android:id="@+id/btn_add_vehicle"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="wrap_content"
-                    android:text="@string/btn_add_vehicle"
-                    android:textAllCaps="false"
-                    android:contentDescription="@string/btn_add_vehicle_desc" />
 
+                <com.google.android.material.button.MaterialSplitButton
+                    android:id="@+id/splitbutton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:id="@+id/btn_view_invitation"
+                        style="?attr/materialSplitButtonLeadingFilledStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/vehicle_fragment_btn_view_invitation" />
+
+                    <Button
+                        style="?attr/materialSplitButtonIconFilledStyle"
+                        android:id="@+id/expand_more_or_less_filled"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription=""
+                        app:icon="@drawable/m3_split_button_chevron_avd" />
+
+                </com.google.android.material.button.MaterialSplitButton>
             </LinearLayout>
 
             <!-- Share Code Card -->

@@ -18,10 +18,12 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButtonToggleGroup;
+import com.google.android.material.button.MaterialSplitButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +31,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import vn.edu.fpt.sapsmobile.activities.sharevehicle.ViewListInvitationActivity;
 import vn.edu.fpt.sapsmobile.network.client.ApiTest;
 import vn.edu.fpt.sapsmobile.network.service.ISharedvehicle;
 import vn.edu.fpt.sapsmobile.network.service.IVehicleApi;
@@ -37,7 +40,6 @@ import vn.edu.fpt.sapsmobile.actionhandler.VehicleFragmentHandler;
 import vn.edu.fpt.sapsmobile.activities.auth.AddVehicleActivity;
 import vn.edu.fpt.sapsmobile.activities.sharevehicle.ShareVehicleAccessActivity;
 import vn.edu.fpt.sapsmobile.adapters.VehicleAdapter;
-import vn.edu.fpt.sapsmobile.dialog.AddVehicleDialog;
 import vn.edu.fpt.sapsmobile.dtos.vehicle.ShareCodeReturnDto;
 import vn.edu.fpt.sapsmobile.models.User;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
@@ -56,8 +58,11 @@ public class VehicleFragment extends Fragment {
     private VehicleAdapter vehicleAdapter;
     private TextView tv_share_code;
     private Button btn_copy_code;
-    private Button btn_add_vehicle;
+//    private Button btn_add_vehicle;
     private MaterialButtonToggleGroup toggleTabs;
+    private MaterialSplitButton splitButton;
+    private Button btnViewInvitation;
+    private Button expandButton;
 
     // Data
     private List<Vehicle> vehicleList;
@@ -86,11 +91,13 @@ public class VehicleFragment extends Fragment {
 
         initializeComponents(view);
         setupStatusBar();
+        setupSplitButton();
         setupRecyclerView();
         setupClickListeners();
 
         return view;
     }
+
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -119,8 +126,12 @@ public class VehicleFragment extends Fragment {
         rvVehicles = view.findViewById(R.id.rvVehicles);
         tv_share_code = view.findViewById(R.id.tv_share_code);
         btn_copy_code = view.findViewById(R.id.btn_copy_code);
-        btn_add_vehicle = view.findViewById(R.id.btn_add_vehicle);
         toggleTabs = view.findViewById(R.id.toggleTabs);
+
+        // split button
+        splitButton = view.findViewById(R.id.splitbutton);
+        btnViewInvitation = view.findViewById(R.id.btn_view_invitation);
+        expandButton = view.findViewById(R.id.expand_more_or_less_filled);
     }
 
     private void setupStatusBar() {
@@ -144,7 +155,6 @@ public class VehicleFragment extends Fragment {
 
     private void setupClickListeners() {
         btn_copy_code.setOnClickListener(this::onCopyCodeClicked);
-        btn_add_vehicle.setOnClickListener(this::onAddVehicleClicked);
     }
 
     private void initializeApiServices() {
@@ -162,6 +172,37 @@ public class VehicleFragment extends Fragment {
     //endregion
 
     //region CLICK HANDLERS
+
+    private void setupSplitButton() {
+        // Set up the main button click (default action)
+        btnViewInvitation.setOnClickListener(v ->{
+            Intent intent = new Intent(getActivity(), ViewListInvitationActivity.class);
+            startActivitySafely(intent);
+        });
+
+        // Set up the dropdown button click
+        expandButton.setOnClickListener(this::showDropdownMenu);
+
+    }
+    private void showDropdownMenu(View anchoView) {
+        PopupMenu popup = new PopupMenu(this.getContext(), anchoView);
+        popup.getMenuInflater().inflate(R.menu.vehicle_options_menu, popup.getMenu());
+
+        popup.setOnMenuItemClickListener(menuItem -> {
+            int itemId = menuItem.getItemId();
+            if (itemId == R.id.menu_register_own) {
+                startActivitySafely(new Intent(requireContext(), AddVehicleActivity.class));
+                return true;
+            } else if (itemId == R.id.menu_receive_share) {
+                startActivitySafely(new Intent(requireContext(), ShareVehicleAccessActivity.class));
+                return true;
+            }
+            else {
+                return false;
+            }
+        });
+        popup.show();
+    }
 
     private void onCopyCodeClicked(View v) {
         String code = tv_share_code.getText().toString();
@@ -184,19 +225,19 @@ public class VehicleFragment extends Fragment {
         }
     }
 
-    private void onAddVehicleClicked(View v) {
-        AddVehicleDialog.show(getContext(), new AddVehicleDialog.AddVehicleListener() {
-            @Override
-            public void onRegisterMyVehicle() {
-                startActivitySafely(new Intent(requireContext(), AddVehicleActivity.class));
-            }
-
-            @Override
-            public void onReceiveFromShareCode() {
-                startActivitySafely(new Intent(requireContext(), ShareVehicleAccessActivity.class));
-            }
-        });
-    }
+//    private void onAddVehicleClicked(View v) {
+//        AddVehicleDialog.show(getContext(), new AddVehicleDialog.AddVehicleListener() {
+//            @Override
+//            public void onRegisterMyVehicle() {
+//                startActivitySafely(new Intent(requireContext(), AddVehicleActivity.class));
+//            }
+//
+//            @Override
+//            public void onReceiveFromShareCode() {
+//                startActivitySafely(new Intent(requireContext(), ShareVehicleAccessActivity.class));
+//            }
+//        });
+//    }
 
     //endregion
     //region DATA LOADING METHODS

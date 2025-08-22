@@ -5,14 +5,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NavUtils;
 import androidx.fragment.app.Fragment;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,7 +33,8 @@ public class RegisterFragment extends Fragment {
 
     private static final String TAG = "RegisterFragment";
     
-    private Button btnRegister;
+    private Button btnRegister ;
+    private ImageButton btnBack;
     private EditText emailInput, passwordInput, confirmPasswordInput;
     private Uri frontImageUri, backImageUri;
     private LoadingDialog loadingDialog;
@@ -43,6 +47,7 @@ public class RegisterFragment extends Fragment {
 
 ;
         btnRegister = view.findViewById(R.id.button_next_phase);
+        btnBack = view.findViewById(R.id.back_button);
 
         // User input fields
         emailInput = view.findViewById(R.id.edit_text_email);
@@ -77,6 +82,9 @@ public class RegisterFragment extends Fragment {
 
             // Proceed with registration
             registerUser(email, password);
+        });
+        btnBack.setOnClickListener(v-> {
+            getActivity().finish();
         });
 
         return view;
@@ -151,4 +159,5 @@ public class RegisterFragment extends Fragment {
         startActivity(intent);
         requireActivity().finish();
     }
+
 }

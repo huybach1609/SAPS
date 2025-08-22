@@ -36,6 +36,9 @@
 
             />
         <activity
+            android:name=".activities.sharevehicle.ViewListInvitationActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.ParkingHistoryDetailsActivity"
             android:exported="false"
             android:theme="@style/Theme.SAPSMobile.ActionBar" />
