@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -32,12 +31,12 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Callback;
 import retrofit2.Response;
-import vn.edu.fpt.sapsmobile.network.service.ApiService;
-import vn.edu.fpt.sapsmobile.network.client.ApiTest;
 import vn.edu.fpt.sapsmobile.R;
-import vn.edu.fpt.sapsmobile.models.ClientProfile;
 import vn.edu.fpt.sapsmobile.dtos.profile.IdCardResponse;
+import vn.edu.fpt.sapsmobile.models.ClientProfile;
 import vn.edu.fpt.sapsmobile.models.User;
+import vn.edu.fpt.sapsmobile.network.client.ApiTest;
+import vn.edu.fpt.sapsmobile.network.service.ApiService;
 import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
 import vn.edu.fpt.sapsmobile.utils.TokenManager;
 
@@ -73,7 +72,6 @@ public class EditProfileActivity extends AppCompatActivity {
         loadingDialog = new LoadingDialog(this);
 
         loadUserAndFill();
-
         setupButtons();
     }
 
@@ -87,16 +85,16 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void bindViews() {
-        nameInput = findViewById(R.id.input_name);                // TextView
-        idNoInput = findViewById(R.id.input_id_no);               // TextView
-        sexInput = findViewById(R.id.input_sex);                  // TextView
-        nationalityInput = findViewById(R.id.input_nationality);  // TextView
-        dobInput = findViewById(R.id.input_dob);                  // TextView
-        phoneInput = findViewById(R.id.input_phone);              // EditText
-        placeOriginInput = findViewById(R.id.input_place_origin); // TextView
-        placeResidenceInput = findViewById(R.id.input_place_residence); // TextView
-        issueDateInput = findViewById(R.id.input_issue_date);     // TextView
-        issuePlaceInput = findViewById(R.id.input_issue_place);   // TextView
+        nameInput = findViewById(R.id.input_name);
+        idNoInput = findViewById(R.id.input_id_no);
+        sexInput = findViewById(R.id.input_sex);
+        nationalityInput = findViewById(R.id.input_nationality);
+        dobInput = findViewById(R.id.input_dob);
+        phoneInput = findViewById(R.id.input_phone);
+        placeOriginInput = findViewById(R.id.input_place_origin);
+        placeResidenceInput = findViewById(R.id.input_place_residence);
+        issueDateInput = findViewById(R.id.input_issue_date);
+        issuePlaceInput = findViewById(R.id.input_issue_place);
 
         saveButton = findViewById(R.id.btn_save_profile);
         btnFetchAgain = findViewById(R.id.btn_fetchdata_again);
@@ -112,57 +110,55 @@ public class EditProfileActivity extends AppCompatActivity {
             return;
         }
 
-        // Ensure ClientProfile is never null while we're on this screen.
         ensureClientProfile(currentUser);
 
-        // Fill UI (all getters are null-safe via getOrEmpty / safe reads)
         nameInput.setText(getOrEmpty(currentUser.getFullName()));
         phoneInput.setText(getOrEmpty(currentUser.getPhone()));
 
-            ClientProfile cp = currentUser.getClientProfile();
-            idNoInput.setText(getOrEmpty(cp.getCitizenId()));
-            sexInput.setText(getOrEmpty(cp.getSexDisplay())); // assumes your model returns "Nam"/"Nữ"
-            nationalityInput.setText(getOrEmpty(cp.getNationality()));
-            dobInput.setText(getOrEmpty(cp.getDateOfBirth()));
-            placeOriginInput.setText(getOrEmpty(cp.getPlaceOfOrigin()));
-            placeResidenceInput.setText(getOrEmpty(cp.getPlaceOfResidence()));
-
-
-
+        ClientProfile cp = currentUser.getClientProfile();
+        idNoInput.setText(getOrEmpty(cp.getCitizenId()));
+        sexInput.setText(getOrEmpty(cp.getSexDisplay())); // "Nam"/"Nữ"
+        nationalityInput.setText(getOrEmpty(cp.getNationality()));
+        dobInput.setText(getOrEmpty(cp.getDateOfBirth()));
+        placeOriginInput.setText(getOrEmpty(cp.getPlaceOfOrigin()));
+        placeResidenceInput.setText(getOrEmpty(cp.getPlaceOfResidence()));
     }
 
     private void fetchPutClientProfile() {
         if (currentUser == null) return;
-        
-        // Show loading dialog
+
         loadingDialog.show("Updating profile...");
-        
-        // Check if we have ID card images to upload
+
         if (frontImageUri != null && backImageUri != null) {
-            // Use multipart upload with images
             uploadProfileWithImages();
         } else {
             Toast.makeText(this, "Please upload Image", Toast.LENGTH_SHORT).show();
-            // Use simple JSON upload without images
-//            uploadProfileWithoutImages();
+            loadingDialog.hide();
+            // Nếu muốn cập nhật không ảnh thì triển khai uploadProfileWithoutImages();
         }
     }
-    
+
     private void uploadProfileWithImages() {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             try {
-                // Heavy work on background thread
                 byte[] frontBytes = readAllBytesFromUri(frontImageUri);
                 byte[] backBytes = readAllBytesFromUri(backImageUri);
 
-                // Continue with API call on main thread
                 runOnUiThread(() -> {
-                    RequestBody frontBody = RequestBody.create(frontBytes, MediaType.parse("image/jpeg"));
-                    RequestBody backBody = RequestBody.create(backBytes, MediaType.parse("image/jpeg"));
+                    String frontMime = getContentResolver().getType(frontImageUri);
+                    String backMime  = getContentResolver().getType(backImageUri);
+                    if (frontMime == null) frontMime = "image/jpeg";
+                    if (backMime  == null) backMime  = "image/jpeg";
 
-                    MultipartBody.Part frontPart = MultipartBody.Part.createFormData("frontIdCardImage", "front.jpg", frontBody);
-                    MultipartBody.Part backPart = MultipartBody.Part.createFormData("backIdCardImage", "back.jpg", backBody);
+                    RequestBody frontBody = RequestBody.create(frontBytes, MediaType.parse(frontMime));
+                    RequestBody backBody  = RequestBody.create(backBytes,  MediaType.parse(backMime));
+
+                    // ✅ KHỚP TÊN FIELD MULTIPART VỚI SERVER (ASP.NET)
+                    MultipartBody.Part frontPart = MultipartBody.Part.createFormData(
+                            "frontCitizenIdCardImage", "front.jpg", frontBody);
+                    MultipartBody.Part backPart = MultipartBody.Part.createFormData(
+                            "backCitizenIdCardImage", "back.jpg", backBody);
 
                     ApiService apiService = ApiTest.getServiceLast(this).create(ApiService.class);
                     retrofit2.Call<User> call = apiService.updateClientProfileWithImages(
@@ -231,9 +227,7 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void setupButtons() {
-        saveButton.setOnClickListener(v -> {
-            fetchPutClientProfile();
-        });
+        saveButton.setOnClickListener(v -> fetchPutClientProfile());
 
         Button btnTakePhoto = findViewById(R.id.btn_take_photo);
         Button btnPickFront = findViewById(R.id.btn_pick_front);
@@ -268,11 +262,8 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private void pickPhoto(int requestCode) {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE); // Only pick files you can open
-        intent.setType("*/*"); // Allow any file type
-//        startActivityForResult(intent, REQUEST_PICK_FRONT);
-
-//        Intent pickPhoto = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("image/*"); // ✅ chỉ chọn ảnh
         startActivityForResult(intent, requestCode);
     }
 
@@ -293,20 +284,12 @@ public class EditProfileActivity extends AppCompatActivity {
         Uri imageUri = data.getData();
         if (requestCode == REQUEST_PICK_FRONT) {
             frontImageUri = imageUri;
-            // Use Glide for optimized image loading
-            Glide.with(this)
-                    .load(frontImageUri)
-                    .override(800, 600) // Resize to reasonable dimensions
-                    .into(previewImage);
-            previewImage.setVisibility(View.VISIBLE);
+            Glide.with(this).load(frontImageUri).override(800, 600).into(previewImage);
+            previewImage.setVisibility(ImageView.VISIBLE);
         } else if (requestCode == REQUEST_PICK_BACK) {
             backImageUri = imageUri;
-            // Use Glide for optimized image loading
-            Glide.with(this)
-                    .load(backImageUri)
-                    .override(800, 600) // Resize to reasonable dimensions
-                    .into(previewImageBack);
-            previewImageBack.setVisibility(View.VISIBLE);
+            Glide.with(this).load(backImageUri).override(800, 600).into(previewImageBack);
+            previewImageBack.setVisibility(ImageView.VISIBLE);
         }
 
         if (frontImageUri != null && backImageUri != null) {
@@ -316,36 +299,33 @@ public class EditProfileActivity extends AppCompatActivity {
         }
     }
 
-    //region ID Card upload Image
+    //region ID Card upload Image (OCR mock)
     private void uploadBothImagesToServer(Uri frontUri, Uri backUri) {
         loadingDialog.show("Uploading ID card images...");
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             try {
-                // Heavy work on background thread
                 byte[] frontBytes = readAllBytesFromUri(frontUri);
                 byte[] backBytes = readAllBytesFromUri(backUri);
 
-                // Continue with API call on main thread
                 runOnUiThread(() -> fetchOcrData(frontBytes, backBytes));
 
             } catch (IOException e) {
                 runOnUiThread(() -> handleError(e));
             } finally {
-                executor.shutdown(); // Clean up the executor
+                executor.shutdown();
             }
         });
     }
 
-
     private void fetchOcrData(byte[] frontBytes, byte[] backBytes) {
         try {
             RequestBody frontBody = RequestBody.create(frontBytes, MediaType.parse("image/jpeg"));
-            RequestBody backBody = RequestBody.create(backBytes, MediaType.parse("image/jpeg"));
+            RequestBody backBody  = RequestBody.create(backBytes,  MediaType.parse("image/jpeg"));
 
             MultipartBody.Part frontPart = MultipartBody.Part.createFormData("front", "front.jpg", frontBody);
-            MultipartBody.Part backPart = MultipartBody.Part.createFormData("back", "back.jpg", backBody);
+            MultipartBody.Part backPart  = MultipartBody.Part.createFormData("back", "back.jpg", backBody);
 
             ApiService apiService = ApiTest.getServiceMockApi(this).create(ApiService.class);
             retrofit2.Call<IdCardResponse> call = apiService.getInfoIdCard(frontPart, backPart);
@@ -359,7 +339,6 @@ public class EditProfileActivity extends AppCompatActivity {
                         IdCardResponse idCard = response.body();
                         fillFromOcr(idCard);
                         saveButton.setEnabled(true);
-                        Toast.makeText(EditProfileActivity.this, "Auto-filled from ID card", Toast.LENGTH_SHORT).show();
                         Log.i("check", "onResponse: " + response.body());
                     } else {
                         String errorMessage = "OCR failed";
@@ -401,7 +380,6 @@ public class EditProfileActivity extends AppCompatActivity {
     //endregion
 
     private void fillFromOcr(IdCardResponse idCard) {
-        // Defensive: don't assume any field exists
         nameInput.setText(getOrEmpty(idCard.getName()));
         dobInput.setText(getOrEmpty(idCard.getDateOfBirth()));
         phoneInput.setText(getOrEmpty(idCard.getPhone()));
@@ -415,15 +393,14 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private byte[] readAllBytesFromUri(Uri uri) throws IOException {
-        // Compress image before reading
         BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 2; // Reduce size by half
+        options.inSampleSize = 2;
         options.inJustDecodeBounds = false;
 
         try (InputStream is = getContentResolver().openInputStream(uri)) {
             Bitmap bitmap = BitmapFactory.decodeStream(is, null, options);
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos); // 80% quality
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, baos);
             return baos.toByteArray();
         }
     }

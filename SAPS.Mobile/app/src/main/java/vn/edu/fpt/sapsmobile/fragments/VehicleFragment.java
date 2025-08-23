@@ -31,77 +31,100 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import vn.edu.fpt.sapsmobile.activities.sharevehicle.ViewListInvitationActivity;
-import vn.edu.fpt.sapsmobile.network.client.ApiTest;
-import vn.edu.fpt.sapsmobile.network.service.ISharedvehicle;
-import vn.edu.fpt.sapsmobile.network.service.IVehicleApi;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.actionhandler.VehicleFragmentHandler;
 import vn.edu.fpt.sapsmobile.activities.auth.AddVehicleActivity;
 import vn.edu.fpt.sapsmobile.activities.sharevehicle.ShareVehicleAccessActivity;
+import vn.edu.fpt.sapsmobile.activities.sharevehicle.ViewListInvitationActivity;
 import vn.edu.fpt.sapsmobile.adapters.VehicleAdapter;
+import vn.edu.fpt.sapsmobile.dialog.VerifyRequiredDialogFragment;
 import vn.edu.fpt.sapsmobile.dtos.vehicle.ShareCodeReturnDto;
+import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleSummaryDto;
 import vn.edu.fpt.sapsmobile.models.User;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
-import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleSummaryDto;
+import vn.edu.fpt.sapsmobile.network.client.ApiTest;
+import vn.edu.fpt.sapsmobile.network.service.ISharedvehicle;
+import vn.edu.fpt.sapsmobile.network.service.IVehicleApi;
 import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
 import vn.edu.fpt.sapsmobile.utils.RecyclerUtils;
 import vn.edu.fpt.sapsmobile.utils.TokenManager;
+import vn.edu.fpt.sapsmobile.utils.VerifyUtils;
 
 public class VehicleFragment extends Fragment {
 
     private static final String TAG = "VehicleFragment";
 
-    // UI Components
+    // UI
     private LoadingDialog loadingDialog;
     private RecyclerView rvVehicles;
     private VehicleAdapter vehicleAdapter;
     private TextView tv_share_code;
     private Button btn_copy_code;
-//    private Button btn_add_vehicle;
     private MaterialButtonToggleGroup toggleTabs;
     private MaterialSplitButton splitButton;
     private Button btnViewInvitation;
     private Button expandButton;
 
     // Data
-    private List<Vehicle> vehicleList;
+    private final List<Vehicle> vehicleList = new ArrayList<>();
     private TokenManager tokenManager;
 
-    // API Services
+    // API
     private IVehicleApi vehicleApi;
     private ISharedvehicle sharedVehicleApi;
 
-    // Current API calls (for cancellation)
+    // Calls
     private Call<List<VehicleSummaryDto>> currentVehicleCall;
     private Call<ShareCodeReturnDto> shareCodeCall;
 
-    // Tab states
+    // Tabs
     private static final int TAB_MY_VEHICLES = 0;
     private static final int TAB_SHARED_VEHICLES = 1;
     private int currentTab = TAB_MY_VEHICLES;
 
-    public VehicleFragment() {
-        // Required empty public constructor
-    }
+    // Guard
+    private boolean allowLoad = false;
+
+    public VehicleFragment() {}
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_vehicle, container, false);
 
-        initializeComponents(view);
+        tokenManager = new TokenManager(getActivity());
+        loadingDialog = new LoadingDialog(getActivity());
+
+        // find views
+        rvVehicles = view.findViewById(R.id.rvVehicles);
+        tv_share_code = view.findViewById(R.id.tv_share_code);
+        btn_copy_code = view.findViewById(R.id.btn_copy_code);
+        toggleTabs = view.findViewById(R.id.toggleTabs);
+        splitButton = view.findViewById(R.id.splitbutton);
+        btnViewInvitation = view.findViewById(R.id.btn_view_invitation);
+        expandButton = view.findViewById(R.id.expand_more_or_less_filled);
+
         setupStatusBar();
         setupSplitButton();
         setupRecyclerView();
         setupClickListeners();
 
+        // ===== VERIFY GUARD =====
+        User user = tokenManager.getUserData();
+        allowLoad = VerifyUtils.isUserVerified(user);
+        if (!allowLoad) {
+            VerifyRequiredDialogFragment.newInstance()
+                    .show(getParentFragmentManager(), VerifyRequiredDialogFragment.TAG);
+        }
+        // ========================
+
         return view;
     }
-
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (!allowLoad) return; // chưa verify -> dừng toàn bộ logic tải
 
         initializeApiServices();
         setupToggleButtons();
@@ -112,28 +135,10 @@ public class VehicleFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         cancelAllApiCalls();
-        loadingDialog.hide();
+        if (loadingDialog != null) loadingDialog.hide();
     }
 
-    //region INITIALIZATION METHODS
-
-    private void initializeComponents(View view) {
-        tokenManager = new TokenManager(getActivity());
-        loadingDialog = new LoadingDialog(getActivity());
-        vehicleList = new ArrayList<>();
-
-        // Find views
-        rvVehicles = view.findViewById(R.id.rvVehicles);
-        tv_share_code = view.findViewById(R.id.tv_share_code);
-        btn_copy_code = view.findViewById(R.id.btn_copy_code);
-        toggleTabs = view.findViewById(R.id.toggleTabs);
-
-        // split button
-        splitButton = view.findViewById(R.id.splitbutton);
-        btnViewInvitation = view.findViewById(R.id.btn_view_invitation);
-        expandButton = view.findViewById(R.id.expand_more_or_less_filled);
-    }
-
+    // ===== INIT =====
     private void setupStatusBar() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && getActivity() != null) {
             Window window = getActivity().getWindow();
@@ -157,53 +162,6 @@ public class VehicleFragment extends Fragment {
         btn_copy_code.setOnClickListener(this::onCopyCodeClicked);
     }
 
-    private void initializeApiServices() {
-        vehicleApi = ApiTest.getServiceLast(requireContext()).create(IVehicleApi.class);
-        sharedVehicleApi = ApiTest.getServiceLast(requireContext()).create(ISharedvehicle.class);
-    }
-
-    private void setupToggleButtons() {
-        toggleTabs.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
-            if (isChecked) {
-                handleTabSelection(checkedId);
-            }
-        });
-    }
-    //endregion
-
-    //region CLICK HANDLERS
-
-    private void setupSplitButton() {
-        // Set up the main button click (default action)
-        btnViewInvitation.setOnClickListener(v ->{
-            Intent intent = new Intent(getActivity(), ViewListInvitationActivity.class);
-            startActivitySafely(intent);
-        });
-
-        // Set up the dropdown button click
-        expandButton.setOnClickListener(this::showDropdownMenu);
-
-    }
-    private void showDropdownMenu(View anchoView) {
-        PopupMenu popup = new PopupMenu(this.getContext(), anchoView);
-        popup.getMenuInflater().inflate(R.menu.vehicle_options_menu, popup.getMenu());
-
-        popup.setOnMenuItemClickListener(menuItem -> {
-            int itemId = menuItem.getItemId();
-            if (itemId == R.id.menu_register_own) {
-                startActivitySafely(new Intent(requireContext(), AddVehicleActivity.class));
-                return true;
-            } else if (itemId == R.id.menu_receive_share) {
-                startActivitySafely(new Intent(requireContext(), ShareVehicleAccessActivity.class));
-                return true;
-            }
-            else {
-                return false;
-            }
-        });
-        popup.show();
-    }
-
     private void onCopyCodeClicked(View v) {
         String code = tv_share_code.getText().toString();
 
@@ -225,23 +183,47 @@ public class VehicleFragment extends Fragment {
         }
     }
 
-//    private void onAddVehicleClicked(View v) {
-//        AddVehicleDialog.show(getContext(), new AddVehicleDialog.AddVehicleListener() {
-//            @Override
-//            public void onRegisterMyVehicle() {
-//                startActivitySafely(new Intent(requireContext(), AddVehicleActivity.class));
-//            }
-//
-//            @Override
-//            public void onReceiveFromShareCode() {
-//                startActivitySafely(new Intent(requireContext(), ShareVehicleAccessActivity.class));
-//            }
-//        });
-//    }
+    private void initializeApiServices() {
+        vehicleApi = ApiTest.getServiceLast(requireContext()).create(IVehicleApi.class);
+        sharedVehicleApi = ApiTest.getServiceLast(requireContext()).create(ISharedvehicle.class);
+    }
 
-    //endregion
-    //region DATA LOADING METHODS
+    private void setupToggleButtons() {
+        toggleTabs.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+            if (!isChecked) return;
+            handleTabSelection(checkedId);
+        });
+    }
 
+    // ===== SPLIT BUTTON =====
+    private void setupSplitButton() {
+        btnViewInvitation.setOnClickListener(v ->
+                startActivitySafely(new Intent(getActivity(), ViewListInvitationActivity.class))
+        );
+
+        expandButton.setOnClickListener(this::showDropdownMenu);
+    }
+
+    private void showDropdownMenu(View anchorView) {
+        PopupMenu popup = new PopupMenu(this.getContext(), anchorView);
+        popup.getMenuInflater().inflate(R.menu.vehicle_options_menu, popup.getMenu());
+
+        popup.setOnMenuItemClickListener(menuItem -> {
+            int itemId = menuItem.getItemId();
+            if (itemId == R.id.menu_register_own) {
+                startActivitySafely(new Intent(requireContext(), AddVehicleActivity.class));
+                return true;
+            } else if (itemId == R.id.menu_receive_share) {
+                startActivitySafely(new Intent(requireContext(), ShareVehicleAccessActivity.class));
+                return true;
+            } else {
+                return false;
+            }
+        });
+        popup.show();
+    }
+
+    // ===== LOAD DATA =====
     private void loadInitialData() {
         loadShareCode();
         loadMyVehicles();
@@ -361,8 +343,7 @@ public class VehicleFragment extends Fragment {
         });
     }
 
-    // ==================== UI UPDATE METHODS ====================
-
+    // ===== UI HELPERS =====
     private void updateVehicleList(List<VehicleSummaryDto> summaryDtos) {
         vehicleList.clear();
         vehicleList.addAll(convertToVehicleList(summaryDtos));
@@ -380,12 +361,8 @@ public class VehicleFragment extends Fragment {
             showToast("Loading cancelled");
         });
     }
-    //endregion
 
-
-
-    //region UTILITY METHODS
-
+    // ===== UTIL =====
     private boolean isFragmentValid() {
         return isAdded() && getContext() != null && !isDetached();
     }
@@ -401,28 +378,18 @@ public class VehicleFragment extends Fragment {
 
         if (responseCode > 0) {
             switch (responseCode) {
-                case 400:
-                    errorMessage = "Bad request - please check your data";
-                    break;
-                case 401:
-                    errorMessage = "Unauthorized - please login again";
-                    break;
-                case 403:
-                    errorMessage = "Access forbidden";
-                    break;
-                case 404:
-                    errorMessage = "Data not found";
-                    break;
-                case 500:
-                    errorMessage = "Server error - please try again later";
-                    break;
-                default:
-                    errorMessage = message + " (Code: " + responseCode + ")";
+                case 400: errorMessage = "Bad request - please check your data"; break;
+                case 401: errorMessage = "Unauthorized - please login again"; break;
+                case 403: errorMessage = "Access forbidden"; break;
+                case 404: errorMessage = "Data not found"; break;
+                case 500: errorMessage = "Server error - please try again later"; break;
+                default:  errorMessage = message + " (Code: " + responseCode + ")";
             }
         } else if (throwable != null) {
-            if (throwable.getMessage() != null && throwable.getMessage().contains("timeout")) {
+            String msg = throwable.getMessage();
+            if (msg != null && msg.contains("timeout")) {
                 errorMessage = "Request timeout - please check your connection";
-            } else if (throwable.getMessage() != null && throwable.getMessage().contains("Unable to resolve host")) {
+            } else if (msg != null && msg.contains("Unable to resolve host")) {
                 errorMessage = "No internet connection";
             }
         }
@@ -448,7 +415,6 @@ public class VehicleFragment extends Fragment {
 
     private void cancelAllApiCalls() {
         cancelCurrentVehicleCall();
-
         if (shareCodeCall != null && !shareCodeCall.isCanceled()) {
             shareCodeCall.cancel();
         }
@@ -456,7 +422,6 @@ public class VehicleFragment extends Fragment {
 
     private List<Vehicle> convertToVehicleList(List<VehicleSummaryDto> summaryDtos) {
         List<Vehicle> vehicles = new ArrayList<>();
-
         for (VehicleSummaryDto dto : summaryDtos) {
             if (dto == null) continue;
 
@@ -469,7 +434,7 @@ public class VehicleFragment extends Fragment {
             vehicle.setStatus(dto.getStatus() != null ? dto.getStatus() : "");
             vehicle.setSharingStatus(dto.getSharingStatus() != null ? dto.getSharingStatus() : "");
 
-            // Set default values for missing fields
+            // defaults
             vehicle.setEngineNumber("");
             vehicle.setChassisNumber("");
             vehicle.setOwnerVehicleFullName("");
@@ -480,8 +445,6 @@ public class VehicleFragment extends Fragment {
 
             vehicles.add(vehicle);
         }
-
         return vehicles;
     }
-    //endregion
 }

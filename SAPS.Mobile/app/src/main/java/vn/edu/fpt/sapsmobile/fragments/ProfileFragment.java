@@ -31,6 +31,7 @@ import vn.edu.fpt.sapsmobile.activities.profile.EditProfileActivity;
 import vn.edu.fpt.sapsmobile.activities.NotificationsListActivity;
 import vn.edu.fpt.sapsmobile.activities.main.MainActivity;
 import vn.edu.fpt.sapsmobile.models.User;
+import vn.edu.fpt.sapsmobile.utils.VerifyUtils;
 
 public class ProfileFragment extends Fragment {
 
@@ -140,10 +141,11 @@ public class ProfileFragment extends Fragment {
     }
 
     private void setupVerificationStatus() {
-        boolean isVerified = isUserVerified();
+        boolean isVerified = VerifyUtils.isUserVerified(user);
         verifyIcon.setVisibility(isVerified ? View.VISIBLE : View.GONE);
         verifyText.setVisibility(isVerified ? View.GONE : View.VISIBLE);
     }
+
 
     private boolean isUserVerified() {
         if (user.getClientProfile() == null) {

@@ -23,13 +23,17 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import vn.edu.fpt.sapsmobile.network.client.ApiTest;
-import vn.edu.fpt.sapsmobile.network.service.ParkingSessionApiService;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.actionhandler.HistoryFragmentHandler;
 import vn.edu.fpt.sapsmobile.adapters.ParkingSessionAdapter;
 import vn.edu.fpt.sapsmobile.models.ParkingSession;
+import vn.edu.fpt.sapsmobile.models.User;
+import vn.edu.fpt.sapsmobile.network.client.ApiTest;
+import vn.edu.fpt.sapsmobile.network.service.ParkingSessionApiService;
+import vn.edu.fpt.sapsmobile.dialog.VerifyRequiredDialogFragment;
 import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
+import vn.edu.fpt.sapsmobile.utils.TokenManager;
+import vn.edu.fpt.sapsmobile.utils.VerifyUtils;
 
 public class HistoryFragment extends Fragment {
     private RecyclerView rvParkingHistory;
@@ -40,53 +44,56 @@ public class HistoryFragment extends Fragment {
     private LoadingDialog loadingDialog;
 
     private Call<List<ParkingSession>> currentCall;
+    private boolean allowLoad = false; // chặn load khi chưa verify
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_history, container, false);
 
-
-
-        // Set status bar color
+        // Status bar trong suốt
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = requireActivity().getWindow();
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+            window.getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            );
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.TRANSPARENT);
-
         }
 
-        loadingDialog = new LoadingDialog(getActivity());
-        // Initialize Adapter
-        rvParkingHistory = view.findViewById(R.id.rvParkingHistory);
+        // ===== VERIFY GUARD =====
+        TokenManager tokenManager = new TokenManager(getActivity());
+        User user = tokenManager.getUserData();
+        allowLoad = VerifyUtils.isUserVerified(user);
+        if (!allowLoad) {
+            // Hiện dialog yêu cầu xác minh và KHÔNG tải dữ liệu
+            VerifyRequiredDialogFragment.newInstance()
+                    .show(getParentFragmentManager(), VerifyRequiredDialogFragment.TAG);
+        }
+        // ========================
 
+        // UI & adapter
+        loadingDialog = new LoadingDialog(getActivity());
+        rvParkingHistory = view.findViewById(R.id.rvParkingHistory);
         parkingSessionAdapter = new ParkingSessionAdapter(
                 new ArrayList<>(),
                 new HistoryFragmentHandler(requireContext()),
                 requireContext(),
-                "historyFragment");
-
+                "historyFragment"
+        );
         rvParkingHistory.setAdapter(parkingSessionAdapter);
-
         rvParkingHistory.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        // Initialize Material 3 dropdown filter
         spinnerFilter = view.findViewById(R.id.spinnerFilter);
         autoCompleteTextView = (AutoCompleteTextView) spinnerFilter.getEditText();
 
-        // Get filter options from string array resource
         String[] filterOptions = getResources().getStringArray(R.array.history_view_methods);
-
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 requireContext(),
                 android.R.layout.simple_dropdown_item_1line,
                 filterOptions
         );
-
         autoCompleteTextView.setAdapter(adapter);
-
-        // Set default selection (first item)
         if (filterOptions.length > 0) {
             autoCompleteTextView.setText(filterOptions[0], false);
         }
@@ -98,20 +105,22 @@ public class HistoryFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Initialize history list and data loading
-        ParkingSessionApiService parkingSessionApi = ApiTest.getService(requireContext()).create(ParkingSessionApiService.class);
+        if (!allowLoad) return; // chưa verify -> dừng toàn bộ logic tải
 
-        // Load initial data (last 30 days)
+        ParkingSessionApiService parkingSessionApi =
+                ApiTest.getService(requireContext()).create(ParkingSessionApiService.class);
+
+        // Tải mặc định: 30 ngày gần nhất
         loadParkingSessionData(parkingSessionApi, 0);
 
-        // Handle dropdown selection
+        // Đổi filter -> đổi API
         autoCompleteTextView.setOnItemClickListener((parent, view1, position, id) -> {
             loadParkingSessionData(parkingSessionApi, position);
         });
     }
 
     private void loadParkingSessionData(ParkingSessionApiService api, int filterPosition) {
-        if (currentCall != null) currentCall.cancel(); // cancel previous request
+        if (currentCall != null) currentCall.cancel();
 
         switch (filterPosition) {
             case 0: currentCall = api.getParkingSessionListLast30days(); break;
@@ -136,7 +145,6 @@ public class HistoryFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<ParkingSession>> call, Throwable t) {
-                // If call was cancelled due to navigation, just ensure dialog is hidden
                 loadingDialog.hide();
             }
         });
@@ -146,9 +154,10 @@ public class HistoryFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         if (loadingDialog != null) loadingDialog.hide();
-        if (currentCall != null) currentCall.cancel(); // explained below
+        if (currentCall != null) currentCall.cancel();
     }
 
+    @Override
     public void onStop() {
         super.onStop();
         if (loadingDialog != null) loadingDialog.hide();

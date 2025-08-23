@@ -349,5 +349,9 @@
     <string name="item_vehicle_invitation_label_owner">Vehicle owner</string>
     <string name="item_vehicle_invitation_label_color">Color</string>
     <string name="item_vehicle_invitation_btn_details">Accept</string>
+    <string name="verify_required_title">Verification Required</string>
+    <string name="verify_required_message">Please verify your account to continue this page.</string>
+    <string name="go_verify_now">Verify now</string>
+
 
 </resources>
