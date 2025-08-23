@@ -26,9 +26,6 @@ const UploadFile: React.FC = () => {
     const [dragOver, setDragOver] = useState(false);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
-    // API base URL - adjust this to match your API
-    const API_BASE_URL = 'https://localhost:7000/api'; // Change this to your API URL
-
     const handleFileSelect = (files: FileList | null) => {
         if (files) {
             const fileArray = Array.from(files);

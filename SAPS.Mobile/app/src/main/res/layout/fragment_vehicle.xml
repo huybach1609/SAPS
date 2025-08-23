@@ -1,154 +1,208 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/layout_my_vehicles"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="16dp"
-    android:fillViewport="true"
-    android:background="#F5F5F5">
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginTop="20dp"
 
-    <!-- ✅ View duy nhất bên trong ScrollView -->
-    <LinearLayout
-        android:orientation="vertical"
+    >
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
 
-        <!-- Header: Title + Add button -->
+        <!-- In your layout XML -->
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="end"
-            android:weightSum="1">
-
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="🚗 My Vehicles"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:drawablePadding="8dp"
-                android:gravity="start"
-                android:textColor="#000000"
-                android:layout_weight="0.5" />
-
-            <Button
-                android:id="@+id/btn_add_vehicle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="+ Add Vehicle"
-                android:textAllCaps="false"
-                android:layout_marginTop="8dp"
-                android:backgroundTint="#0066CC"
-                android:textColor="#FFFFFF"
-                android:layout_weight="0.5" />
-        </LinearLayout>
-
-        <!-- Share Code Card -->
-
-        <LinearLayout
-            android:id="@+id/share_code_card"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="8dp"
-            android:background="#D8F1FF"
-            android:backgroundTint="#E0F4FF"
-            android:backgroundTintMode="src_in"
-            android:clipToOutline="true"
-            android:elevation="4dp"
             android:orientation="vertical"
-            android:padding="16dp">
-
-            <TextView
-                android:id="@+id/label_share_code"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="🔑 Your Share Code"
-                android:textColor="#0D47A1"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+            app:layout_scrollFlags="scroll|enterAlways">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="#FFFFFF">
+                android:orientation="horizontal">
 
+                <!-- Spinner Filter -->
                 <TextView
-                    android:id="@+id/tv_share_code"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="8dp"
-                    android:gravity="center"
-                    android:text="USER-JOHN2025"
-                    android:textColor="#BBDEFB"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    style="?attr/textAppearanceDisplayMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/roboto_serif_family"
+                    android:gravity="center_vertical|start"
+                    android:text="@string/title_my_vehicles"
+                    android:textColor="@color/md_theme_onSurface"
+                    android:layout_weight="1"
+                    android:textSize="16sp" />
+
+                <com.google.android.material.button.MaterialSplitButton
+                    android:id="@+id/splitbutton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <Button
+                        android:id="@+id/btn_view_invitation"
+                        style="?attr/materialSplitButtonLeadingFilledStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/vehicle_fragment_btn_view_invitation" />
+
+                    <Button
+                        style="?attr/materialSplitButtonIconFilledStyle"
+                        android:id="@+id/expand_more_or_less_filled"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:contentDescription=""
+                        app:icon="@drawable/m3_split_button_chevron_avd" />
+
+                </com.google.android.material.button.MaterialSplitButton>
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/tv_description"
+            <!-- Share Code Card -->
+            <LinearLayout
+                android:id="@+id/share_code_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:text="Give this code to vehicle owners to grant you access to their vehicles."
-                android:textColor="#0D47A1"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:orientation="vertical"
+                android:contentDescription="@string/cd_share_code_card"
+                android:background="@drawable/bg_card_corner"
+                android:padding="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:backgroundTint="@color/md_theme_secondaryContainer"
+                >
 
-            <Button
-                android:id="@+id/btn_copy_code"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:backgroundTint="#0066CC"
-                android:text="📋 Copy My Share Code"
-                android:textAllCaps="false"
-                android:textColor="#FFFFFF" />
+                <TextView
+                    android:id="@+id/label_share_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_share_code"
+                    android:textColor="@color/md_theme_onSecondaryContainer"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_card_corner"
+                    android:backgroundTint="@color/md_theme_surface"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp">
+
+                    <TextView
+                        android:id="@+id/tv_share_code"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="8dp"
+                        android:gravity="center"
+                        android:text="@string/example_share_code"
+                        android:textColor="@color/md_theme_onSurface"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/tv_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:text="@string/share_code_description"
+                    android:textColor="@color/md_theme_onSecondaryContainer"
+                    android:textSize="10sp"
+                    android:layout_margin="10dp"
+                    />
+
+                <Button
+                    android:id="@+id/btn_copy_code"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    style="@style/Widget.Material3.Button.IconButton.Filled"
+                    app:icon="@drawable/ic_copy"
+                    android:text="@string/btn_copy_my_share_code"
+                    android:textAllCaps="false"
+                    android:contentDescription="@string/btn_copy_share_code_desc"
+
+                    />
+            </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout
+        <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/toggleTabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:padding="12dp"
-            android:background="@android:color/transparent">
+            android:layout_margin="12dp"
+            app:checkedButton="@id/btnMyVehicles"
+            app:selectionRequired="true"
+            app:singleSelection="true">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnMyVehicles"
+                style="@style/Widget.Material3Expressive.MaterialButtonGroup.Connected"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
-                android:text="Xe của tôi"
-                android:background="@drawable/bg_tab_selected"
-                android:textColor="#000000"
-                android:textStyle="bold"
-                android:textSize="14sp"
-                android:layout_marginEnd="6dp"/>
+                android:text="@string/tab_my_vehicles"
+                android:textSize="14sp" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSharedVehicles"
+                style="@style/Widget.Material3Expressive.MaterialButtonGroup.Connected"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
-                android:text="Xe được chia sẻ"
-                android:background="@drawable/bg_tab_unselected"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold"
-                android:textSize="14sp"
-                android:layout_marginStart="6dp"/>
-        </LinearLayout>
+                android:text="@string/tab_shared_vehicles"
+                android:textSize="14sp" />
 
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+        <!-- Tabs: KHÔNG CUỘN -->
+<!--        <LinearLayout-->
+<!--            android:id="@+id/toggleTabs"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="horizontal"-->
+<!--            android:gravity="center"-->
+<!--            android:padding="12dp"-->
+<!--            android:background="@android:color/transparent">-->
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvVehicles"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:clipToPadding="false" />
-    </LinearLayout>
-</ScrollView>
+<!--            <androidx.appcompat.widget.AppCompatButton-->
+<!--                android:id="@+id/btnMyVehicles"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="48dp"-->
+<!--                android:layout_weight="1"-->
+<!--                android:text="@string/tab_my_vehicles"-->
+<!--                android:background="@drawable/bg_tab_selected"-->
+<!--                android:textColor="#FFFFFF"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textSize="14sp"-->
+<!--                android:layout_marginEnd="6dp" />-->
+
+<!--            <androidx.appcompat.widget.AppCompatButton-->
+<!--                android:id="@+id/btnSharedVehicles"-->
+<!--                android:layout_width="0dp"-->
+<!--                android:layout_height="48dp"-->
+<!--                android:layout_weight="1"-->
+<!--                android:text="@string/tab_shared_vehicles"-->
+<!--                android:background="@drawable/bg_tab_unselected"-->
+<!--                android:textColor="#000000"-->
+<!--                android:textStyle="bold"-->
+<!--                android:textSize="14sp"-->
+<!--                android:layout_marginStart="6dp" />-->
+<!--        </LinearLayout>-->
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- RecyclerView kéo được -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvVehicles"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:padding="16dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

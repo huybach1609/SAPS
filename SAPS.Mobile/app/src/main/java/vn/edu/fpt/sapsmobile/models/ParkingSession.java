@@ -7,6 +7,7 @@ public class ParkingSession implements Serializable {
     private String id;
     private String vehicleId;
     private String parkingLotId;
+    private String parkingLotName;
 
     private String entryDateTime;         // not null
     private String exitDateTime;          // nullable
@@ -21,6 +22,52 @@ public class ParkingSession implements Serializable {
     private String paymentMethod;         // not null
     private double cost;                  // not null
 
+    private Vehicle vehicle;
+    // 🔸 Constructor đầy đủ
+    public ParkingSession(String id, String vehicleId, String parkingLotId,
+                          String entryDateTime, String exitDateTime, String checkOutTime,
+                          String entryFrontCaptureUrl, String entryBackCaptureUrl,
+                          String exitFrontCaptureUrl, String exitBackCaptureUrl) {
+        this.id = id;
+        this.vehicleId = vehicleId;
+        this.parkingLotId = parkingLotId;
+        this.entryDateTime = entryDateTime;
+        this.exitDateTime = exitDateTime;
+        this.checkOutTime = checkOutTime;
+        this.entryFrontCaptureUrl = entryFrontCaptureUrl;
+        this.entryBackCaptureUrl = entryBackCaptureUrl;
+        this.exitFrontCaptureUrl = exitFrontCaptureUrl;
+        this.exitBackCaptureUrl = exitBackCaptureUrl;
+    }
+    public ParkingSession(String id,
+                          String vehicleId,
+                          String parkingLotId,
+                          String entryDateTime,
+                          String exitDateTime,
+                          String checkOutTime,
+                          String entryFrontCaptureUrl,
+                          String entryBackCaptureUrl,
+                          String exitFrontCaptureUrl,
+                          String exitBackCaptureUrl,
+                          String transactionId,
+                          String paymentMethod,
+                          double cost) {
+        this.id = id;
+        this.vehicleId = vehicleId;
+        this.parkingLotId = parkingLotId;
+        this.entryDateTime = entryDateTime;
+        this.exitDateTime = exitDateTime;
+        this.checkOutTime = checkOutTime;
+        this.entryFrontCaptureUrl = entryFrontCaptureUrl;
+        this.entryBackCaptureUrl = entryBackCaptureUrl;
+        this.exitFrontCaptureUrl = exitFrontCaptureUrl;
+        this.exitBackCaptureUrl = exitBackCaptureUrl;
+        this.transactionId = transactionId;
+        this.paymentMethod = paymentMethod;
+        this.cost = cost;
+    }
+    // 🔸 Constructor rỗng (bắt buộc nếu bạn dùng Firebase hoặc Gson)
+    public ParkingSession() {}
     // Getters & Setters
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
@@ -60,6 +107,24 @@ public class ParkingSession implements Serializable {
 
     public double getCost() { return cost; }
     public void setCost(double cost) { this.cost = cost; }
+
+
+
+    public Vehicle getVehicle() {
+        return vehicle;
+    }
+
+    public void setVehicle(Vehicle vehicle) {
+        this.vehicle = vehicle;
+    }
+
+    public String getParkingLotName() {
+        return parkingLotName;
+    }
+
+    public void setParkingLotName(String parkingLotName) {
+        this.parkingLotName = parkingLotName;
+    }
 
     @Override
     public String toString() {

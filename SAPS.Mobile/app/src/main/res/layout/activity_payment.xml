@@ -1,88 +1,422 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/main"
-    android:padding="16dp"
-    android:background="#F8F9FD">
+    android:background="@color/md_theme_background"
+    >
 
-    <LinearLayout
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:fitsSystemWindows="true">
 
-        <TextView
-            android:id="@+id/tvPaymentTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="💳 Payment Details"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="#000000" />
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            style="@style/Widget.Material3.Toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:backgroundTint="?attr/colorSurface"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:navigationIconTint="?attr/colorOnSurface"
+            app:titleTextColor="?attr/colorOnSurface" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-        <TextView
-            android:id="@+id/tvBankName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Bank Name: Vietcombank"
-            android:layout_marginTop="4dp"
-            android:textColor="#444444" />
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <TextView
-            android:id="@+id/tvAccountNumber"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Account Number: 0123456789"
-            android:layout_marginTop="2dp"
-            android:textColor="#444444" />
-
-        <TextView
-            android:id="@+id/tvAccountName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Account Name: SAPLS Parking System"
-            android:layout_marginTop="2dp"
-            android:textColor="#444444" />
-
-        <TextView
-            android:id="@+id/tvAmountToPay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Amount to Pay: $12.38"
-            android:layout_marginTop="2dp"
-            android:textColor="#007BFF"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvReferenceCode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Reference Code: PARK-ABC1234-060325"
-            android:layout_marginTop="2dp"
-            android:textColor="#444444" />
-
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Scan QR Code to pay:"
-            android:textStyle="bold"
-            android:textColor="#333333"
-            android:layout_marginBottom="8dp" />
-
-        <ImageView
-            android:id="@+id/imgQrCode"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:layout_gravity="center"
-            android:contentDescription="QR Code" />
-        <Button
-            android:id="@+id/btnFinish"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Finish"
-            android:backgroundTint="#007BFF"
-            android:textColor="#FFFFFF" />
-    </LinearLayout>
-</ScrollView>
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Payment Card -->
+            <LinearLayout
+                android:id="@+id/cardPayment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_card_corner"
+                android:backgroundTint="@color/md_theme_surfaceContainer"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Row: Title + small hint -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tvPaymentTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/payment_activity_payment_detail_display"
+                            android:textColor="@color/md_theme_onSurface"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <!--                    <TextView-->
+                        <!--                        android:id="@+id/tvSmallHint"-->
+                        <!--                        android:layout_width="wrap_content"-->
+                        <!--                        android:layout_height="wrap_content"-->
+                        <!--                        android:text="Gửi đúng mã tham chiếu"-->
+                        <!--                        android:textSize="12sp"-->
+                        <!--                        android:textColor="@color/md_theme_onSurfaceVariant" />-->
+                    </LinearLayout>
+
+                    <!-- Divider -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="5dp" />
+
+                    <!-- Amount row (nổi bật) -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tvAmountLabel"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/payment_activity_display_amount"
+                            android:textColor="@color/md_theme_onSurfaceVariant"
+                            android:textSize="14sp" />
+
+                        <TextView
+                            android:id="@+id/tvAmount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="$12.38"
+                            android:textColor="@color/md_theme_primary"
+                            android:textSize="20sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvAmountNote"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="@string/payment_activity_display_note"
+                        android:textColor="@color/md_theme_onSurfaceVariant"
+                        android:textSize="12sp" />
+
+                    <!-- Thin divider -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:background="@color/md_theme_outline" />
+                    <!-- Info rows: bank, account number, account name, ref code -->
+                    <!-- Each row has icon, text, and a copy button on right -->
+
+                    <!-- Account number -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="10dp"
+                        >
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+                                android:id="@+id/ivAccountIcon"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:alpha="0.5"
+                                android:contentDescription="@string/payment_activity_content_description_account_number"
+                                android:src="@drawable/account_circle_24"
+                                app:tint="@color/md_theme_primary" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_weight="6"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/payment_activity_display_account_number"
+                                    android:textColor="@color/md_theme_onSurfaceVariant"
+                                    android:textSize="12sp" />
+
+                                <TextView
+                                    android:id="@+id/tvAccountNumber"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="000000000"
+                                    android:textColor="@color/md_theme_primary"
+                                    android:textFontWeight="500"
+                                    android:textSize="14sp"
+                                    tools:ignore="HardcodedText" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+
+                        <ImageView
+                            android:id="@+id/btnCopyAccount"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:src="@drawable/ic_copy"
+                            android:alpha="0.5"
+                            app:tint="@color/md_theme_primary" />
+                    </LinearLayout>
+
+                    <!-- Account holder name (same style as Account number) -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="10dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+                                android:id="@+id/ivPersonIcon"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:alpha="0.5"
+                                android:contentDescription="@string/payment_activity_content_description_account_name"
+                                android:src="@drawable/ic_person"
+                                app:tint="@color/md_theme_primary" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="10dp"
+                                android:layout_weight="6"
+                                android:orientation="vertical"
+                                android:gravity="center_vertical">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/payment_activity_display_account_name"
+                                    android:textColor="@color/md_theme_onSurfaceVariant"
+                                    android:textSize="12sp" />
+
+                                <TextView
+                                    android:id="@+id/tvAccountName"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="SAPLS Parking System"
+                                    android:textColor="@color/md_theme_primary"
+                                    android:textFontWeight="500"
+                                    android:textSize="14sp" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <ImageView
+                            android:id="@+id/btnCopyName"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:alpha="0.5"
+                            android:src="@drawable/ic_copy"
+                            app:tint="@color/md_theme_primary" />
+                    </LinearLayout>
+
+                    <!-- Reference code (same style as Account number) -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="10dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+                                android:id="@+id/ivRefIcon"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:alpha="0.5"
+                                android:contentDescription="@string/payment_activity_content_description_reference_code"
+                                android:src="@drawable/ic_tag"
+                                app:tint="@color/md_theme_primary" />
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="10dp"
+                                android:layout_weight="6"
+                                android:orientation="vertical"
+                                android:gravity="center_vertical">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/payment_activity_display_reference_code"
+                                    android:textColor="@color/md_theme_onSurfaceVariant"
+                                    android:textSize="12sp" />
+
+                                <TextView
+                                    android:id="@+id/tvReferenceCode"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="PARK-ABC1234-060325"
+                                    android:textColor="@color/md_theme_primary"
+                                    android:textFontWeight="500"
+                                    android:textSize="14sp"
+                                    tools:ignore="HardcodedText" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <ImageView
+                            android:id="@+id/btnCopyRef"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:alpha="0.5"
+                            android:src="@drawable/ic_copy"
+                            app:tint="@color/md_theme_primary" />
+                    </LinearLayout>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- QR Card (centered) -->
+            <LinearLayout
+                android:id="@+id/cardQr"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_card_corner"
+                android:backgroundTint="@color/md_theme_surfaceContainer"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+<!--                    <TextView-->
+<!--                        android:id="@+id/tvQrTitle"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"-->
+<!--                        android:layout_marginBottom="5dp"-->
+<!--                        android:text="Quét QR để thanh toán"-->
+<!--                        android:textColor="@color/md_theme_onSurface"-->
+<!--                        android:textSize="15sp"-->
+<!--                        android:textStyle="bold" />-->
+
+                    <ImageView
+                        android:id="@+id/imgQrCode"
+                        android:layout_width="220dp"
+                        android:layout_height="220dp"
+                        android:contentDescription="QR Code"
+                        android:scaleType="fitCenter"
+                        android:background="@android:color/white" />
+
+                    <TextView
+                        android:id="@+id/tvQrHint"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/payment_activity_qr_code_title"
+                        android:textAlignment="center"
+                        android:textColor="@color/md_theme_onSurfaceVariant"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Action buttons: Tôi đã chuyển (primary) + Báo lỗi (ghost) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnIHavePaid"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginBottom="5dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="@string/payment_activity_btn_text_display"
+                    android:textAllCaps="false"
+                    android:textColor="@color/md_theme_onPrimary"
+                    android:textSize="16sp"
+                    app:backgroundTint="@color/md_theme_primary"
+                    app:cornerRadius="5dp"
+                    app:icon="@drawable/ic_check_circle"
+                    app:iconGravity="textStart"
+                    app:iconPadding="5dp"
+                    app:iconSize="24dp"
+                    app:iconTint="@color/md_theme_background" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnBrowse"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Open in Browse"
+                    android:textAllCaps="false"
+                    android:textColor="@color/md_theme_onSurface"
+                    android:textSize="16sp"
+                    app:cornerRadius="5dp"
+                    app:strokeColor="@color/md_theme_outline" />
+            </LinearLayout>
+
+            <!-- Small footer note -->
+            <TextView
+                android:id="@+id/tvFooterNote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="24dp"
+                android:gravity="center"
+                android:text="Lưu ý: Giao dịch qua ngân hàng có thể mất 1–10 phút để xử lý tự động."
+                android:textColor="@color/md_theme_onSurfaceVariant"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

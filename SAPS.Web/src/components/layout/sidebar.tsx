@@ -195,7 +195,7 @@ const parkingLotOwnerItems: NavigationItem[] = [
 ];
 
 const HeadingBar: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user, logout, getRole } = useAuth();
   const navigate = useNavigate();
 
   return (
@@ -209,7 +209,7 @@ const HeadingBar: React.FC = () => {
         <div>
           <h2 className="text-medium font-bold ">{user?.fullName}</h2>
           <h2 className="text-xs ">
-            {user?.role === OWNER_ROLE ? "Parking Lot Owner" : "Administrator"}
+            {getRole() === OWNER_ROLE ? "Parking Lot Owner" : "Administrator"}
           </h2>
         </div>
       </div>
@@ -231,7 +231,7 @@ const HeadingBar: React.FC = () => {
           <DropdownItem key="changeThemes" textValue="Change Themes">
             <ThemeSwitch className="w-full" showLabel={true} variant="button" />
           </DropdownItem>
-          {user?.role === OWNER_ROLE ? (
+          {getRole() === OWNER_ROLE ? (
             <DropdownItem key="subscription" textValue="Subscription">
               <button
                 className="flex items-center gap-2 w-full text-left transition-opacity hover:opacity-80 "
@@ -257,7 +257,7 @@ const HeadingBar: React.FC = () => {
 };
 
 export const SideBar: React.FC<SidebarProps> = ({ isOpen }) => {
-  const { user } = useAuth();
+  const { getRole } = useAuth();
 
   return (
     <motion.div
@@ -276,7 +276,7 @@ export const SideBar: React.FC<SidebarProps> = ({ isOpen }) => {
     >
       <HeadingBar />
       <Divider className="bg-border my-4" />
-      {user?.role === OWNER_ROLE ? (
+      {getRole() === OWNER_ROLE ? (
         <NavigationList items={parkingLotOwnerItems} isOwner={true} />
       ) : (
         <NavigationList items={adminItems} isOwner={false}/>

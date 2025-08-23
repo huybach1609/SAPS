@@ -1,20 +1,26 @@
 package vn.edu.fpt.sapsmobile.actionhandler;
 
-import android.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 
-import vn.edu.fpt.sapsmobile.activities.CheckoutActivity;
+import vn.edu.fpt.sapsmobile.activities.checkout.CheckoutActivity;
 import vn.edu.fpt.sapsmobile.activities.ParkingHistoryDetailsActivity;
 import vn.edu.fpt.sapsmobile.dialog.VehicleDetailDialog;
-import vn.edu.fpt.sapsmobile.listener.HistoryFragmentListener;
+import vn.edu.fpt.sapsmobile.listener.HistoryFragmentVehicleDetailListener;
 import vn.edu.fpt.sapsmobile.models.ParkingLot;
 import vn.edu.fpt.sapsmobile.models.ParkingSession;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
 
-public class HistoryFragmentHandler implements HistoryFragmentListener {
+public class HistoryFragmentHandler implements HistoryFragmentVehicleDetailListener {
     private final Context context;
     // Truyền context khi khởi tạo
+
+    private ParkingSession parkingSession;
+    private  Vehicle vehicle;
+    private  ParkingLot parkingLot;
+
+
 
     public HistoryFragmentHandler(Context context) {
         this.context = context;
@@ -31,11 +37,14 @@ public class HistoryFragmentHandler implements HistoryFragmentListener {
     }
     @Override
     public void onParkingSessionClickToCheckOut(ParkingSession parkingSession, Vehicle vehicle, ParkingLot parkingLot) {
-        VehicleDetailDialog.show(context, vehicle , this);
+        this.parkingSession = parkingSession;
+        this.parkingLot = parkingLot;
+        this.vehicle = vehicle;
+        VehicleDetailDialog.show(context, vehicle , this, -1);
     }
 
     @Override
-    public void onCheckout(Vehicle vehicle, AlertDialog dialog) {
+    public void onAction(Vehicle vehicle, AlertDialog dialog) {
         // Đóng dialog
         dialog.dismiss();
 
@@ -44,11 +53,19 @@ public class HistoryFragmentHandler implements HistoryFragmentListener {
 
         // Truyền dữ liệu Vehicle (giả sử Vehicle implements Serializable hoặc Parcelable)
         intent.putExtra("vehicle", vehicle);
+        intent.putExtra("parkingSession", parkingSession);
+        intent.putExtra("parkingLot", parkingLot);
 
         // Bắt buộc phải thêm flag nếu context không phải là Activity
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         // Khởi chạy Activity
         context.startActivity(intent);
+    }
+
+    @Override
+    public void onClose(Vehicle vehicle, AlertDialog dialog) {
+
+        dialog.dismiss();
     }
 }

@@ -81,7 +81,7 @@ export default function AdminRequestList() {
         setLoading(true);
         const response = await requestService.getAllRequests();
         if (response.success) {
-          setRequestsList(response.data);
+          setRequestsList(response.data || []);
         } else {
           setError("Failed to load requests data");
         }
@@ -111,12 +111,12 @@ export default function AdminRequestList() {
   ).length;
 
   // Display loading state if data is being fetched
-  const showLoadingState = () => (
-    <div className="w-full flex justify-center items-center py-8">
-      <Spinner size="lg" color="primary" />
-      <span className="ml-2 text-blue-600">Loading request data...</span>
-    </div>
-  );
+  // const showLoadingState = () => (
+  //   <div className="w-full flex justify-center items-center py-8">
+  //     <Spinner size="lg" color="primary" />
+  //     <span className="ml-2 text-blue-600">Loading request data...</span>
+  //   </div>
+  // );
 
   // Filter requests based on the applied filters, not the current input values
   const filteredRequests = requestsList.filter((request) => {

@@ -18,6 +18,28 @@ public class Vehicle implements Serializable {
     private String updatedAt;
     private String ownerId;
 
+    public Vehicle(String id, String licensePlate, String brand, String model,
+                   String engineNumber, String chassisNumber, String color,
+                   String ownerVehicleFullName, String certificateTitle,
+                   String status, String sharingStatus, String createdAt,
+                   String updatedAt, String ownerId) {
+        this.id = id;
+        this.licensePlate = licensePlate;
+        this.brand = brand;
+        this.model = model;
+        this.engineNumber = engineNumber;
+        this.chassisNumber = chassisNumber;
+        this.color = color;
+        this.ownerVehicleFullName = ownerVehicleFullName;
+        this.certificateTitle = certificateTitle;
+        this.status = status;
+        this.sharingStatus = sharingStatus;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.ownerId = ownerId;
+    }
+    public Vehicle(){}
+
     // Getters and setters
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }

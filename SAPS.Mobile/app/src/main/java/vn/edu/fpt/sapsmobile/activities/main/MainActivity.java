@@ -16,6 +16,7 @@ import com.google.android.material.navigation.NavigationBarView;
 
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.activities.auth.LoginActivity;
+import vn.edu.fpt.sapsmobile.activities.auth.WelcomeActivity;
 import vn.edu.fpt.sapsmobile.fragments.HistoryFragment;
 import vn.edu.fpt.sapsmobile.fragments.HomeFragment;
 import vn.edu.fpt.sapsmobile.fragments.ProfileFragment;
@@ -33,26 +34,81 @@ public class MainActivity extends AppCompatActivity implements AuthenticationSer
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Enable edge-to-edge display
+        EdgeToEdge.enable(this);
+
         setContentView(R.layout.activity_main);
 
-//         check login info
+        // Setup window insets for safe zone
+        setupWindowInsets();
 
-//        tokenManager = new TokenManager(this);
-//        if (!tokenManager.isLoggedIn()) {
-//            Intent loginIntent = new Intent(this, LoginActivity.class);
-//            startActivity(loginIntent);
-//        }
-//
-//
-//        authService = new AuthenticationService(this, this);
+        // Check login info
+        tokenManager = new TokenManager(this);
 
+        if (!tokenManager.isLoggedIn()) {
+            Intent welcome = new Intent(this, WelcomeActivity.class);
+            startActivity(welcome);
+            finish(); // Prevent going back to MainActivity without login
+            return;
+        }
+
+
+        authService = new AuthenticationService(this, this);
+        
+        // Fetch client profile if user is already logged in
+        if (tokenManager.isLoggedIn()) {
+            authService.fetchClientProfile(new AuthenticationService.ClientProfileCallback() {
+                @Override
+                public void onSuccess(User userWithProfile) {
+                    // Client profile fetched and saved successfully
+                    // You can update UI here if needed
+                }
+
+                @Override
+                public void onFailure(String error) {
+                    // Handle profile fetch failure
+                    // This won't affect the main app flow
+                }
+            });
+        }
+        
         initializeBottomNavigation();
+    }
 
+    private void setupWindowInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main_container), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            Insets navigationBars = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
+            Insets statusBars = insets.getInsets(WindowInsetsCompat.Type.statusBars());
+            Insets displayCutout = insets.getInsets(WindowInsetsCompat.Type.displayCutout());
+
+            // Combine cutout and status bar insets
+            int topInset = Math.max(statusBars.top, displayCutout.top);
+            int leftInset = Math.max(systemBars.left, displayCutout.left);
+            int rightInset = Math.max(systemBars.right, displayCutout.right);
+
+            // Apply padding for status bar and display cutout
+            v.setPadding(leftInset, topInset, rightInset, 0);
+
+            // Apply bottom padding to BottomNavigation for navigation bar
+            BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+            if (bottomNav != null) {
+                bottomNav.setPadding(
+                        leftInset, // Also apply left cutout padding to bottom nav
+                        bottomNav.getPaddingTop(),
+                        rightInset, // Also apply right cutout padding to bottom nav
+                        navigationBars.bottom
+                );
+            }
+            return insets;
+        });
     }
 
     public void logoutProgress() {
         Intent loginIntent = new Intent(this, LoginActivity.class);
         startActivity(loginIntent);
+        finish();
     }
 
     public AuthenticationService getAuthService() {
@@ -123,8 +179,6 @@ public class MainActivity extends AppCompatActivity implements AuthenticationSer
         return tokenManager;
     }
 
-    ;
-
     // Method to programmatically change navigation
     public void navigateToTab(int tabId) {
         bottomNavigation.setSelectedItemId(tabId);
@@ -140,14 +194,28 @@ public class MainActivity extends AppCompatActivity implements AuthenticationSer
         bottomNavigation.removeBadge(menuItemId);
     }
 
-
     @Override
     public void onAuthSuccess(User user) {
+        // Handle successful authentication
+        // Fetch client profile after successful authentication
+        authService.fetchClientProfile(new AuthenticationService.ClientProfileCallback() {
+            @Override
+            public void onSuccess(User userWithProfile) {
+                // Client profile fetched and saved successfully
+                // You can update UI here if needed
+            }
 
+            @Override
+            public void onFailure(String error) {
+                // Handle profile fetch failure
+                // This won't affect the main authentication flow
+            }
+        });
     }
 
     @Override
     public void onAuthFailure(String error) {
-
+        // Handle authentication failure
+        logoutProgress();
     }
 }

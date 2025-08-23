@@ -1,51 +1,28 @@
-import React, { useState } from 'react';
-import { Check, Star, Clock, Crown, DollarSign } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { Check, Clock, Crown, DollarSign } from 'lucide-react';
 import DefaultLayout from '@/layouts/default';
 import { Button, Card, CardBody, CardFooter, CardHeader } from '@heroui/react';
 import { Subscription } from '@/types/ParkingLot';
 import { formatDuration, formatPrice } from '@/components/utils/stringUtils';
+import { useNavigate } from 'react-router-dom';
+import { fetchSubscriptions } from '@/services/parkinglot/subscriptionService';
 
 
 
-const subscriptions: Subscription[] = [
-  {
-    id: "sub_001",
-    name: "Monthly Plan",
-    duration: 2629746000, // 1 month in milliseconds
-    description: "Perfect for trying out our service with full access to all features",
-    price: 290000,
-    status: "active"
-  },
-  {
-    id: "sub_002",
-    name: "Quarterly Plan",
-    duration: 7889238000, // 3 months in milliseconds
-    description: "Great value for short-term projects with 15% savings compared to monthly",
-    price: 760000,
-    status: "active"
-  },
-  {
-    id: "sub_003",
-    name: "Semi-Annual Plan",
-    duration: 15778476000, // 6 months in milliseconds
-    description: "Best for medium-term commitments with 25% savings and priority support",
-    price: 1340000,
-    status: "active"
-  },
-  {
-    id: "sub_004",
-    name: "Annual Plan",
-    duration: 31556952000, // 1 year in milliseconds
-    description: "Maximum savings of 40% with annual billing plus exclusive features",
-    price: 2150000,
-    status: "active"
-  }
-];
 
 const SubscriptionComponent: React.FC = () => {
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
+  const navigate = useNavigate();
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
 
 
+  useEffect(() => {
+    const fetchSubscriptions2 = async () => {
+      const response = await fetchSubscriptions();
+      setSubscriptions(response);
+    };
+    fetchSubscriptions2();
+  }, []);
 
 
   // Calculate monthly equivalent price
@@ -54,13 +31,13 @@ const SubscriptionComponent: React.FC = () => {
     return (price / months).toFixed(2);
   };
 
-  // Get savings percentage compared to monthly
-  const getSavings = (price: number, duration: number): number => {
-    const monthlyEquivalent = parseFloat(getMonthlyPrice(price, duration));
-    const baseMonthlyCost = 29.99; // Reference monthly price
-    const savings = ((baseMonthlyCost - monthlyEquivalent) / baseMonthlyCost) * 100;
-    return savings > 0 ? Math.round(savings) : 0;
-  };
+  // // Get savings percentage compared to monthly
+  // const getSavings = (price: number, duration: number): number => {
+  //   const monthlyEquivalent = parseFloat(getMonthlyPrice(price, duration));
+  //   const baseMonthlyCost = 29.99; // Reference monthly price
+  //   const savings = ((baseMonthlyCost - monthlyEquivalent) / baseMonthlyCost) * 100;
+  //   return savings > 0 ? Math.round(savings) : 0;
+  // };
 
   // Sort subscriptions by duration (shortest to longest)
   const sortedSubscriptions = [...subscriptions].sort((a, b) => a.duration - b.duration);
@@ -75,29 +52,20 @@ const SubscriptionComponent: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
-        {sortedSubscriptions.map((subscription, index) => {
-          const savings = getSavings(subscription.price, subscription.duration);
+        {sortedSubscriptions.map((subscription) => {
+          
           const monthlyEquivalent = getMonthlyPrice(subscription.price, subscription.duration);
 
           return (
             <Card
               key={subscription.id}
-              className={`relative bg-white rounded-2xl shadow-lg border-2 transition-all duration-300 hover:shadow-xl hover:scale-105 cursor-pointer 
+              className={`relative bg-white rounded-2xl shadow-lg border-2 transition-all duration-300 hover:shadow-xl hover:scale-105 
                 ${selectedPlan === subscription.id
                   ? 'border-primary ring-4 ring-primary/20'
                   : 'border-primary/20 hover:border-primary/40'
                 }`}
-              isPressable
-              onPress={() => setSelectedPlan(subscription.id)}
             >
-              {/* Savings Badge */}
-              {/* {savings > 0 && (
-                <div className="absolute -top-2 -right-2">
-                  <div className="bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">
-                    Save {savings}%
-                  </div>
-                </div>
-              )} */}
+             
               {/* Header */}
               <CardHeader className='flex flex-col items-center justify-center'>
                 <div className="flex items-center justify-center gap-2 mb-2">
@@ -206,9 +174,7 @@ const SubscriptionComponent: React.FC = () => {
                       <span className="text-sm font-medium text-gray-600">Total Price</span>
                     </div>
                     <p className="text-xl font-bold text-gray-800">{formatPrice(selected.price)}</p>
-                    {/* {savings > 0 && (
-                      <p className="text-sm text-green-600 font-medium mt-1">Save {savings}%</p>
-                    )} */}
+
                   </div>
 
                   {/* Monthly Equivalent */}
@@ -244,7 +210,7 @@ const SubscriptionComponent: React.FC = () => {
                     </div>
                   </div>
 
-                  <Button className=''>
+                  <Button className='' onPress={() => navigate(`/owner/subscription/payment/${selectedPlan}`)}>
                     Proceed to payment
                   </Button>
                 </div>
@@ -273,30 +239,3 @@ const SubscriptionComponent: React.FC = () => {
 
 export default SubscriptionComponent;
 
-{/* Features */ }
-{/* <div className="space-y-3 mb-6">
-                  <div className="flex items-center gap-3">
-                    <Check className="w-5 h-5 text-green-500" />
-                    <span className="text-sm text-gray-700">Full platform access</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="w-5 h-5 text-green-500" />
-                    <span className="text-sm text-gray-700">24/7 customer support</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="w-5 h-5 text-green-500" />
-                    <span className="text-sm text-gray-700">Regular updates</span>
-                  </div>
-                  {subscription.duration >= 15778476000 && (
-                    <div className="flex items-center gap-3">
-                      <Check className="w-5 h-5 text-green-500" />
-                      <span className="text-sm text-gray-700">Priority support</span>
-                    </div>
-                  )}
-                  {subscription.duration >= 31556952000 && (
-                    <div className="flex items-center gap-3">
-                      <Check className="w-5 h-5 text-green-500" />
-                      <span className="text-sm text-gray-700">Exclusive features</span>
-                    </div>
-                  )}
-                </div> */}

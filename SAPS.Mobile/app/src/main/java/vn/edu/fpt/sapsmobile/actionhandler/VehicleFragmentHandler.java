@@ -1,21 +1,48 @@
 package vn.edu.fpt.sapsmobile.actionhandler;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.view.View;
 import android.widget.Toast;
 
-import vn.edu.fpt.sapsmobile.activities.CheckoutActivity;
-import vn.edu.fpt.sapsmobile.dialog.VehicleDetailDialog;
-import vn.edu.fpt.sapsmobile.models.Vehicle;
-import vn.edu.fpt.sapsmobile.listener.VehicleFragmentListener;
+import androidx.appcompat.app.AlertDialog;
 
-public class VehicleFragmentHandler implements VehicleFragmentListener {
+import vn.edu.fpt.sapsmobile.R;
+import vn.edu.fpt.sapsmobile.activities.checkout.CheckoutActivity;
+import vn.edu.fpt.sapsmobile.dialog.VehicleDetailDialog;
+import vn.edu.fpt.sapsmobile.enums.ShareVehicleStatus;
+import vn.edu.fpt.sapsmobile.models.Vehicle;
+import vn.edu.fpt.sapsmobile.listener.VehicleFragmentVehicleDetailListener;
+import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
+import vn.edu.fpt.sapsmobile.network.client.ApiTest;
+import vn.edu.fpt.sapsmobile.network.api.ShareVehicleApi;
+import vn.edu.fpt.sapsmobile.dtos.sharevehicle.SharedVehicleDetails;
+import vn.edu.fpt.sapsmobile.dtos.sharevehicle.RecallResponse;
+
+public class VehicleFragmentHandler implements VehicleFragmentVehicleDetailListener {
 
     private final Context context;
+    private int currentTab = 0;
+    private OnActionCompletedListener actionCompletedListener;
+
+    // service
+    private LoadingDialog loadingDialog;
 
     public VehicleFragmentHandler(Context context) {
         this.context = context;
+        this.loadingDialog = new LoadingDialog(context);
+    }
+
+    public void setCurrentTab(int currentTab) {
+        this.currentTab = currentTab;
+    }
+
+    public void setOnActionCompletedListener(OnActionCompletedListener listener) {
+        this.actionCompletedListener = listener;
+    }
+
+    public interface OnActionCompletedListener {
+        void onActionCompleted();
     }
 
     @Override
@@ -30,24 +57,93 @@ public class VehicleFragmentHandler implements VehicleFragmentListener {
 
     @Override
     public void onVehicleClicked(Vehicle vehicle) {
-        VehicleDetailDialog.show(context, vehicle , this);
+        VehicleDetailDialog.show(context, vehicle, this, currentTab);
     }
+
     @Override
-    public void onCheckout(Vehicle vehicle, AlertDialog dialog) {
-        // Đóng dialog
+    public void onAction(Vehicle vehicle, AlertDialog dialog) {
+        if (ShareVehicleStatus.SHARED.getValue().equals(vehicle.getSharingStatus())) {
+            if (currentTab == 0) {
+                // Implement recall API call
+                recallVehicle(vehicle);
+            } else if (currentTab == 1) {
+                // TODO: Implement remove API call not done
+//                Toast.makeText(context, "Removing vehicle: " + vehicle.getLicensePlate(), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, "Checkout: " + vehicle.getLicensePlate(), Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(context, "Checkout: " + vehicle.getLicensePlate(), Toast.LENGTH_SHORT).show();
+        }
         dialog.dismiss();
+    }
+    private void recallVehicle(Vehicle vehicle) {
+        ShareVehicleApi api = ApiTest.getServiceLast(context).create(ShareVehicleApi.class);
+        
+        loadingDialog.show("Getting vehicle details...", true, () -> {
+            Toast.makeText(context, "Operation cancelled", Toast.LENGTH_SHORT).show();
+        });
+        
+        // Step 1: Get shared vehicle details using vehicle.getId()
+        api.getSharedVehicleDetails(vehicle.getId()).enqueue(new retrofit2.Callback<SharedVehicleDetails>() {
+            @Override
+            public void onResponse(retrofit2.Call<SharedVehicleDetails> call, retrofit2.Response<SharedVehicleDetails> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    SharedVehicleDetails sharedVehicleDetails = response.body();
+                    
+                    // Step 2: Call recall API with the shared vehicle ID
+                    recallSharedVehicle(sharedVehicleDetails.getId());
+                } else {
+                    loadingDialog.dismiss();
+                    Toast.makeText(context, "Failed to get vehicle details", Toast.LENGTH_SHORT).show();
+                }
+            }
+            
+            @Override
+            public void onFailure(retrofit2.Call<SharedVehicleDetails> call, Throwable t) {
+                loadingDialog.dismiss();
+                Toast.makeText(context, "Network error getting vehicle details", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    
+    private void recallSharedVehicle(String sharedVehicleId) {
+        ShareVehicleApi api = ApiTest.getServiceLast(context).create(ShareVehicleApi.class);
+        
+        loadingDialog.show("Recalling vehicle...", true, () -> {
+            Toast.makeText(context, "Operation cancelled", Toast.LENGTH_SHORT).show();
+        });
+        
+        api.recallSharedVehicle(sharedVehicleId).enqueue(new retrofit2.Callback<RecallResponse>() {
+            @Override
+            public void onResponse(retrofit2.Call<RecallResponse> call, retrofit2.Response<RecallResponse> response) {
+                loadingDialog.dismiss();
+                if (response.isSuccessful() && response.body() != null) {
+                    Toast.makeText(context, "Vehicle recalled successfully", Toast.LENGTH_SHORT).show();
+                    refreshData();
+                } else {
+                    Toast.makeText(context, "Failed to recall vehicle", Toast.LENGTH_SHORT).show();
+                }
+            }
+            
+            @Override
+            public void onFailure(retrofit2.Call<RecallResponse> call, Throwable t) {
+                loadingDialog.dismiss();
+                Toast.makeText(context, "Network error recalling vehicle", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
-        // Tạo Intent để chuyển sang CheckoutActivity
-        Intent intent = new Intent(context, CheckoutActivity.class);
+    private void refreshData(){
+        // Notify fragment to refresh data
+        if (actionCompletedListener != null) {
+            actionCompletedListener.onActionCompleted();
+        }
+    }
 
-        // Truyền dữ liệu Vehicle (giả sử Vehicle implements Serializable hoặc Parcelable)
-        intent.putExtra("vehicle", vehicle);
-
-        // Bắt buộc phải thêm flag nếu context không phải là Activity
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        // Khởi chạy Activity
-        context.startActivity(intent);
+    @Override
+    public void onClose(Vehicle vehicle, AlertDialog dialog) {
+        dialog.dismiss();
     }
 
 }

@@ -1,5 +1,5 @@
 import { apiUrl } from "@/config/base";
-import { Button, Modal, ModalBody, ModalContent, ModalHeader, useDisclosure, UseDisclosureProps } from "@heroui/react";
+import { Button, Modal, ModalBody, ModalContent, ModalHeader, UseDisclosureProps } from "@heroui/react";
 import { AlertCircle, Check, Cross, Download, FileText, Upload } from "lucide-react";
 import { useRef, useState } from "react";
 
@@ -120,9 +120,10 @@ export default function AddFileModal({ addFileModalDisclosure, parkingLotId }: {
             <ModalContent>
                 {(onClose) => (
                     <>
+                        {console.log(onClose)}
                         <ModalHeader className="flex flex-col gap-1">
                             <Button isIconOnly variant="light" size="sm" onPress={addFileModalDisclosure.onClose}>
-                               <Cross size={16} /> 
+                                <Cross size={16} />
                             </Button>
                             <h2 className="text-xl font-bold text-gray-900">Upload Whitelist</h2>
                             <p className="text-gray-600">

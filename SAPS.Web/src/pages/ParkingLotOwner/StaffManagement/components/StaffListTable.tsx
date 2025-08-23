@@ -13,7 +13,7 @@ interface StaffListTableProps {
   setSelectUser: React.Dispatch<React.SetStateAction<User | null>>;
   parkingLot: ParkingLot | null;
   updateModalDisclosure: UseDisclosureProps;
-  handleDeactivateStaff: (staffId: string, user: User) => void;
+  handleDeactivateStaff: ( user: User) => void;
 }
 
 export const StaffListTable: React.FC<StaffListTableProps> = ({
@@ -116,7 +116,7 @@ export const StaffListTable: React.FC<StaffListTableProps> = ({
                       key="delete"
                       className="text-danger"
                       color="danger"
-                      onPress={() => handleDeactivateStaff(entry?.staffProfile?.staffId || '', entry)}
+                      onPress={() => handleDeactivateStaff(entry)}
                     >
                       Deactivate
                     </DropdownItem>

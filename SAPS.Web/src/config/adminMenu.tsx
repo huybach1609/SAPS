@@ -1,4 +1,3 @@
-import { Divider } from "@heroui/react";
 import {
   User,
   ShieldCheck,

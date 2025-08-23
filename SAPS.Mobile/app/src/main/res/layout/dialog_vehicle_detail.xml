@@ -1,159 +1,187 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/bg"
+    android:orientation="vertical"
     android:padding="24dp">
 
-    <com.google.android.material.card.MaterialCardView
+    <!-- Title -->
+    <com.google.android.material.textview.MaterialTextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="4dp"
-        app:cardBackgroundColor="@android:color/white">
+        android:text="Vehicle Details"
+        android:textAppearance="?attr/textAppearanceHeadlineSmall"
+        android:layout_marginBottom="16dp"
+        android:gravity="start" />
+
+    <!-- Vehicle Information Card -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:padding="16dp">
 
-            <!-- Tiêu đề -->
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Vehicle Details"
-                android:textStyle="bold"
-                android:textColor="@android:color/black"
-                android:textAppearance="?attr/textAppearanceHeadlineSmall"
-                android:gravity="center"
-                android:layout_marginBottom="20dp"/>
-
-            <!-- Thông tin hiển thị theo từng dòng -->
+            <!-- License Plate -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp">
 
-                <!-- License Plate -->
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="License Plate: "
-                    android:textAppearance="?attr/textAppearanceBodySmall"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black" />
-                <TextView
+                    android:layout_weight="1"
+                    android:text="License Plate:"
+                    android:textAppearance="?attr/textAppearanceLabelMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+                <com.google.android.material.textview.MaterialTextView
                     android:id="@+id/tvDetailLicense"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="..."
-                    android:layout_marginBottom="16dp"
+                    android:layout_weight="1"
                     android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:textColor="@android:color/darker_gray" />
-                </LinearLayout>
-                <!-- Brand -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Brand: "
-                    android:textAppearance="?attr/textAppearanceBodySmall"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black" />
-                <TextView
-                    android:id="@+id/tvDetailBrand"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="..."
-                    android:layout_marginBottom="16dp"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:textColor="@android:color/darker_gray" />
-                </LinearLayout>
-                <!-- Model -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Model: "
-                    android:textAppearance="?attr/textAppearanceBodySmall"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black" />
-                <TextView
-                    android:id="@+id/tvDetailModel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="..."
-                    android:layout_marginBottom="16dp"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:textColor="@android:color/darker_gray" />
-                </LinearLayout>
-                <!-- Color -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Color: "
-                    android:textAppearance="?attr/textAppearanceBodySmall"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black" />
-                <TextView
-                    android:id="@+id/tvDetailColor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="..."
-                    android:layout_marginBottom="16dp"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:textColor="@android:color/darker_gray" />
-                </LinearLayout>
-                <!-- Sharing Status -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Sharing Status: "
-                    android:textAppearance="?attr/textAppearanceBodySmall"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/black" />
-                <TextView
-                    android:id="@+id/tvDetailStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="..."
-                    android:layout_marginBottom="8dp"
-                    android:textAppearance="?attr/textAppearanceBodyMedium"
-                    android:textColor="@android:color/darker_gray" />
-                </LinearLayout>
+                    android:textColor="?attr/colorOnSurface"
+                    android:gravity="end" />
+            </LinearLayout>
 
-                <Button
-                    android:id="@+id/btnCheckout"
-                    android:layout_width="wrap_content"
+            <!-- Brand -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Check out"
-                    android:backgroundTint="#0066CC"
-                    android:textColor="#FFFFFF"
-                    android:layout_gravity="center_horizontal"
-                    android:textAllCaps="false" />
+                    android:layout_weight="1"
+                    android:text="Brand:"
+                    android:textAppearance="?attr/textAppearanceLabelMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tvDetailBrand"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurface"
+                    android:gravity="end" />
+            </LinearLayout>
+
+            <!-- Model -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Model:"
+                    android:textAppearance="?attr/textAppearanceLabelMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tvDetailModel"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurface"
+                    android:gravity="end" />
+            </LinearLayout>
+
+            <!-- Color -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="12dp">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Color:"
+                    android:textAppearance="?attr/textAppearanceLabelMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tvDetailColor"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurface"
+                    android:gravity="end" />
+            </LinearLayout>
+
+            <!-- Status -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Status:"
+                    android:textAppearance="?attr/textAppearanceLabelMedium"
+                    android:textColor="?attr/colorOnSurfaceVariant" />
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:id="@+id/tvDetailStatus"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:textColor="?attr/colorOnSurface"
+                    android:gravity="end" />
             </LinearLayout>
 
         </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-</ScrollView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+       android:layout_gravity="end"
+        >
+     <!-- Action Button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCancel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:layout_weight="1"
+        android:textFontWeight="600"
+        style="@style/Widget.Material3.Button.TextButton.Dialog"
+        />
+
+    <!-- Action Button -->
+    <com.google.android.material.button.MaterialButton
+        android:layout_weight="1"
+        android:id="@+id/btnCheckout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textFontWeight="600"
+        android:text="Action"
+        style="@style/Widget.Material3.Button.TextButton.Dialog"
+        />
+
+    </LinearLayout>
+</LinearLayout>

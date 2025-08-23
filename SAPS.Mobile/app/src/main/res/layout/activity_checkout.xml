@@ -1,152 +1,373 @@
-<?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/main"
-    android:background="#F8F9FD"
-    android:padding="16dp">
+    android:background="@color/md_theme_background"
+    android:fitsSystemWindows="true">
 
-    <LinearLayout
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:fitsSystemWindows="true">
 
-        <TextView
-            android:id="@+id/tvSummaryTitle"
-            android:layout_width="wrap_content"
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            style="@style/Widget.Material3.Toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:backgroundTint="?attr/colorSurface"
+            app:titleTextColor="?attr/colorOnSurface"
+            app:navigationIconTint="?attr/colorOnSurface"
+            app:layout_scrollFlags="scroll|enterAlways" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="🚗 Parking Session Summary"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:textColor="#000000" />
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:orientation="vertical"
+            android:padding="16dp">
+        <!-- Header -->
+<!--        <TextView-->
+<!--            android:id="@+id/tvSummaryTitle"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/checkout_activity_actionbar_title"-->
+<!--            android:textStyle="bold"-->
+<!--            android:textSize="20sp"-->
+<!--            android:fontFamily="sans-serif-medium"-->
+<!--            android:textColor="@color/md_theme_onSurface"-->
+<!--            android:paddingTop="16dp"-->
+<!--            android:paddingBottom="16dp" />-->
 
-        <TextView
-            android:id="@+id/tvVehicle"
-            android:layout_width="wrap_content"
+        <!-- Session card -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Vehicle: ABC-1234 (Toyota Camry)"
-            android:layout_marginTop="4dp"
-            android:textColor="#444444" />
+            android:background="@drawable/bg_card_corner"
+            android:backgroundTint="@color/md_theme_surfaceContainer"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
 
-        <TextView
-            android:id="@+id/tvLocation"
-            android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_card_corner_top"
+                android:backgroundTint="@color/md_theme_primary"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/timer"
+                    app:tint="@color/md_theme_onPrimary" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/tvEntryTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/entry_time"
+                        android:textColor="@color/md_theme_onPrimary"
+                        android:textSize="14sp" />
+
+
+
+                </LinearLayout>
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/chevron_right_"
+                    app:tint="@color/md_theme_onPrimary" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/tvCheckOutTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/check_out_time"
+                        android:textColor="@color/md_theme_onPrimary"
+                        android:textSize="14sp" />
+
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:orientation="vertical"
+                >
+
+                <!-- Vehicle & Location -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="12dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_car"
+                        app:tint="@color/md_theme_primary" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical"
+                        android:layout_marginStart="12dp">
+
+                        <TextView
+                            android:id="@+id/tvVehicle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/vehicle_sample"
+                            android:textSize="16sp"
+                            android:textColor="@color/md_theme_onSurface"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvLocation"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/location_sample"
+                            android:textSize="14sp"
+                            android:textColor="@color/md_theme_onSurfaceVariant"
+                            android:layout_marginTop="2dp" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+                <TextView
+                    android:id="@+id/tvDuration"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                   android:layout_weight="1"
+                    android:text="@string/duration_time"
+                    android:textColor="@color/md_theme_onSecondaryContainer"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/tvSessionId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end|center_vertical"
+                    android:text="@string/session_id"
+                    android:alpha="0.5"
+                    android:textColor="@color/md_theme_onSecondaryContainer"
+                    android:textSize="11sp" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Payment breakdown card -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Location: Downtown Mall - Slot A-15"
-            android:layout_marginTop="2dp"
-            android:textColor="#444444" />
+            android:background="@drawable/bg_card_corner"
+            android:backgroundTint="@color/md_theme_surfaceContainer"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
 
-        <TextView
-            android:id="@+id/tvEntryTime"
-            android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+<!--                <TextView-->
+<!--                    android:id="@+id/tvPaymentBreakdownTitle"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="@string/payment_breakdown_title"-->
+<!--                    android:textSize="16sp"-->
+<!--                    android:textStyle="bold"-->
+<!--                    android:textColor="@color/md_theme_onSurface"-->
+<!--                    android:layout_marginBottom="12dp" />-->
+
+
+
+<!--                &lt;!&ndash; Divider &ndash;&gt;-->
+<!--                <View-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="0.5dp"-->
+<!--                    android:layout_marginTop="12dp"-->
+<!--                    android:layout_marginBottom="12dp"-->
+<!--                    android:alpha="0.2"-->
+<!--                    android:background="@color/md_theme_onSurface" />-->
+
+                <!-- Total amount -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
+                        android:text="@string/total_amount"
+                        android:textSize="16sp"
+                        android:textColor="@color/md_theme_onSurface"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvTotalAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/total_amount_value"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/md_theme_primary" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Payment method selection -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Entry Time: 14:30 PM"
-            android:layout_marginTop="2dp"
-            android:textColor="#444444" />
+            android:background="@drawable/bg_card_corner"
+            android:backgroundTint="@color/md_theme_surfaceContainer"
+            android:orientation="vertical"
+            android:layout_marginBottom="16dp">
 
-        <TextView
-            android:id="@+id/tvExitTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Exit Time: 16:45 PM"
-            android:layout_marginTop="2dp"
-            android:textColor="#444444" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
 
-        <TextView
-            android:id="@+id/tvDuration"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Duration: 2 hours 15 minutes"
-            android:layout_marginTop="2dp"
-            android:textColor="#444444" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/payment_method_title"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/md_theme_onSurface"
+                    android:layout_marginBottom="12dp" />
 
-        <!-- Payment Breakdown Card -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_bank"
+                        app:tint="@color/md_theme_primary" />
+
+                    <Spinner
+                        android:id="@+id/spinnerPaymentMethod"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_weight="1"
+                        android:entries="@array/payment_methods"
+                        android:minHeight="48dp"
+                        android:padding="8dp"
+                        android:spinnerMode="dropdown" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Action buttons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp"
-            android:elevation="4dp"
-            android:layout_marginBottom="24dp">
+            android:layout_marginTop="16dp">
 
-            <TextView
-                android:id="@+id/tvPaymentBreakdownTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="💰 Payment Breakdown"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#000000" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnConfirmCheckout"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="@string/confirm_checkout"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:fontFamily="sans-serif-medium"
+                app:cornerRadius="12dp"
+                android:layout_marginBottom="12dp"
+                app:icon="@drawable/ic_check_circle"
+                app:iconTint="@color/md_theme_background"
+                app:iconSize="24dp"
+                app:iconGravity="textStart"
+                app:iconPadding="12dp"
+                android:paddingStart="12dp"
+                app:backgroundTint="@color/md_theme_primary"
+                android:textColor="@color/md_theme_onPrimary" />
 
-            <TextView
-                android:id="@+id/tvBaseRate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Base Rate: $5.00/hour"
-                android:layout_marginTop="4dp"
-                android:textColor="#444444" />
-
-            <TextView
-                android:id="@+id/tvTimeParked"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Time Parked: 2.25 hours"
-                android:layout_marginTop="2dp"
-                android:textColor="#444444" />
-
-            <TextView
-                android:id="@+id/tvSubtotal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Subtotal: $11.25"
-                android:layout_marginTop="2dp"
-                android:textColor="#444444" />
-
-            <TextView
-                android:id="@+id/tvTax"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tax: $1.13"
-                android:layout_marginTop="2dp"
-                android:textColor="#444444" />
-
-            <TextView
-                android:id="@+id/tvTotalAmount"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Total Amount: $12.38"
-                android:layout_marginTop="8dp"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#007BFF" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnBack"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="@string/back"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:fontFamily="sans-serif-medium"
+                app:cornerRadius="12dp"
+                app:icon="@drawable/ic_arrow_back"
+                app:iconTint="@color/md_theme_onSurface"
+                app:iconSize="24dp"
+                app:iconGravity="textStart"
+                app:iconPadding="8dp"
+                app:strokeColor="@color/md_theme_outline"
+                android:textColor="@color/md_theme_onSurface" />
         </LinearLayout>
 
-        <!-- Payment Method -->
+        <!-- Footer note -->
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Payment Method"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="#000000"
-            android:layout_marginBottom="4dp" />
-
-        <Spinner
-            android:id="@+id/spinnerPaymentMethod"
+            android:id="@+id/tvFooterNote"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:text="@string/footer_note"
+            android:textSize="12sp"
+            android:textColor="@color/md_theme_onSurfaceVariant"
+            android:layout_marginTop="16dp"
             android:layout_marginBottom="24dp"
-            android:entries="@array/payment_methods"
-            android:spinnerMode="dropdown" />
-
-        <!-- Confirm Checkout Button -->
-        <Button
-            android:id="@+id/btnConfirmCheckout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="✅ Confirm Check Out"
-            android:textAllCaps="false"
-            android:backgroundTint="#007BFF"
-            android:textColor="#FFFFFF" />
+            android:gravity="center" />
     </LinearLayout>
-</ScrollView>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

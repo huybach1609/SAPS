@@ -1,6 +1,8 @@
+import { getUserClaimsFromJwt } from '@/components/utils/jwtUtils';
 import { apiUrl } from '@/config/base';
 import { User } from '@/types/User';
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import axios from 'axios';
 
 
 
@@ -10,6 +12,7 @@ interface AuthContextType {
   login: (email: string, password: string, remember: boolean) => Promise<void>;
   logout: () => void;
   loading: boolean;
+  getRole: () => string;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -30,21 +33,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const validateToken = async (token: string) => {
     try {
-      const url = apiUrl + '/api/auth/validate?isAdmin=' + (token === "admin");
-      console.log(url);
-      const response = await fetch(url, {
+      const url = `${apiUrl}/api/auth/validate`;
+      console.log(token);
+      const response = await axios.get(url, {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
+      const data = response.data;
+      const refreshedToken = data?.accessToken ?? data?.AccessToken ?? '';
+      const userData = data?.user ?? data?.User ?? null;
 
-      if (response.ok) {
-        const userData = await response.json();
-        console.log(userData);
+      if (refreshedToken) {
+        localStorage.setItem('auth_token', refreshedToken);
+      }
+      if (userData) {
         setUser(userData);
       } else {
-        localStorage.removeItem('auth_token');
+        // Fallback: if API returns only token and not user, keep existing user
+        setUser(prev => prev);
       }
     } catch (error) {
       console.error('Token validation failed:', error);
@@ -55,18 +63,40 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const login = async (email: string, password: string, remember: boolean = false) => {
+    console.log(remember);
+    
     try {
-      // TODO: Replace with your actual API endpoint
-      const response = await fetch(apiUrl + '/api/auth/login?isAdmin=' + remember, {
+      const url = `${apiUrl}/api/auth/login`;
+      
+      
+      console.log(url + " " + email + " " + password);
+
+      const response = await fetch(`${apiUrl}/api/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
-      })
+      });
+      console.log(response);
 
       if (!response.ok) {
-        throw new Error('Login failed');
+        let message = 'Login failed';
+        try {
+          const contentType = response.headers.get('content-type') || '';
+          if (contentType.includes('application/json')) {
+            const data = await response.json();
+            message = (data && (data.message || data.error)) || message;
+          } else {
+            const text = await response.text();
+            if (text) message = text;
+          }
+        } catch (_) {
+          // ignore parse errors and use default message
+        }
+        const err: any = new Error(message);
+        err.status = response.status;
+        throw err;
       }
 
       const { token, user } = await response.json();
@@ -79,6 +109,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+
+  const getRole = (): string => {
+    const token = localStorage.getItem('auth_token');
+    if (token) {
+      const { raw } = getUserClaimsFromJwt(token);
+      return raw.role.toLowerCase();
+    }
+    return '';
+  }
+
   const logout = () => {
     localStorage.removeItem('auth_token');
     setUser(null);
@@ -90,6 +130,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     login,
     logout,
     loading,
+    getRole,
   };
 
   return (

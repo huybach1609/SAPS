@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { BikeIcon, Car, Clock, DollarSign, Edit2, Loader2, Plus, Trash2 } from 'lucide-react';
+import { BikeIcon, Car, Clock, DollarSign, Edit2, Plus, Trash2 } from 'lucide-react';
 import { VehicleType, type ParkingFeeSchedule } from '@/services/parkinglot/parkinglotFeeService';
-import { Button, Select, SelectItem, Skeleton } from '@heroui/react';
+import { Button, Select, SelectItem } from '@heroui/react';
 import { VehicleTypeText } from './FeeScheduleModal';
 import { getScheduleStyle } from '@/utils/scheduleColorUtils';
 
@@ -22,11 +22,12 @@ const ParkingFeeWeeklyView: React.FC<ParkingFeeWeeklyViewProps> = ({
     selectedVehicleType = VehicleType.All,
     loading = false
 }) => {
+    console.log(loading);
     const [hoveredSchedule, setHoveredSchedule] = useState<string | null>(null);
     const [vehicleFilter, setVehicleFilter] = useState<VehicleType>(selectedVehicleType);
 
     const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    const hours = Array.from({ length: 24 }, (_, i) => i);
+    // const hours = Array.from({ length: 24 }, (_, i) => i);
 
     const minutesToTime = (minutes: number): string => {
         const hours = Math.floor(minutes / 60);
@@ -160,7 +161,7 @@ const ParkingFeeWeeklyView: React.FC<ParkingFeeWeeklyViewProps> = ({
                                 ))}
 
                                 {/* Fee Schedules */}
-                                {daySchedules.map((schedule, index) => {
+                                {daySchedules.map((schedule) => {
                                     const left = getTimePosition(schedule.startTime);
                                     const width = getScheduleWidth(schedule.startTime, schedule.endTime);
 
@@ -241,7 +242,7 @@ const ParkingFeeWeeklyView: React.FC<ParkingFeeWeeklyViewProps> = ({
             <div className="mt-6 p-4 bg-gray-50 rounded-lg">
                 <h3 className="text-sm font-medium text-gray-700 mb-2">Schedule Details</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-                    {getFilteredSchedules().map((schedule, index) => (
+                    {getFilteredSchedules().map((schedule) => (
                         <div
                             key={schedule.id}
                             className="p-2 rounded-md border-2"
