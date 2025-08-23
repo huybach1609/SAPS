@@ -6,6 +6,6 @@ import androidx.appcompat.app.AlertDialog;
 
 
 public interface VehicleDetailListener {
-    void onCheckout(Vehicle vehicle, AlertDialog dialog);
+    void onAction(Vehicle vehicle, AlertDialog dialog);
     void onClose(Vehicle vehicle, AlertDialog dialog);
 }

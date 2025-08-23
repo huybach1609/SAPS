@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -15,7 +14,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.NavUtils;
 import androidx.fragment.app.Fragment;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -104,7 +102,7 @@ public class RegisterFragment extends Fragment {
         call.enqueue(new Callback<UserRegisterResponse>() {
             @Override
             public void onResponse(Call<UserRegisterResponse> call, Response<UserRegisterResponse> response) {
-                loadingDialog.hide();
+                loadingDialog.dismiss();
                 
                 if (response.isSuccessful() && response.body() != null) {
                     UserRegisterResponse registerResponse = response.body();
@@ -116,7 +114,7 @@ public class RegisterFragment extends Fragment {
 
             @Override
             public void onFailure(Call<UserRegisterResponse> call, Throwable t) {
-                loadingDialog.hide();
+                loadingDialog.dismiss();
                 Log.e(TAG, "Registration network error", t);
                 Toast.makeText(requireContext(), "Network error: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }

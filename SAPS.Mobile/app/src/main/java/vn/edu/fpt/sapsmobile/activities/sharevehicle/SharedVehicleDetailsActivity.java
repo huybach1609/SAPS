@@ -10,6 +10,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import vn.edu.fpt.sapsmobile.R;
 
+// this for recall  action
 public class SharedVehicleDetailsActivity extends AppCompatActivity {
 
     @Override

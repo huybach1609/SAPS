@@ -26,12 +26,14 @@ import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.button.MaterialSplitButton;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import vn.edu.fpt.sapsmobile.activities.sharevehicle.ViewListInvitationActivity;
+import vn.edu.fpt.sapsmobile.activities.sharevehicle.InvitationActivity;
+import vn.edu.fpt.sapsmobile.enums.ShareVehicleStatus;
 import vn.edu.fpt.sapsmobile.network.client.ApiTest;
 import vn.edu.fpt.sapsmobile.network.service.ISharedvehicle;
 import vn.edu.fpt.sapsmobile.network.service.IVehicleApi;
@@ -112,7 +114,7 @@ public class VehicleFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         cancelAllApiCalls();
-        loadingDialog.hide();
+        loadingDialog.dismiss();
     }
 
     //region INITIALIZATION METHODS
@@ -149,7 +151,10 @@ public class VehicleFragment extends Fragment {
     private void setupRecyclerView() {
         rvVehicles.setLayoutManager(new LinearLayoutManager(getContext()));
         VehicleFragmentHandler handler = new VehicleFragmentHandler(requireContext());
+        handler.setCurrentTab(currentTab); // Set initial tab for handler
+        handler.setOnActionCompletedListener(this::refreshCurrentTabData); // Set callback for data refresh
         vehicleAdapter = new VehicleAdapter(vehicleList, handler);
+        vehicleAdapter.setCurrentTab(currentTab); // Set initial tab
         rvVehicles.setAdapter(vehicleAdapter);
     }
 
@@ -176,7 +181,7 @@ public class VehicleFragment extends Fragment {
     private void setupSplitButton() {
         // Set up the main button click (default action)
         btnViewInvitation.setOnClickListener(v ->{
-            Intent intent = new Intent(getActivity(), ViewListInvitationActivity.class);
+            Intent intent = new Intent(getActivity(), InvitationActivity.class);
             startActivitySafely(intent);
         });
 
@@ -225,19 +230,7 @@ public class VehicleFragment extends Fragment {
         }
     }
 
-//    private void onAddVehicleClicked(View v) {
-//        AddVehicleDialog.show(getContext(), new AddVehicleDialog.AddVehicleListener() {
-//            @Override
-//            public void onRegisterMyVehicle() {
-//                startActivitySafely(new Intent(requireContext(), AddVehicleActivity.class));
-//            }
-//
-//            @Override
-//            public void onReceiveFromShareCode() {
-//                startActivitySafely(new Intent(requireContext(), ShareVehicleAccessActivity.class));
-//            }
-//        });
-//    }
+
 
     //endregion
     //region DATA LOADING METHODS
@@ -280,9 +273,21 @@ public class VehicleFragment extends Fragment {
     private void handleTabSelection(int checkedId) {
         if (checkedId == R.id.btnMyVehicles) {
             currentTab = TAB_MY_VEHICLES;
+            vehicleAdapter.setCurrentTab(currentTab);
+            if (vehicleAdapter.getActionListener() instanceof VehicleFragmentHandler) {
+                VehicleFragmentHandler handler = (VehicleFragmentHandler) vehicleAdapter.getActionListener();
+                handler.setCurrentTab(currentTab);
+                handler.setOnActionCompletedListener(this::refreshCurrentTabData);
+            }
             loadMyVehicles();
         } else if (checkedId == R.id.btnSharedVehicles) {
             currentTab = TAB_SHARED_VEHICLES;
+            vehicleAdapter.setCurrentTab(currentTab);
+            if (vehicleAdapter.getActionListener() instanceof VehicleFragmentHandler) {
+                VehicleFragmentHandler handler = (VehicleFragmentHandler) vehicleAdapter.getActionListener();
+                handler.setCurrentTab(currentTab);
+                handler.setOnActionCompletedListener(this::refreshCurrentTabData);
+            }
             loadSharedVehicles();
         }
     }
@@ -298,7 +303,7 @@ public class VehicleFragment extends Fragment {
         currentVehicleCall.enqueue(new Callback<List<VehicleSummaryDto>>() {
             @Override
             public void onResponse(Call<List<VehicleSummaryDto>> call, Response<List<VehicleSummaryDto>> response) {
-                loadingDialog.hide();
+                loadingDialog.dismiss();
                 if (!isFragmentValid()) return;
 
                 if (response.isSuccessful() && response.body() != null) {
@@ -311,7 +316,7 @@ public class VehicleFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<VehicleSummaryDto>> call, Throwable t) {
-                loadingDialog.hide();
+                loadingDialog.dismiss();
                 if (!isFragmentValid() || call.isCanceled()) return;
 
                 Log.e(TAG, "Failed to load my vehicles", t);
@@ -332,17 +337,27 @@ public class VehicleFragment extends Fragment {
 
         cancelCurrentVehicleCall();
 
-        currentVehicleCall = sharedVehicleApi.getMyVehicles(user.getId());
+        currentVehicleCall = sharedVehicleApi.getShareVehicles(user.getId());
         showLoadingDialog();
 
         currentVehicleCall.enqueue(new Callback<List<VehicleSummaryDto>>() {
             @Override
             public void onResponse(Call<List<VehicleSummaryDto>> call, Response<List<VehicleSummaryDto>> response) {
-                loadingDialog.hide();
+                loadingDialog.dismiss();
                 if (!isFragmentValid()) return;
 
                 if (response.isSuccessful() && response.body() != null) {
-                    updateVehicleList(response.body());
+                    List<VehicleSummaryDto> list = new ArrayList<>(response.body());
+
+                    Iterator<VehicleSummaryDto> iterator = list.iterator();
+                    while (iterator.hasNext()) {
+                        var s = iterator.next();
+                        if ( ShareVehicleStatus.PENDING.getValue().equals(s.getSharingStatus()) ||
+                                ShareVehicleStatus.AVAILABLE.getValue().equals(s.getSharingStatus()) ) {
+                            iterator.remove();
+                        }
+                    }
+                    updateVehicleList(list);
                 } else {
                     handleApiError("Failed to load shared vehicles", response.code(), null);
                     showEmptyVehicleList();
@@ -351,7 +366,7 @@ public class VehicleFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<VehicleSummaryDto>> call, Throwable t) {
-                loadingDialog.hide();
+                loadingDialog.dismiss();
                 if (!isFragmentValid() || call.isCanceled()) return;
 
                 Log.e(TAG, "Failed to load shared vehicles", t);
@@ -361,7 +376,8 @@ public class VehicleFragment extends Fragment {
         });
     }
 
-    // ==================== UI UPDATE METHODS ====================
+    //endregion
+    //region UI UPDATE METHODS
 
     private void updateVehicleList(List<VehicleSummaryDto> summaryDtos) {
         vehicleList.clear();
@@ -379,6 +395,15 @@ public class VehicleFragment extends Fragment {
             cancelCurrentVehicleCall();
             showToast("Loading cancelled");
         });
+    }
+
+    private void refreshCurrentTabData() {
+        // Refresh data based on current tab
+        if (currentTab == TAB_MY_VEHICLES) {
+            loadMyVehicles();
+        } else if (currentTab == TAB_SHARED_VEHICLES) {
+            loadSharedVehicles();
+        }
     }
     //endregion
 

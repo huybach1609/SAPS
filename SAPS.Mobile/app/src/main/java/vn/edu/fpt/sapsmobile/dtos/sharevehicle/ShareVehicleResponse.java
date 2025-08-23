@@ -8,50 +8,51 @@ public class ShareVehicleResponse {
 
     @SerializedName("licensePlate")
     private String licensePlate;
-    
+
     @SerializedName("brand")
     private String brand;
-    
+
     @SerializedName("model")
     private String model;
-    
-    @SerializedName("engineNumber")
-    private String engineNumber;
-    
-    @SerializedName("chassisNumber")
-    private String chassisNumber;
-    
+
     @SerializedName("color")
     private String color;
-    
-    @SerializedName("ownerVehicleFullName")
+
+    @SerializedName("ownerName")
+    private String ownerName;
+
+    @SerializedName("status")
+    private String status;
+
+    @SerializedName("sharingStatus")
+    private String sharingStatus;
+
+    @SerializedName("accessDuration")
+    private String accessDuration;
+
+    // Optional fields that might be used in other API endpoints
+    private String engineNumber;
+    private String chassisNumber;
     private String ownerVehicleFullName;
-    
-    @SerializedName("registrationDate")
     private String registrationDate;
-    
-    @SerializedName("vehicleType")
     private String vehicleType;
 
     // Default constructor
     public ShareVehicleResponse() {}
 
-    // Constructor with all fields
-
-
-    public ShareVehicleResponse(String shareVehicleId, String licensePlate, String brand, String model, String engineNumber, String chassisNumber, String color, String ownerVehicleFullName, String registrationDate, String vehicleType) {
+    // Constructor with main fields
+    public ShareVehicleResponse(String shareVehicleId, String licensePlate, String brand, String model, String color, String ownerName, String status, String sharingStatus) {
         this.shareVehicleId = shareVehicleId;
         this.licensePlate = licensePlate;
         this.brand = brand;
         this.model = model;
-        this.engineNumber = engineNumber;
-        this.chassisNumber = chassisNumber;
         this.color = color;
-        this.ownerVehicleFullName = ownerVehicleFullName;
-        this.registrationDate = registrationDate;
-        this.vehicleType = vehicleType;
+        this.ownerName = ownerName;
+        this.status = status;
+        this.sharingStatus = sharingStatus;
     }
 
+    // Getters and setters
     public String getShareVehicleId() {
         return shareVehicleId;
     }
@@ -60,7 +61,6 @@ public class ShareVehicleResponse {
         this.shareVehicleId = shareVehicleId;
     }
 
-    // Getters and setters
     public String getLicensePlate() {
         return licensePlate;
     }
@@ -85,6 +85,47 @@ public class ShareVehicleResponse {
         this.model = model;
     }
 
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public String getOwnerName() {
+        return ownerName;
+    }
+
+    public void setOwnerName(String ownerName) {
+        this.ownerName = ownerName;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getSharingStatus() {
+        return sharingStatus;
+    }
+
+    public void setSharingStatus(String sharingStatus) {
+        this.sharingStatus = sharingStatus;
+    }
+
+    public String getAccessDuration() {
+        return accessDuration;
+    }
+
+    public void setAccessDuration(String accessDuration) {
+        this.accessDuration = accessDuration;
+    }
+
+    // Optional fields getters/setters
     public String getEngineNumber() {
         return engineNumber;
     }
@@ -99,14 +140,6 @@ public class ShareVehicleResponse {
 
     public void setChassisNumber(String chassisNumber) {
         this.chassisNumber = chassisNumber;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
     }
 
     public String getOwnerVehicleFullName() {
@@ -140,12 +173,11 @@ public class ShareVehicleResponse {
                 ", licensePlate='" + licensePlate + '\'' +
                 ", brand='" + brand + '\'' +
                 ", model='" + model + '\'' +
-                ", engineNumber='" + engineNumber + '\'' +
-                ", chassisNumber='" + chassisNumber + '\'' +
                 ", color='" + color + '\'' +
-                ", ownerVehicleFullName='" + ownerVehicleFullName + '\'' +
-                ", registrationDate='" + registrationDate + '\'' +
-                ", vehicleType='" + vehicleType + '\'' +
+                ", ownerName='" + ownerName + '\'' +
+                ", status='" + status + '\'' +
+                ", sharingStatus='" + sharingStatus + '\'' +
+                ", accessDuration='" + accessDuration + '\'' +
                 '}';
     }
 }

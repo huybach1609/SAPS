@@ -162,7 +162,7 @@ public class AddVehicleActivity extends AppCompatActivity {
                 .thenAcceptAsync(this::handleImageProcessed, mainHandler::post)
                 .exceptionally(throwable -> {
                     mainHandler.post(() -> {
-                        loadingDialog.hide();
+                        loadingDialog.dismiss();
                         Log.e("IMAGE_PROCESS_ERROR", "Error processing image", throwable);
                         Toast.makeText(this, "Error processing image: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
                     });
@@ -183,7 +183,7 @@ public class AddVehicleActivity extends AppCompatActivity {
     }
 
     private void handleImageProcessed(ImageProcessResult result) {
-        loadingDialog.hide();
+        loadingDialog.dismiss();
 
         if (result.error != null) {
             Toast.makeText(this, "Error processing image: " + result.error.getMessage(), Toast.LENGTH_SHORT).show();
@@ -303,7 +303,7 @@ public class AddVehicleActivity extends AppCompatActivity {
         call.enqueue(new Callback<VehicleResponse>() {
             @Override
             public void onResponse(Call<VehicleResponse> call, Response<VehicleResponse> response) {
-                loadingDialog.hide();
+                loadingDialog.dismiss();
 
                 if (response.isSuccessful() && response.body() != null) {
                     VehicleResponse vehicleResponse = response.body();
@@ -316,7 +316,7 @@ public class AddVehicleActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<VehicleResponse> call, Throwable t) {
-                loadingDialog.hide();
+                loadingDialog.dismiss();
                 Toast.makeText(AddVehicleActivity.this, "Upload failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 Log.e("VEHICLE_OCR_UPLOAD_ERROR", "Error uploading images: " + t.getMessage());
             }
@@ -396,7 +396,7 @@ public class AddVehicleActivity extends AppCompatActivity {
         call.enqueue(new Callback<VehicleRegistrationResponse>() {
             @Override
             public void onResponse(Call<VehicleRegistrationResponse> call, Response<VehicleRegistrationResponse> response) {
-                loadingDialog.hide();
+                loadingDialog.dismiss();
 
                 if (response.isSuccessful() && response.body() != null) {
                     VehicleRegistrationResponse vehicleResponse = response.body();
@@ -417,7 +417,7 @@ public class AddVehicleActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<VehicleRegistrationResponse> call, Throwable t) {
-                loadingDialog.hide();
+                loadingDialog.dismiss();
                 Toast.makeText(AddVehicleActivity.this, "Registration failed: " + t.getMessage(), Toast.LENGTH_LONG).show();
                 Log.e("VEHICLE_REGISTRATION_ERROR", "Error registering vehicle: " + t.getMessage());
             }

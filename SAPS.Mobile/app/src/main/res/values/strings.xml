@@ -168,7 +168,7 @@
     <string name="connection_error">Connection error: %1$s</string>
     <string name="dialog_add_vehicle_title">Add Vehicle</string>
     <string name="option_register_my_vehicle">Register my own vehicle</string>
-    <string name="option_receive_from_share_code">Receive from share code</string>
+    <string name="option_create_invitation">Create invitation</string>
     <string name="cd_find_user">Find user</string>
     <string name="label_color_prefix">Color: %1$s</string>
     <!-- Content Descriptions -->
@@ -328,7 +328,7 @@
     <string name="no_code_to_copy">Empty</string>
     <string name="add_vehicle_action_bar_header">Add New Vehicle</string>
     <string name="activity_check_out_not_available">Parking session data is not available</string>
-    <string name="payement_activity_payment_detail_display">Payment Details</string>
+    <string name="payment_activity_payment_detail_display">Payment Details</string>
     <string name="payment_activity_display_amount">Amount</string>
     <string name="payment_activity_display_note">Please transfer the exact amount for automatic reconciliation</string>
     <string name="payment_activity_content_description_account_number">Account number</string>
@@ -341,7 +341,7 @@
     <string name="payment_activity_actionbar_title">Payment Process</string>
     <string name="payment_activity_qr_code_title">Open your banking app, choose the QR scan function, and scan the code above.</string>
     <string name="vehicle_fragment_menu_register">Register my own vehicle</string>
-    <string name="vehicle_fragment_menu_receive">Receive from share code</string>
+    <string name="vehicle_fragment_menu_receive">Create invitation</string>
     <string name="vehicle_fragment_menu_share_your_vehicle">Share your vehicle</string>
     <string name="vehicle_fragment_btn_view_invitation">View invitation</string>
     <string name="invitation_activity_actionbar_title">You Invitation</string>
@@ -349,5 +349,18 @@
     <string name="item_vehicle_invitation_label_owner">Vehicle owner</string>
     <string name="item_vehicle_invitation_label_color">Color</string>
     <string name="item_vehicle_invitation_btn_details">Accept</string>
+    <string name="list_invitation_error_fetch">Unable to load shared list</string>
+    <string name="no_items_found">No items</string>
+    <string name="vehicle_detail_dialog_recall">Recall</string>
+    <string name="vehicle_detail_dialog_remove">Remove</string>
+    <string name="item_vehicle_invitation_btn_reject">Reject</string>
+    <string name="item_vehicle_invitation_notification_reject">Are you sure to reject this invitation</string>
+    <string name="view_list_invitation_adapter_accept_200">Invitation accepted</string>
+    <string name="view_list_invitation_adapter_accept_400">Error accepting invitation</string>
+    <string name="view_list_invitation_adapter_reject_200">invitation declined</string>
+    <string name="share_vehicle_access_activity_actionbar_title">Send invitation</string>
+    <string name="share_vehicle_access_activity_search_note">Enter the user\'s share code (eg: USER-SARAH2024)</string>
+    <string name="share_vehicle_access_search_not_found_search">No results found</string>
+    <string name="share_vehicle_access_search_not_found_search_subtitle">Try checking the share code again</string>
 
 </resources>

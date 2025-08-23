@@ -140,7 +140,6 @@ public class HomeFragment extends Fragment {
     }
 
 
-
     private void findViews(View view) {
 
         btnCheckOut = view.findViewById(R.id.btnCheckOut);
@@ -150,7 +149,6 @@ public class HomeFragment extends Fragment {
         parkingSessionContainer = view.findViewById(R.id.parkingSessionContainer);
         noSessionContainer = view.findViewById(R.id.noSessionContainer);
         tvNoSessionMessage = view.findViewById(R.id.tvNoSessionMessage);
-
         setupBtnNotification();
     }
 

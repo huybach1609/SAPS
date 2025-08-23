@@ -97,7 +97,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
-                loadingDialog.hide();
+                loadingDialog.dismiss();
                 if (response.isSuccessful()) {
                     // clear input
                     edtCurrent.setText("");
@@ -115,7 +115,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
-                loadingDialog.hide();
+                loadingDialog.dismiss();
                 String errorMessage = "Network error occurred";
                 if (t instanceof java.net.SocketTimeoutException) {
                     errorMessage = "Request timed out. Please try again.";

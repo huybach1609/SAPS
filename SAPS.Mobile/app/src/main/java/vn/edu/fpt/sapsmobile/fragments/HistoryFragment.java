@@ -125,19 +125,19 @@ public class HistoryFragment extends Fragment {
         currentCall.enqueue(new Callback<List<ParkingSession>>() {
             @Override
             public void onResponse(Call<List<ParkingSession>> call, Response<List<ParkingSession>> response) {
-                if (!isAdded()) { loadingDialog.hide(); return; }
+                if (!isAdded()) { loadingDialog.dismiss(); return; }
 
                 if (response.isSuccessful() && response.body() != null) {
                     parkingSessionList = response.body();
                     parkingSessionAdapter.updateItems(parkingSessionList);
                 }
-                loadingDialog.hide();
+                loadingDialog.dismiss();
             }
 
             @Override
             public void onFailure(Call<List<ParkingSession>> call, Throwable t) {
                 // If call was cancelled due to navigation, just ensure dialog is hidden
-                loadingDialog.hide();
+                loadingDialog.dismiss();
             }
         });
     }
@@ -145,12 +145,12 @@ public class HistoryFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (loadingDialog != null) loadingDialog.hide();
+        if (loadingDialog != null) loadingDialog.dismiss();
         if (currentCall != null) currentCall.cancel(); // explained below
     }
 
     public void onStop() {
         super.onStop();
-        if (loadingDialog != null) loadingDialog.hide();
+        if (loadingDialog != null) loadingDialog.dismiss();
     }
 }

@@ -1,6 +1,7 @@
 package vn.edu.fpt.sapsmobile.adapters;
 
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Button;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
@@ -17,7 +19,9 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import java.util.List;
 
 import vn.edu.fpt.sapsmobile.R;
+import vn.edu.fpt.sapsmobile.activities.auth.LoginActivity;
 import vn.edu.fpt.sapsmobile.dtos.sharevehicle.ShareVehicleResponse;
+import vn.edu.fpt.sapsmobile.utils.ColorUtil;
 
 public class InvitationAdapter extends RecyclerView.Adapter<InvitationAdapter.InvitationViewHolder> {
 
@@ -27,9 +31,8 @@ public class InvitationAdapter extends RecyclerView.Adapter<InvitationAdapter.In
     public interface OnVehicleClickListener {
         void onVehicleClick(ShareVehicleResponse vehicle, int position);
 
-        void onVehicleShareClick(ShareVehicleResponse vehicle, int position);
-        
         void onAcceptShareVehicle(ShareVehicleResponse vehicle, int position);
+        void onRejectShareVehicle(ShareVehicleResponse vehicle, int position);
     }
 
     public InvitationAdapter(List<ShareVehicleResponse> vehicles) {
@@ -64,13 +67,6 @@ public class InvitationAdapter extends RecyclerView.Adapter<InvitationAdapter.In
         notifyDataSetChanged();
     }
 
-    public void addVehicle(ShareVehicleResponse vehicle) {
-        if (vehicles != null) {
-            vehicles.add(vehicle);
-            notifyItemInserted(vehicles.size() - 1);
-        }
-    }
-
     public void removeVehicle(int position) {
         if (vehicles != null && position >= 0 && position < vehicles.size()) {
             vehicles.remove(position);
@@ -88,7 +84,7 @@ public class InvitationAdapter extends RecyclerView.Adapter<InvitationAdapter.In
         private Chip chipSharingStatus;
 
         private TextView tvNofication;
-        private Button btnAccept;
+        private Button btnAccept, btnReject;
         public InvitationViewHolder(@NonNull View itemView) {
             super(itemView);
             initViews();
@@ -104,6 +100,7 @@ public class InvitationAdapter extends RecyclerView.Adapter<InvitationAdapter.In
             chipSharingStatus = itemView.findViewById(R.id.chipSharingStatus);
             tvNofication = itemView.findViewById(R.id.tv_invitation_notification);
             btnAccept = itemView.findViewById(R.id.btnAccept);
+            btnReject = itemView.findViewById(R.id.btnReject);
         }
 
         private void setupClickListeners() {
@@ -125,17 +122,21 @@ public class InvitationAdapter extends RecyclerView.Adapter<InvitationAdapter.In
             // Vehicle name (brand + model)
             String vehicleName = vehicle.getBrand() + " " + vehicle.getModel();
             tvVehicleName.setText(vehicleName);
-            // Owner name
-            tvOwnerName.setText(vehicle.getOwnerVehicleFullName());
+            // Owner name (prefer ownerName if present from sharedvehicle API)
+            tvOwnerName.setText(vehicle.getOwnerName() != null ? vehicle.getOwnerName() : vehicle.getOwnerVehicleFullName());
             // Color
             tvColor.setText(vehicle.getColor());
 
-            tvNofication.setText(holder.itemView.getContext().getString(R.string.item_vehicle_invitation_notification, vehicle.getOwnerVehicleFullName()));
+            tvNofication.setText(holder.itemView.getContext().getString(R.string.item_vehicle_invitation_notification, vehicle.getOwnerName()));
 
-            // Sharing status chip - you might need to map from your JSON sharingStatus field
-            // Since VehicleResponse doesn't have sharingStatus field, using a default
-            chipSharingStatus.setText("Available");
-            chipSharingStatus.setChipBackgroundColorResource(R.color.md_theme_secondaryContainer);
+            // Sharing status chip
+            chipSharingStatus.setText(vehicle.getSharingStatus() != null ? vehicle.getSharingStatus() : "Available");
+//            chipSharingStatus.setChipBackgroundColor(
+//                    ContextCompat.getColorStateList(
+//                            holder.itemView.getContext(),
+//                            ColorUtil.getShareVehicleStatusBackgroundColor(holder.itemView.getContext(), vehicle.getSharingStatus())
+//                    )
+//            );
 
             // Set card elevation and styling
             cardView.setCardElevation(2f);
@@ -143,10 +144,37 @@ public class InvitationAdapter extends RecyclerView.Adapter<InvitationAdapter.In
 
             if (btnAccept != null) {
                 btnAccept.setOnClickListener(v -> {
+                    // go to invitation detail
+
+
+                    if (listener != null) {
+//                                    int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            listener.onAcceptShareVehicle(vehicles.get(position), position);
+                        }
+                    }
+//                    String title = "Confirm";
+//                    String message = holder.itemView.getContext().getString(
+//                            R.string.item_vehicle_invitation_notification,
+//                            vehicle.getOwnerName()
+//                    );
+//
+//                    new MaterialAlertDialogBuilder(holder.itemView.getContext())
+//                            .setTitle(title)
+//                            .setMessage(message)
+//                            .setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.dismiss())
+//                            .setPositiveButton(R.string.item_vehicle_invitation_btn_details, (dialog, which) -> {
+//
+//                                dialog.dismiss();
+//                            })
+//                            .show();
+                });
+            }
+            if(btnReject !=null){
+                btnReject.setOnClickListener(v -> {
                     String title = "Confirm";
                     String message = holder.itemView.getContext().getString(
-                            R.string.item_vehicle_invitation_notification,
-                            vehicle.getOwnerVehicleFullName()
+                            R.string.item_vehicle_invitation_notification_reject
                     );
 
                     new MaterialAlertDialogBuilder(holder.itemView.getContext())
@@ -157,13 +185,14 @@ public class InvitationAdapter extends RecyclerView.Adapter<InvitationAdapter.In
                                 if (listener != null) {
 //                                    int position = getAdapterPosition();
                                     if (position != RecyclerView.NO_POSITION) {
-                                        listener.onAcceptShareVehicle(vehicles.get(position), position);
+                                        listener.onRejectShareVehicle(vehicles.get(position), position);
                                     }
                                 }
                                 dialog.dismiss();
                             })
                             .show();
                 });
+
             }
         }
     }

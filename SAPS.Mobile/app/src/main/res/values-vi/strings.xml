@@ -166,7 +166,7 @@
     <string name="connection_error">Lỗi kết nối: %1$s</string>
     <string name="dialog_add_vehicle_title">Thêm xe</string>
     <string name="option_register_my_vehicle">Đăng ký xe của tôi</string>
-    <string name="option_receive_from_share_code">Nhận từ mã chia sẻ</string>
+    <string name="option_create_invitation">Tạo lời mời</string>
     <string name="cd_find_user">Tìm người dùng</string>
     <string name="label_color_prefix">Màu sắc: %1$s</string>
     <!-- Content Descriptions -->
@@ -325,7 +325,7 @@
     <string name="no_code_to_copy">trống\n</string>
     <string name="add_vehicle_action_bar_header">Thêm xe mới</string>
     <string name="activity_check_out_not_available">Dữ liệu phiên đỗ xe không có sẵn</string>
-    <string name="payement_activity_payment_detail_display">Payment details</string>
+    <string name="payment_activity_payment_detail_display">Payment details</string>
     <string name="payment_activity_display_amount">Số tiền</string>
     <string name="payment_activity_display_note">Please transfer the exact amount for automatic reconciliation</string>
     <string name="payment_activity_content_description_account_number">Account number</string>
@@ -339,11 +339,21 @@
     <string name="payment_activity_qr_code_title">Mở ứng dụng ngân hàng, chọn chức năng quét QR và quét mã bên trên.</string>
 
     <string name="vehicle_fragment_menu_register">Đăng ký xe</string>
-    <string name="vehicle_fragment_menu_receive">Lấy xe bằng mã chia sẻ</string>
+    <string name="vehicle_fragment_menu_receive">Tạo lời mời</string>
     <string name="vehicle_fragment_menu_share_your_vehicle">Chia sẻ xe của bạn</string>
     <string name="vehicle_fragment_btn_view_invitation">Xem lời mời</string>
     <string name="invitation_activity_actionbar_title">Lời mời của bạn</string>
     <string name="item_vehicle_invitation_notification">%1$s đã mời bạn sử dụng xe</string>
+    <string name="list_invitation_error_fetch">Không tải được danh sách chia sẻ</string>
+    <string name="vehicle_detail_dialog_recall">Thu hồi</string>
+    <string name="vehicle_detail_dialog_remove">Trả xe</string>
+    <string name="view_list_invitation_adapter_accept_200">Đã chấp nhận lời mời</string>
+    <string name="view_list_invitation_adapter_accept_400">Lỗi khi chấp nhận lời mời</string>
+    <string name="view_list_invitation_adapter_reject_200">Đã từ chối lời mời</string>
+    <string name="share_vehicle_access_activity_actionbar_title">Chia sẻ xe của bạn</string>
+    <string name="share_vehicle_access_activity_search_note">Nhập mã chia sẻ của người dùng (ví dụ: USER-SARAH2024)</string>
+    <string name="share_vehicle_access_search_not_found_search">Không tìm thấy kết quả</string>
+    <string name="share_vehicle_access_search_not_found_search_subtitle">Thử kiểm tra lại mã chia sẻ</string>
 
 
 </resources>

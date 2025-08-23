@@ -180,7 +180,7 @@ public class EditProfileActivity extends AppCompatActivity {
                     call.enqueue(new retrofit2.Callback<User>() {
                         @Override
                         public void onResponse(retrofit2.Call<User> call, retrofit2.Response<User> response) {
-                            loadingDialog.hide();
+                            loadingDialog.dismiss();
 
                             if (response.isSuccessful() && response.body() != null) {
                                 User updatedUser = response.body();
@@ -203,7 +203,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(retrofit2.Call<User> call, Throwable t) {
-                            loadingDialog.hide();
+                            loadingDialog.dismiss();
                             String errorMessage = "Network error occurred";
                             if (t instanceof java.net.SocketTimeoutException) {
                                 errorMessage = "Request timed out. Please try again.";
@@ -220,7 +220,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
             } catch (IOException e) {
                 runOnUiThread(() -> {
-                    loadingDialog.hide();
+                    loadingDialog.dismiss();
                     Log.e("PROFILE_UPDATE_ERROR", "Error reading images: " + e.getMessage(), e);
                     Toast.makeText(EditProfileActivity.this, "Error reading images", Toast.LENGTH_SHORT).show();
                 });
@@ -353,7 +353,7 @@ public class EditProfileActivity extends AppCompatActivity {
             call.enqueue(new Callback<IdCardResponse>() {
                 @Override
                 public void onResponse(retrofit2.Call<IdCardResponse> call, Response<IdCardResponse> response) {
-                    loadingDialog.hide();
+                    loadingDialog.dismiss();
 
                     if (response.isSuccessful() && response.body() != null) {
                         IdCardResponse idCard = response.body();
@@ -373,7 +373,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(retrofit2.Call<IdCardResponse> call, Throwable t) {
-                    loadingDialog.hide();
+                    loadingDialog.dismiss();
                     String errorMessage = "Upload failed";
                     if (t instanceof java.net.SocketTimeoutException) {
                         errorMessage = "Request timed out. Please try again.";
@@ -387,14 +387,14 @@ public class EditProfileActivity extends AppCompatActivity {
                 }
             });
         } catch (Exception e) {
-            loadingDialog.hide();
+            loadingDialog.dismiss();
             Log.e("OCR_API_ERROR", "Error creating API call: " + e.getMessage());
             Toast.makeText(EditProfileActivity.this, "Error preparing upload", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void handleError(IOException e) {
-        loadingDialog.hide();
+        loadingDialog.dismiss();
         Log.e("OCR_IO_ERROR", e.getMessage(), e);
         Toast.makeText(EditProfileActivity.this, "Error reading images", Toast.LENGTH_SHORT).show();
     }

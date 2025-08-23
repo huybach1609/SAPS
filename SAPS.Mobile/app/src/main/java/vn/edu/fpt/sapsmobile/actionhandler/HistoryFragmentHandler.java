@@ -40,11 +40,11 @@ public class HistoryFragmentHandler implements HistoryFragmentVehicleDetailListe
         this.parkingSession = parkingSession;
         this.parkingLot = parkingLot;
         this.vehicle = vehicle;
-        VehicleDetailDialog.show(context, vehicle , this);
+        VehicleDetailDialog.show(context, vehicle , this, -1);
     }
 
     @Override
-    public void onCheckout(Vehicle vehicle, AlertDialog dialog) {
+    public void onAction(Vehicle vehicle, AlertDialog dialog) {
         // Đóng dialog
         dialog.dismiss();
 
