@@ -1,7 +1,10 @@
-import axios from "axios";
 import { apiUrl } from "@/config/base";
 import { ApiResponse } from "@/types/admin";
 import { UserDetails } from "@/types/UserClient";
+import { createApiInstance } from "../utils/apiUtils";
+
+// Create API instance
+const api = createApiInstance();
 
 // Client details interface matching the new API format
 export interface ClientDetailsResponse {
@@ -87,23 +90,6 @@ export interface PaginatedParkingSessionResponse {
   "has-previous-page": boolean;
   "has-next-page": boolean;
 }
-
-const api = axios.create({
-  baseURL: apiUrl,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-// Add token to requests
-api.interceptors.request.use((config) => {
-  const token =
-    localStorage.getItem("admin_token") || localStorage.getItem("auth_token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
 
 export const userClientService = {
   // Get client details by ID using new API

@@ -1,6 +1,8 @@
-import axios from "axios";
 import { PaginatedResponse } from "../../types";
 import { apiUrl } from "@/config/base";
+import { createApiInstance, getAuthConfig } from "../utils/apiUtils";
+
+const api = createApiInstance();
 
 export interface ParkingLotOwner {
   "parking-lot-owner-id": string;
@@ -49,8 +51,6 @@ export interface ParkingLotListParams {
   order?: number;
 }
 
-const baseUrl = apiUrl;
-
 export const parkingLotOwnerService = {
   /**
    * Get parking lot owners with pagination
@@ -60,7 +60,7 @@ export const parkingLotOwnerService = {
   ): Promise<PaginatedResponse<ParkingLotOwner>> {
     const { pageNumber, pageSize, status, order, searchCriteria } = params;
 
-    let url = `${baseUrl}/api/parkinglotowner/page?PageNumber=${pageNumber}&PageSize=${pageSize}`;
+    let url = `/api/parkinglotowner/page?PageNumber=${pageNumber}&PageSize=${pageSize}`;
 
     if (status && status !== "All") {
       url += `&Status=${status}`;
@@ -74,7 +74,7 @@ export const parkingLotOwnerService = {
       url += `&SearchCriteria=${searchCriteria}`;
     }
 
-    const response = await axios.get(url);
+    const response = await api.get(url);
     return response.data;
   },
 
@@ -82,9 +82,7 @@ export const parkingLotOwnerService = {
    * Get parking lot owner details by ID
    */
   async getParkingLotOwnerDetails(id: string): Promise<ParkingLotOwnerDetails> {
-    const response = await axios.get(
-      `${baseUrl}/api/parkinglotowner/details?Id=${id}`
-    );
+    const response = await api.get(`/api/parkinglotowner/details?Id=${id}`);
     return response.data;
   },
 
@@ -92,9 +90,7 @@ export const parkingLotOwnerService = {
    * Get payment sources for a parking lot owner
    */
   async getOwnerPaymentSources(ownerId: string): Promise<PaymentSource[]> {
-    const response = await axios.get(
-      `${baseUrl}/api/paymentsource/owner/${ownerId}`
-    );
+    const response = await api.get(`/api/paymentsource/owner/${ownerId}`);
     return response.data;
   },
 
@@ -106,13 +102,13 @@ export const parkingLotOwnerService = {
   ): Promise<PaginatedResponse<ParkingLot>> {
     const { pageNumber, pageSize, parkingLotOwnerId, order } = params;
 
-    let url = `${baseUrl}/api/parkinglot/page?PageNumber=${pageNumber}&PageSize=${pageSize}&ParkingLotOwnerId=${parkingLotOwnerId}`;
+    let url = `/api/parkinglot/page?PageNumber=${pageNumber}&PageSize=${pageSize}&ParkingLotOwnerId=${parkingLotOwnerId}`;
 
     if (order !== undefined) {
       url += `&Order=${order}`;
     }
 
-    const response = await axios.get(url);
+    const response = await api.get(url);
     return response.data;
   },
 };

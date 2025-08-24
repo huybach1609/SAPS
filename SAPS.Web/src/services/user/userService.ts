@@ -1,7 +1,9 @@
-import axios from "axios";
 import { apiUrl } from "@/config/base";
 import { ApiResponse } from "@/types/admin";
+import { createApiInstance } from "../utils/apiUtils";
 
+// Create API instance
+const api = createApiInstance();
 // Client User interface based on the mock data structure
 export interface ClientUser {
   id: string;
@@ -30,23 +32,6 @@ export interface PaginatedClientResponse {
   "has-previous-page": boolean;
   "has-next-page": boolean;
 }
-
-const api = axios.create({
-  baseURL: apiUrl,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-// Add token to requests
-api.interceptors.request.use((config) => {
-  const token =
-    localStorage.getItem("admin_token") || localStorage.getItem("auth_token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
 
 export const userService = {
   // Get all client users (for statistics)

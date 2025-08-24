@@ -1,41 +1,36 @@
 import axios from "axios";
 import { AdminUser, ApiResponse } from "@/types/admin";
 import { apiUrl } from "@/config/base";
+import { createApiInstance } from "../utils/apiUtils";
 
 // Admin DTO based on the provided backend model
 export interface CreateAdminDto {
+  adminId: string; // Thêm trường adminId
   fullName: string;
   email: string;
   phone: string;
+  password: string; // Thêm trường password
 }
 
 // Paginated response interface matching the new API format
 export interface PaginatedAdminResponse {
   items: AdminUser[];
-  "total-count": number;
-  "page-number": number;
-  "page-size": number;
-  "total-pages": number;
-  "has-previous-page": boolean;
-  "has-next-page": boolean;
+  totalCount: number;
+  pageNumber: number;
+  pageSize: number;
+  totalPages: number;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
+  // Backward compatibility
+  "total-count"?: number;
+  "page-number"?: number;
+  "page-size"?: number;
+  "total-pages"?: number;
+  "has-previous-page"?: boolean;
+  "has-next-page"?: boolean;
 }
 
-const api = axios.create({
-  baseURL: apiUrl,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-// Add token to requests
-api.interceptors.request.use((config) => {
-  const token =
-    localStorage.getItem("admin_token") || localStorage.getItem("auth_token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+const api = createApiInstance(apiUrl);
 
 export const adminService = {
   // Create a new admin
@@ -43,7 +38,24 @@ export const adminService = {
     adminData: CreateAdminDto
   ): Promise<ApiResponse<AdminUser>> {
     try {
-      const { data } = await api.post("/api/admin", adminData);
+      // Đảm bảo adminId có độ dài dưới 36 ký tự
+      if (adminData.adminId.length > 35) {
+        adminData.adminId = adminData.adminId.substring(0, 35);
+      }
+
+      // Sử dụng FormData để gửi request
+      const formData = new FormData();
+      formData.append("AdminId", adminData.adminId);
+      formData.append("Email", adminData.email);
+      formData.append("Password", adminData.password);
+      formData.append("FullName", adminData.fullName);
+      formData.append("Phone", adminData.phone);
+
+      const { data } = await api.post("/api/admin/register", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       return { success: true, data };
     } catch (error: any) {
       return {
@@ -95,9 +107,6 @@ export const adminService = {
       if (searchCriteria && searchCriteria.trim()) {
         params.append("SearchCriteria", searchCriteria);
       }
-
-      const url = `https://localhost:7040/api/admin/page?${params.toString()}`;
-      console.log("📡 API URL with filters:", url);
 
       const { data } = await api.get(`/api/admin/page?${params.toString()}`);
 

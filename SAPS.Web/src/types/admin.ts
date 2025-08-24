@@ -1,16 +1,22 @@
 // Admin related types
 export interface AdminUser {
   id: string;
-  "admin-id": string;
-  "admin-role": string;
+  // Mới - camelCase
+  adminId: string;
+  adminRole: string;
   email: string;
-  "full-name": string;
-  "created-at": string;
+  fullName: string;
+  phoneNumber?: string;
+  createdAt: string;
   status: string;
-  // Add computed properties for backward compatibility
-  adminId?: string;
-  fullName?: string;
-  createdAt?: Date;
+
+  // Cũ - kebab-case (cho backward compatibility)
+  "admin-id"?: string;
+  "admin-role"?: string;
+  "full-name"?: string;
+  "created-at"?: string;
+
+  // Computed properties
   updatedAt?: Date;
   role?: string;
 }

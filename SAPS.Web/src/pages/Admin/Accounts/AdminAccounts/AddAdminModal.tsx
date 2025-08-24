@@ -3,6 +3,15 @@ import { Modal, ModalContent, Button, Input } from "@heroui/react";
 import { X } from "lucide-react";
 import { adminService, CreateAdminDto } from "@/services/admin/adminService";
 
+// Hàm tạo ID ngắn gọn, đảm bảo dưới 36 ký tự
+const generateShortId = () => {
+  // Tạo chuỗi ngẫu nhiên có độ dài 32 ký tự (dưới 36 ký tự)
+  return "xxxxxxxxxxxxxxxxxxxx".replace(/[x]/g, function () {
+    const r = Math.floor(Math.random() * 20);
+    return r.toString(); // Sử dụng base 36 (0-9, a-z) để tạo ID ngắn hơn
+  });
+};
+
 interface AddAdminModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -26,11 +35,17 @@ const AddAdminModal: React.FC<AddAdminModalProps> = ({
     setIsLoading(true);
 
     try {
-      // Send only the necessary user information - backend will handle ID generation
+      // Tạo AdminId ngắn gọn và mật khẩu mặc định
+      const adminId = generateShortId();
+      const defaultPassword = "TempPassword123@";
+
+      // Gửi thông tin admin bao gồm cả AdminId và Password
       const adminDto: CreateAdminDto = {
+        adminId,
         fullName,
         email,
         phone,
+        password: defaultPassword,
       };
 
       const result = await adminService.createAdmin(adminDto);
@@ -59,11 +74,11 @@ const AddAdminModal: React.FC<AddAdminModalProps> = ({
   };
 
   console.log("AddAdminModal render - isOpen:", isOpen);
-  
+
   return (
-    <Modal 
-      isOpen={isOpen} 
-      onClose={handleClose} 
+    <Modal
+      isOpen={isOpen}
+      onClose={handleClose}
       placement="center"
       scrollBehavior="inside"
       size="2xl"
@@ -139,12 +154,8 @@ const AddAdminModal: React.FC<AddAdminModalProps> = ({
                     />
                   </div>
                 </div>
-
-
               </div>
             </div>
-
-
 
             {/* Password Info Box */}
             <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 shadow-sm mb-6">
@@ -158,18 +169,20 @@ const AddAdminModal: React.FC<AddAdminModalProps> = ({
                   </h4>
                   <ul className="text-sm text-blue-800 space-y-2">
                     <li className="flex items-start">
-                      <span className="mr-2">•</span> System will auto-generate a secure temporary password
+                      <span className="mr-2">•</span> System will auto-generate
+                      a secure temporary password
                     </li>
                     <li className="flex items-start">
-                      <span className="mr-2">•</span> Login credentials will be sent to the admin's email
-                      address
+                      <span className="mr-2">•</span> Login credentials will be
+                      sent to the admin's email address
                     </li>
                     <li className="flex items-start">
-                      <span className="mr-2">•</span> Admin will be required to change password on first login
+                      <span className="mr-2">•</span> Admin will be required to
+                      change password on first login
                     </li>
                     <li className="flex items-start">
-                      <span className="mr-2">•</span> Email will include login instructions and system access
-                      details
+                      <span className="mr-2">•</span> Email will include login
+                      instructions and system access details
                     </li>
                   </ul>
                 </div>
@@ -188,16 +201,20 @@ const AddAdminModal: React.FC<AddAdminModalProps> = ({
                   </h4>
                   <ul className="text-sm text-amber-800 space-y-2">
                     <li className="flex items-start">
-                      <span className="mr-2">•</span> Only Head Administrators can create new admin accounts
+                      <span className="mr-2">•</span> Only Head Administrators
+                      can create new admin accounts
                     </li>
                     <li className="flex items-start">
-                      <span className="mr-2">•</span> New admin will have access to sensitive system functions
+                      <span className="mr-2">•</span> New admin will have access
+                      to sensitive system functions
                     </li>
                     <li className="flex items-start">
-                      <span className="mr-2">•</span> All admin actions are logged for security auditing
+                      <span className="mr-2">•</span> All admin actions are
+                      logged for security auditing
                     </li>
                     <li className="flex items-start">
-                      <span className="mr-2">•</span> Admin accounts can be modified or deactivated later
+                      <span className="mr-2">•</span> Admin accounts can be
+                      modified or deactivated later
                     </li>
                   </ul>
                 </div>

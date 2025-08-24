@@ -1,6 +1,8 @@
-import axios from "axios";
 import { PaginatedResponse } from "../../types";
 import { apiUrl } from "@/config/base";
+import { createApiInstance } from "../utils/apiUtils";
+
+const api = createApiInstance();
 
 export interface Subscription {
   id: string;
@@ -38,8 +40,6 @@ export interface SubscriptionListParams {
   searchCriteria?: string;
 }
 
-const baseUrl = apiUrl;
-
 // Helper function to capitalize first letter of status
 const capitalizeStatus = (status: string): string => {
   if (!status) return status;
@@ -56,7 +56,7 @@ export const subscriptionService = {
    * Get all subscriptions for statistics
    */
   async getAllSubscriptions(): Promise<Subscription[]> {
-    const response = await axios.get(`${baseUrl}/api/subscription?Order=1`);
+    const response = await api.get(`/api/subscription?Order=1`);
     // Convert milliseconds to days for frontend consumption
     return response.data.map((sub: any) => ({
       ...sub,
@@ -72,7 +72,7 @@ export const subscriptionService = {
   ): Promise<PaginatedResponse<Subscription>> {
     const { pageNumber, pageSize, status, order, searchCriteria } = params;
 
-    let url = `${baseUrl}/api/subscription/page?PageNumber=${pageNumber}&PageSize=${pageSize}`;
+    let url = `/api/subscription/page?PageNumber=${pageNumber}&PageSize=${pageSize}`;
 
     if (status && status !== "All") {
       url += `&Status=${status}`;
@@ -86,7 +86,7 @@ export const subscriptionService = {
       url += `&SearchCriteria=${searchCriteria}`;
     }
 
-    const response = await axios.get(url);
+    const response = await api.get(url);
 
     // Convert milliseconds to days for frontend consumption
     const result = {
@@ -104,7 +104,7 @@ export const subscriptionService = {
    * Get subscription by ID
    */
   async getSubscriptionById(id: string): Promise<Subscription> {
-    const response = await axios.get(`${baseUrl}/api/subscription/${id}`);
+    const response = await api.get(`/api/subscription/${id}`);
 
     // Convert response duration from milliseconds to days for frontend
     return {
@@ -126,10 +126,7 @@ export const subscriptionService = {
       // duration stays as days - no conversion to milliseconds
     };
 
-    const response = await axios.post(
-      `${baseUrl}/api/subscription`,
-      requestData
-    );
+    const response = await api.post(`/api/subscription`, requestData);
 
     // Convert response duration from milliseconds to days for frontend
     return {
@@ -151,10 +148,7 @@ export const subscriptionService = {
       // duration stays as days - no conversion to milliseconds
     };
 
-    const response = await axios.put(
-      `${baseUrl}/api/subscription`,
-      requestData
-    );
+    const response = await api.put(`/api/subscription`, requestData);
 
     // Convert response duration from milliseconds to days for frontend
     return {

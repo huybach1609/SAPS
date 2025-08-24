@@ -1,4 +1,3 @@
-
 import { useAuth } from "@/services/auth/AuthContext";
 import { ParkingLotOwnerLayout } from "./ParkingLotOwnerLayout";
 import { AdminLayout } from "./AdminLayout";
@@ -10,24 +9,30 @@ export default function DefaultLayout({
   children,
   title = "",
   className = "",
-  description = ""
+  description = "",
 }: {
   children: React.ReactNode;
   title?: string;
   className?: string;
   description?: string;
 }) {
-  const { getRole } = useAuth();
+  const { getUserRole } = useAuth();
 
-  if (getRole() === OWNER_ROLE) {
-    return <ParkingLotOwnerLayout title={title} className={className} description={description}>
-      {children}
-    </ParkingLotOwnerLayout>
+  if (getUserRole() === OWNER_ROLE) {
+    return (
+      <ParkingLotOwnerLayout
+        title={title}
+        className={className}
+        description={description}
+      >
+        {children}
+      </ParkingLotOwnerLayout>
+    );
   } else {
-    return <AdminLayout title={title} className={className}>
-      {children}
-    </AdminLayout>
+    return (
+      <AdminLayout title={title} className={className}>
+        {children}
+      </AdminLayout>
+    );
   }
-
 }
- 

@@ -5,9 +5,11 @@ import { Plus } from "lucide-react";
 import { AdminUser } from "@/types/admin";
 import { adminService } from "@/services/admin/adminService";
 import AddAdminModal from "./AddAdminModal";
+import { useAuth } from "@/services/auth/AuthContext";
 
 const AdminAccountList: React.FC = () => {
   const navigate = useNavigate();
+  const { user, getAdminRole } = useAuth();
   const [admins, setAdmins] = useState<AdminUser[]>([]);
   const [allAdmins, setAllAdmins] = useState<AdminUser[]>([]); // For statistics
   const [loading, setLoading] = useState<boolean>(true);
@@ -38,14 +40,13 @@ const AdminAccountList: React.FC = () => {
         if (response.success && response.data) {
           console.log("📊 All admins data for stats:", response.data);
 
-          // Format the data for statistics
+          // Format the data for statistics with new API format
           const formattedAllAdmins = response.data.map((admin) => ({
             ...admin,
-            adminId: admin["admin-id"],
-            fullName: admin["full-name"],
-            role: admin["admin-role"],
-            createdAt: new Date(admin["created-at"]),
-            updatedAt: new Date(admin["created-at"]),
+            // Không cần map vì API đã trả về đúng format
+            role: admin.adminRole || admin["admin-role"], // Sử dụng adminRole nếu có
+            createdAt: new Date(admin.createdAt || admin["created-at"]),
+            updatedAt: new Date(admin.createdAt || admin["created-at"]),
             status: admin.status.toLowerCase(),
           }));
 
@@ -73,7 +74,12 @@ const AdminAccountList: React.FC = () => {
     const fetchAdmins = async () => {
       try {
         setLoading(true);
-        console.log("🔄 Fetching paginated admins - Page:", currentPage, "Size:", pageSize);
+        console.log(
+          "🔄 Fetching paginated admins - Page:",
+          currentPage,
+          "Size:",
+          pageSize
+        );
         console.log("🔍 Applied filters:", {
           searchQuery,
           statusFilter,
@@ -93,36 +99,43 @@ const AdminAccountList: React.FC = () => {
           console.log("📋 Raw paginated data:", response.data);
           console.log("📋 API Response structure:", {
             items: response.data.items?.length || 0,
-            totalCount: response.data["total-count"],
-            pageNumber: response.data["page-number"],
-            pageSize: response.data["page-size"],
-            totalPages: response.data["total-pages"],
+            totalCount:
+              response.data.totalCount || response.data["total-count"],
+            pageNumber:
+              response.data.pageNumber || response.data["page-number"],
+            pageSize: response.data.pageSize || response.data["page-size"],
+            totalPages:
+              response.data.totalPages || response.data["total-pages"],
           });
 
-          // Format the data according to the new API structure
+          // Không cần format data nữa vì API đã trả về đúng format
           const formattedAdmins = response.data.items.map((admin) => ({
             ...admin,
-            // Map new format to old format for backward compatibility
-            adminId: admin["admin-id"],
-            fullName: admin["full-name"],
-            role: admin["admin-role"],
-            createdAt: new Date(admin["created-at"]),
-            updatedAt: new Date(admin["created-at"]), // Use created-at as fallback
+            // Chỉ cần chuyển đổi ngày và status
+            createdAt: new Date(admin.createdAt),
+            updatedAt: new Date(admin.createdAt),
             status: admin.status.toLowerCase(), // Convert "Active" to "active"
+            role: admin.adminRole, // Đảm bảo role được gán cho phù hợp
           }));
 
           setAdmins(formattedAdmins);
 
           // Set pagination info from the new API format
-          setTotalPages(response.data["total-pages"]);
-          setTotalItems(response.data["total-count"]);
+          setTotalPages(
+            response.data.totalPages || response.data["total-pages"]
+          );
+          setTotalItems(
+            response.data.totalCount || response.data["total-count"]
+          );
 
           setError(null);
           console.log("✅ Successfully set formatted admins:", formattedAdmins);
           console.log("✅ Pagination info:", {
             currentPage,
-            totalPages: response.data["total-pages"],
-            totalItems: response.data["total-count"],
+            totalPages:
+              response.data.totalPages || response.data["total-pages"],
+            totalItems:
+              response.data.totalCount || response.data["total-count"],
           });
         } else {
           console.error("❌ Failed to fetch admins:", response.error);
@@ -141,6 +154,17 @@ const AdminAccountList: React.FC = () => {
 
   // Since we're using server-side pagination, we display all the admins from current page
   const items = admins; // No client-side filtering needed with server-side pagination
+
+  // Helper function to check if user is HeadAdmin
+  const isHeadAdmin = () => {
+    if (!user) return false;
+    return (
+      (user.adminRole && user.adminRole.toLowerCase() === "headadmin") ||
+      (user["admin-role"] &&
+        user["admin-role"].toLowerCase() === "headadmin") ||
+      getAdminRole()?.toLowerCase() === "headadmin"
+    );
+  };
 
   // Handle pagination change event
   const handlePageChange = (page: number) => {
@@ -167,20 +191,18 @@ const AdminAccountList: React.FC = () => {
         // Format the data according to the new API structure
         const formattedAdmins = response.data.items.map((admin) => ({
           ...admin,
-          // Map new format to old format for backward compatibility
-          adminId: admin["admin-id"],
-          fullName: admin["full-name"],
-          role: admin["admin-role"],
-          createdAt: new Date(admin["created-at"]),
-          updatedAt: new Date(admin["created-at"]), // Use created-at as fallback
+          // Chỉ cần chuyển đổi ngày và status
+          createdAt: new Date(admin.createdAt),
+          updatedAt: new Date(admin.createdAt),
           status: admin.status.toLowerCase(), // Convert "Active" to "active"
+          role: admin.adminRole, // Đảm bảo role được gán cho phù hợp
         }));
 
         setAdmins(formattedAdmins);
 
         // Update pagination info
-        setTotalPages(response.data["total-pages"]);
-        setTotalItems(response.data["total-count"]);
+        setTotalPages(response.data.totalPages || response.data["total-pages"]);
+        setTotalItems(response.data.totalCount || response.data["total-count"]);
       }
 
       // Refresh all admins for statistics
@@ -188,12 +210,11 @@ const AdminAccountList: React.FC = () => {
       if (allAdminsResponse.success && allAdminsResponse.data) {
         const formattedAllAdmins = allAdminsResponse.data.map((admin) => ({
           ...admin,
-          adminId: admin["admin-id"],
-          fullName: admin["full-name"],
-          role: admin["admin-role"],
-          createdAt: new Date(admin["created-at"]),
-          updatedAt: new Date(admin["created-at"]),
+          // Chỉ cần chuyển đổi ngày và status
+          createdAt: new Date(admin.createdAt || admin["created-at"]),
+          updatedAt: new Date(admin.createdAt || admin["created-at"]),
           status: admin.status.toLowerCase(),
+          role: admin.adminRole || admin["admin-role"], // Sử dụng adminRole nếu có
         }));
         setAllAdmins(formattedAllAdmins);
       }
@@ -424,7 +445,7 @@ const AdminAccountList: React.FC = () => {
               value={tempSearchQuery}
               onChange={(e) => setTempSearchQuery(e.target.value)}
               onKeyDown={(e) => {
-                if (e.key === 'Enter') {
+                if (e.key === "Enter") {
                   // Trigger search on Enter key
                   setIsSearching(true);
                   setSearchQuery(tempSearchQuery);
@@ -497,7 +518,7 @@ const AdminAccountList: React.FC = () => {
                     status: tempStatusFilter,
                     role: tempRoleFilter,
                   });
-                  
+
                   // Apply filters from temporary states
                   setSearchQuery(tempSearchQuery);
                   setStatusFilter(tempStatusFilter);
@@ -533,14 +554,16 @@ const AdminAccountList: React.FC = () => {
             </Button>
           </div>
 
-          <Button
-            color="primary"
-            startContent={<Plus size={18} />}
-            className="bg-blue-600 rounded-full text-white"
-            onPress={() => setIsAddModalOpen(true)}
-          >
-            Add Admin
-          </Button>
+          {isHeadAdmin() && (
+            <Button
+              color="primary"
+              startContent={<Plus size={18} />}
+              className="bg-blue-600 rounded-full text-white"
+              onPress={() => setIsAddModalOpen(true)}
+            >
+              Add Admin
+            </Button>
+          )}
         </div>
       </div>
 
@@ -714,8 +737,10 @@ const AdminAccountList: React.FC = () => {
             <div className="mt-4 p-3 bg-blue-50 text-blue-800 rounded-md">
               <p>
                 <span className="font-semibold">Permission Note:</span> Only
-                Head Administrators have full system access. Head Admin accounts
-                are protected and cannot be modified.
+                Head Administrators have full system access.{" "}
+                {!isHeadAdmin() &&
+                  "You need HeadAdmin role to create new admin accounts."}{" "}
+                Head Admin accounts are protected and cannot be modified.
               </p>
             </div>
           </div>
@@ -795,12 +820,14 @@ const AdminAccountList: React.FC = () => {
         </div>
       </div>
 
-      {/* Add Admin Modal */}
-      <AddAdminModal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-        onSuccess={handleAdminCreationSuccess}
-      />
+      {/* Add Admin Modal - Only show for HeadAdmin */}
+      {isHeadAdmin() && (
+        <AddAdminModal
+          isOpen={isAddModalOpen}
+          onClose={() => setIsAddModalOpen(false)}
+          onSuccess={handleAdminCreationSuccess}
+        />
+      )}
     </div>
   );
 };

@@ -6,6 +6,7 @@ import {
   ApiResponse,
 } from "@/types/subscription";
 import { apiUrl } from "@/config/base";
+import { createApiInstance } from "../../utils/apiUtils";
 
 /**
  * Subscription Service - Real API Implementation Only
@@ -24,22 +25,8 @@ import { apiUrl } from "@/config/base";
  * - Client converts to "active"/"inactive" (lowercase) for consistency
  *
  * No fallback: All API failures will return error responses
- */ const api = axios.create({
-  baseURL: apiUrl,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-// Add token to requests
-api.interceptors.request.use((config) => {
-  const token =
-    localStorage.getItem("admin_token") || localStorage.getItem("auth_token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+ */
+const api = createApiInstance(apiUrl);
 
 export const subscriptionService = {
   // Get all subscriptions
