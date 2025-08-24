@@ -1,23 +1,10 @@
 import axios from "axios";
 import { AdminLoginCredentials, AdminUser, ApiResponse } from "@/types/admin";
+import { createApiInstance } from "./utils/apiUtils";
 
 const BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
-const api = axios.create({
-  baseURL: BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-// Add token to requests
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("admin_token");
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+const api = createApiInstance(BASE_URL);
 
 export const authService = {
   async login(

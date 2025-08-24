@@ -16,4 +16,8 @@ public partial class Subscription
     public double Price { get; set; }
 
     public string Status { get; set; } = null!;
+
+    public string? LastUpdatedBy { get; set; }
+
+    public virtual User? LastUpdatedByNavigation { get; set; }
 }

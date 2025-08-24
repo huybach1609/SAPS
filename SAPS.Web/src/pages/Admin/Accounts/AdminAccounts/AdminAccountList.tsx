@@ -5,95 +5,226 @@ import { Plus } from "lucide-react";
 import { AdminUser } from "@/types/admin";
 import { adminService } from "@/services/admin/adminService";
 import AddAdminModal from "./AddAdminModal";
+import { useAuth } from "@/services/auth/AuthContext";
 
 const AdminAccountList: React.FC = () => {
   const navigate = useNavigate();
+  const { user, getAdminRole } = useAuth();
   const [admins, setAdmins] = useState<AdminUser[]>([]);
+  const [allAdmins, setAllAdmins] = useState<AdminUser[]>([]); // For statistics
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [roleFilter, setRoleFilter] = useState("");
-  const [page, setPage] = useState(1);
-  const rowsPerPage = 5; // Show 5 admins per page for clear pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const pageSize = 5; // Fixed page size as per API
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [isSearching, setIsSearching] = useState(false);
 
   // Temporary state for input fields
   const [tempSearchQuery, setTempSearchQuery] = useState(searchQuery);
   const [tempStatusFilter, setTempStatusFilter] = useState(statusFilter);
   const [tempRoleFilter, setTempRoleFilter] = useState(roleFilter);
 
-  // Fetch admins from API
+  // Fetch all admins for statistics
+  useEffect(() => {
+    const fetchAllAdmins = async () => {
+      try {
+        console.log("🔄 Fetching all admins for statistics...");
+        const response = await adminService.getAllAdmins();
+
+        if (response.success && response.data) {
+          console.log("📊 All admins data for stats:", response.data);
+
+          // Format the data for statistics with new API format
+          const formattedAllAdmins = response.data.map((admin) => ({
+            ...admin,
+            // Không cần map vì API đã trả về đúng format
+            role: admin.adminRole || admin["admin-role"], // Sử dụng adminRole nếu có
+            createdAt: new Date(admin.createdAt || admin["created-at"]),
+            updatedAt: new Date(admin.createdAt || admin["created-at"]),
+            status: admin.status.toLowerCase(),
+          }));
+
+          setAllAdmins(formattedAllAdmins);
+          console.log(
+            "✅ Successfully set all admins for statistics:",
+            formattedAllAdmins
+          );
+        } else {
+          console.error(
+            "❌ Failed to fetch all admins for stats:",
+            response.error
+          );
+        }
+      } catch (err: any) {
+        console.error("🔥 Exception while fetching all admins for stats:", err);
+      }
+    };
+
+    fetchAllAdmins();
+  }, []); // Only fetch once on component mount
+
+  // Fetch admins from API using pagination
   useEffect(() => {
     const fetchAdmins = async () => {
       try {
         setLoading(true);
-        const response = await adminService.getAllAdmins();
+        console.log(
+          "🔄 Fetching paginated admins - Page:",
+          currentPage,
+          "Size:",
+          pageSize
+        );
+        console.log("🔍 Applied filters:", {
+          searchQuery,
+          statusFilter,
+          roleFilter,
+        });
+
+        const response = await adminService.getPaginatedAdmins(
+          currentPage,
+          pageSize,
+          1,
+          roleFilter || undefined,
+          statusFilter || undefined,
+          searchQuery || undefined
+        );
+
         if (response.success && response.data) {
-          // Convert string dates to Date objects
-          const formattedAdmins = response.data.map((admin) => ({
+          console.log("📋 Raw paginated data:", response.data);
+          console.log("📋 API Response structure:", {
+            items: response.data.items?.length || 0,
+            totalCount:
+              response.data.totalCount || response.data["total-count"],
+            pageNumber:
+              response.data.pageNumber || response.data["page-number"],
+            pageSize: response.data.pageSize || response.data["page-size"],
+            totalPages:
+              response.data.totalPages || response.data["total-pages"],
+          });
+
+          // Không cần format data nữa vì API đã trả về đúng format
+          const formattedAdmins = response.data.items.map((admin) => ({
             ...admin,
+            // Chỉ cần chuyển đổi ngày và status
             createdAt: new Date(admin.createdAt),
-            updatedAt: new Date(admin.updatedAt),
+            updatedAt: new Date(admin.createdAt),
+            status: admin.status.toLowerCase(), // Convert "Active" to "active"
+            role: admin.adminRole, // Đảm bảo role được gán cho phù hợp
           }));
+
           setAdmins(formattedAdmins);
+
+          // Set pagination info from the new API format
+          setTotalPages(
+            response.data.totalPages || response.data["total-pages"]
+          );
+          setTotalItems(
+            response.data.totalCount || response.data["total-count"]
+          );
+
           setError(null);
+          console.log("✅ Successfully set formatted admins:", formattedAdmins);
+          console.log("✅ Pagination info:", {
+            currentPage,
+            totalPages:
+              response.data.totalPages || response.data["total-pages"],
+            totalItems:
+              response.data.totalCount || response.data["total-count"],
+          });
         } else {
+          console.error("❌ Failed to fetch admins:", response.error);
           setError(response.error || "Failed to fetch admin data");
         }
       } catch (err: any) {
+        console.error("🔥 Exception while fetching admins:", err);
         setError(err.message || "An unexpected error occurred");
-        console.error("Error fetching admins:", err);
       } finally {
         setLoading(false);
       }
     };
 
     fetchAdmins();
-  }, []);
+  }, [currentPage, pageSize, searchQuery, statusFilter, roleFilter]); // Re-fetch when page or filters change
 
-  // Apply filters only when search button is clicked
-  const filteredAdmins = admins.filter((admin) => {
-    const matchesSearch =
-      searchQuery === "" ||
-      admin.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      admin.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (admin.adminId &&
-        admin.adminId.toLowerCase().includes(searchQuery.toLowerCase()));
+  // Since we're using server-side pagination, we display all the admins from current page
+  const items = admins; // No client-side filtering needed with server-side pagination
 
-    const matchesStatus = statusFilter === "" || admin.status === statusFilter;
-    const matchesRole = roleFilter === "" || admin.role === roleFilter;
+  // Helper function to check if user is HeadAdmin
+  const isHeadAdmin = () => {
+    if (!user) return false;
+    return (
+      (user.adminRole && user.adminRole.toLowerCase() === "headadmin") ||
+      (user["admin-role"] &&
+        user["admin-role"].toLowerCase() === "headadmin") ||
+      getAdminRole()?.toLowerCase() === "headadmin"
+    );
+  };
 
-    return matchesSearch && matchesStatus && matchesRole;
-  });
-
-  const pages = Math.ceil(filteredAdmins.length / rowsPerPage);
-  const items = filteredAdmins.slice(
-    (page - 1) * rowsPerPage,
-    page * rowsPerPage
-  );
+  // Handle pagination change event
+  const handlePageChange = (page: number) => {
+    console.log("📄 Page changed to:", page);
+    setCurrentPage(page);
+  };
 
   // Handle admin creation success
   const handleAdminCreationSuccess = async () => {
     try {
       setLoading(true);
-      const response = await adminService.getAllAdmins();
+
+      // Refresh paginated data
+      const response = await adminService.getPaginatedAdmins(
+        currentPage,
+        pageSize,
+        1,
+        roleFilter || undefined,
+        statusFilter || undefined,
+        searchQuery || undefined
+      );
+
       if (response.success && response.data) {
-        // Convert string dates to Date objects
-        const formattedAdmins = response.data.map((admin) => ({
+        // Format the data according to the new API structure
+        const formattedAdmins = response.data.items.map((admin) => ({
           ...admin,
+          // Chỉ cần chuyển đổi ngày và status
           createdAt: new Date(admin.createdAt),
-          updatedAt: new Date(admin.updatedAt),
+          updatedAt: new Date(admin.createdAt),
+          status: admin.status.toLowerCase(), // Convert "Active" to "active"
+          role: admin.adminRole, // Đảm bảo role được gán cho phù hợp
         }));
+
         setAdmins(formattedAdmins);
-        // Show success message
-        setSuccessMessage("Admin created successfully!");
-        // Hide success message after 5 seconds
-        setTimeout(() => {
-          setSuccessMessage(null);
-        }, 5000);
+
+        // Update pagination info
+        setTotalPages(response.data.totalPages || response.data["total-pages"]);
+        setTotalItems(response.data.totalCount || response.data["total-count"]);
       }
+
+      // Refresh all admins for statistics
+      const allAdminsResponse = await adminService.getAllAdmins();
+      if (allAdminsResponse.success && allAdminsResponse.data) {
+        const formattedAllAdmins = allAdminsResponse.data.map((admin) => ({
+          ...admin,
+          // Chỉ cần chuyển đổi ngày và status
+          createdAt: new Date(admin.createdAt || admin["created-at"]),
+          updatedAt: new Date(admin.createdAt || admin["created-at"]),
+          status: admin.status.toLowerCase(),
+          role: admin.adminRole || admin["admin-role"], // Sử dụng adminRole nếu có
+        }));
+        setAllAdmins(formattedAllAdmins);
+      }
+
+      // Show success message
+      setSuccessMessage("Admin created successfully!");
+      // Hide success message after 5 seconds
+      setTimeout(() => {
+        setSuccessMessage(null);
+      }, 5000);
     } catch (err) {
       console.error("Error refreshing admin list:", err);
     } finally {
@@ -230,7 +361,7 @@ const AdminAccountList: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4 w-full">
           <div className="bg-[#00b4d8] rounded-lg p-4 text-white">
             <div className="text-center">
-              <div className="text-4xl font-bold mb-1">{admins.length}</div>
+              <div className="text-4xl font-bold mb-1">{allAdmins.length}</div>
               <div className="text-sm">Total Admins</div>
             </div>
           </div>
@@ -238,7 +369,10 @@ const AdminAccountList: React.FC = () => {
           <div className="bg-[#0096c7] rounded-lg p-4 text-white">
             <div className="text-center">
               <div className="text-4xl font-bold mb-1">
-                {admins.filter((a) => a.status === "active").length}
+                {
+                  allAdmins.filter((a) => a.status.toLowerCase() === "active")
+                    .length
+                }
               </div>
               <div className="text-sm">Active Admins</div>
             </div>
@@ -247,7 +381,13 @@ const AdminAccountList: React.FC = () => {
           <div className="bg-[#48cae4] rounded-lg p-4 text-white">
             <div className="text-center">
               <div className="text-4xl font-bold mb-1">
-                {admins.filter((a) => a.status === "suspended").length}
+                {
+                  allAdmins.filter(
+                    (a) =>
+                      a.status.toLowerCase() === "suspended" ||
+                      a.status.toLowerCase() === "inactive"
+                  ).length
+                }
               </div>
               <div className="text-sm">Suspended Admins</div>
             </div>
@@ -256,7 +396,14 @@ const AdminAccountList: React.FC = () => {
           <div className="bg-[#90e0ef] rounded-lg p-4 text-white">
             <div className="text-center">
               <div className="text-4xl font-bold mb-1">
-                {admins.filter((a) => a.role === "head_admin").length}
+                {
+                  allAdmins.filter(
+                    (a) =>
+                      (a.role && a.role.toLowerCase() === "headadmin") ||
+                      (a["admin-role"] &&
+                        a["admin-role"].toLowerCase() === "headadmin")
+                  ).length
+                }
               </div>
               <div className="text-sm">Head Admin</div>
             </div>
@@ -297,6 +444,17 @@ const AdminAccountList: React.FC = () => {
               placeholder="Search by ID, name, email, etc"
               value={tempSearchQuery}
               onChange={(e) => setTempSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  // Trigger search on Enter key
+                  setIsSearching(true);
+                  setSearchQuery(tempSearchQuery);
+                  setStatusFilter(tempStatusFilter);
+                  setRoleFilter(tempRoleFilter);
+                  handlePageChange(1);
+                  setTimeout(() => setIsSearching(false), 500);
+                }
+              }}
               className="w-full"
             />
           </div>
@@ -309,8 +467,8 @@ const AdminAccountList: React.FC = () => {
               onChange={(e) => setTempStatusFilter(e.target.value)}
             >
               <option value="">All Status</option>
-              <option value="active">Active</option>
-              <option value="suspended">Suspended</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
             </select>
           </div>
 
@@ -322,8 +480,8 @@ const AdminAccountList: React.FC = () => {
               onChange={(e) => setTempRoleFilter(e.target.value)}
             >
               <option value="">All Roles</option>
-              <option value="head_admin">Head Admin</option>
-              <option value="admin">Admin</option>
+              <option value="HeadAdmin">Head Admin</option>
+              <option value="Admin">Admin</option>
             </select>
           </div>
         </div>
@@ -333,31 +491,46 @@ const AdminAccountList: React.FC = () => {
             <Button
               color="primary"
               className="bg-blue-600 rounded-full text-white"
+              isLoading={isSearching}
               startContent={
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
+                !isSearching && (
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                )
               }
-              onPress={() => {
-                // Apply filters from temporary states
-                setSearchQuery(tempSearchQuery);
-                setStatusFilter(tempStatusFilter);
-                setRoleFilter(tempRoleFilter);
-                setPage(1); // Reset to first page when applying new filters
+              onPress={async () => {
+                try {
+                  setIsSearching(true);
+                  console.log("🔍 Applying search filters:", {
+                    search: tempSearchQuery,
+                    status: tempStatusFilter,
+                    role: tempRoleFilter,
+                  });
+
+                  // Apply filters from temporary states
+                  setSearchQuery(tempSearchQuery);
+                  setStatusFilter(tempStatusFilter);
+                  setRoleFilter(tempRoleFilter);
+                  handlePageChange(1); // Reset to first page when applying new filters
+                } finally {
+                  // Add slight delay to show loading state
+                  setTimeout(() => setIsSearching(false), 500);
+                }
               }}
             >
-              Search
+              {isSearching ? "Searching..." : "Search"}
             </Button>
 
             <Button
@@ -365,6 +538,8 @@ const AdminAccountList: React.FC = () => {
               variant="light"
               className="rounded-full"
               onPress={() => {
+                console.log("🧹 Clearing all filters");
+                setIsSearching(false);
                 // Clear all filters
                 setTempSearchQuery("");
                 setTempStatusFilter("");
@@ -372,21 +547,23 @@ const AdminAccountList: React.FC = () => {
                 setSearchQuery("");
                 setStatusFilter("");
                 setRoleFilter("");
-                setPage(1);
+                handlePageChange(1);
               }}
             >
               Clear Filters
             </Button>
           </div>
 
-          <Button
-            color="primary"
-            startContent={<Plus size={18} />}
-            className="bg-blue-600 rounded-full text-white"
-            onPress={() => setIsAddModalOpen(true)}
-          >
-            Add Admin
-          </Button>
+          {isHeadAdmin() && (
+            <Button
+              color="primary"
+              startContent={<Plus size={18} />}
+              className="bg-blue-600 rounded-full text-white"
+              onPress={() => setIsAddModalOpen(true)}
+            >
+              Add Admin
+            </Button>
+          )}
         </div>
       </div>
 
@@ -439,9 +616,8 @@ const AdminAccountList: React.FC = () => {
               No admin accounts found
             </h3>
             <p className="mt-1 text-sm text-gray-500">
-              {searchQuery || statusFilter || roleFilter
-                ? "Try adjusting your search or filter criteria"
-                : "Get started by creating a new admin account."}
+              {/* Note: Search filtering will be implemented when server-side filtering is available */}
+              Get started by creating a new admin account.
             </p>
           </div>
         ) : (
@@ -473,36 +649,43 @@ const AdminAccountList: React.FC = () => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {items.map((admin) => (
-                  <tr className="hover:bg-gray-50">
+                {items.map((admin, index) => (
+                  <tr key={admin.id} className="hover:bg-gray-50">
                     <td className="px-4 py-3 text-sm font-medium text-blue-600">
-                      {(page - 1) * rowsPerPage + items.indexOf(admin) + 1}
+                      {(currentPage - 1) * pageSize + index + 1}
                     </td>
                     <td className="px-4 py-3 text-sm font-medium">
-                      {admin.fullName}
-                      <div className="text-xs text-gray-500"></div>
+                      {admin.fullName || admin["full-name"] || "N/A"}
                     </td>
                     <td className="px-4 py-3 text-sm">{admin.email}</td>
                     <td className="px-4 py-3 text-sm">
                       <span
                         className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${
-                          admin.role === "head_admin"
+                          (admin.role &&
+                            admin.role.toLowerCase() === "headadmin") ||
+                          (admin["admin-role"] &&
+                            admin["admin-role"].toLowerCase() === "headadmin")
                             ? "bg-yellow-200 text-yellow-800"
-                            : admin.role === "admin"
-                              ? "bg-blue-200 text-blue-800"
-                              : "bg-gray-200 text-gray-800"
+                            : "bg-blue-200 text-blue-800"
                         }`}
                       >
-                        {admin.role === "head_admin" ? "Head Admin" : "Admin"}
+                        {(admin.role &&
+                          admin.role.toLowerCase() === "headadmin") ||
+                        (admin["admin-role"] &&
+                          admin["admin-role"].toLowerCase() === "headadmin")
+                          ? "Head Admin"
+                          : "Admin"}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-sm">
-                      {admin.createdAt.toLocaleDateString()}
+                      {admin.createdAt
+                        ? admin.createdAt.toLocaleDateString()
+                        : new Date(admin["created-at"]).toLocaleDateString()}
                     </td>
                     <td className="px-4 py-3 text-sm">
                       <span
                         className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${
-                          admin.status === "active"
+                          admin.status.toLowerCase() === "active"
                             ? "bg-green-200 text-green-800"
                             : "bg-red-200 text-red-800"
                         }`}
@@ -543,10 +726,6 @@ const AdminAccountList: React.FC = () => {
                           </svg>
                           View
                         </button>
-
-                        {/* Status change functionality removed as per request */}
-
-                        {/* Edit button removed as requested */}
                       </div>
                     </td>
                   </tr>
@@ -558,8 +737,10 @@ const AdminAccountList: React.FC = () => {
             <div className="mt-4 p-3 bg-blue-50 text-blue-800 rounded-md">
               <p>
                 <span className="font-semibold">Permission Note:</span> Only
-                Head Administrators have full system access. Head Admin accounts
-                are protected and cannot be modified.
+                Head Administrators have full system access.{" "}
+                {!isHeadAdmin() &&
+                  "You need HeadAdmin role to create new admin accounts."}{" "}
+                Head Admin accounts are protected and cannot be modified.
               </p>
             </div>
           </div>
@@ -568,9 +749,9 @@ const AdminAccountList: React.FC = () => {
         {/* Pagination */}
         <div className="mt-4 flex flex-col md:flex-row justify-between items-center text-sm w-full">
           <div className="mb-2 md:mb-0">
-            Showing {(page - 1) * rowsPerPage + 1} to{" "}
-            {Math.min(page * rowsPerPage, filteredAdmins.length)} of{" "}
-            {filteredAdmins.length} entries
+            Showing {(currentPage - 1) * pageSize + 1} to{" "}
+            {Math.min(currentPage * pageSize, totalItems)} of {totalItems}{" "}
+            entries
           </div>
 
           <div className="flex justify-end w-full md:w-auto items-center gap-2">
@@ -579,8 +760,8 @@ const AdminAccountList: React.FC = () => {
               variant="light"
               color="primary"
               className="rounded-full flex items-center"
-              isDisabled={page === 1}
-              onPress={() => setPage(Math.max(1, page - 1))}
+              isDisabled={currentPage === 1}
+              onPress={() => handlePageChange(Math.max(1, currentPage - 1))}
             >
               <svg
                 className="w-4 h-4 mr-1"
@@ -600,9 +781,9 @@ const AdminAccountList: React.FC = () => {
             </Button>
 
             <Pagination
-              total={pages}
-              page={page}
-              onChange={setPage}
+              total={totalPages}
+              page={currentPage}
+              onChange={handlePageChange}
               classNames={{
                 item: "text-black",
                 cursor: "bg-blue-900 text-white",
@@ -614,8 +795,10 @@ const AdminAccountList: React.FC = () => {
               variant="light"
               color="primary"
               className="rounded-full flex items-center"
-              isDisabled={page === pages}
-              onPress={() => setPage(Math.min(pages, page + 1))}
+              isDisabled={currentPage === totalPages}
+              onPress={() =>
+                handlePageChange(Math.min(totalPages, currentPage + 1))
+              }
             >
               Next
               <svg
@@ -637,12 +820,14 @@ const AdminAccountList: React.FC = () => {
         </div>
       </div>
 
-      {/* Add Admin Modal */}
-      <AddAdminModal
-        isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
-        onSuccess={handleAdminCreationSuccess}
-      />
+      {/* Add Admin Modal - Only show for HeadAdmin */}
+      {isHeadAdmin() && (
+        <AddAdminModal
+          isOpen={isAddModalOpen}
+          onClose={() => setIsAddModalOpen(false)}
+          onSuccess={handleAdminCreationSuccess}
+        />
+      )}
     </div>
   );
 };

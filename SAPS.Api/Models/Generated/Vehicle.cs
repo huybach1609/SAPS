@@ -30,4 +30,6 @@ public partial class Vehicle
     public virtual ICollection<ParkingSession> ParkingSessions { get; set; } = new List<ParkingSession>();
 
     public virtual ICollection<SharedVehicleRequest> SharedVehicleRequests { get; set; } = new List<SharedVehicleRequest>();
+
+    public virtual ICollection<SharedVehicle> SharedVehicles { get; set; } = new List<SharedVehicle>();
 }

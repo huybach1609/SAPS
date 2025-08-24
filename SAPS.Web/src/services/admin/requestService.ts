@@ -1,6 +1,8 @@
-import axios from "axios";
 import { ApiResponse } from "@/types/admin";
 import { apiUrl } from "@/config/base";
+import { createApiInstance, getAuthConfig } from "../utils/apiUtils";
+
+const api = createApiInstance();
 
 // Define request types
 export interface Request {
@@ -283,12 +285,12 @@ const mockRequestDetails: Record<string, RequestDetail> = {
   },
 };
 
-const api = axios.create({
-  baseURL: apiUrl,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
+// const api = axios.create({
+//   baseURL: apiUrl,
+//   headers: {
+//     "Content-Type": "application/json",
+//   },
+// });
 
 // Add token to requests
 api.interceptors.request.use((config) => {

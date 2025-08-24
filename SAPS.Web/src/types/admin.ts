@@ -1,13 +1,24 @@
 // Admin related types
 export interface AdminUser {
   id: string;
+  // Mới - camelCase
+  adminId: string;
+  adminRole: string;
   email: string;
   fullName: string;
-  adminId: string;
-  role: "admin" | "head_admin" | "moderator";
-  status: "active" | "inactive" | "suspended";
-  createdAt: Date;
-  updatedAt: Date;
+  phoneNumber?: string;
+  createdAt: string;
+  status: string;
+
+  // Cũ - kebab-case (cho backward compatibility)
+  "admin-id"?: string;
+  "admin-role"?: string;
+  "full-name"?: string;
+  "created-at"?: string;
+
+  // Computed properties
+  updatedAt?: Date;
+  role?: string;
 }
 
 export interface AdminLoginCredentials {
