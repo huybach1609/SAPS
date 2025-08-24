@@ -175,9 +175,9 @@
 
     <!-- Labels -->
     <string name="label_back">Quay lại</string>
-    <string name="title_user_verification">👤 Xác minh người dùng</string>
+    <string name="title_user_verification"> Xác minh người dùng</string>
     <string name="desc_user_verification">Xác nhận bạn muốn chia sẻ với người dùng này</string>
-    <string name="title_vehicle_access">🚗 Quyền truy cập xe</string>
+    <string name="title_vehicle_access">Quyền truy cập xe</string>
     <string name="title_access_duration">Thời lượng truy cập</string>
 
     <!-- Sample Data -->
@@ -194,11 +194,11 @@
     <string name="hint_notes_detail">Thêm ghi chú hoặc hạn chế...</string>
 
     <!-- Warning -->
-    <string name="warning_confirm_action">⚠️ Xác nhận hành động: Người dùng này sẽ có thể đỗ xe bằng xe của bạn cho đến khi bạn thu hồi quyền truy cập.</string>
+    <string name="warning_confirm_action"> Xác nhận hành động: Người dùng này sẽ có thể đỗ xe bằng xe của bạn cho đến khi bạn thu hồi quyền truy cập.</string>
 
     <!-- Actions -->
-    <string name="action_grant_access">✅ Cấp quyền truy cập</string>
-    <string name="action_cancel">❌ Hủy</string>
+    <string name="action_grant_access">Cấp quyền truy cập</string>
+    <string name="action_cancel">Hủy</string>
     <!-- Top bar -->
     <string name="cd_share">Chia sẻ</string>
 
@@ -228,7 +228,9 @@
 
     <!-- Owner note -->
     <string name="section_note">Ghi chú từ chủ xe</string>
-    <string name="owner_note_text">"Cảm ơn bạn đã sử dụng xe của tôi một cách có trách nhiệm! Hãy thoải mái sử dụng bất cứ lúc nào. Chỉ cần nhớ giữ xe sạch sẽ và đổ đầy xăng khi cần. Chúc bạn một ngày tuyệt vời!"</string>
+    <string name="owner_note_text">
+        ""
+    </string>
 
     <!-- Usage -->
     <string name="section_usage">Tóm tắt sử dụng của bạn</string>
@@ -243,7 +245,7 @@
 
     <!-- Footer -->
     <string name="return_warning">Trả lại quyền truy cập: Nếu bạn không còn cần quyền truy cập vào xe này, bạn có thể trả lại cho chủ xe. Hành động này không thể hoàn tác.</string>
-    <string name="btn_return_access_to_owner">↩️ Trả lại quyền truy cập cho chủ xe</string>
+    <string name="btn_accept">↩️ Trả lại quyền truy cập cho chủ xe</string>
     <string name="btn_cancel">Hủy</string>
 
     <!-- Recall Access Screen -->
@@ -354,6 +356,7 @@
     <string name="share_vehicle_access_activity_search_note">Nhập mã chia sẻ của người dùng (ví dụ: USER-SARAH2024)</string>
     <string name="share_vehicle_access_search_not_found_search">Không tìm thấy kết quả</string>
     <string name="share_vehicle_access_search_not_found_search_subtitle">Thử kiểm tra lại mã chia sẻ</string>
+    <string name="vehicle_detail_dialog_share">Chia sẻ</string>
 
 
 </resources>

@@ -74,6 +74,9 @@ public class MainActivity extends AppCompatActivity implements AuthenticationSer
         }
         
         initializeBottomNavigation();
+        
+        // Check if we should navigate to a specific fragment
+        handleFragmentNavigation();
     }
 
     private void setupWindowInsets() {
@@ -192,6 +195,17 @@ public class MainActivity extends AppCompatActivity implements AuthenticationSer
     // Method to remove badges
     public void removeBadgeFromNavigationItem(int menuItemId) {
         bottomNavigation.removeBadge(menuItemId);
+    }
+
+    private void handleFragmentNavigation() {
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra("selected_fragment")) {
+            String selectedFragment = intent.getStringExtra("selected_fragment");
+            if ("vehicle".equals(selectedFragment)) {
+                // Navigate to vehicle fragment
+                navigateToTab(R.id.nav_vehicle);
+            }
+        }
     }
 
     @Override

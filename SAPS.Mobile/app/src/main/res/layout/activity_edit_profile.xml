@@ -507,18 +507,17 @@
                     android:textColor="@color/md_theme_onSecondaryContainer"
                     android:textSize="16sp" />
 
-                <EditText
+                <TextView
                     android:id="@+id/input_issue_place"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:background="@android:color/transparent"
-                    android:enabled="false"
                     android:gravity="end"
                     android:paddingStart="0dp"
                     android:paddingEnd="16dp"
-                    android:textColor="#000000"
-                    android:textColorHint="#CCCCCC" />
+                    android:text="Not available from ID card"
+                    android:textColor="#999999"
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <View

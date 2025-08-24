@@ -43,14 +43,9 @@ public class PaymentActivity extends AppCompatActivity {
 
     ImageView imgQrCode;
     Button btnIHavePaid, btnBrowser;
-    TextView tvAccountNumber , tvAccountName , tvReferenceCode , tvAmount;
-
-
+    TextView tvAccountNumber, tvAccountName, tvReferenceCode, tvAmount;
     String vehicleID, sessionID;
     PaymentResponseDTO payment;
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +60,65 @@ public class PaymentActivity extends AppCompatActivity {
         setupButtonListeners();
         setupWindowInsets();
 
+    }
+
+
+    //region setup view , toolbar , btn listener
+    private void initializeViews() {
+        btnIHavePaid = findViewById(R.id.btnIHavePaid);
+        imgQrCode = findViewById(R.id.imgQrCode);
+        tvAccountName = findViewById(R.id.tvAccountName);
+        tvAccountNumber = findViewById(R.id.tvAccountNumber);
+        tvReferenceCode = findViewById(R.id.tvReferenceCode);
+        tvAmount = findViewById(R.id.tvAmount);
+        btnBrowser = findViewById(R.id.btnBrowse);
+    }
+
+    private void setupWindowInsets() {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+
+    }
+    private void setupCheckStatus(String orderCode) {
+        if (orderCode == null || orderCode.isEmpty()) return;
+        btnIHavePaid.setEnabled(true);
+        btnIHavePaid.setOnClickListener(v -> fetchCheckStatus(orderCode));
+    }
+
+    private void setupButtonListeners() {
+        btnIHavePaid.setEnabled(false);
+    }
+
+
+    private void setupActionBar() {
+        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        setSupportActionBar(toolbar);
+
+        if (getSupportActionBar() != null) {
+//            getSupportActionBar().setTitle(R.string.checkout_activity_actionbar_title);
+            getSupportActionBar().setTitle(R.string.payment_activity_actionbar_title);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true); // if you need the back arrow
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+        int surface = SurfaceColors.SURFACE_0.getColor(this);
+        getWindow().setStatusBarColor(surface);
+        getWindow().setNavigationBarColor(surface);
+
+    }
+    //endregion
+
+
+    // region load data from intent
+    private void handleIntentData() {
+        vehicleID = getIntent().getStringExtra("vehicleId");
+        sessionID = getIntent().getStringExtra("sessionID");
+        if (sessionID == null || sessionID.isEmpty()) {
+            sessionID = getIntent().getStringExtra("sessionId");
+        }
     }
 
     private void loadRequireData() {
@@ -92,26 +146,14 @@ public class PaymentActivity extends AppCompatActivity {
                 payment = paymentResponse;
                 //update payment data
                 updatePaymentData();
-                
-                         }
+
+            }
 
             @Override
             public void onFailure(Call<PaymentApiResponseDTO> call, Throwable t) {
                 Log.e(TAG, "API call failed: " + t.getMessage());
             }
         });
-    }
-
-
-
-    private void initializeViews() {
-        btnIHavePaid = findViewById(R.id.btnIHavePaid);
-        imgQrCode = findViewById(R.id.imgQrCode);
-        tvAccountName=findViewById(R.id.tvAccountName);
-        tvAccountNumber=findViewById(R.id.tvAccountNumber);
-        tvReferenceCode=findViewById(R.id.tvReferenceCode);
-        tvAmount=findViewById(R.id.tvAmount);
-        btnBrowser = findViewById(R.id.btnBrowse);
     }
 
     private void updatePaymentData() {
@@ -126,83 +168,32 @@ public class PaymentActivity extends AppCompatActivity {
         }
         setupCheckStatus(payment.getData().getOrderCode() + "");
 
-        if(payment.getData().getCheckoutUrl() != null){
+        if (payment.getData().getCheckoutUrl() != null) {
             Log.i(TAG, "updatePaymentData: " + payment.getData().getCheckoutUrl());
             btnBrowser.setOnClickListener(v -> {
                 String url = payment.getData().getCheckoutUrl();
                 Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
                 startActivity(intent);
             });
-        }else{
+        } else {
             btnBrowser.setVisibility(View.GONE);
         }
     }
-    private void setupWindowInsets() {
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-
-    }
-
-    private void handleIntentData() {
-        vehicleID = getIntent().getStringExtra("vehicleId");
-        sessionID = getIntent().getStringExtra("sessionID");
-        if (sessionID == null || sessionID.isEmpty()) {
-            sessionID = getIntent().getStringExtra("sessionId");
-        }
-    }
-
-    private void setupButtonListeners() {
-        btnIHavePaid.setEnabled(false);
-    }
 
 
-    private void setupActionBar() {
-        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
-        setSupportActionBar(toolbar);
+    //endregion
 
-        if (getSupportActionBar() != null) {
-//            getSupportActionBar().setTitle(R.string.checkout_activity_actionbar_title);
-            getSupportActionBar().setTitle(R.string.payment_activity_actionbar_title);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true); // if you need the back arrow
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-
-        int surface = SurfaceColors.SURFACE_0.getColor(this);
-        getWindow().setStatusBarColor(surface);
-        getWindow().setNavigationBarColor(surface);
-
-    }
-
-    private void generateQr(String bin, String accountNo, String accountName) {
-        BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
-        try {
-            Bitmap bitmap = barcodeEncoder.encodeBitmap(
-                    bin + accountNo + accountName,
-                    BarcodeFormat.QR_CODE,
-                    400, 400
-            );
-            imgQrCode.setImageBitmap(bitmap);
-        } catch (WriterException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void renderQrFromPayload(String payload) {
         if (payload == null || payload.isEmpty()) {
             Log.e(TAG, "QR payload is null or empty");
             return;
         }
-
         if (imgQrCode == null) {
             Log.e(TAG, "ImageView imgQrCode is null");
             return;
         }
-
         Log.d(TAG, "Generating QR code for payload: " + payload);
-
         BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
         try {
             Bitmap bitmap = barcodeEncoder.encodeBitmap(
@@ -210,52 +201,42 @@ public class PaymentActivity extends AppCompatActivity {
                     BarcodeFormat.QR_CODE,
                     400, 400
             );
-
-            if (bitmap != null) {
-                // Make sure we're on the main thread
-                runOnUiThread(() -> {
-                    imgQrCode.setImageBitmap(bitmap);
-                    imgQrCode.setVisibility(View.VISIBLE);
-                    Log.d(TAG, "QR code successfully set to ImageView");
-                });
-            } else {
-                Log.e(TAG, "Generated bitmap is null");
-            }
-
+            // Make sure we're on the main thread
+            runOnUiThread(() -> {
+                imgQrCode.setImageBitmap(bitmap);
+                imgQrCode.setVisibility(View.VISIBLE);
+            });
         } catch (WriterException e) {
             Log.e(TAG, "Error generating QR code: " + e.getMessage());
             e.printStackTrace();
         }
     }
+    private void fetchCheckStatus(String orderCode){
+        TransactionApiService txApi = ApiTest.getServiceLast(this).create(TransactionApiService.class);
+        txApi.getTransactionPayOs(orderCode).enqueue(new Callback<PaymentStatusResponseDTO>() {
+            @Override
+            public void onResponse(Call<PaymentStatusResponseDTO> call, Response<PaymentStatusResponseDTO> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+                    String statusString = response.body().getData().getStatus();
+                    PaymentStatus status = PaymentStatus.fromString(statusString);
 
-    private void setupCheckStatus(String orderCode) {
-        if (orderCode == null || orderCode.isEmpty()) return;
-        btnIHavePaid.setEnabled(true);
-        btnIHavePaid.setOnClickListener(v -> {
-            TransactionApiService txApi = ApiTest.getServiceLast(this).create(TransactionApiService.class);
-            txApi.getTransactionPayOs(orderCode).enqueue(new Callback<PaymentStatusResponseDTO>() {
-                @Override
-                public void onResponse(Call<PaymentStatusResponseDTO> call, Response<PaymentStatusResponseDTO> response) {
-                    if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
-                        String statusString = response.body().getData().getStatus();
-                        PaymentStatus status = PaymentStatus.fromString(statusString);
+                    Log.i(TAG, "onResponse: " + response.body().getData().toString());
 
-                        Log.i(TAG, "onResponse: " + response.body().getData().toString());
-
-                        handlePaymentStatus(status);
-                    } else {
-                        // API call successful but no valid data
+                    handlePaymentStatus(status);
+                } else {
+                    // API call successful but no valid data
 //                        navigateToResultActivity(PaymentStatus.FAILED);
-                    }
                 }
+            }
 
-                @Override
-                public void onFailure(Call<PaymentStatusResponseDTO> call, Throwable t) {
+            @Override
+            public void onFailure(Call<PaymentStatusResponseDTO> call, Throwable t) {
 //                    navigateToResultActivity("Failure");
-                }
-            });
+            }
         });
     }
+
+
 
     private void handlePaymentStatus(PaymentStatus status) {
         switch (status) {
@@ -285,6 +266,20 @@ public class PaymentActivity extends AppCompatActivity {
     private void navigateToResultActivity(PaymentStatus status) {
         Intent intent = new Intent(PaymentActivity.this, PaymentResultActivity.class);
         intent.putExtra("status", status);
+        
+        // Pass payment data for success screen
+        if (status == PaymentStatus.PAID && payment != null && payment.getData() != null) {
+            intent.putExtra("transactionId", payment.getData().getOrderCode());
+            intent.putExtra("amount", StringUtils.formatVNDLocale(payment.getData().getAmount()));
+            intent.putExtra("paymentMethod", "Bank Transfer");
+            intent.putExtra("vehicleInfo", vehicleID);
+            intent.putExtra("dateTime", new java.text.SimpleDateFormat("MMM dd, yyyy - HH:mm a", java.util.Locale.getDefault()).format(new java.util.Date()));
+        }
+        
+        // Pass original data for retry functionality
+        intent.putExtra("vehicleId", vehicleID);
+        intent.putExtra("sessionId", sessionID);
+        
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         startActivity(intent);
         finish();

@@ -125,7 +125,7 @@ public class InvitationActivity extends AppCompatActivity implements InvitationA
         }
         loadingDialog.show("Loading vehicles...", true, this::finish);
 
-// Updated code using the enum
+
         api.getSharedVehicles(user.getId()).enqueue(new retrofit2.Callback<java.util.List<ShareVehicleResponse>>() {
             @Override
             public void onResponse(retrofit2.Call<java.util.List<ShareVehicleResponse>> call, retrofit2.Response<java.util.List<ShareVehicleResponse>> response) {
@@ -178,7 +178,6 @@ public class InvitationActivity extends AppCompatActivity implements InvitationA
     public void onAcceptShareVehicle(ShareVehicleResponse vehicle, int position) {
         Intent detail = new Intent(this, InvitationDetailActivity.class);
         detail.putExtra("shareVehicleId", vehicle.getShareVehicleId());
-        detail.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         this.startActivity(detail);
 
 

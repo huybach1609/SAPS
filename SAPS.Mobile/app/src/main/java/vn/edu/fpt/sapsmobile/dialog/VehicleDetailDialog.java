@@ -52,6 +52,18 @@ public class VehicleDetailDialog {
         } else {
             btnAction.setVisibility(View.GONE);
         }
+        if(ShareVehicleStatus.AVAILABLE.getValue().equals(vehicle.getSharingStatus())){
+            if (currentTab == 0) {
+                btnAction.setText(R.string.vehicle_detail_dialog_share);
+                btnAction.setVisibility(View.VISIBLE);
+            }
+        }
+        if(ShareVehicleStatus.PENDING.getValue().equals(vehicle.getSharingStatus())){
+            if (currentTab == 0) {
+                btnAction.setText(R.string.btn_decline_access);
+                btnAction.setVisibility(View.VISIBLE);
+            }
+        }
 
         // Use MaterialAlertDialogBuilder for Material 3 styling
         AlertDialog dialog = new MaterialAlertDialogBuilder(context)
@@ -59,9 +71,24 @@ public class VehicleDetailDialog {
                 .create();
 
         btnAction.setOnClickListener(v -> {
+            String title = "Confirm action";
+            String message = "Are you sure you want to continue?";
+            
+            // Set specific messages based on vehicle status and action
+            if (ShareVehicleStatus.SHARED.getValue().equals(vehicle.getSharingStatus())) {
+                title = "Confirm Recall";
+                message = "Are you sure you want to recall access to this vehicle?";
+            } else if (ShareVehicleStatus.PENDING.getValue().equals(vehicle.getSharingStatus())) {
+                title = "Confirm Reject";
+                message = "Are you sure you want to reject this invitation?";
+            } else if (ShareVehicleStatus.AVAILABLE.getValue().equals(vehicle.getSharingStatus())) {
+                title = "Confirm Share";
+                message = "Are you sure you want to share this vehicle?";
+            }
+            
             new AlertDialog.Builder(v.getContext())
-                    .setTitle("Confirm action")
-                    .setMessage("Are you sure you want to continue?")
+                    .setTitle(title)
+                    .setMessage(message)
                     .setPositiveButton("Yes", (dialogInterface, which) -> {
                         vehicleDetailListener.onAction(vehicle, dialog);
                     })

@@ -30,6 +30,9 @@
             android:name=".activities.sharevehicle.ConfirmUserAccessActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.sharevehicle.ShareVehicleSuccessActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.sharevehicle.ShareVehicleAccessActivity"
             android:exported="false"
             />

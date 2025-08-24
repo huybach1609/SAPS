@@ -107,8 +107,6 @@ public class ParkingSessionParkingAdapter extends RecyclerView.Adapter<ParkingSe
             tvAmount.setText(vndFormat.format(session.getCost()));
 
             // Set status
-
-
             String statusCheck = session.getTransactionId() == null ? "Pending" : "Paid";
 
             tvStatus.setTextColor(

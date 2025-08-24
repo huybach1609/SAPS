@@ -415,7 +415,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="N/Ạ đ"
+                android:text="0đ"
                 android:textColor="@color/md_theme_primary"
                 android:textSize="16sp"
                 android:textStyle="bold" />

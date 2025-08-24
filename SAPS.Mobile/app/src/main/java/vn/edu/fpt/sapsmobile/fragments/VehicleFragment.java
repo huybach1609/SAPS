@@ -198,10 +198,11 @@ public class VehicleFragment extends Fragment {
             if (itemId == R.id.menu_register_own) {
                 startActivitySafely(new Intent(requireContext(), AddVehicleActivity.class));
                 return true;
-            } else if (itemId == R.id.menu_receive_share) {
-                startActivitySafely(new Intent(requireContext(), ShareVehicleAccessActivity.class));
-                return true;
             }
+//            else if (itemId == R.id.menu_receive_share) {
+//                startActivitySafely(new Intent(requireContext(), ShareVehicleAccessActivity.class));
+//                return true;
+//            }
             else {
                 return false;
             }

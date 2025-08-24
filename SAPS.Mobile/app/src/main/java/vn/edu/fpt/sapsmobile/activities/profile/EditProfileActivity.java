@@ -32,14 +32,19 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Callback;
 import retrofit2.Response;
+import vn.edu.fpt.sapsmobile.dtos.profile.IdCardBase64Request;
 import vn.edu.fpt.sapsmobile.network.service.ApiService;
 import vn.edu.fpt.sapsmobile.network.client.ApiTest;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.models.ClientProfile;
 import vn.edu.fpt.sapsmobile.dtos.profile.IdCardResponse;
+import vn.edu.fpt.sapsmobile.dtos.profile.VerificationResponse;
+import vn.edu.fpt.sapsmobile.dtos.profile.ClientProfileData;
 import vn.edu.fpt.sapsmobile.models.User;
+import com.google.gson.Gson;
 import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
 import vn.edu.fpt.sapsmobile.utils.TokenManager;
+import android.util.Base64;
 
 public class EditProfileActivity extends AppCompatActivity {
 
@@ -96,7 +101,7 @@ public class EditProfileActivity extends AppCompatActivity {
         placeOriginInput = findViewById(R.id.input_place_origin); // TextView
         placeResidenceInput = findViewById(R.id.input_place_residence); // TextView
         issueDateInput = findViewById(R.id.input_issue_date);     // TextView
-        issuePlaceInput = findViewById(R.id.input_issue_place);   // TextView
+        issuePlaceInput = findViewById(R.id.input_issue_place);   // TextView - now shows "Not available from ID card"
 
         saveButton = findViewById(R.id.btn_save_profile);
         btnFetchAgain = findViewById(R.id.btn_fetchdata_again);
@@ -126,6 +131,7 @@ public class EditProfileActivity extends AppCompatActivity {
             dobInput.setText(getOrEmpty(cp.getDateOfBirth()));
             placeOriginInput.setText(getOrEmpty(cp.getPlaceOfOrigin()));
             placeResidenceInput.setText(getOrEmpty(cp.getPlaceOfResidence()));
+            issuePlaceInput.setText("Not available from ID card");
 
 
 
@@ -135,20 +141,18 @@ public class EditProfileActivity extends AppCompatActivity {
         if (currentUser == null) return;
         
         // Show loading dialog
-        loadingDialog.show("Updating profile...");
+        loadingDialog.show("Verifying client...");
         
         // Check if we have ID card images to upload
         if (frontImageUri != null && backImageUri != null) {
-            // Use multipart upload with images
-            uploadProfileWithImages();
+            // Use multipart upload with images for verification
+            submitClientProfileRequest();
         } else {
             Toast.makeText(this, "Please upload Image", Toast.LENGTH_SHORT).show();
-            // Use simple JSON upload without images
-//            uploadProfileWithoutImages();
         }
     }
     
-    private void uploadProfileWithImages() {
+    private void submitClientProfileRequest() {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> {
             try {
@@ -158,37 +162,60 @@ public class EditProfileActivity extends AppCompatActivity {
 
                 // Continue with API call on main thread
                 runOnUiThread(() -> {
+                    // Create RequestBody for text fields
+                    RequestBody headerBody = RequestBody.create("Update user info", MediaType.parse("text/plain"));
+                    RequestBody descriptionBody = RequestBody.create("Client profile verification request for level 2 authentication", MediaType.parse("text/plain"));
+                    RequestBody dataTypeBody = RequestBody.create("ClientProfile", MediaType.parse("text/plain"));
+                    
+                    // Encode images to base64
+                    String frontImageBase64 = Base64.encodeToString(frontBytes, Base64.DEFAULT);
+                    String backImageBase64 = Base64.encodeToString(backBytes, Base64.DEFAULT);
+                    
+                    // Create the data object and serialize it to JSON
+                    ClientProfileData profileData = new ClientProfileData(
+                            frontImageBase64,
+                            backImageBase64,
+                            getText(idNoInput),
+                            getText(dobInput),
+                            String.valueOf("Nam".equalsIgnoreCase(getText(sexInput))),
+                            getText(nationalityInput),
+                            getText(placeOriginInput),
+                            getText(placeResidenceInput),
+                            tokenManager.getUserData().getId()
+                    );
+                    
+                    Gson gson = new Gson();
+                    String jsonData = gson.toJson(profileData);
+                    RequestBody dataBody = RequestBody.create(jsonData, MediaType.parse("text/plain"));
+
+                    // Create multipart parts for attachments
                     RequestBody frontBody = RequestBody.create(frontBytes, MediaType.parse("image/jpeg"));
                     RequestBody backBody = RequestBody.create(backBytes, MediaType.parse("image/jpeg"));
 
-                    MultipartBody.Part frontPart = MultipartBody.Part.createFormData("frontIdCardImage", "front.jpg", frontBody);
-                    MultipartBody.Part backPart = MultipartBody.Part.createFormData("backIdCardImage", "back.jpg", backBody);
+                    MultipartBody.Part frontPart = MultipartBody.Part.createFormData("Attachments", "front.jpg", frontBody);
+                    MultipartBody.Part backPart = MultipartBody.Part.createFormData("Attachments", "back.jpg", backBody);
 
                     ApiService apiService = ApiTest.getServiceLast(this).create(ApiService.class);
-                    retrofit2.Call<User> call = apiService.updateClientProfileWithImages(
-                            frontPart, backPart,
-                            getText(nameInput),
-                            getText(phoneInput),
-                            getText(idNoInput),
-                            getText(dobInput),
-                            "Nam".equalsIgnoreCase(getText(sexInput)),
-                            getText(nationalityInput),
-                            getText(placeOriginInput),
-                            getText(placeResidenceInput)
+                    retrofit2.Call<VerificationResponse> call = apiService.submitClientProfileRequest(
+                            headerBody,
+                            descriptionBody,
+                            dataTypeBody,
+                            dataBody,
+                            frontPart,
+                            backPart
                     );
 
-                    call.enqueue(new retrofit2.Callback<User>() {
+                    call.enqueue(new retrofit2.Callback<VerificationResponse>() {
                         @Override
-                        public void onResponse(retrofit2.Call<User> call, retrofit2.Response<User> response) {
+                        public void onResponse(retrofit2.Call<VerificationResponse> call, retrofit2.Response<VerificationResponse> response) {
                             loadingDialog.dismiss();
 
                             if (response.isSuccessful() && response.body() != null) {
-                                User updatedUser = response.body();
-                                tokenManager.saveUserData(updatedUser);
-                                Toast.makeText(EditProfileActivity.this, "Profile updated successfully!", Toast.LENGTH_SHORT).show();
+                                VerificationResponse verificationResponse = response.body();
+                                Toast.makeText(EditProfileActivity.this, "Client profile request submitted successfully!", Toast.LENGTH_SHORT).show();
                                 finish();
                             } else {
-                                String errorMessage = "Failed to update profile";
+                                String errorMessage = "Failed to submit client profile request";
                                 if (response.code() == 400) {
                                     errorMessage = "Invalid data provided";
                                 } else if (response.code() == 401) {
@@ -197,12 +224,12 @@ public class EditProfileActivity extends AppCompatActivity {
                                     errorMessage = "Server error occurred";
                                 }
                                 Toast.makeText(EditProfileActivity.this, errorMessage, Toast.LENGTH_LONG).show();
-                                Log.e("PROFILE_UPDATE_ERROR", "Code: " + response.code() + ", Message: " + response.message());
+                                Log.e("CLIENT_PROFILE_REQUEST_ERROR", "Code: " + response.code() + ", Message: " + response.message());
                             }
                         }
 
                         @Override
-                        public void onFailure(retrofit2.Call<User> call, Throwable t) {
+                        public void onFailure(retrofit2.Call<VerificationResponse> call, Throwable t) {
                             loadingDialog.dismiss();
                             String errorMessage = "Network error occurred";
                             if (t instanceof java.net.SocketTimeoutException) {
@@ -213,11 +240,10 @@ public class EditProfileActivity extends AppCompatActivity {
                                 errorMessage = "Cannot connect to server. Please check your connection.";
                             }
                             Toast.makeText(EditProfileActivity.this, errorMessage, Toast.LENGTH_LONG).show();
-                            Log.e("PROFILE_UPDATE_ERROR", "Error updating profile: " + t.getMessage(), t);
+                            Log.e("CLIENT_PROFILE_REQUEST_ERROR", "Error submitting client profile request: " + t.getMessage(), t);
                         }
                     });
                 });
-
             } catch (IOException e) {
                 runOnUiThread(() -> {
                     loadingDialog.dismiss();
@@ -341,14 +367,34 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private void fetchOcrData(byte[] frontBytes, byte[] backBytes) {
         try {
-            RequestBody frontBody = RequestBody.create(frontBytes, MediaType.parse("image/jpeg"));
-            RequestBody backBody = RequestBody.create(backBytes, MediaType.parse("image/jpeg"));
 
-            MultipartBody.Part frontPart = MultipartBody.Part.createFormData("front", "front.jpg", frontBody);
-            MultipartBody.Part backPart = MultipartBody.Part.createFormData("back", "back.jpg", backBody);
+            // Detect actual image format or use appropriate MediaType
+            MediaType imageType = MediaType.parse("image/jpeg"); // or "image/png"
 
-            ApiService apiService = ApiTest.getServiceMockApi(this).create(ApiService.class);
+
+            RequestBody frontBody = RequestBody.create(frontBytes, imageType);
+            RequestBody backBody = RequestBody.create(backBytes, imageType);
+
+            MultipartBody.Part frontPart = MultipartBody.Part.createFormData("FrontImage", "front.jpg", frontBody);
+            MultipartBody.Part backPart = MultipartBody.Part.createFormData("BackImage", "back.jpg", backBody);
+
+            ApiService apiService = ApiTest.getServiceLast(this).create(ApiService.class);
             retrofit2.Call<IdCardResponse> call = apiService.getInfoIdCard(frontPart, backPart);
+            // Convert byte arrays to Base64
+//            String frontBase64 = Base64.encodeToString(frontBytes, Base64.NO_WRAP);
+//            String backBase64 = Base64.encodeToString(backBytes, Base64.NO_WRAP);
+//
+//            // Create request object
+//            IdCardBase64Request request = new IdCardBase64Request(
+//                    frontBase64,
+//                    backBase64,
+//                    "jpeg",
+//                    "jpeg"
+//            );
+//            // Make API call
+//            ApiService apiService = ApiTest.getServiceLast(this).create(ApiService.class);
+//            retrofit2.Call<IdCardResponse> call = apiService.getInfoIdCardBase64(request);
+
 
             call.enqueue(new Callback<IdCardResponse>() {
                 @Override
@@ -402,16 +448,15 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private void fillFromOcr(IdCardResponse idCard) {
         // Defensive: don't assume any field exists
-        nameInput.setText(getOrEmpty(idCard.getName()));
+        nameInput.setText(getOrEmpty(idCard.getFullName()));
         dobInput.setText(getOrEmpty(idCard.getDateOfBirth()));
-        phoneInput.setText(getOrEmpty(idCard.getPhone()));
         placeOriginInput.setText(getOrEmpty(idCard.getPlaceOfOrigin()));
         placeResidenceInput.setText(getOrEmpty(idCard.getPlaceOfResidence()));
-        idNoInput.setText(getOrEmpty(idCard.getIdNumber()));
+        idNoInput.setText(getOrEmpty(idCard.getCitizenId()));
         sexInput.setText(getOrEmpty(idCard.getSex()));
         nationalityInput.setText(getOrEmpty(idCard.getNationality()));
-        issueDateInput.setText(getOrEmpty(idCard.getIssueDate()));
-        issuePlaceInput.setText(getOrEmpty(idCard.getIssuePlace()));
+        issueDateInput.setText(getOrEmpty(idCard.getExpiryDate()));
+        issuePlaceInput.setText("Not available from ID card");
     }
 
     private byte[] readAllBytesFromUri(Uri uri) throws IOException {
