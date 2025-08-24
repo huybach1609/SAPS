@@ -1,6 +1,9 @@
 package vn.edu.fpt.sapsmobile.utils;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.Duration;
@@ -10,94 +13,267 @@ import java.util.Locale;
 
 public class DateTimeHelper {
 
-    // Kết quả: 14h30 ngày 03/07/2025
+    // Output format for Vietnamese locale
     private static final DateTimeFormatter OUTPUT_FORMAT =
-            DateTimeFormatter.ofPattern("HH'h'mm 'ngày' dd/MM/yyyy", new Locale("vi"));
+            DateTimeFormatter.ofPattern("HH'h'mm dd/MM/yyyy", new Locale("vi"));
+    private static final ZoneId VIETNAM_ZONE = ZoneId.of("Asia/Ho_Chi_Minh");
 
-    // Một số pattern input hay gặp (ISO chính, hoặc không có giây)
+    // Input formatters for various datetime patterns
     private static final List<DateTimeFormatter> INPUT_FORMATTERS = new ArrayList<>();
+
     static {
         INPUT_FORMATTERS.add(DateTimeFormatter.ISO_LOCAL_DATE_TIME);            // 2025-07-03T14:30:00
         INPUT_FORMATTERS.add(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")); // 2025-07-03T14:30
         INPUT_FORMATTERS.add(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")); // 2025-07-03 14:30:00
         INPUT_FORMATTERS.add(DateTimeFormatter.ofPattern("yyyy-MM-dd"));         // 2025-07-03 (-> 00:00)
+        // Add UTC formats
+        INPUT_FORMATTERS.add(DateTimeFormatter.ISO_OFFSET_DATE_TIME);            // 2025-07-03T14:30:00Z or +00:00
+        INPUT_FORMATTERS.add(DateTimeFormatter.ISO_INSTANT);                     // 2025-07-03T14:30:00Z
     }
 
     /**
-     * Format ISO (hoặc các pattern khác trong list) thành "14h30 ngày 03/07/2025".
-     * Nếu parse fail trả về input gốc (hoặc "" nếu input null/empty).
+     * Format datetime string (supports UTC input) to local device timezone.
+     * Input can be UTC (with Z suffix or +00:00) or local datetime.
+     * Output: "14h30 ngày 03/07/2025" or localized format.
      */
+//    public static String formatDateTime(String input) {
+//        if (input == null || input.trim().isEmpty()) return "";
+//
+//        ZonedDateTime zonedDateTime = tryParseToZonedDateTime(input);
+//        if (zonedDateTime == null) return input;
+//
+//        // Convert to device timezone
+//        ZonedDateTime localZonedDateTime = zonedDateTime.withZoneSameInstant(ZoneId.systemDefault());
+//
+//        // Format using default locale
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm, dd MMMM yyyy", Locale.getDefault());
+//        return localZonedDateTime.format(formatter);
+//    }
+
+    /**
+     * Format datetime string (supports UTC input) to Vietnam timezone (UTC+7).
+     * Input can be UTC (with Z suffix or +00:00) or local datetime.
+     * Output: "14h30 ngày 03/07/2025" in Vietnam timezone.
+     */
+
+    /**
+     * Format datetime string (supports UTC input) to Vietnam timezone (UTC+7).
+     * Input can be UTC (with Z suffix or +00:00) or local datetime.
+     * Output: "14h30 ngày 03/07/2025" in Vietnam timezone.
+     */
+    private static ZonedDateTime changeToUCT7(String input) {
+
+        LocalDateTime localDateTime = LocalDateTime.parse(input);
+
+        // Treat the input as UTC (map to UTC 0)
+        ZonedDateTime entry = localDateTime.atZone(ZoneOffset.UTC);
+        if (entry == null) return null;
+        ZonedDateTime vietnamDateTime = entry.withZoneSameInstant(VIETNAM_ZONE);
+
+        return vietnamDateTime;
+    }
+
+
     public static String formatDateTime(String input) {
         if (input == null || input.trim().isEmpty()) return "";
 
-        LocalDateTime dt = tryParseToLocalDateTime(input);
-        if (dt == null) return input; // or "", or "—"
+        try {
+            // Convert to Vietnam timezone (UTC+7)
+            ZonedDateTime vietnamDateTime = changeToUCT7(input).withZoneSameInstant(VIETNAM_ZONE);
 
-        // Pattern without hardcoded language words
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm, dd MMMM yyyy", Locale.getDefault());
-
-        return dt.format(formatter);
+            // Format output
+            return vietnamDateTime.format(OUTPUT_FORMAT);
+        } catch (DateTimeParseException e) {
+            e.printStackTrace();
+            return input; // fallback
+        }
     }
 
 
     /**
-     * Trả về duration giữa entry và exit theo format "Xh Ym".
-     * Nếu exit = null => dùng thời điểm hiện tại.
-     * Nếu parse fail => trả về "".
+     * Format datetime string specifically for Vietnamese locale.
+     * Handles UTC to local timezone conversion.
+     */
+    public static String formatDateTimeVietnamese(String input) {
+        if (input == null || input.trim().isEmpty()) return "";
+
+        ZonedDateTime zonedDateTime = tryParseToZonedDateTime(input);
+        if (zonedDateTime == null) return input;
+
+        // Convert to device timezone
+        ZonedDateTime localZonedDateTime = zonedDateTime.withZoneSameInstant(ZoneId.systemDefault());
+
+        return localZonedDateTime.format(OUTPUT_FORMAT);
+    }
+
+    /**
+     * Convert UTC datetime string to device local timezone.
+     * Returns LocalDateTime in device timezone.
+     */
+    public static LocalDateTime utcToLocal(String utcDateTimeStr) {
+        if (utcDateTimeStr == null || utcDateTimeStr.trim().isEmpty()) return null;
+
+        ZonedDateTime utcDateTime = tryParseAsUtc(utcDateTimeStr);
+        if (utcDateTime == null) return null;
+
+        return utcDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime();
+    }
+
+    /**
+     * Convert local datetime to UTC string.
+     */
+    public static String localToUtc(LocalDateTime localDateTime) {
+        if (localDateTime == null) return "";
+
+        ZonedDateTime zonedLocal = localDateTime.atZone(ZoneId.systemDefault());
+        ZonedDateTime utcDateTime = zonedLocal.withZoneSameInstant(ZoneOffset.UTC);
+
+        return utcDateTime.format(DateTimeFormatter.ISO_INSTANT);
+    }
+
+    /**
+     * Calculate duration between entry and exit times.
+     * Both inputs can be UTC or local time - they will be properly converted.
      */
     public static String calculateDuration(String entryDateTimeStr, String exitDateTimeStr) {
-        LocalDateTime entry = LocalDateTime.parse(entryDateTimeStr);
-        LocalDateTime exit = LocalDateTime.parse(exitDateTimeStr);
+        if (entryDateTimeStr == null || entryDateTimeStr.trim().isEmpty()) return "";
 
-        Duration duration = Duration.between(entry, exit);
+
+        ZonedDateTime vietnamDateTime = changeToUCT7(entryDateTimeStr).withZoneSameInstant(VIETNAM_ZONE);
+
+        ZonedDateTime exit;
+        if (exitDateTimeStr == null || exitDateTimeStr.trim().isEmpty()) {
+            // Use current time in device timezone
+            exit = ZonedDateTime.now(ZoneId.systemDefault());
+        } else {
+            exit = tryParseToZonedDateTime(exitDateTimeStr);
+            if (exit == null) return "";
+        }
+
+        // Convert both to same timezone for accurate calculation
+        ZonedDateTime entryLocal = vietnamDateTime.withZoneSameInstant(ZoneId.systemDefault());
+        ZonedDateTime exitLocal = exit.withZoneSameInstant(ZoneId.systemDefault());
+
+        Duration duration = Duration.between(entryLocal, exitLocal);
 
         long totalMinutes = duration.toMinutes();
+        if (totalMinutes < 0) return ""; // Invalid duration
+
         long days = totalMinutes / (24 * 60);
         long hours = (totalMinutes % (24 * 60)) / 60;
         long minutes = totalMinutes % 60;
 
         StringBuilder result = new StringBuilder();
-        if (days > 0) result.append(days).append("d");
-        if (hours > 0) result.append(hours).append("h");
+        if (days > 0) result.append(days).append("d ");
+        if (hours > 0) result.append(hours).append("h ");
         if (minutes > 0) result.append(minutes).append("m");
 
-        return result.toString();
+        return result.toString().trim();
     }
 
     /**
-     * Chỉ format phần ngày: "Jul 3, 2025" (hoặc bạn đổi pattern)
+     * Format only the date part in local timezone.
      */
     public static String formatDate(String dateTime) {
         if (dateTime == null || dateTime.trim().isEmpty()) return "";
-        LocalDateTime dt = tryParseToLocalDateTime(dateTime);
-        if (dt == null) return dateTime;
-        DateTimeFormatter out = DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.ENGLISH);
-        return dt.format(out);
+
+        ZonedDateTime zonedDateTime = tryParseToZonedDateTime(dateTime);
+        if (zonedDateTime == null) return dateTime;
+
+        ZonedDateTime localZonedDateTime = zonedDateTime.withZoneSameInstant(ZoneId.systemDefault());
+        DateTimeFormatter out = DateTimeFormatter.ofPattern("MMM d, yyyy", Locale.getDefault());
+        return localZonedDateTime.format(out);
     }
 
-    // --- Helper private ---
+    /**
+     * Get current UTC time as string.
+     */
+    public static String getCurrentUtcString() {
+        return ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_INSTANT);
+    }
+
+    /**
+     * Get current local time as string.
+     */
+    public static String getCurrentLocalString() {
+        return LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+    }
+
+    /**
+     * Check if a datetime string represents UTC time.
+     */
+    public static boolean isUtcFormat(String dateTimeStr) {
+        if (dateTimeStr == null || dateTimeStr.trim().isEmpty()) return false;
+        String trimmed = dateTimeStr.trim();
+        return trimmed.endsWith("Z") || trimmed.contains("+00:00") || trimmed.contains("-00:00");
+    }
+
+    // --- Helper methods ---
+
+    private static ZonedDateTime tryParseToZonedDateTime(String input) {
+        String trimmed = input.trim();
+
+        // Try parsing with timezone info first
+        try {
+            return ZonedDateTime.parse(trimmed, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+        } catch (DateTimeParseException ignored) {
+        }
+
+        try {
+            return ZonedDateTime.parse(trimmed, DateTimeFormatter.ISO_ZONED_DATE_TIME);
+        } catch (DateTimeParseException ignored) {
+        }
+
+        // Try as instant (UTC)
+        try {
+            return ZonedDateTime.parse(trimmed, DateTimeFormatter.ISO_INSTANT.withZone(ZoneOffset.UTC));
+        } catch (DateTimeParseException ignored) {
+        }
+
+        // If no timezone info, try parsing as local datetime and assume device timezone
+        LocalDateTime localDateTime = tryParseToLocalDateTime(trimmed);
+        if (localDateTime != null) {
+            return localDateTime.atZone(ZoneId.systemDefault());
+        }
+
+        return null;
+    }
+
+    private static ZonedDateTime tryParseAsUtc(String input) {
+        String trimmed = input.trim();
+
+        // Add Z suffix if not present to indicate UTC
+        if (!isUtcFormat(trimmed) && !trimmed.contains("+") && !trimmed.contains("Z")) {
+            trimmed = trimmed + "Z";
+        }
+
+        try {
+            return ZonedDateTime.parse(trimmed, DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneOffset.UTC));
+        } catch (DateTimeParseException ignored) {
+        }
+
+        try {
+            return ZonedDateTime.parse(trimmed, DateTimeFormatter.ISO_INSTANT.withZone(ZoneOffset.UTC));
+        } catch (DateTimeParseException ignored) {
+        }
+
+        return null;
+    }
+
     private static LocalDateTime tryParseToLocalDateTime(String input) {
         String trimmed = input.trim();
-        // nếu input có timezone (z hay offset) — LocalDateTime.parse sẽ fail, có thể strip offset/globally handle
-        // hiện tại giả định input là local datetime (no offset). Nếu cần xử lý offset -> dùng OffsetDateTime.
+
         for (DateTimeFormatter f : INPUT_FORMATTERS) {
             try {
-                // Nếu pattern là "yyyy-MM-dd" -> parse to LocalDateTime by adding 00:00
                 if (f == DateTimeFormatter.ofPattern("yyyy-MM-dd")) {
                     java.time.LocalDate date = java.time.LocalDate.parse(trimmed, f);
                     return date.atStartOfDay();
                 }
                 return LocalDateTime.parse(trimmed, f);
-            } catch (DateTimeParseException ignored) { }
+            } catch (DateTimeParseException ignored) {
+            }
         }
 
-        // Thử fallback: nếu chuỗi chứa 'T' và có offset (example: 2025-07-03T14:30:00+07:00)
-        try {
-            java.time.OffsetDateTime odt = java.time.OffsetDateTime.parse(trimmed);
-            return odt.toLocalDateTime();
-        } catch (DateTimeParseException ignored) { }
-
-        // Không parse được
         return null;
     }
 }

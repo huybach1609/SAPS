@@ -13,8 +13,9 @@ public interface ISharedvehicle {
     Call<ShareCodeReturnDto> getShareCode();
 
     @GET("/api/sharedVehicle")
-    Call<List<VehicleSummaryDto>> getMyVehicles(
+    Call<List<VehicleSummaryDto>> getShareVehicles(
             @Query("sharedPersonId") String sharedPersonId
     );
+
 
 }

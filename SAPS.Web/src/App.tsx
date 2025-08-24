@@ -1,6 +1,9 @@
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/services/auth/AuthContext";
-import { ParkingLotProvider, useParkingLot } from "@/pages/ParkingLotOwner/ParkingLotContext";
+import {
+  ParkingLotProvider,
+  useParkingLot,
+} from "@/pages/ParkingLotOwner/ParkingLotContext";
 
 import IndexPage from "@/pages/index";
 import DocsPage from "@/pages/docs";
@@ -42,11 +45,14 @@ import PaymentSubscriptionComponent from "./pages/ParkingLotOwner/Subscription/P
 // Protected Route Component
 interface ProtectedRouteProps {
   children: React.ReactNode;
-  requiredRole?: 'admin' | 'parkinglotowner';
+  requiredRole?: "admin" | "parkinglotowner";
 }
 
-const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { isAuthenticated, loading, getRole } = useAuth();
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
+  children,
+  requiredRole,
+}) => {
+  const { isAuthenticated, loading, getUserRole } = useAuth();
 
   if (loading) {
     return <div>Loading...</div>;
@@ -55,9 +61,11 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   if (!isAuthenticated) {
     return <Navigate to="/auth/login" replace />;
   }
-  // console.log(getRole());
 
-  if (getRole() !== ADMIN_ROLE && getRole() !== OWNER_ROLE) {
+  const userRole = getUserRole();
+
+  // If requiredRole is specified, check if user has that role
+  if (requiredRole && userRole !== requiredRole) {
     return <Navigate to="/unauthorized" replace />;
   }
 
@@ -70,7 +78,10 @@ interface ActiveRouteProps {
   requireActive?: boolean;
 }
 
-const ActiveRoute: React.FC<ActiveRouteProps> = ({ children, requireActive = true }) => {
+const ActiveRoute: React.FC<ActiveRouteProps> = ({
+  children,
+  requireActive = true,
+}) => {
   const { selectedParkingLot, loading } = useParkingLot();
 
   if (loading) {
@@ -78,12 +89,12 @@ const ActiveRoute: React.FC<ActiveRouteProps> = ({ children, requireActive = tru
   }
 
   // If requireActive is true, check if parking lot is active
-  if (requireActive && selectedParkingLot?.status !== 'Active') {
+  if (requireActive && selectedParkingLot?.status !== "Active") {
     return <Navigate to="/owner/subscription" replace />;
   }
 
   // If requireActive is false, check if parking lot is inactive
-  if (!requireActive && selectedParkingLot?.status === 'Active') {
+  if (!requireActive && selectedParkingLot?.status === "Active") {
     return <Navigate to="/owner/parking-info" replace />;
   }
 
@@ -91,20 +102,22 @@ const ActiveRoute: React.FC<ActiveRouteProps> = ({ children, requireActive = tru
 };
 
 const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated, loading, getRole } = useAuth();
+  const { isAuthenticated, loading, getUserRole, getAdminRole } = useAuth();
 
   if (loading) {
     return <div>Loading...</div>; // Or your loading component
   }
 
   if (isAuthenticated) {
-    switch (getRole()) {
-      case 'admin':
-        return <Navigate to="/admin/home" replace />;
-      case 'parkinglotowner':
-        return <Navigate to="/owner/parking-info" replace />;
-      default:
-        return <Navigate to="/unauthorized" replace />;
+    const role = getUserRole();
+    const adminRole = getAdminRole();
+
+    if (role === "admin") {
+      return <Navigate to="/admin/home" replace />;
+    } else if (role === "parkinglotowner") {
+      return <Navigate to="/owner/parking-info" replace />;
+    } else {
+      return <Navigate to="/unauthorized" replace />;
     }
   }
 
@@ -112,34 +125,39 @@ const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 };
 
 const RoleBasedRedirect: React.FC = () => {
-  const {  isAuthenticated, loading, getRole } = useAuth();
+  const { isAuthenticated, loading, getUserRole, getAdminRole } = useAuth();
 
   if (loading) {
-    return <div>Loading...</div>; // Or your loading component
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+      </div>
+    );
   }
 
   if (!isAuthenticated) {
     return <Navigate to="/auth/login" replace />;
   }
 
-  switch (getRole()) {
-    case 'admin':
-      return <Navigate to="/admin/home" replace />;
-    case 'parkinglotowner':
-      return <Navigate to="/owner/parking-info" replace />;
-    default:
-      return <Navigate to="/unauthorized" replace />;
+  const role = getUserRole();
+  const adminRole = getAdminRole();
+
+  // Kiểm tra role và AdminRole để điều hướng đúng
+  if (role === "admin") {
+    return <Navigate to="/admin/home" replace />;
+  } else if (role === "parkinglotowner") {
+    return <Navigate to="/owner/parking-info" replace />;
+  } else {
+    return <Navigate to="/unauthorized" replace />;
   }
 };
 
-const OwnerParkingLotProviderWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+const OwnerParkingLotProviderWrapper: React.FC<{
+  children: React.ReactNode;
+}> = ({ children }) => {
   const { user } = useAuth();
   const userId = user?.id || "";
-  return (
-    <ParkingLotProvider userId={userId}>
-      {children}
-    </ParkingLotProvider>
-  );
+  return <ParkingLotProvider userId={userId}>{children}</ParkingLotProvider>;
 };
 
 function App() {
@@ -147,7 +165,7 @@ function App() {
     <AuthProvider>
       <Routes>
         {/* Public Routes */}
-        <Route path="/" element={<RoleBasedRedirect />} />
+        <Route path="/" element={<Navigate to="/auth/login" replace />} />
         <Route path="/docs" element={<DocsPage />} />
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/blog" element={<BlogPage />} />
@@ -178,8 +196,8 @@ function App() {
         <Route
           path="/admin"
           element={
-            <ProtectedRoute >
-              <DefaultLayout  title="SAPLS Admin Dashboard">
+            <ProtectedRoute requiredRole="admin">
+              <DefaultLayout title="SAPLS Admin Dashboard">
                 <Outlet />
               </DefaultLayout>
             </ProtectedRoute>
@@ -207,7 +225,7 @@ function App() {
         <Route
           path="/owner/*"
           element={
-            <ProtectedRoute >
+            <ProtectedRoute requiredRole="parkinglotowner">
               <OwnerParkingLotProviderWrapper>
                 <Outlet />
               </OwnerParkingLotProviderWrapper>
@@ -216,52 +234,69 @@ function App() {
         >
           <Route path="home" element={<OwnerDashboard />} />
           <Route path="parking-info" element={<ParkingLotInfo />} />
-          <Route path="staff" element={
-            <StaffManagement />
-          } />
-          <Route path="staff/:parkingLotId/:staffId" element={
-            <StaffDetailScreen />
-          } />
-          <Route path="history" element={
-            <ParkingHistory />
-          } />
-          <Route path="history/:parkingLotId/:sessionId" element={
-            <ParkingHistoryDetail />
-          } />
-          <Route path="incidents" element={
-            <ActiveRoute requireActive={true}>
-              <IncidentReports />
-            </ActiveRoute>
-          } />
-          <Route path="incidents/:parkingLotId/:incidentId" element={
-            <ActiveRoute requireActive={true}>
-              <IncidentDetail />
-            </ActiveRoute>
-          } />
-          <Route path="whitelist" element={
-            <ActiveRoute requireActive={true}>
-              <WhitelistManagement />
-            </ActiveRoute>
-          } />
-          <Route path="parking-fee" element={
-            <ActiveRoute requireActive={true}>
-              <ParkingFeeManagement />
-            </ActiveRoute>
-          } />
+          <Route path="staff" element={<StaffManagement />} />
+          <Route
+            path="staff/:parkingLotId/:staffId"
+            element={<StaffDetailScreen />}
+          />
+          <Route path="history" element={<ParkingHistory />} />
+          <Route
+            path="history/:parkingLotId/:sessionId"
+            element={<ParkingHistoryDetail />}
+          />
+          <Route
+            path="incidents"
+            element={
+              <ActiveRoute requireActive={true}>
+                <IncidentReports />
+              </ActiveRoute>
+            }
+          />
+          <Route
+            path="incidents/:parkingLotId/:incidentId"
+            element={
+              <ActiveRoute requireActive={true}>
+                <IncidentDetail />
+              </ActiveRoute>
+            }
+          />
+          <Route
+            path="whitelist"
+            element={
+              <ActiveRoute requireActive={true}>
+                <WhitelistManagement />
+              </ActiveRoute>
+            }
+          />
+          <Route
+            path="parking-fee"
+            element={
+              <ActiveRoute requireActive={true}>
+                <ParkingFeeManagement />
+              </ActiveRoute>
+            }
+          />
           <Route path="upload-file" element={<UploadFile />} />
-          <Route path="subscription" element={
-            // <ActiveRoute requireActive={false}>
-            <SubscriptionPricingSelect />
-            // </ActiveRoute>
-          } />
-          <Route path="staff-shift" element={
-            <ActiveRoute requireActive={true}>
-              <StaffShiftManagement />
-            </ActiveRoute>
-          } />
-          <Route path="subscription/payment/:subscriptionId" element={
-            <PaymentSubscriptionComponent />
-          } />
+          <Route
+            path="subscription"
+            element={
+              // <ActiveRoute requireActive={false}>
+              <SubscriptionPricingSelect />
+              // </ActiveRoute>
+            }
+          />
+          <Route
+            path="staff-shift"
+            element={
+              <ActiveRoute requireActive={true}>
+                <StaffShiftManagement />
+              </ActiveRoute>
+            }
+          />
+          <Route
+            path="subscription/payment/:subscriptionId"
+            element={<PaymentSubscriptionComponent />}
+          />
         </Route>
 
         {/* Dashboard redirect route */}

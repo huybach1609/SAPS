@@ -29,9 +29,13 @@ public partial class User
 
     public virtual ParkingLotOwnerProfile? ParkingLotOwnerProfile { get; set; }
 
+    public virtual ICollection<ParkingSession> ParkingSessions { get; set; } = new List<ParkingSession>();
+
     public virtual ICollection<Request> Requests { get; set; } = new List<Request>();
 
     public virtual StaffProfile? StaffProfile { get; set; }
+
+    public virtual ICollection<Subscription> Subscriptions { get; set; } = new List<Subscription>();
 
     public virtual ICollection<Role> Roles { get; set; } = new List<Role>();
 }

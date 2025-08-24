@@ -16,6 +16,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import vn.edu.fpt.sapsmobile.dtos.auth.AuthResponse;
+import vn.edu.fpt.sapsmobile.dtos.auth.GoogleAuthRequest;
 import vn.edu.fpt.sapsmobile.dtos.auth.GoogleTokenRequest;
 import vn.edu.fpt.sapsmobile.dtos.auth.LoginRequest;
 import vn.edu.fpt.sapsmobile.dtos.auth.LoginResponse;
@@ -36,34 +37,12 @@ import vn.edu.fpt.sapsmobile.utils.TokenManager;
 
 public class AuthenticationService implements SessionActions {
     private static final String TAG = "AuthenticationService";
-    private static final String SERVER_CLIENT_ID = BuildConfig.SERVER_CLIENT_ID;
-
-    private final Context context;
-    private final GoogleSignInClient googleSignInClient;
-    private final AuthApi authApi;
-    private final UserApiService userApiService;
-    private final ClientApiService clientApiService;
-    private final TokenManager tokenManager;
-    private AuthCallback authCallback;
+    private static final String GOOGLE_CLIENT_ID = BuildConfig.GOOGLE_CLIENT_ID;
     private static final int LEEWAY_SECONDS = 30;
 
-    @Override
-    public void logoutNow(String reason) {
-        // Optional: Log the reason
-        Log.w(TAG, "Logging out: " + reason);
-
-//         Clear Google + local tokens
-         googleSignInClient.signOut().addOnCompleteListener(task -> {
-             tokenManager.clearTokens();
-
-             // Navigate to login screen (adjust class name)
-             Intent i = new Intent(context, LoginActivity.class);
-             i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-             context.startActivity(i);
-         });
-    }
-
-    // Interfaces
+    // ============================================================================
+    // INTERFACES
+    // ============================================================================
     public interface AuthCallback {
         void onAuthSuccess(User user);
         void onAuthFailure(String error);
@@ -79,7 +58,20 @@ public class AuthenticationService implements SessionActions {
         void onFailure(String error);
     }
 
-    // Constructors
+    // ============================================================================
+    // INSTANCE VARIABLES
+    // ============================================================================
+    private final Context context;
+    private final GoogleSignInClient googleSignInClient;
+    private final AuthApi authApi;
+    private final UserApiService userApiService;
+    private final ClientApiService clientApiService;
+    private final TokenManager tokenManager;
+    private AuthCallback authCallback;
+
+    // ============================================================================
+    // CONSTRUCTORS
+    // ============================================================================
     public AuthenticationService(Context context, AuthCallback callback) {
         this(context);
         this.authCallback = callback;
@@ -88,7 +80,7 @@ public class AuthenticationService implements SessionActions {
     public AuthenticationService(Context context) {
         this.context = context;
         this.tokenManager = new TokenManager(context);
-         this.googleSignInClient = initializeGoogleSignInClient();
+        this.googleSignInClient = initializeGoogleSignInClient();
 
         Retrofit retrofit = ApiTest.getServiceLast(context);
         this.authApi = retrofit.create(AuthApi.class);
@@ -96,10 +88,12 @@ public class AuthenticationService implements SessionActions {
         this.clientApiService = retrofit.create(ClientApiService.class);
     }
 
-    // Google Sign-In Setup
+    // ============================================================================
+    // GOOGLE SIGN-IN SETUP
+    // ============================================================================
     private GoogleSignInClient initializeGoogleSignInClient() {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(SERVER_CLIENT_ID)
+                .requestIdToken(GOOGLE_CLIENT_ID)
                 .requestEmail()
                 .build();
         return GoogleSignIn.getClient(context, gso);
@@ -109,7 +103,9 @@ public class AuthenticationService implements SessionActions {
         return googleSignInClient.getSignInIntent();
     }
 
-    //region Google Sign-In Flow
+    // ============================================================================
+    // GOOGLE AUTHENTICATION FLOW
+    // ============================================================================
     public void handleSignInResult(Intent data) {
         if (authCallback == null) {
             Log.e(TAG, "AuthCallback is null");
@@ -128,12 +124,45 @@ public class AuthenticationService implements SessionActions {
 
     private void processGoogleSignIn(GoogleSignInAccount account) {
         if (account.getIdToken() != null) {
-            verifyGoogleTokenWithBackend(account.getIdToken());
+            authenticateWithGoogleToken(account.getIdToken());
         } else {
             authCallback.onAuthFailure("Failed to get Google ID token");
         }
     }
 
+    private void authenticateWithGoogleToken(String idToken) {
+        GoogleAuthRequest request = new GoogleAuthRequest(idToken);
+        Log.d(TAG, "Authenticating with Google ID token");
+
+        executeApiCall(authApi.authenticateWithGoogle(request), new ApiResponseHandler<LoginResponse>() {
+            @Override
+            public void onSuccess(LoginResponse response) {
+                if (isValidLoginResponse(response)) {
+                    String accessToken = response.getAccessToken();
+                    String refreshToken = response.getRefreshToken();
+                    User user = response.getUser();
+
+                    tokenManager.saveTokens(accessToken, refreshToken);
+
+                    if (user != null) {
+                        tokenManager.saveUserData(user);
+                        authCallback.onAuthSuccess(user);
+                    } else {
+                        fetchUserDataFromToken(accessToken, authCallback);
+                    }
+                } else {
+                    authCallback.onAuthFailure("Invalid response from server");
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+                authCallback.onAuthFailure("Google authentication failed: " + error);
+            }
+        });
+    }
+
+    // Legacy method for backward compatibility (if needed)
     private void verifyGoogleTokenWithBackend(String idToken) {
         GoogleTokenRequest request = new GoogleTokenRequest(idToken);
 
@@ -150,9 +179,9 @@ public class AuthenticationService implements SessionActions {
         });
     }
 
-    //endregion
-
-    // Email/Password Login
+    // ============================================================================
+    // EMAIL/PASSWORD AUTHENTICATION FLOW
+    // ============================================================================
     public void loginWithEmail(String email, String password, AuthCallback callback) {
         if (!validateCredentials(email, password, callback)) return;
 
@@ -187,7 +216,9 @@ public class AuthenticationService implements SessionActions {
         });
     }
 
-    // Registration
+    // ============================================================================
+    // REGISTRATION FLOW
+    // ============================================================================
     public void register(String name, String email, String password, RegisterCallback callback) {
         if (!validateRegistrationData(name, email, password, callback)) return;
 
@@ -212,7 +243,9 @@ public class AuthenticationService implements SessionActions {
         });
     }
 
-    // Password Reset
+    // ============================================================================
+    // PASSWORD RESET FLOW
+    // ============================================================================
     public void resetPassword(String email, AuthCallback callback) {
         if (!validateEmail(email)) {
             callback.onAuthFailure("Valid email is required");
@@ -232,15 +265,9 @@ public class AuthenticationService implements SessionActions {
         });
     }
 
-    // Sign Out
-    public void signOut(Runnable onComplete) {
-        googleSignInClient.signOut().addOnCompleteListener(task -> {
-            tokenManager.clearTokens();
-            if (onComplete != null) onComplete.run();
-        });
-    }
-
-    // Refresh access token if expired
+    // ============================================================================
+    // TOKEN MANAGEMENT
+    // ============================================================================
     public void refreshAccessTokenIfNeeded() {
         String accessToken = tokenManager.getAccessToken();
         String refreshToken = tokenManager.getRefreshToken();
@@ -269,16 +296,32 @@ public class AuthenticationService implements SessionActions {
         });
     }
 
-    // Utility Methods
-    public boolean isLoggedIn() {
-        return tokenManager.isLoggedIn();
+    // ============================================================================
+    // SIGN OUT
+    // ============================================================================
+    public void signOut(Runnable onComplete) {
+        googleSignInClient.signOut().addOnCompleteListener(task -> {
+            tokenManager.clearTokens();
+            if (onComplete != null) onComplete.run();
+        });
     }
 
-    public User getCurrentUser() {
-        return tokenManager.getUserData();
+    @Override
+    public void logoutNow(String reason) {
+        Log.w(TAG, "Logging out: " + reason);
+
+        googleSignInClient.signOut().addOnCompleteListener(task -> {
+            tokenManager.clearTokens();
+
+            Intent i = new Intent(context, LoginActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            context.startActivity(i);
+        });
     }
 
-    // Private Helper Methods
+    // ============================================================================
+    // USER DATA MANAGEMENT
+    // ============================================================================
     private void fetchUserDataFromToken(String accessToken, AuthCallback callback) {
         String userId = JwtUtils.getUserIdFromToken(accessToken);
 
@@ -321,24 +364,9 @@ public class AuthenticationService implements SessionActions {
             public void onSuccess(ClientProfileResponse response) {
                 Log.d(TAG, "Client profile fetched successfully");
                 
-                // Update the current user with the fetched profile data
                 if (response != null) {
-                    // Create a new ClientProfile object from the response
-                    ClientProfile clientProfile = new ClientProfile();
-                    clientProfile.setUserId(response.getId());
-                    clientProfile.setCitizenId(response.getCitizenId());
-                    clientProfile.setDateOfBirth(response.getDateOfBirth());
-                    clientProfile.setSex(response.isSex());
-                    clientProfile.setNationality(response.getNationality());
-                    clientProfile.setPlaceOfOrigin(response.getPlaceOfOrigin());
-                    clientProfile.setPlaceOfResidence(response.getPlaceOfResidence());
-                    clientProfile.setGoogleId(response.getGoogleId());
-
-
-                    // Set the client profile to the current user
+                    ClientProfile clientProfile = createClientProfileFromResponse(response);
                     currentUser.setClientProfile(clientProfile);
-                    
-                    // Save updated user data to token manager
                     tokenManager.saveUserData(currentUser);
                     Log.d(TAG, "Updated user data saved to token manager");
                     
@@ -362,9 +390,32 @@ public class AuthenticationService implements SessionActions {
         });
     }
 
-    // Overloaded method without callback for backward compatibility
     public void fetchClientProfile() {
         fetchClientProfile(null);
+    }
+
+    private ClientProfile createClientProfileFromResponse(ClientProfileResponse response) {
+        ClientProfile clientProfile = new ClientProfile();
+        clientProfile.setUserId(response.getId());
+        clientProfile.setCitizenId(response.getCitizenId());
+        clientProfile.setDateOfBirth(response.getDateOfBirth());
+        clientProfile.setSex(response.isSex());
+        clientProfile.setNationality(response.getNationality());
+        clientProfile.setPlaceOfOrigin(response.getPlaceOfOrigin());
+        clientProfile.setPlaceOfResidence(response.getPlaceOfResidence());
+        clientProfile.setGoogleId(response.getGoogleId());
+        return clientProfile;
+    }
+
+    // ============================================================================
+    // UTILITY METHODS
+    // ============================================================================
+    public boolean isLoggedIn() {
+        return tokenManager.isLoggedIn();
+    }
+
+    public User getCurrentUser() {
+        return tokenManager.getUserData();
     }
 
     private void handleAuthSuccess(String accessToken, String refreshToken, User user) {
@@ -377,36 +428,9 @@ public class AuthenticationService implements SessionActions {
         authCallback.onAuthSuccess(user);
     }
 
-    // Generic API Call Handler
-    private <T> void executeApiCall(Call<T> call, ApiResponseHandler<T> handler) {
-        call.enqueue(new Callback<T>() {
-            @Override
-            public void onResponse(Call<T> call, Response<T> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    handler.onSuccess(response.body());
-                } else {
-                    String error = parseErrorResponse(response);
-                    Log.e(TAG, "API call failed: " + error);
-                    handler.onError(error);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<T> call, Throwable t) {
-                String error = "Network error: " + t.getMessage();
-                Log.e(TAG, error, t);
-                handler.onError(error);
-            }
-        });
-    }
-
-    // Response Handler Interface
-    private interface ApiResponseHandler<T> {
-        void onSuccess(T response);
-        void onError(String error);
-    }
-
-    // Validation Methods
+    // ============================================================================
+    // VALIDATION METHODS
+    // ============================================================================
     private boolean validateCredentials(String email, String password, AuthCallback callback) {
         if (!isValidString(email) || !isValidString(password)) {
             callback.onAuthFailure("Email and password cannot be empty");
@@ -447,7 +471,39 @@ public class AuthenticationService implements SessionActions {
         return response != null && isValidString(response.getAccessToken());
     }
 
-    // Error Handling
+    // ============================================================================
+    // API CALL HANDLING
+    // ============================================================================
+    private <T> void executeApiCall(Call<T> call, ApiResponseHandler<T> handler) {
+        call.enqueue(new Callback<T>() {
+            @Override
+            public void onResponse(Call<T> call, Response<T> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    handler.onSuccess(response.body());
+                } else {
+                    String error = parseErrorResponse(response);
+                    Log.e(TAG, "API call failed: " + error);
+                    handler.onError(error);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<T> call, Throwable t) {
+                String error = "Network error: " + t.getMessage();
+                Log.e(TAG, error, t);
+                handler.onError(error);
+            }
+        });
+    }
+
+    private interface ApiResponseHandler<T> {
+        void onSuccess(T response);
+        void onError(String error);
+    }
+
+    // ============================================================================
+    // ERROR HANDLING
+    // ============================================================================
     private String parseErrorResponse(Response<?> response) {
         int code = response.code();
         switch (code) {

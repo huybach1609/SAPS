@@ -24,8 +24,8 @@ export interface UserDetails {
   id: string;
   fullName: string;
   email: string;
-  profileImageUrl?: string;
-  status: "active" | "suspended";
+  profileImageUrl?: string | null;
+  status: "active" | "suspended" | "inactive";
   verificationStatus: string;
   citizenId: string;
   phone: string;

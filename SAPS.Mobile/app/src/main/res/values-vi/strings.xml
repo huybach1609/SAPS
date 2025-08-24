@@ -166,7 +166,7 @@
     <string name="connection_error">Lỗi kết nối: %1$s</string>
     <string name="dialog_add_vehicle_title">Thêm xe</string>
     <string name="option_register_my_vehicle">Đăng ký xe của tôi</string>
-    <string name="option_receive_from_share_code">Nhận từ mã chia sẻ</string>
+    <string name="option_create_invitation">Tạo lời mời</string>
     <string name="cd_find_user">Tìm người dùng</string>
     <string name="label_color_prefix">Màu sắc: %1$s</string>
     <!-- Content Descriptions -->
@@ -175,9 +175,9 @@
 
     <!-- Labels -->
     <string name="label_back">Quay lại</string>
-    <string name="title_user_verification">👤 Xác minh người dùng</string>
+    <string name="title_user_verification"> Xác minh người dùng</string>
     <string name="desc_user_verification">Xác nhận bạn muốn chia sẻ với người dùng này</string>
-    <string name="title_vehicle_access">🚗 Quyền truy cập xe</string>
+    <string name="title_vehicle_access">Quyền truy cập xe</string>
     <string name="title_access_duration">Thời lượng truy cập</string>
 
     <!-- Sample Data -->
@@ -194,11 +194,11 @@
     <string name="hint_notes_detail">Thêm ghi chú hoặc hạn chế...</string>
 
     <!-- Warning -->
-    <string name="warning_confirm_action">⚠️ Xác nhận hành động: Người dùng này sẽ có thể đỗ xe bằng xe của bạn cho đến khi bạn thu hồi quyền truy cập.</string>
+    <string name="warning_confirm_action"> Xác nhận hành động: Người dùng này sẽ có thể đỗ xe bằng xe của bạn cho đến khi bạn thu hồi quyền truy cập.</string>
 
     <!-- Actions -->
-    <string name="action_grant_access">✅ Cấp quyền truy cập</string>
-    <string name="action_cancel">❌ Hủy</string>
+    <string name="action_grant_access">Cấp quyền truy cập</string>
+    <string name="action_cancel">Hủy</string>
     <!-- Top bar -->
     <string name="cd_share">Chia sẻ</string>
 
@@ -228,7 +228,9 @@
 
     <!-- Owner note -->
     <string name="section_note">Ghi chú từ chủ xe</string>
-    <string name="owner_note_text">"Cảm ơn bạn đã sử dụng xe của tôi một cách có trách nhiệm! Hãy thoải mái sử dụng bất cứ lúc nào. Chỉ cần nhớ giữ xe sạch sẽ và đổ đầy xăng khi cần. Chúc bạn một ngày tuyệt vời!"</string>
+    <string name="owner_note_text">
+        ""
+    </string>
 
     <!-- Usage -->
     <string name="section_usage">Tóm tắt sử dụng của bạn</string>
@@ -243,7 +245,7 @@
 
     <!-- Footer -->
     <string name="return_warning">Trả lại quyền truy cập: Nếu bạn không còn cần quyền truy cập vào xe này, bạn có thể trả lại cho chủ xe. Hành động này không thể hoàn tác.</string>
-    <string name="btn_return_access_to_owner">↩️ Trả lại quyền truy cập cho chủ xe</string>
+    <string name="btn_accept">↩️ Trả lại quyền truy cập cho chủ xe</string>
     <string name="btn_cancel">Hủy</string>
 
     <!-- Recall Access Screen -->
@@ -325,7 +327,7 @@
     <string name="no_code_to_copy">trống\n</string>
     <string name="add_vehicle_action_bar_header">Thêm xe mới</string>
     <string name="activity_check_out_not_available">Dữ liệu phiên đỗ xe không có sẵn</string>
-    <string name="payement_activity_payment_detail_display">Payment details</string>
+    <string name="payment_activity_payment_detail_display">Payment details</string>
     <string name="payment_activity_display_amount">Số tiền</string>
     <string name="payment_activity_display_note">Please transfer the exact amount for automatic reconciliation</string>
     <string name="payment_activity_content_description_account_number">Account number</string>
@@ -336,6 +338,25 @@
     <string name="payment_activity_display_reference_code">Mô tả</string>
     <string name="payment_activity_btn_text_display">Confirm payment</string>
     <string name="payment_activity_actionbar_title">Quy trình thanh toán</string>
-    <string name="payment_activity_qr_code_title">Open banking app, select QR scan function and scan the code above.</string>
+    <string name="payment_activity_qr_code_title">Mở ứng dụng ngân hàng, chọn chức năng quét QR và quét mã bên trên.</string>
+
+    <string name="vehicle_fragment_menu_register">Đăng ký xe</string>
+    <string name="vehicle_fragment_menu_receive">Tạo lời mời</string>
+    <string name="vehicle_fragment_menu_share_your_vehicle">Chia sẻ xe của bạn</string>
+    <string name="vehicle_fragment_btn_view_invitation">Xem lời mời</string>
+    <string name="invitation_activity_actionbar_title">Lời mời của bạn</string>
+    <string name="item_vehicle_invitation_notification">%1$s đã mời bạn sử dụng xe</string>
+    <string name="list_invitation_error_fetch">Không tải được danh sách chia sẻ</string>
+    <string name="vehicle_detail_dialog_recall">Thu hồi</string>
+    <string name="vehicle_detail_dialog_remove">Trả xe</string>
+    <string name="view_list_invitation_adapter_accept_200">Đã chấp nhận lời mời</string>
+    <string name="view_list_invitation_adapter_accept_400">Lỗi khi chấp nhận lời mời</string>
+    <string name="view_list_invitation_adapter_reject_200">Đã từ chối lời mời</string>
+    <string name="share_vehicle_access_activity_actionbar_title">Chia sẻ xe của bạn</string>
+    <string name="share_vehicle_access_activity_search_note">Nhập mã chia sẻ của người dùng (ví dụ: USER-SARAH2024)</string>
+    <string name="share_vehicle_access_search_not_found_search">Không tìm thấy kết quả</string>
+    <string name="share_vehicle_access_search_not_found_search_subtitle">Thử kiểm tra lại mã chia sẻ</string>
+    <string name="vehicle_detail_dialog_share">Chia sẻ</string>
+
 
 </resources>

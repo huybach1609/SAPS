@@ -197,6 +197,7 @@
                 >
 
                 <TextView
+                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/payment_details_title"
@@ -207,6 +208,7 @@
                     />
 
                 <LinearLayout
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -237,6 +239,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:paddingLeft="12dp"
+                    android:visibility="gone"
                     android:paddingRight="12dp"
                     android:orientation="horizontal">
 
@@ -261,6 +264,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:paddingLeft="12dp"
                     android:paddingRight="12dp"
                     android:layout_marginTop="8dp"
@@ -285,6 +289,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:layout_marginTop="8dp"
                     android:paddingLeft="12dp"
                     android:paddingRight="12dp"
@@ -345,6 +350,7 @@
 
         <!-- Transaction details -->
         <LinearLayout
+android:visibility="gone"
             android:id="@+id/transaction_details_line"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

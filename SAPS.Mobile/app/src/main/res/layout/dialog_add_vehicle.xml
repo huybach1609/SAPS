@@ -46,7 +46,7 @@
                 android:id="@+id/btnReceiveFromShareCode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/option_receive_from_share_code"
+                android:text="@string/option_create_invitation"
                 android:textAllCaps="false"
                 android:fontFamily="sans-serif"
                 android:textSize="16sp"

@@ -23,13 +23,10 @@ import java.util.Locale;
 
 import retrofit2.Callback;
 import retrofit2.Response;
-import vn.edu.fpt.sapsmobile.dtos.payment.PaymentStatusDataDTO;
-import vn.edu.fpt.sapsmobile.dtos.payment.PaymentStatusResponseDTO;
+import vn.edu.fpt.sapsmobile.dtos.parkingsession.ParkingSessionDetailsResponse;
 import vn.edu.fpt.sapsmobile.network.client.ApiTest;
-import vn.edu.fpt.sapsmobile.network.service.TransactionApiService;
+import vn.edu.fpt.sapsmobile.network.service.ParkingSessionApiService;
 import vn.edu.fpt.sapsmobile.R;
-import vn.edu.fpt.sapsmobile.dtos.payment.PaymentDataDTO;
-import vn.edu.fpt.sapsmobile.dtos.payment.PaymentResponseDTO;
 import vn.edu.fpt.sapsmobile.models.ParkingLot;
 import vn.edu.fpt.sapsmobile.models.ParkingSession;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
@@ -50,8 +47,7 @@ public class ParkingHistoryDetailsActivity extends AppCompatActivity {
     // View variables for payment details
     private TextView tvBaseRate, tvTimeCharged, tvSubtotal, tvTax, tvTotalAmount;
     
-    // View variables for transaction details
-    private TextView tvTransactionId, tvPaymentMethod, tvPaymentStatus, tvPaymentDate, tvReferenceCode;
+
     
     // View variables for action buttons
     private MaterialButton btnEmailReceipt, btnReportIssue;
@@ -69,19 +65,17 @@ public class ParkingHistoryDetailsActivity extends AppCompatActivity {
         // Get data from Intent
         Intent intent = getIntent();
 
+        String sessionId = "";
         if (intent != null) {
-            vehicle = (Vehicle) intent.getSerializableExtra("vehicle");
-            parkingSession = (ParkingSession) intent.getSerializableExtra("parkingSession");
-            parkingLot = (ParkingLot) intent.getSerializableExtra("parkingLot");
+            sessionId = intent.getStringExtra("sessionId");
         }
-
-        // Example usage
-        if (vehicle != null && parkingSession != null & parkingLot != null) {
-            Log.d("ParkingDetails", "Vehicle : " + vehicle.toString());
-            Log.d("ParkingDetails", "parkingLot: " + parkingLot.toString());
-            Log.d("ParkingDetails", "Parking session: " + parkingSession.toString());
-
-            initDetails();
+        
+        // Fetch parking session details
+        if (sessionId != null && !sessionId.isEmpty()) {
+            fetchParkingSessionDetails(sessionId);
+        } else {
+            Log.e("ParkingDetails", "Session ID is null or empty");
+            // Handle error - could show a toast or finish activity
         }
 
         // action bar
@@ -112,7 +106,7 @@ public class ParkingHistoryDetailsActivity extends AppCompatActivity {
         tvDuration = findViewById(R.id.tvDuration);
 
         timeChangedLine = findViewById(R.id.time_charged_line);
-        transactiondDetailLine= findViewById(R.id.transaction_details_line);
+        transactiondDetailLine = findViewById(R.id.transaction_details_line);
         // set it disable
         timeChangedLine.setVisibility(View.GONE);
         // Payment details views
@@ -122,12 +116,7 @@ public class ParkingHistoryDetailsActivity extends AppCompatActivity {
         tvTax = findViewById(R.id.tvTax);
         tvTotalAmount = findViewById(R.id.tvTotalAmount);
         
-        // Transaction details views
-        tvTransactionId = findViewById(R.id.tvTransactionId);
-        tvPaymentMethod = findViewById(R.id.tvPaymentMethod);
-        tvPaymentStatus = findViewById(R.id.tvPaymentStatus);
-        tvPaymentDate = findViewById(R.id.tvPaymentDate);
-        tvReferenceCode = findViewById(R.id.tvReferenceCode);
+
         
         // Action buttons
         btnEmailReceipt = findViewById(R.id.btnEmailReceipt);
@@ -135,6 +124,82 @@ public class ParkingHistoryDetailsActivity extends AppCompatActivity {
         // hide button
         btnEmailReceipt.setVisibility(View.GONE);
         btnReportIssue.setVisibility(View.GONE);
+    }
+
+    private void fetchParkingSessionDetails(String sessionId) {
+        ParkingSessionApiService apiService = ApiTest.getServiceLast(this).create(ParkingSessionApiService.class);
+        retrofit2.Call<ParkingSessionDetailsResponse> call = apiService.getParkingSessionDetails(sessionId);
+
+        call.enqueue(new Callback<ParkingSessionDetailsResponse>() {
+            @Override
+            public void onResponse(retrofit2.Call<ParkingSessionDetailsResponse> call, Response<ParkingSessionDetailsResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    ParkingSessionDetailsResponse sessionDetails = response.body();
+                    Log.d("ParkingDetails", "Session details fetched successfully");
+                    
+                    // Convert response to models and populate UI
+                    populateDataFromResponse(sessionDetails);
+                    
+                } else {
+                    String errorMessage = "Failed to fetch session details";
+                    if (response.code() == 400) {
+                        errorMessage = "Invalid session ID";
+                    } else if (response.code() == 404) {
+                        errorMessage = "Session not found";
+                    } else if (response.code() == 500) {
+                        errorMessage = "Server error occurred";
+                    }
+                    Log.e("ParkingDetails", "Error code: " + response.code() + ", Message: " + response.message());
+                    // Could show a toast or error dialog here
+                }
+            }
+
+            @Override
+            public void onFailure(retrofit2.Call<ParkingSessionDetailsResponse> call, Throwable t) {
+                String errorMessage = "Failed to fetch session details";
+                if (t instanceof java.net.SocketTimeoutException) {
+                    errorMessage = "Request timed out. Please try again.";
+                } else if (t.getMessage() != null && t.getMessage().contains("Broken pipe")) {
+                    errorMessage = "Connection lost. Please check your internet and try again.";
+                } else if (t instanceof java.net.ConnectException) {
+                    errorMessage = "Cannot connect to server. Please check your connection.";
+                }
+                Log.e("ParkingDetails", "Error fetching session details: " + t.getMessage(), t);
+                // Could show a toast or error dialog here
+            }
+        });
+    }
+
+    private void populateDataFromResponse(ParkingSessionDetailsResponse sessionDetails) {
+        // Get the actual data from the response
+        ParkingSessionDetailsResponse.ParkingSessionData data = sessionDetails.getData();
+        if (data == null) {
+            Log.e("ParkingDetails", "Response data is null");
+            return;
+        }
+        
+        // Create ParkingSession model
+        parkingSession = new ParkingSession();
+        parkingSession.setId(data.getId());
+        parkingSession.setEntryDateTime(data.getEntryDateTime());
+        parkingSession.setExitDateTime(data.getExitDateTime());
+        parkingSession.setCost(data.getCost());
+        parkingSession.setParkingLotName(data.getParkingLotName());
+        
+        // Create Vehicle model
+        vehicle = new Vehicle();
+        vehicle.setLicensePlate(data.getLicensePlate());
+        
+        // Create ParkingLot model
+        parkingLot = new ParkingLot();
+        if (data.getParkingLot() != null) {
+            parkingLot.setId(data.getParkingLot().getId());
+            parkingLot.setName(data.getParkingLot().getName());
+            parkingLot.setAddress(data.getParkingLot().getAddress());
+        }
+        
+        // Initialize UI with the data
+        initDetails();
     }
 
     private void initDetails() {
@@ -184,43 +249,7 @@ public class ParkingHistoryDetailsActivity extends AppCompatActivity {
                 tvDuration.setText(duration);
             }
             
-            // Transaction details
-            if (parkingSession.getTransactionId() != null) {
-                tvTransactionId.setText(parkingSession.getTransactionId());
-            } else {
-                tvTransactionId.setText("—");
-            }
-            
-            if (parkingSession.getPaymentMethod() != null) {
-                tvPaymentMethod.setText(parkingSession.getPaymentMethod());
-            } else {
-                tvPaymentMethod.setText("—");
-            }
-            
-            // Payment status based on transaction ID
-            if (parkingSession.getTransactionId() != null) {
-                tvPaymentStatus.setText("Paid");
-            } else if (parkingSession.getExitDateTime() != null) {
-                tvPaymentStatus.setText("Pending");
-            } else {
-                tvPaymentStatus.setText("On Going");
-            }
-            
-            // Payment date (use checkout time or exit time)
-            if (parkingSession.getCheckOutTime() != null) {
-                tvPaymentDate.setText(DateTimeHelper.formatDateTime(parkingSession.getCheckOutTime()));
-            } else if (parkingSession.getExitDateTime() != null) {
-                tvPaymentDate.setText(DateTimeHelper.formatDateTime(parkingSession.getExitDateTime()));
-            } else {
-                tvPaymentDate.setText("—");
-            }
-            
-            // Reference code (using transaction ID as reference)
-            if (parkingSession.getTransactionId() != null) {
-                tvReferenceCode.setText(parkingSession.getTransactionId().substring(0, Math.min(8, parkingSession.getTransactionId().length())));
-            } else {
-                tvReferenceCode.setText("—");
-            }
+
         }
         
         // Populate vehicle details
@@ -260,9 +289,9 @@ public class ParkingHistoryDetailsActivity extends AppCompatActivity {
         if (parkingSession != null) {
             double cost = parkingSession.getCost();
 
-            double taxRate= 0.0;
+            double taxRate = 0.0;
             // Base rate (assuming 90% of total cost)
-            double baseRate = cost * (1- taxRate);
+            double baseRate = cost * (1 - taxRate);
             tvBaseRate.setText(vndFormat.format(baseRate));
 
             // Time charged (assuming 1 hour = 10,000 VND)
@@ -280,150 +309,18 @@ public class ParkingHistoryDetailsActivity extends AppCompatActivity {
             tvTotalAmount.setText(vndFormat.format(cost));
         }
 
-        // fetch transaction
-
-         fetchTransaction() ;
-
 
 
         // Set up button click listeners
         btnEmailReceipt.setOnClickListener(v -> {
             // TODO: Implement email receipt functionality
-
-
             Log.d("ParkingDetails", "Email receipt button clicked");
         });
         
         btnReportIssue.setOnClickListener(v -> {
             // TODO: Implement report issue functionality
-
             Log.d("ParkingDetails", "Report issue button clicked");
         });
-    }
-
-    private void fetchTransaction() {
-        // Only fetch if we have a transaction ID
-        if (parkingSession == null || parkingSession.getTransactionId() == null) {
-            transactiondDetailLine.setVisibility(View.GONE);
-            Log.d("FetchTransaction", "No transaction ID available, skipping fetch");
-            return;
-        }
-
-        TransactionApiService apiService = ApiTest.getService(this).create(TransactionApiService.class);
-        retrofit2.Call<PaymentStatusResponseDTO> call = apiService.getTransactionPayOsById(parkingSession.getTransactionId());
-
-        call.enqueue(new Callback<PaymentStatusResponseDTO>() {
-            @Override
-            public void onResponse(retrofit2.Call<PaymentStatusResponseDTO> call, Response<PaymentStatusResponseDTO> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    PaymentStatusResponseDTO paymentResponse = response.body();
-                    Log.d("FetchTransaction", "Transaction fetched successfully: " + paymentResponse.getCode());
-                    
-                    // Update UI with fetched transaction data
-                    updateTransactionDetails(paymentResponse);
-                    
-//                    Toast.makeText(ParkingHistoryDetailsActivity.this, "Transaction details updated", Toast.LENGTH_SHORT).show();
-                } else {
-                    String errorMessage = "Failed to fetch transaction details";
-                    if (response.code() == 400) {
-                        errorMessage = "Invalid transaction ID";
-                    } else if (response.code() == 404) {
-                        errorMessage = "Transaction not found";
-                    } else if (response.code() == 500) {
-                        errorMessage = "Server error occurred";
-                    }
-                    transactiondDetailLine.setVisibility(View.GONE);
-//                    Toast.makeText(ParkingHistoryDetailsActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
-                    Log.e("FetchTransaction", "Error code: " + response.code() + ", Message: " + response.message());
-                }
-            }
-
-            @Override
-            public void onFailure(retrofit2.Call<PaymentStatusResponseDTO> call, Throwable t) {
-
-                String errorMessage = "Failed to fetch transaction";
-                if (t instanceof java.net.SocketTimeoutException) {
-                    errorMessage = "Request timed out. Please try again.";
-                } else if (t.getMessage() != null && t.getMessage().contains("Broken pipe")) {
-                    errorMessage = "Connection lost. Please check your internet and try again.";
-                } else if (t instanceof java.net.ConnectException) {
-                    errorMessage = "Cannot connect to server. Please check your connection.";
-                }
-                transactiondDetailLine.setVisibility(View.GONE);
-//                Toast.makeText(ParkingHistoryDetailsActivity.this, errorMessage, Toast.LENGTH_LONG).show();
-                Log.e("FetchTransaction", "Error fetching transaction: " + t.getMessage(), t);
-            }
-        });
-    }
-
-    private void updateTransactionDetails(PaymentStatusResponseDTO paymentResponse) {
-        if (paymentResponse == null || paymentResponse.getData() == null) {
-            Log.w("UpdateTransaction", "Payment response or data is null");
-            return;
-        }
-
-        PaymentStatusDataDTO paymentData = paymentResponse.getData();
-        NumberFormat vndFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
-
-        // Update transaction details
-        if (paymentData.getOrderCode() != null) {
-            tvTransactionId.setText(paymentData.getOrderCode());
-        }
-
-        // Update payment method based on account info
-//        if (paymentData.getAccountName() != null && !paymentData.getAccountName().isEmpty()) {
-//            String paymentMethod = paymentData.();
-//            if (paymentData.getBin() != null && !paymentData.getBin().isEmpty()) {
-//                paymentMethod += " (" + paymentData.getBin() + ")";
-//            }
-            tvPaymentMethod.setText("Bank");
-//        }
-
-        // Update payment status
-        if (paymentData.getStatus() != null) {
-            String status = paymentData.getStatus();
-            // Convert status to user-friendly format
-            switch (status.toLowerCase()) {
-                case "paid":
-                case "success":
-                    tvPaymentStatus.setText("Paid");
-                    break;
-                case "pending":
-                    tvPaymentStatus.setText("Pending");
-                    break;
-                case "failed":
-                    tvPaymentStatus.setText("Failed");
-                    break;
-                case "expired":
-                    tvPaymentStatus.setText("Expired");
-                    break;
-                default:
-                    tvPaymentStatus.setText(status);
-                    break;
-            }
-        }
-
-        // Update payment date (use expiredAt if available, otherwise keep existing)
-        if (paymentData.getStatus().equals("EXPIRED")) {
-            // Convert timestamp to readable date
-//            java.time.Instant instant = java.time.Instant.ofEpochMilli(paymentData.getExpiredAt());
-//            java.time.LocalDateTime dateTime = java.time.LocalDateTime.ofInstant(instant, java.time.ZoneId.systemDefault());
-//            String formattedDate = DateTimeHelper.formatDateTime(dateTime.toString());
-            tvPaymentDate.setText(paymentData.getCreatedAt());
-        }
-
-        // Update reference code (use orderCode if available)
-        if (paymentData.getOrderCode() > 0) {
-            tvReferenceCode.setText(String.valueOf(paymentData.getOrderCode()));
-        }
-
-        // Update payment amount if different from session cost
-        if (paymentData.getAmount() > 0) {
-
-        }
-
-        // Log the update
-        Log.d("UpdateTransaction", "Transaction details updated successfully");
     }
 
 

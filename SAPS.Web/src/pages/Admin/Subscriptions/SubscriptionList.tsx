@@ -7,14 +7,17 @@ import {
   useDisclosure,
 } from "@heroui/react";
 import { Search, Plus, Package, Edit, DollarSign, Clock } from "lucide-react";
-import { Subscription } from "@/types/subscription";
-import { subscriptionService } from "@/services/admin/subscription/subscriptionService";
+import {
+  subscriptionService,
+  SubscriptionListParams,
+} from "../../../services/subscription/subscriptionService";
+import { Subscription } from "../../../types/subscription";
 import AddEditSubscriptionModal from "./AddEditSubscriptionModal";
 
 const statusOptions = [
   { label: "All Status", value: "All" },
-  { label: "Active", value: "active" },
-  { label: "Inactive", value: "inactive" },
+  { label: "Active", value: "Active" },
+  { label: "Inactive", value: "Inactive" },
 ];
 
 export default function SubscriptionList() {
@@ -23,17 +26,15 @@ export default function SubscriptionList() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  // Applied filters for actual filtering
-  const [appliedSearch, setAppliedSearch] = useState("");
-  const [appliedStatus, setAppliedStatus] = useState("All");
-
   // State for subscriptions data
-  const [subscriptionsList, setSubscriptionsList] = useState<Subscription[]>(
-    []
-  );
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
+  const [allSubscriptions, setAllSubscriptions] = useState<Subscription[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  // Pagination state
+  const [totalSubscriptions, setTotalSubscriptions] = useState(0);
 
   // Modal states
   const {
@@ -44,48 +45,88 @@ export default function SubscriptionList() {
   const [editingSubscription, setEditingSubscription] =
     useState<Subscription | null>(null);
 
-  // Fetch subscriptions data
-  useEffect(() => {
-    fetchSubscriptions();
-  }, []);
+  // Fetch all subscriptions for statistics
+  const fetchAllSubscriptions = async () => {
+    try {
+      const response = await subscriptionService.getAllSubscriptions();
+      // Map API status to component format
+      const mappedResponse = response.map((sub) => ({
+        ...sub,
+        status: sub.status.toLowerCase() as "active" | "inactive",
+      }));
+      setAllSubscriptions(mappedResponse);
+    } catch (err) {
+      console.error("Error fetching all subscriptions:", err);
+    }
+  };
 
+  // Fetch subscriptions with pagination
   const fetchSubscriptions = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      console.log("🔄 Fetching subscriptions from API...");
-      const response = await subscriptionService.getAllSubscriptions();
+      const params: SubscriptionListParams = {
+        pageNumber: currentPage,
+        pageSize: itemsPerPage,
+        status: statusFilter !== "All" ? statusFilter : undefined,
+        order: 1,
+        searchCriteria: searchTerm || undefined,
+      };
 
-      if (response.success && response.data) {
-        console.log("✅ Successfully fetched subscriptions:", response.data);
-        setSubscriptionsList(response.data);
-      } else {
-        console.error("❌ Failed to fetch subscriptions:", response.error);
-        setError(response.error || "Failed to load subscriptions data");
-      }
+      const response = await subscriptionService.getSubscriptions(params);
+
+      // Map API status to component format
+      const mappedSubscriptions = response.items.map((sub) => ({
+        ...sub,
+        status: sub.status.toLowerCase() as "active" | "inactive",
+      }));
+
+      setSubscriptions(mappedSubscriptions);
+      setTotalSubscriptions(response["total-count"]);
     } catch (err) {
-      console.error("🔥 Exception while fetching subscriptions:", err);
+      console.error("Error fetching subscriptions:", err);
       setError("An error occurred while fetching subscriptions");
+      setSubscriptions([]);
+      setTotalSubscriptions(0);
     } finally {
       setLoading(false);
     }
   };
 
+  // Initial data fetch
+  useEffect(() => {
+    fetchAllSubscriptions();
+    fetchSubscriptions();
+  }, []);
+
+  // Fetch when filters or pagination change
+  useEffect(() => {
+    fetchSubscriptions();
+  }, [currentPage, statusFilter]);
+
+  // Debounce search input
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setCurrentPage(1); // Reset to first page when searching
+      fetchSubscriptions();
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
+
   // Handle search
   const handleSearch = () => {
-    setAppliedSearch(searchTerm);
-    setAppliedStatus(statusFilter);
     setCurrentPage(1);
+    fetchSubscriptions();
   };
 
   // Handle reset filters
   const handleReset = () => {
     setSearchTerm("");
     setStatusFilter("All");
-    setAppliedSearch("");
-    setAppliedStatus("All");
     setCurrentPage(1);
+    fetchSubscriptions();
   };
 
   // Handle add subscription
@@ -95,14 +136,35 @@ export default function SubscriptionList() {
   };
 
   // Handle edit subscription
-  const handleEditSubscription = (subscription: Subscription) => {
-    setEditingSubscription(subscription);
-    onAddEditModalOpen();
+  const handleEditSubscription = async (subscription: Subscription) => {
+    try {
+      setLoading(true);
+      // Fetch detailed subscription data by ID
+      const detailedSubscription =
+        await subscriptionService.getSubscriptionById(subscription.id);
+
+      // Convert status to lowercase to match component type
+      const formattedSubscription = {
+        ...detailedSubscription,
+        status: detailedSubscription.status.toLowerCase() as
+          | "active"
+          | "inactive",
+      };
+
+      setEditingSubscription(formattedSubscription);
+      onAddEditModalOpen();
+    } catch (err) {
+      console.error("Error fetching subscription details:", err);
+      setError("Failed to load subscription details");
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Handle modal success
   const handleModalSuccess = () => {
-    fetchSubscriptions();
+    fetchAllSubscriptions(); // Refresh stats
+    fetchSubscriptions(); // Refresh current page
     setSuccessMessage(
       editingSubscription
         ? "Subscription updated successfully"
@@ -113,52 +175,58 @@ export default function SubscriptionList() {
     setTimeout(() => setSuccessMessage(null), 3000);
   };
 
-  // Stats calculations
-  const totalSubscriptions = subscriptionsList.length;
-  const activeSubscriptions = subscriptionsList.filter(
+  // Stats calculations from all subscriptions
+  const activeSubscriptions = allSubscriptions.filter(
     (sub) => sub.status === "active"
   ).length;
-  const inactiveSubscriptions = subscriptionsList.filter(
+  const inactiveSubscriptions = allSubscriptions.filter(
     (sub) => sub.status === "inactive"
   ).length;
 
-  // Filter subscriptions
-  const filteredSubscriptions = subscriptionsList.filter((subscription) => {
-    const matchesSearch =
-      appliedSearch === "" ||
-      subscription.name.toLowerCase().includes(appliedSearch.toLowerCase()) ||
-      subscription.description
-        .toLowerCase()
-        .includes(appliedSearch.toLowerCase());
+  // Format duration (days to user-friendly format)
+  const formatDuration = (days: number): string => {
+    if (days <= 0) return "0 Days";
 
-    const matchesStatus =
-      appliedStatus === "All" || subscription.status === appliedStatus;
+    const years = Math.floor(days / 365);
+    const remainingAfterYears = days % 365;
+    const months = Math.floor(remainingAfterYears / 30);
+    const remainingAfterMonths = remainingAfterYears % 30;
+    const weeks = Math.floor(remainingAfterMonths / 7);
+    const remainingDays = remainingAfterMonths % 7;
 
-    return matchesSearch && matchesStatus;
-  });
+    const parts = [];
 
-  // Pagination
-  const totalPages = Math.ceil(filteredSubscriptions.length / itemsPerPage);
-  const currentItems = filteredSubscriptions.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+    if (years > 0) parts.push(`${years} Year${years > 1 ? "s" : ""}`);
+    if (months > 0) parts.push(`${months} Month${months > 1 ? "s" : ""}`);
+    if (weeks > 0) parts.push(`${weeks} Week${weeks > 1 ? "s" : ""}`);
+    if (remainingDays > 0)
+      parts.push(`${remainingDays} Day${remainingDays > 1 ? "s" : ""}`);
 
-  const startItem = (currentPage - 1) * itemsPerPage + 1;
-  const endItem = Math.min(
-    currentPage * itemsPerPage,
-    filteredSubscriptions.length
-  );
+    // If no parts, it means less than a day
+    if (parts.length === 0) return "Less than 1 Day";
 
-  // Format duration
-  const formatDuration = (durationMs: number): string => {
-    // Convert milliseconds to months
-    const months = Math.round(durationMs / (30 * 24 * 60 * 60 * 1000));
-    return `${months} Month(s)`;
+    // Join parts with commas and "and" for the last item
+    if (parts.length === 1) return parts[0];
+    if (parts.length === 2) return parts.join(" and ");
+
+    const lastPart = parts.pop();
+    return parts.join(", ") + " and " + lastPart;
   };
 
+  // Format price (VND)
+  const formatPrice = (price: number): string => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    }).format(price);
+  };
+
+  // Calculate start and end items for pagination display
+  const startItem = (currentPage - 1) * itemsPerPage + 1;
+  const endItem = Math.min(currentPage * itemsPerPage, totalSubscriptions);
+
   // Loading state
-  if (loading && subscriptionsList.length === 0) {
+  if (loading && subscriptions.length === 0) {
     return (
       <div className="flex justify-center items-center h-64">
         <Spinner size="lg" color="primary" />
@@ -231,7 +299,7 @@ export default function SubscriptionList() {
             <div className="relative">
               <Input
                 type="text"
-                placeholder="Search by name or description"
+                placeholder="Search by name or note"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full"
@@ -363,21 +431,21 @@ export default function SubscriptionList() {
                   <th className="px-4 py-3 font-semibold">Duration</th>
                   <th className="px-4 py-3 font-semibold">Price</th>
                   <th className="px-4 py-3 font-semibold">Status</th>
+                  <th className="px-4 py-3 font-semibold">Last Updated By</th>
                   <th className="px-4 py-3 font-semibold">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-200">
-                {currentItems.length === 0 ? (
+                {subscriptions.length === 0 ? (
                   <tr>
-                    <td colSpan={6} className="px-4 py-8 text-center">
+                    <td colSpan={7} className="px-4 py-8 text-center">
                       <div className="text-center py-8">
                         <Package className="mx-auto h-12 w-12 text-gray-400 mb-4" />
                         <h3 className="text-lg font-medium text-gray-900 mb-2">
                           No subscriptions found
                         </h3>
                         <p className="text-gray-500">
-                          {filteredSubscriptions.length === 0 &&
-                          subscriptionsList.length > 0
+                          {searchTerm || statusFilter !== "All"
                             ? "Try adjusting your filters"
                             : "Get started by creating your first subscription plan"}
                         </p>
@@ -385,61 +453,65 @@ export default function SubscriptionList() {
                     </td>
                   </tr>
                 ) : (
-                  currentItems.map((subscription, index) => (
-                    <tr key={subscription.id} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 text-blue-700 font-medium">
-                        {(currentPage - 1) * itemsPerPage + index + 1}
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center">
-                          <div className="bg-indigo-100 p-2 rounded-full mr-2 flex items-center justify-center w-10 h-10">
-                            <Package size={16} className="text-indigo-700" />
-                          </div>
-                          <div>
-                            <div className="font-medium">
-                              {subscription.name}
+                  subscriptions.map(
+                    (subscription: Subscription, index: number) => (
+                      <tr key={subscription.id} className="hover:bg-gray-50">
+                        <td className="px-4 py-3 text-blue-700 font-medium">
+                          {(currentPage - 1) * itemsPerPage + index + 1}
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center">
+                            <div className="bg-indigo-100 p-2 rounded-full mr-2 flex items-center justify-center w-10 h-10">
+                              <Package size={16} className="text-indigo-700" />
                             </div>
-                            <div className="text-xs text-gray-500">
-                              {subscription.description || "No description"}
+                            <div>
+                              <div className="font-medium">
+                                {subscription.name}
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center">
-                          <Clock size={16} className="text-gray-400 mr-2" />
-                          {formatDuration(subscription.duration)}
-                        </div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center font-medium text-green-600">
-                          <DollarSign size={16} className="mr-1" />
-                          {subscription.price.toFixed(2)}
-                        </div>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span
-                          className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${
-                            subscription.status === "active"
-                              ? "bg-green-200 text-green-800"
-                              : "bg-yellow-200 text-yellow-800"
-                          }`}
-                        >
-                          {subscription.status.charAt(0).toUpperCase() +
-                            subscription.status.slice(1)}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3">
-                        <button
-                          className="px-2 py-1 text-xs font-medium bg-blue-600 text-white rounded-full flex items-center"
-                          onClick={() => handleEditSubscription(subscription)}
-                        >
-                          <Edit className="w-3 h-3 mr-1" />
-                          Edit
-                        </button>
-                      </td>
-                    </tr>
-                  ))
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center">
+                            <Clock size={16} className="text-gray-400 mr-2" />
+                            {formatDuration(subscription.duration)}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="flex items-center font-medium text-green-600">
+                            <DollarSign size={16} className="mr-1" />
+                            {formatPrice(subscription.price)}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3">
+                          <span
+                            className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${
+                              subscription.status === "active"
+                                ? "bg-green-200 text-green-800"
+                                : "bg-yellow-200 text-yellow-800"
+                            }`}
+                          >
+                            {subscription.status.charAt(0).toUpperCase() +
+                              subscription.status.slice(1)}
+                          </span>
+                        </td>
+                        <td className="px-4 py-3">
+                          <div className="text-sm text-gray-700">
+                            {subscription.lastUpdatedBy || "N/A"}
+                          </div>
+                        </td>
+                        <td className="px-4 py-3">
+                          <button
+                            className="px-2 py-1 text-xs font-medium bg-blue-600 text-white rounded-full flex items-center"
+                            onClick={() => handleEditSubscription(subscription)}
+                          >
+                            <Edit className="w-3 h-3 mr-1" />
+                            Edit
+                          </button>
+                        </td>
+                      </tr>
+                    )
+                  )
                 )}
               </tbody>
             </table>
@@ -458,8 +530,7 @@ export default function SubscriptionList() {
         {/* Pagination */}
         <div className="mt-4 flex flex-col md:flex-row justify-between items-center text-sm p-4 border-t border-gray-200">
           <div className="mb-2 md:mb-0 text-gray-500">
-            Showing {startItem} to {endItem} of {filteredSubscriptions.length}{" "}
-            entries
+            Showing {startItem} to {endItem} of {totalSubscriptions} entries
           </div>
 
           <div className="flex justify-end w-full md:w-auto items-center gap-2">
@@ -489,7 +560,7 @@ export default function SubscriptionList() {
             </Button>
 
             <Pagination
-              total={totalPages}
+              total={Math.ceil(totalSubscriptions / itemsPerPage)}
               page={currentPage}
               onChange={setCurrentPage}
               classNames={{
@@ -503,9 +574,16 @@ export default function SubscriptionList() {
               variant="light"
               color="primary"
               className="rounded-full flex items-center"
-              isDisabled={currentPage === totalPages}
+              isDisabled={
+                currentPage === Math.ceil(totalSubscriptions / itemsPerPage)
+              }
               onPress={() =>
-                setCurrentPage(Math.min(totalPages, currentPage + 1))
+                setCurrentPage(
+                  Math.min(
+                    Math.ceil(totalSubscriptions / itemsPerPage),
+                    currentPage + 1
+                  )
+                )
               }
             >
               Next

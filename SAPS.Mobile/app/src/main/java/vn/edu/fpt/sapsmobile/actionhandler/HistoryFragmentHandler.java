@@ -27,10 +27,10 @@ public class HistoryFragmentHandler implements HistoryFragmentVehicleDetailListe
     }
 
     @Override
-    public void onParkingSessionSeeDetailClick(ParkingSession parkingSession, Vehicle vehicle, ParkingLot parkingLot) {
+    public void onParkingSessionSeeDetailClick(String sessionId, Vehicle vehicle, ParkingLot parkingLot) {
         Intent intent = new Intent(context, ParkingHistoryDetailsActivity.class);
         intent.putExtra("vehicle", vehicle);
-        intent.putExtra("parkingSession", parkingSession);
+        intent.putExtra("sessionId", sessionId);
         intent.putExtra("parkingLot", parkingLot);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
@@ -40,11 +40,11 @@ public class HistoryFragmentHandler implements HistoryFragmentVehicleDetailListe
         this.parkingSession = parkingSession;
         this.parkingLot = parkingLot;
         this.vehicle = vehicle;
-        VehicleDetailDialog.show(context, vehicle , this);
+        VehicleDetailDialog.show(context, vehicle , this, -1);
     }
 
     @Override
-    public void onCheckout(Vehicle vehicle, AlertDialog dialog) {
+    public void onAction(Vehicle vehicle, AlertDialog dialog) {
         // Đóng dialog
         dialog.dismiss();
 

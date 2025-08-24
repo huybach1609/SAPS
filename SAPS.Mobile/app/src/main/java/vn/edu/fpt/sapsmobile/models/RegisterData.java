@@ -3,6 +3,7 @@ package vn.edu.fpt.sapsmobile.models;
 public class RegisterData {
     private String idCardImagePath;
     private String fullName;
+    private String phone;
     private String idNumber;
     private String dateOfBirth;
     private String email;
@@ -36,6 +37,14 @@ public class RegisterData {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
     public String getIdNumber() {

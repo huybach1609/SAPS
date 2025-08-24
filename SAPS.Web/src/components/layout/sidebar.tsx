@@ -9,6 +9,12 @@ import {
   Listbox,
   ListboxItem,
   Tooltip,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
 } from "@heroui/react";
 import {
   EllipsisVertical,
@@ -49,10 +55,13 @@ interface NavigationItem {
 
 interface NavigationListProps {
   items: NavigationItem[];
-  isOwner : boolean;
+  isOwner: boolean;
 }
 
-const NavigationList: React.FC<NavigationListProps> = ({ items, isOwner = false }) => {
+const NavigationList: React.FC<NavigationListProps> = ({
+  items,
+  isOwner = false,
+}) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -61,50 +70,51 @@ const NavigationList: React.FC<NavigationListProps> = ({ items, isOwner = false 
   const selectedParkingLot = parkingLotContext?.selectedParkingLot;
 
   return (
-      <Listbox aria-label="Navigation List" className="flex flex-col gap-2">
-        {items.map((item, index) => {
-          // Check if item should be disabled based on isActive prop and parking lot status
-          // Only apply this logic for owner items
-          const isDisabled = isOwner &&
-              item.isActive !== undefined &&
-              (selectedParkingLot?.status === "Active"
-                  ? !item.isActive
-                  : item.isActive);
+    <Listbox aria-label="Navigation List" className="flex flex-col gap-2">
+      {items.map((item, index) => {
+        // Check if item should be disabled based on isActive prop and parking lot status
+        // Only apply this logic for owner items
+        const isDisabled =
+          isOwner &&
+          item.isActive !== undefined &&
+          (selectedParkingLot?.status === "Active"
+            ? !item.isActive
+            : item.isActive);
 
-          const listboxItem = (
-              <>
-                <ListboxItem
-                    key={index}
-                    className={`p-3 
+        const listboxItem = (
+          <>
+            <ListboxItem
+              key={index}
+              className={`p-3 
                              ${location.pathname === item.path ? "bg-primary text-background" : ""}
                              hover:bg-primary hover:text-background
                              ${isDisabled ? "opacity-50 cursor-not-allowed" : ""}
                              `}
-                    color="secondary"
-                    endContent={
-                      isDisabled ? (
-                          <Tooltip
-                              key={index}
-                              className="text-background"
-                              color="warning"
-                              content="Renew your subscription to access this feature"
-                              placement="right"
-                          >
-                            <CircleAlert size={16} />
-                          </Tooltip>
-                      ) : null
-                    }
-                    isReadOnly={isDisabled}
-                    startContent={item.icon}
-                    title={item.title}
-                    onClick={() => navigate(item.path)}
-                />
-              </>
-          );
+              color="secondary"
+              endContent={
+                isDisabled ? (
+                  <Tooltip
+                    key={index}
+                    className="text-background"
+                    color="warning"
+                    content="Renew your subscription to access this feature"
+                    placement="right"
+                  >
+                    <CircleAlert size={16} />
+                  </Tooltip>
+                ) : null
+              }
+              isReadOnly={isDisabled}
+              startContent={item.icon}
+              title={item.title}
+              onClick={() => navigate(item.path)}
+            />
+          </>
+        );
 
-          return listboxItem;
-        })}
-      </Listbox>
+        return listboxItem;
+      })}
+    </Listbox>
   );
 };
 
@@ -195,8 +205,24 @@ const parkingLotOwnerItems: NavigationItem[] = [
 ];
 
 const HeadingBar: React.FC = () => {
-  const { user, logout, getRole } = useAuth();
+  const { user, logout, getUserRole } = useAuth();
   const navigate = useNavigate();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  const handleLogout = () => {
+    onOpen(); // Mở modal xác nhận đăng xuất
+  };
+
+  const confirmLogout = async () => {
+    try {
+      await logout();
+      navigate("/auth/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+      // Vẫn chuyển hướng đến trang đăng nhập ngay cả khi có lỗi
+      navigate("/auth/login");
+    }
+  };
 
   return (
     <div className="flex justify-between items-center my-4">
@@ -209,7 +235,9 @@ const HeadingBar: React.FC = () => {
         <div>
           <h2 className="text-medium font-bold ">{user?.fullName}</h2>
           <h2 className="text-xs ">
-            {getRole() === OWNER_ROLE ? "Parking Lot Owner" : "Administrator"}
+            {getUserRole() === OWNER_ROLE
+              ? "Parking Lot Owner"
+              : "Administrator"}
           </h2>
         </div>
       </div>
@@ -231,7 +259,7 @@ const HeadingBar: React.FC = () => {
           <DropdownItem key="changeThemes" textValue="Change Themes">
             <ThemeSwitch className="w-full" showLabel={true} variant="button" />
           </DropdownItem>
-          {getRole() === OWNER_ROLE ? (
+          {getUserRole() === OWNER_ROLE ? (
             <DropdownItem key="subscription" textValue="Subscription">
               <button
                 className="flex items-center gap-2 w-full text-left transition-opacity hover:opacity-80 "
@@ -244,7 +272,7 @@ const HeadingBar: React.FC = () => {
           <DropdownItem key="logout" textValue="Logout">
             <button
               className="flex items-center gap-2 w-full text-left transition-opacity hover:opacity-80 "
-              onClick={logout}
+              onClick={handleLogout}
             >
               <LogOut size={16} />
               Logout
@@ -252,12 +280,32 @@ const HeadingBar: React.FC = () => {
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>
+
+      {/* Logout Confirmation Modal */}
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+        <ModalContent>
+          <ModalHeader className="flex flex-col gap-1">
+            Xác nhận đăng xuất
+          </ModalHeader>
+          <ModalBody>
+            <p>Bạn có chắc chắn muốn đăng xuất khỏi hệ thống không?</p>
+          </ModalBody>
+          <ModalFooter>
+            <Button color="danger" variant="light" onPress={onOpenChange}>
+              Hủy
+            </Button>
+            <Button color="primary" onPress={confirmLogout}>
+              Đăng xuất
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
     </div>
   );
 };
 
 export const SideBar: React.FC<SidebarProps> = ({ isOpen }) => {
-  const { getRole } = useAuth();
+  const { getUserRole } = useAuth();
 
   return (
     <motion.div
@@ -276,10 +324,10 @@ export const SideBar: React.FC<SidebarProps> = ({ isOpen }) => {
     >
       <HeadingBar />
       <Divider className="bg-border my-4" />
-      {getRole() === OWNER_ROLE ? (
+      {getUserRole() === OWNER_ROLE ? (
         <NavigationList items={parkingLotOwnerItems} isOwner={true} />
       ) : (
-        <NavigationList items={adminItems} isOwner={false}/>
+        <NavigationList items={adminItems} isOwner={false} />
       )}
       {/* // {role === 'parkinglotowner' ? <ParkingLotOwnerList /> : <AdminList />} */}
     </motion.div>

@@ -42,6 +42,9 @@
         <item>Last year</item>
     </string-array>
     <string name="history_session_filter">Filter</string>
+    <string name="empty_history_title">No Parking History</string>
+    <string name="empty_history_subtitle">You haven\'t had any parking sessions yet</string>
+    <string name="empty_history_description">Your parking history will appear here once you start using our parking services.</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -70,8 +73,8 @@
     <string name="btn_copy_share_code_desc">Copy share code</string>
 
     <!-- Tabs -->
-    <string name="tab_my_vehicles">My Car</string>
-    <string name="tab_shared_vehicles">Shared Cars</string>
+    <string name="tab_my_vehicles">My Vehicles</string>
+    <string name="tab_shared_vehicles">Shared Vehicles</string>
 
     <!-- Content descriptions -->
     <string name="cd_share_code_card">Share code card</string>
@@ -136,7 +139,7 @@
     <string name="subtotal_value">$11.25</string>
     <string name="tax">Tax</string>
     <string name="tax_value">$1.13</string>
-    <string name="total">Total</string>
+    <string name="total">Cost</string>
     <string name="total_value">$12.38</string>
 
     <string name="transaction_details_title">Transaction details</string>
@@ -168,7 +171,7 @@
     <string name="connection_error">Connection error: %1$s</string>
     <string name="dialog_add_vehicle_title">Add Vehicle</string>
     <string name="option_register_my_vehicle">Register my own vehicle</string>
-    <string name="option_receive_from_share_code">Receive from share code</string>
+    <string name="option_create_invitation">Create invitation</string>
     <string name="cd_find_user">Find user</string>
     <string name="label_color_prefix">Color: %1$s</string>
     <!-- Content Descriptions -->
@@ -177,9 +180,9 @@
 
     <!-- Labels -->
     <string name="label_back">Back</string>
-    <string name="title_user_verification">👤 User Verification</string>
+    <string name="title_user_verification"> User Verification</string>
     <string name="desc_user_verification">Confirm you want to share with this user</string>
-    <string name="title_vehicle_access">🚗 Vehicle Access</string>
+    <string name="title_vehicle_access">Vehicle Access</string>
     <string name="title_access_duration">Access Duration</string>
 
     <!-- Sample Data -->
@@ -196,11 +199,11 @@
     <string name="hint_notes_detail">Add any notes or restrictions...</string>
 
     <!-- Warning -->
-    <string name="warning_confirm_action">⚠️ Confirm Action: This user will be able to park using your vehicle until you revoke access.</string>
+    <string name="warning_confirm_action">Confirm Action: This user will be able to park using your vehicle until you revoke access.</string>
 
     <!-- Actions -->
-    <string name="action_grant_access">✅ Grant Access</string>
-    <string name="action_cancel">❌ Cancel</string>
+    <string name="action_grant_access">Grant Access</string>
+    <string name="action_cancel">Cancel</string>
     <!-- Top bar -->
     <string name="cd_share">Share</string>
 
@@ -210,27 +213,29 @@
 
     <!-- Vehicle section -->
     <string name="section_vehicle_info">Vehicle Information</string>
-    <string name="license_plate_label">License Plate: GHI-3456</string>
-    <string name="model_label">Model: 2018 Ford Focus</string>
-    <string name="color_label">Color: Red</string>
-    <string name="status_label">Status: Active Access</string>
+    <string name="license_plate_label">License Plate </string>
+    <string name="model_label">Model </string>
+    <string name="color_label">Color </string>
+    <string name="status_label">Status </string>
 
     <!-- Owner section -->
     <string name="section_owner">Vehicle Owner</string>
-    <string name="owner_name">Sarah Johnson</string>
-    <string name="owner_share_code">USER-SARAH2024</string>
-    <string name="owner_member_since">Member since: March 2024</string>
+    <string name="owner_name"> </string>
+    <string name="owner_share_code"> </string>
+    <string name="owner_member_since">Member since </string>
 
     <!-- Access details -->
     <string name="section_access_details">Access Details</string>
-    <string name="access_duration_label">Access Duration: Permanent Access</string>
-    <string name="access_granted_label">Access Granted: May 20, 2025</string>
-    <string name="access_expires_label">Expires: Never (until returned or revoked)</string>
-    <string name="access_last_used_label">Last Used: June 2, 2025</string>
+    <string name="access_duration_label">Access Duration </string>
+    <string name="access_granted_label">Access Granted </string>
+    <string name="access_expires_label">Expires Never (until returned or revoked)</string>
+    <string name="access_last_used_label">Last Used </string>
 
     <!-- Owner note -->
     <string name="section_note">Note from Owner</string>
-    <string name="owner_note_text">"Thanks for being responsible with my car! Feel free to use it anytime. Just remember to keep it clean and fill up the gas when needed. Have a great day!"</string>
+    <string name="owner_note_text">
+        ""
+    </string>
 
     <!-- Usage -->
     <string name="section_usage">Your Usage Summary</string>
@@ -245,7 +250,7 @@
 
     <!-- Footer -->
     <string name="return_warning">Return Access: If you no longer need access to this vehicle, you can return it to the owner. This action cannot be undone.</string>
-    <string name="btn_return_access_to_owner">↩️ Return Access to Owner</string>
+    <string name="btn_accept">↩️ Return Access to Owner</string>
     <string name="btn_cancel">Cancel</string>
 
 
@@ -328,7 +333,7 @@
     <string name="no_code_to_copy">Empty</string>
     <string name="add_vehicle_action_bar_header">Add New Vehicle</string>
     <string name="activity_check_out_not_available">Parking session data is not available</string>
-    <string name="payement_activity_payment_detail_display">Payment Details</string>
+    <string name="payment_activity_payment_detail_display">Payment Details</string>
     <string name="payment_activity_display_amount">Amount</string>
     <string name="payment_activity_display_note">Please transfer the exact amount for automatic reconciliation</string>
     <string name="payment_activity_content_description_account_number">Account number</string>
@@ -340,5 +345,28 @@
     <string name="payment_activity_btn_text_display">Confirm Payment</string>
     <string name="payment_activity_actionbar_title">Payment Process</string>
     <string name="payment_activity_qr_code_title">Open your banking app, choose the QR scan function, and scan the code above.</string>
+    <string name="vehicle_fragment_menu_register">Register my own vehicle</string>
+    <string name="vehicle_fragment_menu_receive">Create invitation</string>
+    <string name="vehicle_fragment_menu_share_your_vehicle">Share your vehicle</string>
+    <string name="vehicle_fragment_btn_view_invitation">View invitation</string>
+    <string name="invitation_activity_actionbar_title">You Invitation</string>
+    <string name="item_vehicle_invitation_notification">%1$s invited you to use the car</string>
+    <string name="item_vehicle_invitation_label_owner">Vehicle owner</string>
+    <string name="item_vehicle_invitation_label_color">Color</string>
+    <string name="item_vehicle_invitation_btn_details">Accept</string>
+    <string name="list_invitation_error_fetch">Unable to load shared list</string>
+    <string name="no_items_found">No items</string>
+    <string name="vehicle_detail_dialog_recall">Recall</string>
+    <string name="vehicle_detail_dialog_remove">Remove</string>
+    <string name="item_vehicle_invitation_btn_reject">Reject</string>
+    <string name="item_vehicle_invitation_notification_reject">Are you sure to reject this invitation</string>
+    <string name="view_list_invitation_adapter_accept_200">Invitation accepted</string>
+    <string name="view_list_invitation_adapter_accept_400">Error accepting invitation</string>
+    <string name="view_list_invitation_adapter_reject_200">invitation declined</string>
+    <string name="share_vehicle_access_activity_actionbar_title">Send invitation</string>
+    <string name="share_vehicle_access_activity_search_note">Enter the user\'s share code (eg: USER-SARAH2024)</string>
+    <string name="share_vehicle_access_search_not_found_search">No results found</string>
+    <string name="share_vehicle_access_search_not_found_search_subtitle">Try checking the share code again</string>
+    <string name="vehicle_detail_dialog_share">Share</string>
 
 </resources>

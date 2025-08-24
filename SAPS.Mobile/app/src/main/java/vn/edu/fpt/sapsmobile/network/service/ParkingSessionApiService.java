@@ -13,10 +13,12 @@ import vn.edu.fpt.sapsmobile.dtos.payment.CheckoutResponse;
 import vn.edu.fpt.sapsmobile.dtos.payment.PaymentResponseDTO;
 import vn.edu.fpt.sapsmobile.dtos.parkingsession.OwnedSessionRequest;
 import vn.edu.fpt.sapsmobile.dtos.parkingsession.OwnedSessionResponse;
+import vn.edu.fpt.sapsmobile.dtos.parkingsession.ParkingSessionDetailsResponse;
 
 public interface ParkingSessionApiService {
     @GET("/parkingsession/{vehicleID}")
     Call<ParkingSession> getParkingSessionToCheckOut(@Path("vehicleID") String vehicleID);
+
     @GET("/parkingsessionLast30days")
     Call<List<ParkingSession>> getParkingSessionListLast30days();
     @GET("/parkingsessionLast3Months")
@@ -39,5 +41,8 @@ public interface ParkingSessionApiService {
 
     @GET("/api/parkingSession/{sessionId}/payment-info")
     Call<PaymentApiResponseDTO> getPaymentInfo(@Path("sessionId") String sessionId);
+
+    @GET("/api/parkingSession/client/{id}")
+    Call<ParkingSessionDetailsResponse> getParkingSessionDetails(@Path("id") String sessionId);
 
 }

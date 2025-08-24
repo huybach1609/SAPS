@@ -45,13 +45,28 @@ public class OwnedSessionResponse {
         private String paymentStatus;
 
         public String getId() { return id; }
+        public void setId(String id) { this.id = id; }
+        
         public String getParkingLotName() { return parkingLotName; }
+        public void setParkingLotName(String parkingLotName) { this.parkingLotName = parkingLotName; }
+        
         public String getLicensePlate() { return licensePlate; }
+        public void setLicensePlate(String licensePlate) { this.licensePlate = licensePlate; }
+        
         public String getEntryDateTime() { return entryDateTime; }
+        public void setEntryDateTime(String entryDateTime) { this.entryDateTime = entryDateTime; }
+        
         public String getExitDateTime() { return exitDateTime; }
+        public void setExitDateTime(String exitDateTime) { this.exitDateTime = exitDateTime; }
+        
         public double getCost() { return cost; }
+        public void setCost(double cost) { this.cost = cost; }
+        
         public String getStatus() { return status; }
+        public void setStatus(String status) { this.status = status; }
+        
         public String getPaymentStatus() { return paymentStatus; }
+        public void setPaymentStatus(String paymentStatus) { this.paymentStatus = paymentStatus; }
     }
 }
 

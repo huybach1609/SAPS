@@ -136,6 +136,7 @@ builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IAdminService, AdminService>();
 
 // Đăng ký service cho UserClient
+builder.Services.AddScoped<IUserClientRepository, UserClientRepository>();
 builder.Services.AddScoped<IUserClientService, UserClientService>();
 
 // Đăng ký service cho Subscription

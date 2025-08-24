@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
@@ -29,21 +28,27 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationSe
     private static final String TAG = "LoginActivity";
     private static final int RC_SIGN_IN = 9001;
 
-    // Services and utilities
+    // ============================================================================
+    // SERVICES AND UTILITIES
+    // ============================================================================
     private AuthenticationService authenticationService;
     private TokenManager tokenManager;
     private LoadingDialog loadingDialog;
 
-    // UI components
+    // ============================================================================
+    // UI COMPONENTS
+    // ============================================================================
     private EditText emailInput, passwordInput;
     private Button signInButton;
     private MaterialCardView signInGoogleButton;
     private TextView registerButton, forgotPasswordText;
 
+    // ============================================================================
+    // LIFECYCLE METHODS
+    // ============================================================================
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         hideActionBar();
         setContentView(R.layout.activity_login);
 
@@ -51,6 +56,9 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationSe
         checkExistingLogin();
     }
 
+    // ============================================================================
+    // INITIALIZATION METHODS
+    // ============================================================================
     private void hideActionBar() {
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
@@ -58,22 +66,17 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationSe
     }
 
     private void initializeComponents() {
-        tokenManager = new TokenManager(this);
-        loadingDialog = new LoadingDialog(this);
-        authenticationService = new AuthenticationService(this, this);
-
+        initializeServices();
         initializeViews();
         setupClickListeners();
         setupRegisterText();
         handlePrefilledCredentials();
     }
 
-    private void checkExistingLogin() {
-        if (tokenManager.isLoggedIn()) {
-            navigateToMainActivity();
-            return;
-        }
-        updateUI(null);
+    private void initializeServices() {
+        tokenManager = new TokenManager(this);
+        loadingDialog = new LoadingDialog(this);
+        authenticationService = new AuthenticationService(this, this);
     }
 
     private void initializeViews() {
@@ -89,11 +92,15 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationSe
     }
 
     private void setupClickListeners() {
+        // Email/Password login
         signInButton.setOnClickListener(v -> handleEmailLogin());
+        
+        // Google login
         signInGoogleButton.setOnClickListener(v -> handleGoogleSignIn());
+        
+        // Navigation
         registerButton.setOnClickListener(v -> navigateToRegister());
         forgotPasswordText.setOnClickListener(v -> navigateToForgotPassword());
-
         setupBackButton();
     }
 
@@ -113,6 +120,33 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationSe
         }
     }
 
+    private void handlePrefilledCredentials() {
+        Intent intent = getIntent();
+        if (intent != null) {
+            String prefilledEmail = intent.getStringExtra("prefilled_email");
+            String prefilledPassword = intent.getStringExtra("prefilled_password");
+            
+            if (prefilledEmail != null && !prefilledEmail.isEmpty()) {
+                emailInput.setText(prefilledEmail);
+            }
+            
+            if (prefilledPassword != null && !prefilledPassword.isEmpty()) {
+                passwordInput.setText(prefilledPassword);
+            }
+        }
+    }
+
+    private void checkExistingLogin() {
+        if (tokenManager.isLoggedIn()) {
+            navigateToMainActivity();
+            return;
+        }
+        updateUI(null);
+    }
+
+    // ============================================================================
+    // EMAIL/PASSWORD LOGIN FLOW
+    // ============================================================================
     private void handleEmailLogin() {
         String email = getEmailInput();
         String password = getPasswordInput();
@@ -190,18 +224,29 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationSe
         passwordInput.requestFocus();
     }
 
+    // ============================================================================
+    // GOOGLE LOGIN FLOW
+    // ============================================================================
     private void handleGoogleSignIn() {
         showLoading("Signing in with Google...");
         Intent signInIntent = authenticationService.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
+    // ============================================================================
+    // LOADING AND UI MANAGEMENT
+    // ============================================================================
     private void showLoading(String message) {
         loadingDialog.show(message);
     }
 
     private void hideLoading() {
-        loadingDialog.hide();
+        loadingDialog.dismiss();
+    }
+
+    private void updateUI(User user) {
+        boolean isLoggedIn = user != null;
+        signInGoogleButton.setVisibility(isLoggedIn ? View.GONE : View.VISIBLE);
     }
 
     private void clearInputFields() {
@@ -213,7 +258,9 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationSe
         passwordInput.setText("");
     }
 
-    // Navigation methods
+    // ============================================================================
+    // NAVIGATION METHODS
+    // ============================================================================
     private void navigateToMainActivity() {
         startActivity(new Intent(this, MainActivity.class));
         finish();
@@ -227,7 +274,9 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationSe
         startActivity(new Intent(this, ForgotPasswordActivity.class));
     }
 
-    // Activity result handling
+    // ============================================================================
+    // ACTIVITY RESULT HANDLING
+    // ============================================================================
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -236,7 +285,9 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationSe
         }
     }
 
-    // AuthenticationService.AuthCallback implementation
+    // ============================================================================
+    // AUTHENTICATION CALLBACKS
+    // ============================================================================
     @Override
     public void onAuthSuccess(User user) {
         runOnUiThread(() -> {
@@ -256,21 +307,9 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationSe
         });
     }
 
-    private void updateUI(User user) {
-        boolean isLoggedIn = user != null;
-        signInGoogleButton.setVisibility(isLoggedIn ? View.GONE : View.VISIBLE);
-    }
-
-    private void showSuccessMessage(User user) {
-        String message = "Welcome, " + user.getFullName() + "!";
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-    private void showErrorMessage(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
-    }
-
-    // Inner class for email login callback
+    // ============================================================================
+    // EMAIL LOGIN CALLBACK
+    // ============================================================================
     private class EmailLoginCallback implements AuthenticationService.AuthCallback {
         @Override
         public void onAuthSuccess(User user) {
@@ -293,23 +332,19 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationSe
         }
     }
 
+    // ============================================================================
+    // UTILITY METHODS
+    // ============================================================================
+    private void showSuccessMessage(User user) {
+        String message = "Welcome, " + user.getFullName() + "!";
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+    }
+
     private void showSuccessMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    private void handlePrefilledCredentials() {
-        Intent intent = getIntent();
-        if (intent != null) {
-            String prefilledEmail = intent.getStringExtra("prefilled_email");
-            String prefilledPassword = intent.getStringExtra("prefilled_password");
-            
-            if (prefilledEmail != null && !prefilledEmail.isEmpty()) {
-                emailInput.setText(prefilledEmail);
-            }
-            
-            if (prefilledPassword != null && !prefilledPassword.isEmpty()) {
-                passwordInput.setText(prefilledPassword);
-            }
-        }
+    private void showErrorMessage(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 }

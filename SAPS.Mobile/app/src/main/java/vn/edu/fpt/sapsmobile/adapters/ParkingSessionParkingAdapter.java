@@ -1,6 +1,7 @@
 package vn.edu.fpt.sapsmobile.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Locale;
 
 import vn.edu.fpt.sapsmobile.R;
+import vn.edu.fpt.sapsmobile.activities.checkout.CheckoutActivity;
 import vn.edu.fpt.sapsmobile.listener.HistoryFragmentVehicleDetailListener;
 import vn.edu.fpt.sapsmobile.models.ParkingLot;
 import vn.edu.fpt.sapsmobile.models.ParkingSession;
@@ -105,8 +107,6 @@ public class ParkingSessionParkingAdapter extends RecyclerView.Adapter<ParkingSe
             tvAmount.setText(vndFormat.format(session.getCost()));
 
             // Set status
-
-
             String statusCheck = session.getTransactionId() == null ? "Pending" : "Paid";
 
             tvStatus.setTextColor(
@@ -138,18 +138,17 @@ public class ParkingSessionParkingAdapter extends RecyclerView.Adapter<ParkingSe
         }
 
         private void handleClick(){
-            if (listener != null && vehicle != null) {
-                if(fragment.equals("historyFragment")){
-                    Log.i("ParkingSessionAdapter", session.toString());
-                    listener.onParkingSessionSeeDetailClick(session, vehicle, null);
-                } else if (fragment.equals("homeFragment")) {
-                    ParkingLot parkingLot = new ParkingLot();
-                    parkingLot.setName(session.getParkingLotName());
-                    listener.onParkingSessionClickToCheckOut(session, vehicle, parkingLot);
-                }
-            }
-        }
+            ParkingLot parkingLot = new ParkingLot();
+            parkingLot.setName(session.getParkingLotName());
 
+            Intent intent = new Intent(context, CheckoutActivity.class);
+            intent.putExtra("vehicle", vehicle);
+            intent.putExtra("parkingSession", session);
+            intent.putExtra("parkingLot", parkingLot);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+
+        }
 
     }
 }

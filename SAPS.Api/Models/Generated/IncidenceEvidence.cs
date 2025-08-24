@@ -13,5 +13,7 @@ public partial class IncidenceEvidence
 
     public string IncidenceReportId { get; set; } = null!;
 
+    public virtual AttachedFile IdNavigation { get; set; } = null!;
+
     public virtual IncidenceReport IncidenceReport { get; set; } = null!;
 }

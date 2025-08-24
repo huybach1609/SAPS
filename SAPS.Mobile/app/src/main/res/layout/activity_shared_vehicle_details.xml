@@ -321,11 +321,11 @@
             android:gravity="center">
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_return_access_to_owner"
+                android:id="@+id/btn_accept"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="60dp"
-                android:text="@string/btn_return_access_to_owner"
+                android:text="@string/btn_accept"
                 android:textAllCaps="false"
                 android:backgroundTint="@color/md_theme_primary"
                 android:textColor="@color/md_theme_onPrimary"

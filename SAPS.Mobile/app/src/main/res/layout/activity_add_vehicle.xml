@@ -425,6 +425,40 @@
                 android:layout_height="1dp"
                 android:background="@color/md_theme_outlineVariant" />
 
+            <!-- Vehicle Type -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingVertical="12dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingStart="16dp"
+                    android:text="Vehicle Type"
+                    android:textColor="@color/md_theme_onSecondaryContainer"
+                    android:textSize="16sp" />
+
+                <EditText
+                    android:id="@+id/input_vehicle_type"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:background="@android:color/transparent"
+                    android:enabled="false"
+                    android:gravity="end"
+                    android:paddingEnd="16dp"
+                    android:textColor="@color/md_theme_onSurface"
+                    android:textSize="16sp" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/md_theme_outlineVariant" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

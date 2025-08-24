@@ -6,59 +6,138 @@ import { userService, ClientUser } from "@/services/user/userService";
 const UserAccountList: React.FC = () => {
   const navigate = useNavigate();
   const [users, setUsers] = useState<ClientUser[]>([]);
+  const [allUsers, setAllUsers] = useState<ClientUser[]>([]); // For statistics
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
-  const [page, setPage] = useState(1);
-  const rowsPerPage = 5; // Hiển thị 5 người dùng mỗi trang
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const pageSize = 5; // Fixed page size as per API
   const [successMessage] = useState<string | null>(null);
+  const [isSearching, setIsSearching] = useState(false);
 
   // Temporary state for input fields
   const [tempSearchQuery, setTempSearchQuery] = useState(searchQuery);
   const [tempStatusFilter, setTempStatusFilter] = useState(statusFilter);
 
-  // Fetch users from API
+  // Fetch all users for statistics
+  useEffect(() => {
+    const fetchAllUsers = async () => {
+      try {
+        console.log("🔄 Fetching all users for statistics...");
+        const response = await userService.getAllClientUsers();
+
+        if (response.success && response.data) {
+          console.log("📊 All users data for stats:", response.data);
+
+          // Format the data for statistics
+          const formattedAllUsers = response.data.map((user) => ({
+            ...user,
+            fullName: user["full-name"] || user.fullName,
+            createdAt: user["created-at"] || user.createdAt,
+            status: user.status.toLowerCase() as "active" | "suspended",
+          }));
+
+          setAllUsers(formattedAllUsers);
+          console.log(
+            "✅ Successfully set all users for statistics:",
+            formattedAllUsers
+          );
+        } else {
+          console.error(
+            "❌ Failed to fetch all users for stats:",
+            response.error
+          );
+        }
+      } catch (err: any) {
+        console.error("🔥 Exception while fetching all users for stats:", err);
+      }
+    };
+
+    fetchAllUsers();
+  }, []); // Only fetch once on component mount
+
+  // Fetch users from API using pagination
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         setLoading(true);
-        const response = await userService.getAllClientUsers();
+        console.log(
+          "🔄 Fetching paginated users - Page:",
+          currentPage,
+          "Size:",
+          pageSize
+        );
+        console.log("🔍 Applied filters:", {
+          searchQuery,
+          statusFilter,
+        });
+
+        const response = await userService.getPaginatedClientUsers(
+          currentPage,
+          pageSize,
+          1,
+          statusFilter || undefined,
+          searchQuery || undefined
+        );
+
         if (response.success && response.data) {
-          setUsers(response.data);
+          console.log("📋 Raw paginated user data:", response.data);
+          console.log("📋 API Response structure:", {
+            items: response.data.items?.length || 0,
+            totalCount: response.data["total-count"],
+            pageNumber: response.data["page-number"],
+            pageSize: response.data["page-size"],
+            totalPages: response.data["total-pages"],
+          });
+
+          // Format the data according to the new API structure
+          const formattedUsers = response.data.items.map((user) => ({
+            ...user,
+            // Map new format to old format for backward compatibility
+            fullName: user["full-name"] || user.fullName,
+            createdAt: user["created-at"] || user.createdAt,
+            status: user.status.toLowerCase() as "active" | "suspended",
+          }));
+
+          setUsers(formattedUsers);
+
+          // Set pagination info from the new API format
+          setTotalPages(response.data["total-pages"]);
+          setTotalItems(response.data["total-count"]);
+
           setError(null);
+          console.log("✅ Successfully set formatted users:", formattedUsers);
+          console.log("✅ Pagination info:", {
+            currentPage,
+            totalPages: response.data["total-pages"],
+            totalItems: response.data["total-count"],
+          });
         } else {
+          console.error("❌ Failed to fetch users:", response.error);
           setError(response.error || "Failed to fetch user data");
         }
       } catch (err: any) {
+        console.error("🔥 Exception while fetching users:", err);
         setError(err.message || "An unexpected error occurred");
-        console.error("Error fetching users:", err);
       } finally {
         setLoading(false);
       }
     };
 
     fetchUsers();
-  }, []);
+  }, [currentPage, pageSize, searchQuery, statusFilter]); // Re-fetch when page or filters change
 
-  // Filter users based on search and status
-  const filteredUsers = users.filter((user: ClientUser) => {
-    const matchesSearch =
-      searchQuery === "" ||
-      user.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.id.toLowerCase().includes(searchQuery.toLowerCase());
+  // Since we're using server-side pagination, we display all the users from current page
+  const items = users; // No client-side filtering needed with server-side pagination
 
-    const matchesStatus = statusFilter === "" || user.status === statusFilter;
-
-    return matchesSearch && matchesStatus;
-  });
-
-  const pages = Math.ceil(filteredUsers.length / rowsPerPage);
-  const items = filteredUsers.slice(
-    (page - 1) * rowsPerPage,
-    page * rowsPerPage
-  );
+  // Handle pagination change event
+  const handlePageChange = (page: number) => {
+    console.log("📄 Page changed to:", page);
+    setCurrentPage(page);
+  };
 
   return (
     <div className="w-full flex flex-col">
@@ -189,7 +268,7 @@ const UserAccountList: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4 w-full">
           <div className="bg-[#00b4d8] rounded-lg p-4 text-white w-full">
             <div className="text-center">
-              <div className="text-4xl font-bold mb-1">{users.length}</div>
+              <div className="text-4xl font-bold mb-1">{allUsers.length}</div>
               <div className="text-sm">Total Users</div>
             </div>
           </div>
@@ -197,7 +276,10 @@ const UserAccountList: React.FC = () => {
           <div className="bg-[#0096c7] rounded-lg p-4 text-white w-full">
             <div className="text-center">
               <div className="text-4xl font-bold mb-1">
-                {users.filter((a: ClientUser) => a.status === "active").length}
+                {
+                  allUsers.filter((a: ClientUser) => a.status === "active")
+                    .length
+                }
               </div>
               <div className="text-sm">Active Users</div>
             </div>
@@ -207,8 +289,10 @@ const UserAccountList: React.FC = () => {
             <div className="text-center">
               <div className="text-4xl font-bold mb-1">
                 {
-                  users.filter((a: ClientUser) => a.status === "suspended")
-                    .length
+                  allUsers.filter(
+                    (a: ClientUser) =>
+                      a.status === "suspended" || a.status === "inactive"
+                  ).length
                 }
               </div>
               <div className="text-sm">Suspended Users</div>
@@ -250,6 +334,16 @@ const UserAccountList: React.FC = () => {
               placeholder="Search by name, email..."
               value={tempSearchQuery}
               onChange={(e) => setTempSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  // Trigger search on Enter key
+                  setIsSearching(true);
+                  setSearchQuery(tempSearchQuery);
+                  setStatusFilter(tempStatusFilter);
+                  handlePageChange(1);
+                  setTimeout(() => setIsSearching(false), 500);
+                }
+              }}
               className="w-full"
             />
           </div>
@@ -263,8 +357,8 @@ const UserAccountList: React.FC = () => {
               style={{ height: "42px" }}
             >
               <option value="">All Status</option>
-              <option value="active">Active</option>
-              <option value="suspended">Suspended</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
             </select>
           </div>
         </div>
@@ -274,30 +368,44 @@ const UserAccountList: React.FC = () => {
             <Button
               color="primary"
               className="bg-blue-600 rounded-full text-white"
+              isLoading={isSearching}
               startContent={
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
+                !isSearching && (
+                  <svg
+                    className="w-4 h-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
+                  </svg>
+                )
               }
-              onPress={() => {
-                // Apply filters from temporary states
-                setSearchQuery(tempSearchQuery);
-                setStatusFilter(tempStatusFilter);
-                setPage(1); // Reset to first page when applying new filters
+              onPress={async () => {
+                try {
+                  setIsSearching(true);
+                  console.log("🔍 Applying search filters:", {
+                    search: tempSearchQuery,
+                    status: tempStatusFilter,
+                  });
+
+                  // Apply filters from temporary states
+                  setSearchQuery(tempSearchQuery);
+                  setStatusFilter(tempStatusFilter);
+                  handlePageChange(1); // Reset to first page when applying new filters
+                } finally {
+                  // Add slight delay to show loading state
+                  setTimeout(() => setIsSearching(false), 500);
+                }
               }}
             >
-              Search
+              {isSearching ? "Searching..." : "Search"}
             </Button>
 
             <Button
@@ -305,12 +413,14 @@ const UserAccountList: React.FC = () => {
               variant="light"
               className="rounded-full"
               onPress={() => {
+                console.log("🧹 Clearing all filters");
+                setIsSearching(false);
                 // Clear all filters
                 setTempSearchQuery("");
                 setTempStatusFilter("");
                 setSearchQuery("");
                 setStatusFilter("");
-                setPage(1);
+                handlePageChange(1);
               }}
             >
               Clear Filters
@@ -402,13 +512,17 @@ const UserAccountList: React.FC = () => {
                 {items.map((user) => (
                   <tr key={user.id} className="hover:bg-gray-50">
                     <td className="px-4 py-3 text-sm font-medium text-blue-600">
-                      {(page - 1) * rowsPerPage + items.indexOf(user) + 1}
+                      {(currentPage - 1) * pageSize + items.indexOf(user) + 1}
                     </td>
                     <td className="px-4 py-3 text-sm font-medium">
                       {user.fullName}
                     </td>
                     <td className="px-4 py-3 text-sm">{user.email}</td>
-                    <td className="px-4 py-3 text-sm">{user.createdAt}</td>
+                    <td className="px-4 py-3 text-sm">
+                      {user.createdAt
+                        ? new Date(user.createdAt).toLocaleDateString()
+                        : "N/A"}
+                    </td>
                     <td className="px-4 py-3 text-sm">
                       <span
                         className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${
@@ -475,9 +589,9 @@ const UserAccountList: React.FC = () => {
         {/* Pagination */}
         <div className="mt-4 flex flex-col md:flex-row justify-between items-center text-sm w-full">
           <div className="mb-2 md:mb-0">
-            Showing {(page - 1) * rowsPerPage + 1} to{" "}
-            {Math.min(page * rowsPerPage, filteredUsers.length)} of{" "}
-            {filteredUsers.length} entries
+            Showing {(currentPage - 1) * pageSize + 1} to{" "}
+            {Math.min(currentPage * pageSize, totalItems)} of {totalItems}{" "}
+            entries
           </div>
 
           <div className="flex justify-end w-full md:w-auto items-center gap-2">
@@ -486,8 +600,8 @@ const UserAccountList: React.FC = () => {
               variant="light"
               color="primary"
               className="rounded-full flex items-center"
-              isDisabled={page === 1}
-              onPress={() => setPage(Math.max(1, page - 1))}
+              isDisabled={currentPage === 1}
+              onPress={() => handlePageChange(Math.max(1, currentPage - 1))}
             >
               <svg
                 className="w-4 h-4 mr-1"
@@ -507,9 +621,9 @@ const UserAccountList: React.FC = () => {
             </Button>
 
             <Pagination
-              total={pages}
-              page={page}
-              onChange={setPage}
+              total={totalPages}
+              page={currentPage}
+              onChange={handlePageChange}
               classNames={{
                 item: "text-black",
                 cursor: "bg-blue-900 text-white",
@@ -521,8 +635,10 @@ const UserAccountList: React.FC = () => {
               variant="light"
               color="primary"
               className="rounded-full flex items-center"
-              isDisabled={page === pages}
-              onPress={() => setPage(Math.min(pages, page + 1))}
+              isDisabled={currentPage === totalPages}
+              onPress={() =>
+                handlePageChange(Math.min(totalPages, currentPage + 1))
+              }
             >
               Next
               <svg

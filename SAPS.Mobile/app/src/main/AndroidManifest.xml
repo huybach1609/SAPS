@@ -30,11 +30,19 @@
             android:name=".activities.sharevehicle.ConfirmUserAccessActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.sharevehicle.ShareVehicleSuccessActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.sharevehicle.ShareVehicleAccessActivity"
             android:exported="false"
-            android:theme="@style/Theme.SAPSMobile.ActionBar"
-
             />
+        <activity
+            android:name=".activities.sharevehicle.InvitationActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.sharevehicle.InvitationDetailActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.ParkingHistoryDetailsActivity"
             android:exported="false"

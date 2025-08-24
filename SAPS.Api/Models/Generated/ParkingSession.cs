@@ -31,6 +31,10 @@ public partial class ParkingSession
 
     public decimal Cost { get; set; }
 
+    public string? DriverId { get; set; }
+
+    public virtual User? Driver { get; set; }
+
     public virtual ParkingLot ParkingLot { get; set; } = null!;
 
     public virtual Vehicle Vehicle { get; set; } = null!;
