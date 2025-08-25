@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Card, CardBody, CardHeader, Input, Select, SelectItem } from '@heroui/react';
 import { FolderSearch, PlusIcon, RefreshCcw } from 'lucide-react';
-import { StaffStatus } from '@/types/User';
+import { UserStatus } from '@/types/User';
 
 interface StaffSearchAndAddProps {
   tableSearch: string;
@@ -64,10 +64,10 @@ export const StaffSearchAndAdd: React.FC<StaffSearchAndAddProps> = ({
               }}
             >
               <SelectItem key={""}>All</SelectItem>
-              <SelectItem key={StaffStatus.ACTIVE}>Active</SelectItem>
-              <SelectItem key={StaffStatus.ON_LEAVE}>On Leave</SelectItem>
-              <SelectItem key={StaffStatus.SUSPENDED}>Suspended</SelectItem>
-              <SelectItem key={StaffStatus.TERMINATED}>Terminated</SelectItem>
+              <SelectItem key={UserStatus.ACTIVE}>Active</SelectItem>
+              <SelectItem key={UserStatus.INACTIVE}>Inactive</SelectItem>
+              <SelectItem key={UserStatus.DELETED}>Deleted</SelectItem>
+              <SelectItem key={UserStatus.BANNED}>Banned</SelectItem>
             </Select>
             <Button
               size="sm"

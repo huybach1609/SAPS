@@ -295,7 +295,7 @@ const mockRequestDetails: Record<string, RequestDetail> = {
 // Add token to requests
 api.interceptors.request.use((config) => {
   const token =
-    localStorage.getItem("admin_token") || localStorage.getItem("auth_token");
+    localStorage.getItem("admin_token") || localStorage.getItem("access_token");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

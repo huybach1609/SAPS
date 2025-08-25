@@ -1,12 +1,20 @@
 import { useState, useEffect } from 'react';
-import { StaffStatus, User } from '@/types/User';
-import { PaginationInfo } from '@/types/Whitelist';
+import { UserStatus, User } from '@/types/User';
 import { fetchStaffList,  updateStaff } from '@/services/parkinglot/staffService';
+
+interface PaginationData {
+  totalCount: number;
+  pageNumber: number;
+  pageSize: number;
+  totalPages: number;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
+}
 
 export const useStaffManagement = (parkingLotId: string | undefined) => {
   const [stafflist, setStafflist] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
-  const [pagination, setPagination] = useState<PaginationInfo | null>(null);
+  const [pagination, setPagination] = useState<PaginationData | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [tableSearch, setTableSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('');
@@ -17,15 +25,22 @@ export const useStaffManagement = (parkingLotId: string | undefined) => {
     setLoading(true);
     try {
       let response;
-      const statusParam = statusFilter === '' ? undefined : Number(statusFilter);
+      const statusParam = statusFilter === '' ? '' : statusFilter;
 
       if (tableSearch != null && tableSearch.trim() !== '') {
         response = await fetchStaffList(parkingLotId, 6, currentPage, tableSearch, statusParam);
       } else {
-        response = await fetchStaffList(parkingLotId, 6, currentPage, undefined, statusParam);
+        response = await fetchStaffList(parkingLotId, 6, currentPage,"" , statusParam);
       }
-      setStafflist(response.data);
-      setPagination(response.pagination);
+      setStafflist(response.items);
+      setPagination({
+        totalCount: response.totalCount,
+        pageNumber: response.pageNumber,
+        pageSize: response.pageSize,
+        totalPages: response.totalPages,
+        hasPreviousPage: response.hasPreviousPage,
+        hasNextPage: response.hasNextPage
+      });
     } catch (error) {
       console.error('Failed to load stafflist:', error);
     } finally {
@@ -50,29 +65,16 @@ export const useStaffManagement = (parkingLotId: string | undefined) => {
         const updateRequest = {
           fullName: user.fullName,
           email: user.email,
-          phone: user.phone,
+          phone: user.phoneNumber,
           employeeId: user.staffProfile?.staffId || '',
           dateOfBirth: '',
-          status: StaffStatus.TERMINATED
+          status: UserStatus.INACTIVE
         };
-        
+        console.log("updateRequest", updateRequest);
         await updateStaff(parkingLotId, updateRequest);
         
 
        loadStaffList();
-        // // Update the local state instead of refetching
-        // setStafflist(prevStaffList => 
-        //   prevStaffList.map(staff => 
-        //     staff.id === staffId 
-        //       ? { 
-        //           ...staff, 
-        //           staffProfile: staff.staffProfile 
-        //             ? { ...staff.staffProfile, status: StaffStatus.TERMINATED }
-        //             : undefined 
-        //         }
-        //       : staff
-        //   )
-        // );
       } catch (error) {
         console.error('Failed to deactivate user:', error);
       }

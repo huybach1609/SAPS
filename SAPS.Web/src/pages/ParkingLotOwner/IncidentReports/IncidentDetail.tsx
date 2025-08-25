@@ -34,29 +34,26 @@ import {
 import { formatDate, formatTime } from "@/components/utils/stringUtils";
 
 const IncidentDetail: React.FC = () => {
-  const { parkingLotId, incidentId } = useParams();
+  const { incidentId } = useParams();
 
   const [incident, setIncident] = useState<IncidentReport | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentStatus, setCurrentStatus] = useState<IncidentStatus | null>(
-    null
-  );
+  const [currentStatus, setCurrentStatus] = useState<string | null>(null);
   const [modalImageInfo, setModalImageInfo] =
     useState<ModalImageInfoContent | null>(null);
 
   useEffect(() => {
     const loadIncident = async () => {
-      if (!parkingLotId || !incidentId) {
-        setError("Missing parking lot ID or incident ID");
+      if (!incidentId) {
+        setError("Missing incident ID");
         setLoading(false);
-
         return;
       }
 
       try {
         setLoading(true);
-        const incidentData = await fetchIncidentById(parkingLotId, incidentId);
+        const incidentData = await fetchIncidentById(incidentId);
 
         setIncident(incidentData);
         setCurrentStatus(incidentData.status);
@@ -69,7 +66,7 @@ const IncidentDetail: React.FC = () => {
     };
 
     loadIncident();
-  }, [parkingLotId, incidentId]);
+  }, [incidentId]);
 
   // Show loading state
   if (loading) {
@@ -102,46 +99,48 @@ const IncidentDetail: React.FC = () => {
     );
   }
 
-  const getPriorityColor = (priority: IncidentPriority): string => {
-    switch (priority) {
-      case IncidentPriority.Low:
+  const getPriorityColor = (priority: string): string => {
+    switch (priority.toLowerCase()) {
+      case "low":
         return "bg-green-100 text-green-800";
-      case IncidentPriority.Medium:
+      case "medium":
         return "bg-yellow-100 text-yellow-800";
-      case IncidentPriority.High:
+      case "high":
         return "bg-orange-100 text-orange-800";
-      case IncidentPriority.Critical:
+      case "critical":
         return "bg-red-100 text-red-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
   };
 
-  const getPriorityText = (priority: IncidentPriority): string => {
-    return IncidentPriority[priority];
+  const getPriorityText = (priority: string): string => {
+    return priority.charAt(0).toUpperCase() + priority.slice(1);
   };
 
-  const getStatusColor = (status: IncidentStatus): string => {
+  const getStatusColor = (status: string): string => {
     switch (status) {
-      case IncidentStatus.Open:
+      case "Open":
         return "bg-red-100 text-red-800";
-      case IncidentStatus.InProgress:
+      case "InProgress":
         return "bg-blue-100 text-blue-800";
-      case IncidentStatus.Resolved:
+      case "Resolved":
         return "bg-green-100 text-green-800";
-      case IncidentStatus.Closed:
+      case "Close":
         return "bg-gray-100 text-gray-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
   };
 
-  const getStatusText = (status: IncidentStatus): string => {
+  const getStatusText = (status: string): string => {
     switch (status) {
-      case IncidentStatus.InProgress:
+      case "InProgress":
         return "Under Investigation";
+      case "Close":
+        return "Closed";
       default:
-        return IncidentStatus[status];
+        return status;
     }
   };
 
@@ -163,35 +162,32 @@ const IncidentDetail: React.FC = () => {
     });
   };
 
-  const handleStatusChange = async (newStatus: IncidentStatus) => {
-    if (!parkingLotId || !incidentId) {
-      console.error("Missing parking lot ID or incident ID");
-
+  const handleStatusChange = async (newStatus: string) => {
+    if (!incidentId) {
+      console.error("Missing incident ID");
       return;
     }
 
     try {
-      const updatedIncident = await updateIncidentStatus(
-        parkingLotId,
-        incidentId,
-        newStatus,
-      );
-
+      await updateIncidentStatus(incidentId, newStatus);
       setCurrentStatus(newStatus);
-      setIncident(updatedIncident);
       console.log(`Status changed to: ${getStatusText(newStatus)}`);
     } catch (error) {
       console.error("Error updating incident status:", error);
     }
   };
 
-  const imageFiles =
-    incident.incidentEvidences?.filter((e) => e.fileType === FileType.Image) ??
-    [];
-  const documentFiles =
-    incident.incidentEvidences?.filter(
-      (e) => e.fileType === FileType.Document,
-    ) ?? [];
+  const isImageFile = (fileExtension: string): boolean => {
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'];
+    return imageExtensions.includes(fileExtension.toLowerCase());
+  };
+
+  const imageFiles = incident.attachments?.filter((file) => 
+    isImageFile(file.fileExtension)
+  ) ?? [];
+  const documentFiles = incident.attachments?.filter((file) => 
+    !isImageFile(file.fileExtension)
+  ) ?? [];
 
   return (
     <DefaultLayout
@@ -221,9 +217,6 @@ const IncidentDetail: React.FC = () => {
 
           <div className="bg-blue-50 rounded-lg p-6 border border-blue-200">
             <div className="flex items-start gap-4">
-              {/* <div className="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center">
-                                <div className="text-white text-2xl">🚗</div>
-                            </div> */}
               <div className="flex-1">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">
                   {incident.header}
@@ -244,9 +237,9 @@ const IncidentDetail: React.FC = () => {
                   <div>
                     <p className="text-sm text-gray-600 mb-1">Current Status</p>
                     <span
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(currentStatus || IncidentStatus.Open)}`}
+                      className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(currentStatus || incident.status)}`}
                     >
-                      {getStatusText(currentStatus || IncidentStatus.Open)}
+                      {getStatusText(currentStatus || incident.status)}
                     </span>
                   </div>
                 </div>
@@ -298,7 +291,7 @@ const IncidentDetail: React.FC = () => {
             <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-lg">
               <User className="w-4 h-4 text-gray-500" />
               <span id="reportName" className="text-gray-900">
-                {incident.reporter.name} ({incident.reporter.role})
+                {incident.reporter.fullName} ({incident.reporter.email})
               </span>
             </div>
           </div>
@@ -343,7 +336,7 @@ const IncidentDetail: React.FC = () => {
                   radius="lg"
                 >
                   <div className="absolute top-2 left-2 bg-blue-500/20 backdrop-blur-md text-xs px-3 py-1 rounded z-20 text-white font-semibold shadow">
-                    {file.fileName}
+                    {file.originalFileName}
                   </div>
                   <Button
                     isIconOnly
@@ -352,16 +345,16 @@ const IncidentDetail: React.FC = () => {
                     type="button"
                     onPress={() =>
                       setModalImageInfo({
-                        imageUrl: file.fileUrl || "",
-                        time: file.uploadAt || "",
-                        licensePlate: file.fileName || "",
+                        imageUrl: file.downloadUrl || "",
+                        time: file.uploadedAt || "",
+                        licensePlate: file.originalFileName || "",
                       })
                     }
                   >
                     <img
                       alt={`Image ${index + 1}`}
                       className="object-cover w-full  rounded-t-lg"
-                      src={file.fileUrl || ""}
+                      src={file.downloadUrl || ""}
                     />
                   </Button>
                   <CardFooter className="justify-between before:bg-white/40 border-white/20 border-1 overflow-hidden py-1 absolute before:rounded-xl rounded-large bottom-1 w-[calc(100%_-_8px)] shadow-small ml-1 z-10">
@@ -369,7 +362,7 @@ const IncidentDetail: React.FC = () => {
                       {/* {imageDescriptions[index] || `Image ${index + 1}`} */}
                     </div>
                     <div className="text-xs text-gray-500">
-                      Uploaded: {formatUploadTime(file.uploadAt)}
+                      Uploaded: {formatUploadTime(file.uploadedAt)}
                     </div>
                   </CardFooter>
                 </Card>
@@ -397,23 +390,23 @@ const IncidentDetail: React.FC = () => {
                     </div>
                     <div>
                       <div className="font-medium text-foreground-500">
-                        {file.fileName.includes("incident_report")
+                        {file.originalFileName.includes("incident_report")
                           ? "Incident Report Form"
                           : "Customer Statement"}
                       </div>
                       <div className="text-sm text-gray-500 dark:text-gray-300">
-                        {file.fileName}
+                        {file.originalFileName}
                       </div>
                       <div className="text-xs text-gray-500">
                         Size: {formatFileSize(file.fileSize)} | Uploaded:{" "}
-                        {formatUploadTime(file.uploadAt)}
+                        {formatUploadTime(file.uploadedAt)}
                       </div>
                     </div>
                   </div>
                   <Link
                     download
                     className="text-primary"
-                    href={file.fileUrl}
+                    href={file.downloadUrl}
                     rel="noopener noreferrer"
                   >
                     <Download className="w-4 h-4 mr-2" />
@@ -448,9 +441,6 @@ const IncidentDetail: React.FC = () => {
       <div className="rounded-lg shadow-sm border">
         <div className="p-6">
           <div className="flex items-center gap-3 mb-3">
-            {/* <div className="w-6 h-6 bg-blue-600 rounded flex items-center justify-center">
-                            <div className="w-3 h-3 bg-white rounded-full"></div>
-                        </div> */}
             <h2 className="text-xl font-semibold text-gray-900">
               Status Management
             </h2>
@@ -462,9 +452,9 @@ const IncidentDetail: React.FC = () => {
             </p>
             <div className="inline-block">
               <span
-                className={`px-4 py-2 rounded-full text-sm font-medium ${getStatusColor(currentStatus || IncidentStatus.Open)}`}
+                className={`px-4 py-2 rounded-full text-sm font-medium ${getStatusColor(currentStatus || incident.status)}`}
               >
-                {getStatusText(currentStatus || IncidentStatus.Open)}
+                {getStatusText(currentStatus || incident.status)}
               </span>
             </div>
           </div>
@@ -476,27 +466,27 @@ const IncidentDetail: React.FC = () => {
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
               <Button
                 className="px-4 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium"
-                onPress={() => handleStatusChange(IncidentStatus.Open)}
+                onPress={() => handleStatusChange("Open")}
               >
                 <FolderOpen className="w-4 h-4 " /> Open
               </Button>
               <Button
                 className="px-4 py-3 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors font-medium"
-                onPress={() => handleStatusChange(IncidentStatus.InProgress)}
+                onPress={() => handleStatusChange("InProgress")}
               >
                 <FileSearch className="w-4 h-4 " /> Under Investigation
               </Button>
               <Button
                 className="px-4 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-medium"
-                onPress={() => handleStatusChange(IncidentStatus.Resolved)}
+                onPress={() => handleStatusChange("Resolved")}
               >
                 <CheckCircle className="w-4 h-4 " /> Resolved
               </Button>
               <Button
                 className="px-4 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors font-medium"
-                onPress={() => handleStatusChange(IncidentStatus.Closed)}
+                onPress={() => handleStatusChange("Close")}
               >
-                <Lock className="w-4 h-4 " /> Closed
+                <Lock className="w-4 h-4 " /> Close
               </Button>
             </div>
           </div>

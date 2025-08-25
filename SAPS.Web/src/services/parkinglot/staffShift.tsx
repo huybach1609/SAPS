@@ -47,7 +47,7 @@ export interface ValidationError {
 
 // Helper function to get auth headers
 const getAuthHeaders = () => ({
-  'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+  'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
   'Content-Type': 'application/json',
 });
 
@@ -59,10 +59,21 @@ const getAuthHeaders = () => ({
 export async function fetchStaffShifts(parkingLotId: string): Promise<StaffShift[]> {
   if (!parkingLotId) throw new Error('Parking lot ID is required');
   try {
-    const response = await axios.get(`${apiUrl}/api/Shift/parking-lot/${parkingLotId}`, {
+    const response = await axios.get(`${apiUrl}/api/parkinglotshift/by-parking-lot/${parkingLotId}`, {
       headers: getAuthHeaders()
     });
-    return response.data;
+    // Some backends return text/plain. Ensure we parse JSON when needed.
+    const rawPayload = typeof response.data === 'string' ? JSON.parse(response.data) : response.data;
+    // Normalize fields to ensure consistent shapes (similar to whitelist service handling)
+    const raw: any[] = rawPayload ?? [];
+    return raw.map((item) => ({
+      ...item,
+      dayOfWeeks: (item.dayOfWeeks ?? '') as string,
+      specificDate: item.specificDate ? new Date(item.specificDate).toISOString().slice(0, 10) : null,
+      createdAt: item.createdAt ? new Date(item.createdAt).toISOString() : new Date().toISOString(),
+      updatedAt: item.updatedAt ? new Date(item.updatedAt).toISOString() : new Date().toISOString(),
+      staffIds: Array.isArray(item.staffIds) ? item.staffIds : [],
+    })) as StaffShift[];
   } catch (error) {
     console.error('Error fetching staff shifts:', error);
     throw new Error('Failed to fetch staff shifts');

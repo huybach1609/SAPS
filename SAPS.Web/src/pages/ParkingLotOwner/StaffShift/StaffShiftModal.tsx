@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Spinner, Textarea, Checkbox, ScrollShadow, Divider } from '@heroui/react';
 import { StaffShift, CreateStaffShift } from '@/services/parkinglot/staffShift';
 import { StaffShiftValidator } from '@/components/utils/staffShiftValidator';
-import { searchStaff } from '@/services/parkinglot/staffService';
+import { searchUser } from '@/services/parkinglot/whitelistService';
 import { StaffProfile } from '@/types/User';
 import { formatPhoneNumber } from '@/components/utils/stringUtils';
 import { Trash } from 'lucide-react';
@@ -67,8 +67,28 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
             setLoading(true);
             setSearchError('');
             try {
-                const response = await searchStaff(keySearchStaff, parkingLotId);
-                setStaffList(response as unknown as StaffProfile[]);
+                const user = await searchUser(keySearchStaff);
+                if (!user) {
+                    setStaffList([]);
+                    return;
+                }
+
+                const userStaffProfile = user.staffProfile;
+                // if (!userStaffProfile || userStaffProfile.parkingLotId !== parkingLotId) {
+                //     setStaffList([]);
+                //     setSearchError('User is not a staff member of this parking lot.');
+                //     return;
+                // }
+
+                const mappedStaff: StaffProfile = {
+                    userId: user.id,
+                    staffId: userStaffProfile.staffId,
+                    parkingLotId: userStaffProfile.parkingLotId,
+                    status: user.status || '',
+                    user: user,
+                };
+                setSearchError('');
+                setStaffList([mappedStaff]);
             } catch (error) {
                 console.error("Failed to search users:", error);
                 setSearchError('Failed to search staff. Please try again.');
@@ -293,7 +313,7 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
                             <Input
                                 id="search-staff-input"
                                 data-testid="search-staff-input"
-                                placeholder="Search by name, email or phone"
+                                placeholder="Search by email, phone or citizen ID"
                                 type="text"
                                 value={keySearchStaff}
                                 onChange={(e) => setKeySearchStaff(e.target.value)}
@@ -318,7 +338,7 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
                                                             {staff.user?.fullName || ''}
                                                         </div>
                                                         <div className="text-sm text-gray-600">{staff.user?.email || ''}</div>
-                                                        <div className="text-sm text-gray-600">{formatPhoneNumber(staff.user?.phone || '')}</div>
+                                                        <div className="text-sm text-gray-600">{formatPhoneNumber(staff.user?.phoneNumber || '')}</div>
                                                     </div>
                                                     <Button isIconOnly variant="light" size="sm" color="danger" onPress={() => {
                                                         setSelectedStaffs(prev => {
@@ -366,7 +386,7 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
                                         >
                                             <div className="font-medium text-sm">{staff.user?.fullName || ''}</div>
                                             <div className="text-sm text-gray-500">{staff.user?.email || ''}</div>
-                                            <div className="text-sm text-gray-500">{formatPhoneNumber(staff.user?.phone || '')}</div>
+                                            <div className="text-sm text-gray-500">{formatPhoneNumber(staff.user?.phoneNumber || '')}</div>
                                             {isSelected && (
                                                 <div className="ml-auto text-sm text-green-600 font-medium">
                                                     ✓ Selected

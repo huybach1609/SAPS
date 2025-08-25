@@ -47,16 +47,16 @@ export function WhitelistTable({ whitelist, onEdit, onRemove }: WhitelistTablePr
                         />
                       ) : (
                         <span className="text-gray-600 font-medium">
-                          {entry.client?.fullName?.charAt(0) || "U"}
+                          {entry.fullName?.charAt(0) || "U"}
                         </span>
                       )}
                     </div>
                     <div className="ml-4">
                       <div className="text-sm font-medium text-gray-900">
-                        {entry.client?.fullName || "Unknown User"}
+                        {entry.fullName || "Unknown User"}
                       </div>
                       <div className="text-sm text-gray-500">
-                        {entry.client?.email || entry.clientId}
+                        {entry.email || entry.clientId}
                       </div>
                     </div>
                   </div>

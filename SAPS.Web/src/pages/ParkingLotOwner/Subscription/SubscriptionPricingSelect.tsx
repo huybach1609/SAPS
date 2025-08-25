@@ -31,13 +31,6 @@ const SubscriptionComponent: React.FC = () => {
     return (price / months).toFixed(2);
   };
 
-  // // Get savings percentage compared to monthly
-  // const getSavings = (price: number, duration: number): number => {
-  //   const monthlyEquivalent = parseFloat(getMonthlyPrice(price, duration));
-  //   const baseMonthlyCost = 29.99; // Reference monthly price
-  //   const savings = ((baseMonthlyCost - monthlyEquivalent) / baseMonthlyCost) * 100;
-  //   return savings > 0 ? Math.round(savings) : 0;
-  // };
 
   // Sort subscriptions by duration (shortest to longest)
   const sortedSubscriptions = [...subscriptions].sort((a, b) => a.duration - b.duration);
@@ -116,16 +109,7 @@ const SubscriptionComponent: React.FC = () => {
                 </Button>
               </CardFooter>
 
-              {/* Status */}
-              {/* <div className="mt-4 text-center">
-                  <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                    subscription.status === 'active' 
-                      ? 'bg-green-100 text-green-800' 
-                      : 'bg-gray-100 text-gray-800'
-                  }`}>
-                    {subscription.status.charAt(0).toUpperCase() + subscription.status.slice(1)}
-                  </span>
-                </div> */}
+            
             </Card>
           );
         })}
@@ -214,21 +198,7 @@ const SubscriptionComponent: React.FC = () => {
                     Proceed to payment
                   </Button>
                 </div>
-
               </>
-
-              // <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              //   <div>
-              //     <p><strong>Plan:</strong> {selected.name}</p>
-              //     <p><strong>Duration:</strong> {formatDuration(selected.duration)}</p>
-              //     <p><strong>Price:</strong> {formatPrice(selected.price)}</p>
-              //   </div>
-              //   <div>
-              //     {/* <p><strong>ID:</strong> {selected.id}</p> */}
-              //     {/* <p><strong>Status:</strong> {selected.status}</p> */}
-              //     <p><strong>Monthly Equivalent:</strong> {formatPrice(Number(getMonthlyPrice(selected.price, selected.duration)))}</p>
-              //   </div>
-              // </div>
             );
           })()}
         </div>

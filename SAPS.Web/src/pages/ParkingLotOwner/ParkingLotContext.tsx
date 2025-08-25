@@ -1,11 +1,12 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { ParkingLot } from '@/types/ParkingLot';
-import { apiUrl } from '@/config/base';
+import { parkingLotInfoService } from '@/services/parkinglot/parkingLotInfoService';
 
 interface ParkingLotContextType {
     parkingLots: ParkingLot[];
     selectedParkingLot: ParkingLot | null;
     selectedParkingLotId: string | null;
+    selectedParkingLotData: ParkingLot | null;
     loading: boolean;
     setSelectedParkingLotId: (id: string) => void;
     refresh: () => void;
@@ -20,15 +21,13 @@ export const ParkingLotProvider: React.FC<{ children: React.ReactNode, userId: s
         const saved = localStorage.getItem('selectedParkingLotId');
         return saved || null;
     });
+    const [selectedParkingLotData, setSelectedParkingLotData] = useState<ParkingLot | null>(null);
     const [loading, setLoading] = useState(true);
 
     const fetchParkingLots = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`${apiUrl}/api/ParkingLot/owner/${userId}`);
-            if (!response.ok) throw new Error('Failed to fetch parking lots');
-            const data = await response.json();
-            console.log('Fetched parking lots:', data);
+            const data = await parkingLotInfoService.fetchParkingLots(userId);
             setParkingLots(data);
             
             // If no parking lot is selected and we have parking lots, select the first one
@@ -42,6 +41,25 @@ export const ParkingLotProvider: React.FC<{ children: React.ReactNode, userId: s
             setLoading(false);
         }
     };
+
+    // // Fetch detailed parking lot data when selectedParkingLotId changes
+    // useEffect(() => {
+    //     const fetchSelectedParkingLotData = async () => {
+    //         if (selectedParkingLotId) {
+    //             try {
+    //                 const parkingLotData = await parkingLotInfoService.fetchParkingLotById(selectedParkingLotId);
+    //                 setSelectedParkingLotData(parkingLotData);
+    //             } catch (error) {
+    //                 console.error('Error fetching selected parking lot data:', error);
+    //                 setSelectedParkingLotData(null);
+    //             }
+    //         } else {
+    //             setSelectedParkingLotData(null);
+    //         }
+    //     };
+
+    //     fetchSelectedParkingLotData();
+    // }, [selectedParkingLotId]);
 
     // Save selected parking lot ID to localStorage whenever it changes
     useEffect(() => {
@@ -67,6 +85,7 @@ export const ParkingLotProvider: React.FC<{ children: React.ReactNode, userId: s
             parkingLots, 
             selectedParkingLot, 
             selectedParkingLotId,
+            selectedParkingLotData,
             loading, 
             setSelectedParkingLotId: handleSetSelectedParkingLotId,
             refresh: fetchParkingLots 

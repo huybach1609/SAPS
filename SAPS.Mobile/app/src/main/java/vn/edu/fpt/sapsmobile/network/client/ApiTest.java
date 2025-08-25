@@ -16,7 +16,8 @@ public class ApiTest {
     private static final String BASE_URL_MOCKAPI = "https://192.168.1.25:7136/";
 //    private static final String BASE_URL_LAST = "https://192.168.1.25:7040/";
 
-    private static final String BASE_URL_LAST = "http://172.188.240.201/";
+//    private static final String BASE_URL_LAST = "http://172.188.240.201/";
+    private static final String BASE_URL_LAST = "https://anemosnguyen2409.southeastasia.cloudapp.azure.com/";
 
     private static Retrofit retrofit;
     private static Retrofit mockApiRetrofit;

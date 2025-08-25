@@ -47,10 +47,10 @@ const EditEntryModal: React.FC<EditEntryModalProps> = ({
               <ModalBody>
                 <div className="mb-4">
                   <div className="font-medium">
-                    {editingEntry.client?.fullName || "Unknown User"}
+                    {editingEntry.fullName || "Unknown User"}
                   </div>
                   <div className="text-sm text-gray-600">
-                    {editingEntry.client?.email || editingEntry.clientId}
+                    {editingEntry.email || editingEntry.clientId}
                   </div>
                 </div>
                 <div className="mb-4">

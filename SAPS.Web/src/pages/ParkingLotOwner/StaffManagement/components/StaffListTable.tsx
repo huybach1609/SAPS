@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { User } from '@/types/User';
 import { ParkingLot } from '@/types/ParkingLot';
 import { formatPhoneNumber } from '@/components/utils/stringUtils';
-import { StaffStatusBadge } from '@/components/utils/staffUtils';
+import { UserStatusBadge } from '@/components/utils/staffUtils';
 
 interface StaffListTableProps {
   staffList: User[];
@@ -13,7 +13,7 @@ interface StaffListTableProps {
   setSelectUser: React.Dispatch<React.SetStateAction<User | null>>;
   parkingLot: ParkingLot | null;
   updateModalDisclosure: UseDisclosureProps;
-  handleDeactivateStaff: ( user: User) => void;
+  handleDeactivateStaff: (user: User) => void;
 }
 
 export const StaffListTable: React.FC<StaffListTableProps> = ({
@@ -44,7 +44,7 @@ export const StaffListTable: React.FC<StaffListTableProps> = ({
       >
         <TableHeader>
           <TableColumn key="user" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-            Staff ID
+            #
           </TableColumn>
           <TableColumn key="addedDate" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
             Name
@@ -63,10 +63,10 @@ export const StaffListTable: React.FC<StaffListTableProps> = ({
           </TableColumn>
         </TableHeader>
         <TableBody>
-          {staffList.map((entry) => (
-            <TableRow key={`${entry.staffProfile?.staffId}`}>
+          {staffList.map((entry, index) => (
+            <TableRow key={entry.staffProfile?.staffId || entry.id}>
               <TableCell className="px-6 py-4 whitespace-nowrap text-sm">
-                {entry.staffProfile?.staffId}
+               # {index + 1}
               </TableCell>
               <TableCell className="px-6 py-4 whitespace-nowrap">
                 <div className="flex items-center">
@@ -80,14 +80,14 @@ export const StaffListTable: React.FC<StaffListTableProps> = ({
               <TableCell className="px-6 py-4 whitespace-nowrap text-sm">
                 {entry.email}
                 <div className="text-sm text-gray-500">
-                  {entry.phone ? formatPhoneNumber(entry.phone) : 'No phone'}
+                  {entry.phoneNumber ? formatPhoneNumber(entry.phoneNumber) : 'No phone'}
                 </div>
               </TableCell>
               <TableCell className="px-6 py-4 whitespace-nowrap">
                 {new Date(entry.createdAt).toLocaleDateString()}
               </TableCell>
               <TableCell>
-                <StaffStatusBadge status={entry.staffProfile?.status || 0} />
+                <UserStatusBadge status={entry.status || ''} />
               </TableCell>
               <TableCell>
                 <Dropdown className="mx-auto">

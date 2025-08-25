@@ -96,7 +96,7 @@ const AdminAccountDetails: React.FC = () => {
           {
             method: "DELETE",
             headers: {
-              Authorization: `Bearer ${localStorage.getItem("admin_token") || localStorage.getItem("auth_token")}`,
+              Authorization: `Bearer ${localStorage.getItem("admin_token") || localStorage.getItem("access_token")}`,
               "Content-Type": "application/json",
             },
           }

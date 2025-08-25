@@ -8,6 +8,8 @@ export interface ParkingLot {
     updatedAt: string;
     status: 'Active' | 'Inactive';
     parkingLotOwnerId: string;
+    expiredAt?: string;
+    isExpired?: boolean;
 }
 
 export interface Subscription {

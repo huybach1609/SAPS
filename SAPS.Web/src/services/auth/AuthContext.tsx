@@ -9,6 +9,7 @@ import React, {
   useRef,
 } from "react";
 import axios from "axios";
+import { getAuthHeaders } from "../utils/apiUtils";
 
 // JWT refresh interval - 4 minutes in milliseconds
 const TOKEN_REFRESH_INTERVAL = 4 * 60 * 1000;
@@ -19,6 +20,7 @@ interface AuthResponse {
   refreshToken: string;
   tokenType: string;
   expiresAt: string;
+  
 }
 
 // JWT Claims interface matching the structure from the backend
@@ -99,7 +101,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           ],
         fullName:
           claims["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name"],
-        phone:
+        phoneNumber:
           claims[
             "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/mobilephone"
           ] || "",
@@ -152,12 +154,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         throw new Error("No refresh token available");
       }
 
+      console.log("refreshToken: ", refreshToken);
+      
       const response = await axios.post(`${apiUrl}/api/auth/refresh-token`, {
-        refreshToken,
+        refreshToken: refreshToken,
+      }, {
+        headers: getAuthHeaders(),
       });
 
       const data = response.data;
-
+      console.log("data", data);
+      
       if (data && data.accessToken) {
         // Save new tokens
         localStorage.setItem("access_token", data.accessToken);
@@ -184,6 +191,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     password: string,
     remember: boolean = false
   ) => {
+    console.log("login",remember);
     try {
       const url = `${apiUrl}/api/auth/login`;
 
@@ -314,7 +322,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
               refreshToken,
             })
             .catch((error) => {
-              // Bỏ qua lỗi nếu có, vì chúng ta sẽ xóa token khỏi localStorage dù thế nào đi nữa
               console.log("Logout API error:", error);
             });
         } catch (error) {

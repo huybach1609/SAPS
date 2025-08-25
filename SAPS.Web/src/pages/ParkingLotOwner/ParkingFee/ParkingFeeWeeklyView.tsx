@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { BikeIcon, Car, Clock, DollarSign, Edit2, Plus, Trash2 } from 'lucide-react';
+import { BikeIcon, Car, Clock, DollarSign, Edit2, Plus, Trash2, RefreshCw } from 'lucide-react';
 import { VehicleType, type ParkingFeeSchedule } from '@/services/parkinglot/parkinglotFeeService';
-import { Button, Select, SelectItem } from '@heroui/react';
+import { Button, Select, SelectItem, Spinner } from '@heroui/react';
 import { VehicleTypeText } from './FeeScheduleModal';
 import { getScheduleStyle } from '@/utils/scheduleColorUtils';
 
@@ -10,8 +10,10 @@ export interface ParkingFeeWeeklyViewProps {
     onEdit: (schedule: ParkingFeeSchedule) => void;
     onDelete: (id: string) => void;
     onAdd: () => void;
+    onRefresh?: () => void;
     selectedVehicleType?: VehicleType;
     loading?: boolean;
+    
 }
 
 const ParkingFeeWeeklyView: React.FC<ParkingFeeWeeklyViewProps> = ({
@@ -19,13 +21,14 @@ const ParkingFeeWeeklyView: React.FC<ParkingFeeWeeklyViewProps> = ({
     onEdit,
     onDelete,
     onAdd,
+    onRefresh,
     selectedVehicleType = VehicleType.All,
     loading = false
 }) => {
-    console.log(loading);
     const [hoveredSchedule, setHoveredSchedule] = useState<string | null>(null);
     const [vehicleFilter, setVehicleFilter] = useState<VehicleType>(selectedVehicleType);
 
+    
     const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
     // const hours = Array.from({ length: 24 }, (_, i) => i);
 
@@ -73,9 +76,11 @@ const ParkingFeeWeeklyView: React.FC<ParkingFeeWeeklyViewProps> = ({
     const vehicleTypeOptions = [
         { label: 'All', key: VehicleType.All },
         { label: 'Car', key: VehicleType.Car },
-        { label: 'Motorbike', key: VehicleType.Motorbike },
-        { label: 'Bike', key: VehicleType.Bike }
+        { label: 'Motorbike', key: VehicleType.Motorbike }
     ]
+    if(loading){
+        return <Spinner />
+    }
     return (
         <div className=" rounded-xl shadow-sm border border-primary-200/10 my-3 p-3">
             <div className="flex justify-between items-center mb-6">
@@ -86,15 +91,7 @@ const ParkingFeeWeeklyView: React.FC<ParkingFeeWeeklyViewProps> = ({
                     <div className="flex items-center gap-2">
                         <span className="text-sm text-gray-600">Vehicle:</span>
 
-                        {/* <select
-                            value={vehicleFilter}
-                            onChange={(e) => setVehicleFilter(e.target.value as 'All' | 'Car' | 'Motorbike')}
-                            className="text-sm border border-gray-300 rounded px-2 py-1"
-                        >
-                            <option value="All">All</option>
-                            <option value="Car">Car</option>
-                            <option value="Motorbike">Motorbike</option>
-                        </select> */}
+                       
                         <Select
                             aria-label="Vehicle Type"
                             className="text-sm w-44 rounded px-2 py-1"
@@ -109,13 +106,23 @@ const ParkingFeeWeeklyView: React.FC<ParkingFeeWeeklyViewProps> = ({
                     </div>
                 </div>
 
-                <Button
-                    onPress={onAdd}
-                    className=""
-                    startContent={<Plus className="w-4 h-4" />}
-                >
-                    Add Schedule
-                </Button>
+                <div className="flex gap-2">
+                    <Button
+                        onPress={onRefresh}
+                        isDisabled={!onRefresh || loading}
+                        variant="flat"
+                        startContent={<RefreshCw className="w-4 h-4" />}
+                    >
+                        Refresh
+                    </Button>
+                    <Button
+                        onPress={onAdd}
+                        className=""
+                        startContent={<Plus className="w-4 h-4" />}
+                    >
+                        Add Schedule
+                    </Button>
+                </div>
             </div>
 
             {/* Time Header */}
@@ -188,8 +195,6 @@ const ParkingFeeWeeklyView: React.FC<ParkingFeeWeeklyViewProps> = ({
                                                 <div className="text-xs opacity-75 flex items-center gap-1">
                                                     {schedule.forVehicleType === VehicleType.Car ? (
                                                         <Car className="w-3 h-3" />
-                                                    ) : schedule.forVehicleType === VehicleType.Motorbike ? (
-                                                        <BikeIcon className="w-3 h-3" />
                                                     ) : (
                                                         <BikeIcon className="w-3 h-3" />
                                                     )}
@@ -216,7 +221,7 @@ const ParkingFeeWeeklyView: React.FC<ParkingFeeWeeklyViewProps> = ({
                                                             e.stopPropagation();
                                                             onDelete(schedule.id);
                                                         }}
-                                                        className="p-1 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+                                                        className="p-1 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors hidden"
                                                     >
                                                         <Trash2 className="w-3 h-3" />
                                                     </button>
@@ -252,8 +257,6 @@ const ParkingFeeWeeklyView: React.FC<ParkingFeeWeeklyViewProps> = ({
                                 <div className="flex items-center gap-2">
                                     {schedule.forVehicleType === VehicleType.Car ? (
                                         <Car className="w-3 h-3" />
-                                    ) : schedule.forVehicleType === VehicleType.Motorbike ? (
-                                        <BikeIcon className="w-3 h-3" />
                                     ) : (
                                         <BikeIcon className="w-3 h-3" />
                                     )}
@@ -273,9 +276,31 @@ const ParkingFeeWeeklyView: React.FC<ParkingFeeWeeklyViewProps> = ({
                                     {formatFeeDisplay(schedule)}
                                 </div>
                                 <div className="text-xs opacity-75 mt-1">
-                                    {schedule.dayOfWeeks && schedule.dayOfWeeks.length > 0
-                                        ? schedule.dayOfWeeks.map(idx => daysOfWeek[idx]).join(', ')
-                                        : 'All days'}
+                                    {(() => {
+                                        const toArray = (value: unknown): number[] => {
+                                            if (Array.isArray(value)) {
+                                                return value
+                                                    .map((v) => Number(v))
+                                                    .filter((n) => Number.isFinite(n));
+                                            }
+                                            if (typeof value === 'string') {
+                                                const trimmed = value.trim();
+                                                if (trimmed.length === 0) return [];
+                                                return trimmed
+                                                    .split(',')
+                                                    .map((s) => Number(s.trim()))
+                                                    .filter((n) => Number.isFinite(n));
+                                            }
+                                            return [];
+                                        };
+                                        const nums = toArray((schedule as any).dayOfWeeks);
+                                        if (nums.length === 0) return 'All days';
+                                        const isZeroBased = nums.every((n) => n >= 0 && n <= 6) && !nums.some((n) => n === 7);
+                                        const normalized = isZeroBased ? nums.map((n) => n + 1) : nums;
+                                        return normalized
+                                            .map((n) => daysOfWeek[Math.max(1, Math.min(7, n)) - 1])
+                                            .join(', ');
+                                    })()}
                                 </div>
                             </div>
                         </div>

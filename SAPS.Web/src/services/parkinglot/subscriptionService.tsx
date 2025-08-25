@@ -4,7 +4,7 @@ import { PayOsResponse, Subscription } from "@/types/ParkingLot";
 
 
 const getAuthHeaders = () => ({
-  'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+  'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
   'Content-Type': 'application/json',
 });
 

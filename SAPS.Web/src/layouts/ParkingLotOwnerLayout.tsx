@@ -89,7 +89,7 @@ export function ParkingLotOwnerLayout({
                 startContent={<Building2 size={16} />}
               >
                 {parkingLots.map((parkingLot) => (
-                  <SelectItem key={parkingLot.id}>
+                  <SelectItem key={parkingLot.id} aria-label={parkingLot.name}>
                     {parkingLot.name}
                   </SelectItem>
                 ))}

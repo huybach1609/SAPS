@@ -43,32 +43,40 @@ const StatCard: React.FC<StatCardProps> = ({ title, value, icon, className = '' 
     </div>
 );
 
-const ParkingHistoryStatistics: React.FC<{ parkingLotId: string }> = ({ parkingLotId }) => {
+// Helper function to get client ID from JWT token
+export const getClientId = (): string => {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+        throw new Error('No access token found');
+    }
+    
+    try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        return payload["http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"];
+    } catch (error) {
+        console.error('Error parsing JWT token:', error);
+        throw new Error('Invalid token format');
+    }
+};
+
+const ParkingHistoryStatistics: React.FC = () => {
     const [selectedRange] = useState<number>(0);
     const [status, setStatus] = useState<ParkingStatus | null>(null);
     const [statistics, setStatistics] = useState<ParkingStatistics | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
 
-    // Replace with your actual API base URL
-
-    // const rangeOptions = [
-    //     { label: 'Today', value: 0 },
-    //     { label: 'This Week', value: 1 },
-    //     { label: 'This Month', value: 2 },
-    //     { label: 'This Year', value: 3 }
-    // ];
-
     const fetchParkingData = async () => {
         setLoading(true);
         setError(null);
 
         try {
+            const clientId = getClientId();
+            
             // Fetch status data
-            // console.log(`${apiUrl}/ParkingSession/${parkingLotId}/status`);
-            const statusResponse = await fetch(`${apiUrl}/api/ParkingSession/${parkingLotId}/status`, {
+            const statusResponse = await fetch(`${apiUrl}/api/parkingsession/status/owned/${clientId}`, {
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
                 }
             });
             if (!statusResponse.ok) {
@@ -77,8 +85,11 @@ const ParkingHistoryStatistics: React.FC<{ parkingLotId: string }> = ({ parkingL
             const statusData = await statusResponse.json();
 
             // Fetch statistics data
-            // console.log(`${apiUrl}./ParkingSession/${parkingLotId}/statistics?range=${selectedRange}`);
-            const statisticsResponse = await fetch(`${apiUrl}/api/ParkingSession/${parkingLotId}/statistics?range=${selectedRange}`);
+            const statisticsResponse = await fetch(`${apiUrl}/api/parkingsession/statistics/owned/${clientId}?range=${selectedRange}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`
+                }
+            });
             if (!statisticsResponse.ok) {
                 throw new Error(`Statistics API error: ${statisticsResponse.status}`);
             }
@@ -96,54 +107,42 @@ const ParkingHistoryStatistics: React.FC<{ parkingLotId: string }> = ({ parkingL
 
     useEffect(() => {
         fetchParkingData();
-    }, [parkingLotId, selectedRange]);
-
-    const formatCurrency = (value: number) => {
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 0
-        }).format(value);
-    };
-
-    const formatDuration = (hours: number) => {
-        return `${hours.toFixed(1)}h`;
-    };
-
-    const formatPercentage = (value: number) => {
-        return `${Math.round(value)}%`;
-    };
+    }, [selectedRange]);
 
     if (loading) {
         return (
-            <div className="pt-4">
-                <div className="max-w-7xl mx-auto">
-                    <div className="flex items-center justify-center h-64">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500"></div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                {[...Array(4)].map((_, index) => (
+                    <div key={index} className="bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl p-4 text-white shadow-lg animate-pulse">
+                        <div className="flex items-center justify-between">
+                            <div>
+                                <div className="h-8 bg-white/20 rounded mb-2"></div>
+                                <div className="h-4 bg-white/20 rounded w-3/4"></div>
+                            </div>
+                            <div className="w-8 h-8 bg-white/20 rounded"></div>
+                        </div>
                     </div>
-                </div>
+                ))}
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className="min-h-screen bg-gray-50 p-4">
-                <div className="max-w-7xl mx-auto">
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-                        <div className="flex items-center">
-                            <div className="text-red-600 mr-3">⚠️</div>
-                            <div>
-                                <h3 className="text-red-800 font-semibold">Error Loading Data</h3>
-                                <p className="text-red-600 mt-1">{error}</p>
-                            </div>
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                <div className="flex">
+                    <div className="flex-shrink-0">
+                        <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                        </svg>
+                    </div>
+                    <div className="ml-3">
+                        <h3 className="text-sm font-medium text-red-800">
+                            Error loading statistics
+                        </h3>
+                        <div className="mt-2 text-sm text-red-700">
+                            {error}
                         </div>
-                        <button
-                            onClick={fetchParkingData}
-                            className="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition-colors"
-                        >
-                            Retry
-                        </button>
                     </div>
                 </div>
             </div>
@@ -151,70 +150,27 @@ const ParkingHistoryStatistics: React.FC<{ parkingLotId: string }> = ({ parkingL
     }
 
     return (
-        <div className="py-4">
-            <div className="max-w-7xl mx-auto">
-                <div className="mb-8">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-                        <StatCard
-                            title="Total Sessions Today"
-                            value={status?.totalSessionsToday.toString() || '0'}
-                            icon={<Car className="w-8 h-8" />}
-                        />
-                        <StatCard
-                            title="Revenue Today"
-                            value={formatCurrency(status?.revenueToday || 0)}
-                            icon={<DollarSign className="w-8 h-8" />}
-                        />
-                        <StatCard
-                            title="Avg Duration"
-                            value={formatDuration(status?.avgDuration || 0)}
-                            icon={<Clock className="w-8 h-8" />}
-                        />
-                        <StatCard
-                            title="Occupancy Rate"
-                            value={formatPercentage(status?.occupancyRate || 0)}
-                            icon={<Activity className="w-8 h-8" />}
-                        />
-                    </div>
-                </div>
-
-
-                {/* Performance Statistics */}
-                
-               
-                {/* Peak Hours Analysis */}
-                <div className="bg-background-100/20 rounded-xl shadow-lg p-4">
-                    <div className="flex items-center mb-6">
-                        <Clock className="w-6 h-6 text-purple-600 mr-2" />
-                        <h2 className=" font-bold">Peak Hours Analysis</h2>
-                        {/* <div className="text-xl font-semibold text-gray-900">Peak Hours Analysis</div> */}
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-4 border border-purple-200">
-                            <div className="text-sm font-medium text-purple-700 mb-1">Busiest Hour:</div>
-                            <div className="text-xl font-bold text-purple-900">
-                                {statistics?.busiestHour || 'N/A'}
-                            </div>
-                        </div>
-                        <div className="bg-gradient-to-br from-green-50 to-teal-50 rounded-xl p-4 border border-green-200">
-                            <div className="text-sm font-medium text-green-700 mb-1">Quietest Hour:</div>
-                            <div className="text-xl font-bold text-green-900">
-                                {statistics?.quietestHour || 'N/A'}
-                            </div>
-                        </div>
-                        <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-xl p-4 border border-orange-200">
-                            <div className="text-sm font-medium text-orange-700 mb-1">Peak Occupancy:</div>
-                            <div className="text-xl font-bold text-orange-900">
-                                {statistics?.peakOccupancy
-                                    ? `${statistics.peakOccupancy.slots}/${statistics.peakOccupancy.total} slots (${statistics.peakOccupancy.percentage.toFixed(1)}%)`
-                                    : 'N/A'
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <StatCard
+                title="Total Sessions"
+                value={statistics?.totalParkingSessions?.toString() || '0'}
+                icon={<Car className="w-6 h-6" />}
+            />
+            <StatCard
+                title="Total Revenue"
+                value={`${statistics?.totalRevenue?.toLocaleString() || '0'} đ`}
+                icon={<DollarSign className="w-6 h-6" />}
+            />
+            <StatCard
+                title="Unique Vehicles"
+                value={statistics?.uniqueVehicles?.toString() || '0'}
+                icon={<Activity className="w-6 h-6" />}
+            />
+            <StatCard
+                title="Avg Session Time"
+                value={`${Math.round(statistics?.averageSessionTime || 0)} min`}
+                icon={<Clock className="w-6 h-6" />}
+            />
         </div>
     );
 };
