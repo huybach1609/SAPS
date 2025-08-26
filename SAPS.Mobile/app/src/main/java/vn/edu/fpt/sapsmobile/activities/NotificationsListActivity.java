@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import vn.edu.fpt.sapsmobile.network.service.ApiService;
+import vn.edu.fpt.sapsmobile.network.api.ApiService;
 import vn.edu.fpt.sapsmobile.network.client.ApiTest;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.adapters.NotificationAdapter;

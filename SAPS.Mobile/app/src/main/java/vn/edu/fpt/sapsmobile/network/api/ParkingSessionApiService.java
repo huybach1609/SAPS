@@ -1,4 +1,4 @@
-package vn.edu.fpt.sapsmobile.network.service;
+package vn.edu.fpt.sapsmobile.network.api;
 import java.util.List;
 
 import retrofit2.Call;
@@ -10,7 +10,6 @@ import vn.edu.fpt.sapsmobile.dtos.payment.PaymentApiResponseDTO;
 import vn.edu.fpt.sapsmobile.models.ParkingSession;
 import vn.edu.fpt.sapsmobile.dtos.payment.CheckoutRequest;
 import vn.edu.fpt.sapsmobile.dtos.payment.CheckoutResponse;
-import vn.edu.fpt.sapsmobile.dtos.payment.PaymentResponseDTO;
 import vn.edu.fpt.sapsmobile.dtos.parkingsession.OwnedSessionRequest;
 import vn.edu.fpt.sapsmobile.dtos.parkingsession.OwnedSessionResponse;
 import vn.edu.fpt.sapsmobile.dtos.parkingsession.ParkingSessionDetailsResponse;

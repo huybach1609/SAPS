@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Spinner, Textarea, Checkbox, ScrollShadow, Divider } from '@heroui/react';
 import { StaffShift, CreateStaffShift } from '@/services/parkinglot/staffShift';
 import { StaffShiftValidator } from '@/components/utils/staffShiftValidator';
-import { searchUser } from '@/services/parkinglot/whitelistService';
 import { StaffProfile } from '@/types/User';
 import { formatPhoneNumber } from '@/components/utils/stringUtils';
 import { Trash } from 'lucide-react';
+import { fetchStaffDetail, fetchStaffList } from '@/services/parkinglot/staffService';
 
 interface StaffShiftModalProps {
     isOpen: boolean;
@@ -67,36 +67,41 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
             setLoading(true);
             setSearchError('');
             try {
-                const user = await searchUser(keySearchStaff);
-                if (!user) {
+                const response = await fetchStaffList(
+                    parkingLotId,
+                    10, // default pageSize
+                    1, // pageNumber
+                    keySearchStaff, // searchCriteria
+                    undefined, // status
+                    undefined, // order
+                    undefined // sortBy
+                );
+                
+                if (!response.items || response.items.length === 0) {
                     setStaffList([]);
                     return;
                 }
 
-                const userStaffProfile = user.staffProfile;
-                // if (!userStaffProfile || userStaffProfile.parkingLotId !== parkingLotId) {
-                //     setStaffList([]);
-                //     setSearchError('User is not a staff member of this parking lot.');
-                //     return;
-                // }
-
-                const mappedStaff: StaffProfile = {
+                // Map the response items to StaffProfile format
+                const mappedStaffList: StaffProfile[] = response.items.map(user => ({
                     userId: user.id,
-                    staffId: userStaffProfile.staffId,
-                    parkingLotId: userStaffProfile.parkingLotId,
+                    staffId: user.staffId || '',
+                    parkingLotId: parkingLotId,
                     status: user.status || '',
                     user: user,
-                };
+                }));
+
                 setSearchError('');
-                setStaffList([mappedStaff]);
+                setStaffList(mappedStaffList);
             } catch (error) {
-                console.error("Failed to search users:", error);
+                console.error("Failed to search staff:", error);
                 setSearchError('Failed to search staff. Please try again.');
                 setStaffList([]);
             } finally {
                 setLoading(false);
             }
         };
+        console.log("shift", shift);
         const timeoutId = setTimeout(() => {
             if (keySearchStaff) {
                 handleSearchUser(keySearchStaff);
@@ -108,8 +113,10 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
 
 
     useEffect(() => {
-        setSelectedStaffs(shift?.assignedStaff || []);
+        console.log("shift", shift);
         if (shift && mode === 'edit') {
+        setSelectedStaffs(shift?.assignedStaff || []);
+
             setFormData({
                 id: shift.id,
                 staffIds: shift.assignedStaff?.map(staff => staff.staffId) || [],
@@ -468,8 +475,7 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
                         </div>
  */}
                         <div className='flex-row gap-4 hidden'>
-                            {/* Shift Type */}
-                            <div className="flex-1">
+                            {/* <div className="flex-1">
                                 <label className="block text-sm font-medium mb-1">
                                     Shift Type *
                                 </label>
@@ -486,10 +492,10 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
                                     <SelectItem key="Regular" aria-label="Regular">Regular</SelectItem>
                                     <SelectItem key="Emergency" aria-label="Emergency">Emergency</SelectItem>
                                 </Select>
-                            </div>
+                            </div> */}
 
                             {/* Status */}
-                            <div className="flex-1 ">
+                            {/* <div className="flex-1 ">
                                 <label className="block text-sm font-medium mb-1">
                                     Status *
                                 </label>
@@ -509,12 +515,12 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
                                     <SelectItem key="Active" aria-label="Active">Active</SelectItem>
                                     <SelectItem key="Deactive" aria-label="Deactive">Deactive</SelectItem>
                                 </Select>
-                            </div>
+                            </div> */}
                         </div>
 
 
                         {/* Days of Week - Show only for Regular shifts */}
-                        {formData.shiftType === 'Regular' && (
+                        { (
                             <div>
                                 <label className="block text-sm font-medium mb-1" htmlFor="days-of-week">
                                     Days of Week *

@@ -22,7 +22,7 @@ import vn.edu.fpt.sapsmobile.adapters.ShareCodeSearchAdapter;
 import vn.edu.fpt.sapsmobile.dtos.profile.ClientProfileSummaryDto;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
 import vn.edu.fpt.sapsmobile.network.client.ApiTest;
-import vn.edu.fpt.sapsmobile.network.service.ClientApiService;
+import vn.edu.fpt.sapsmobile.network.api.ClientApiService;
 import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
 import vn.edu.fpt.sapsmobile.utils.TokenManager;
 

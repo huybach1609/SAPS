@@ -11,6 +11,7 @@ export interface User {
   updatedAt: string;
   status?: string;
 
+  staffId?: string;
   staffProfile?: StaffProfile;
   clientProfile?: ClientProfile;
   parkingLotOwnerProfile?: ParkingLotOwnerProfile;

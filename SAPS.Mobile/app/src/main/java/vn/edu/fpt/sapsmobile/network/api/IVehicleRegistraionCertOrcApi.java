@@ -1,4 +1,4 @@
-package vn.edu.fpt.sapsmobile.network.service;
+package vn.edu.fpt.sapsmobile.network.api;
 
 import okhttp3.MultipartBody;
 import retrofit2.Call;

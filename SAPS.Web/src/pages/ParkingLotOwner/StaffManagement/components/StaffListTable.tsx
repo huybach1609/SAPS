@@ -103,7 +103,7 @@ export const StaffListTable: React.FC<StaffListTableProps> = ({
                     >
                       Detail
                     </DropdownItem>
-                    <DropdownItem
+                    {/* <DropdownItem
                       key="update"
                       onPress={() => {
                         setSelectUser(entry);
@@ -111,7 +111,7 @@ export const StaffListTable: React.FC<StaffListTableProps> = ({
                       }}
                     >
                       Update
-                    </DropdownItem>
+                    </DropdownItem> */}
                     <DropdownItem
                       key="delete"
                       className="text-danger"

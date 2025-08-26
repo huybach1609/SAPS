@@ -9,10 +9,17 @@ const getAuthHeaders = () => ({
 });
 
 export const fetchSubscriptions = async (): Promise<Subscription[]> => {
-    const response = await axios.get(`${apiUrl}/api/Subscription/plans`, {
-      headers: getAuthHeaders()
+    const response = await axios.get(`${apiUrl}/api/subscription/page`, {
+      headers: getAuthHeaders(),
+      params: {
+        PageNumber: 1,
+        PageSize: 4,
+        Status: 'Active',
+        Order: 'Asc',
+        SortBy: 'price'
+      }
     });
-    return response.data;
+    return response.data.items;
   }
 
 

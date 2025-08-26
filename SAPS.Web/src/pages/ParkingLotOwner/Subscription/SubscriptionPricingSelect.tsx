@@ -91,9 +91,9 @@ const SubscriptionComponent: React.FC = () => {
 
 
                 {/* Description */}
-                <p className="text-primary/80 text-sm mb-6 leading-relaxed">
-                  {subscription.description}
-                </p>
+                {/* <p className="text-primary/80 text-sm mb-6 leading-relaxed"> */}
+                  {/* {subscription.description} */}
+                {/* </p> */}
 
               </CardBody>
               <CardFooter className=''>

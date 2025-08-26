@@ -21,12 +21,11 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import vn.edu.fpt.sapsmobile.network.service.AuthApi;
+import vn.edu.fpt.sapsmobile.network.api.AuthApi;
 import vn.edu.fpt.sapsmobile.network.client.ApiTest;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.activities.auth.LoginActivity;
 import vn.edu.fpt.sapsmobile.activities.auth.RegisterActivity;
-import vn.edu.fpt.sapsmobile.dtos.profile.UserRegisterRequest;
 import vn.edu.fpt.sapsmobile.dtos.profile.UserRegisterResponse;
 import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
 
