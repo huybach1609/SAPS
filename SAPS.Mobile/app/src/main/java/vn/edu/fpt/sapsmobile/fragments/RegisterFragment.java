@@ -70,29 +70,29 @@ public class RegisterFragment extends Fragment {
             String confirmPassword = confirmPasswordInput.getText().toString();
 
             if (email.isEmpty() || fullName.isEmpty() || phone.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-                Toast.makeText(requireContext(), "Please fill in all required fields", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), getString(R.string.toast_please_fill_all_fields), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             // Validate email format
             if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-                Toast.makeText(requireContext(), "Please enter a valid email address", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), getString(R.string.toast_enter_valid_email), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             // Validate phone number format (basic validation for Vietnamese phone numbers)
             if (!phone.matches("^(0|\\+84)[0-9]{9,10}$")) {
-                Toast.makeText(requireContext(), "Please enter a valid phone number", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), getString(R.string.toast_enter_valid_phone), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (!password.equals(confirmPassword)) {
-                Toast.makeText(requireContext(), "Passwords do not match", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), getString(R.string.toast_passwords_not_match), Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (password.length() < 8) {
-                Toast.makeText(requireContext(), "Password must be at least 8 characters", Toast.LENGTH_SHORT).show();
+                Toast.makeText(requireContext(), getString(R.string.toast_password_min_length), Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -158,7 +158,7 @@ public class RegisterFragment extends Fragment {
             public void onFailure(Call<UserRegisterResponse> call, Throwable t) {
                 loadingDialog.dismiss();
                 Log.e(TAG, "Registration network error", t);
-                Toast.makeText(requireContext(), "Network error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(requireContext(), getString(R.string.toast_network_error, t.getMessage()), Toast.LENGTH_LONG).show();
             }
         });
     }

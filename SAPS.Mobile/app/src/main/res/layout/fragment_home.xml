@@ -66,7 +66,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             style="?attr/textAppearanceDisplayMedium"
-                            android:text="Hello UserName!"
+                            android:text="@string/home_greeting_username"
                             android:textColor="@color/md_theme_onPrimary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -143,7 +143,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:letterSpacing="0.1"
-                            android:text="Current session"
+                            android:text="@string/home_current_session"
                             android:textColor="@color/md_theme_tertiary"
                             android:textSize="12sp"
                             android:textStyle="bold" />
@@ -158,7 +158,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="ACTIVE"
+                            android:text="@string/home_session_active"
                             android:textColor="@color/md_theme_tertiary"
                             android:textSize="10sp"
                             android:textStyle="bold"
@@ -185,7 +185,7 @@
                                 android:id="@+id/tvParkingLotName"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Downtown Mall Parking"
+                                android:text="@string/home_sample_parking_lot"
                                 android:textColor="@color/md_theme_onSurface"
                                 android:textSize="18sp"
                                 android:textStyle="bold"
@@ -210,7 +210,7 @@
                                     android:id="@+id/tvVehicle"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Toyota Corolla Altis"
+                                    android:text="@string/home_sample_vehicle"
                                     android:textColor="@color/md_theme_primary"
                                     android:textSize="14sp"
                                     android:textStyle="bold" />
@@ -236,7 +236,7 @@
                                     android:layout_height="wrap_content"
                                     android:ellipsize="end"
                                     android:singleLine="true"
-                                    android:text="123 Main Street, District 1, Spot A-15"
+                                    android:text="@string/home_sample_location"
                                     android:textColor="@color/md_theme_secondary"
                                     android:textSize="13sp" />
                             </LinearLayout>
@@ -282,7 +282,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Started"
+                                    android:text="@string/home_session_started"
                                     android:textColor="@color/md_theme_secondary"
                                     android:textSize="11sp"
                                     android:textStyle="bold" />
@@ -292,7 +292,7 @@
                                 android:id="@+id/tvEntryTime"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="14:30, 03 July 2025"
+                                android:text="@string/home_sample_entry_time"
                                 android:textColor="@color/md_theme_onSurface"
                                 android:textSize="14sp"
                                 android:textStyle="bold"
@@ -323,7 +323,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Duration"
+                                    android:text="@string/home_session_duration"
                                     android:textColor="@color/md_theme_secondary"
                                     android:textSize="11sp"
                                     android:textStyle="bold" />
@@ -333,7 +333,7 @@
                                 android:id="@+id/tvDuration"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="4h 49m"
+                                android:text="@string/home_sample_duration"
                                 android:textColor="@color/md_theme_onSurface"
                                 android:textSize="16sp"
                                 android:textStyle="bold"
@@ -364,7 +364,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="Current cost"
+                            android:text="@string/home_current_cost"
                             android:layout_gravity="center_vertical"
                             android:textColor="@color/md_theme_primary"
                             android:textSize="13sp" />
@@ -374,7 +374,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:text="N/Ạ đ"
+                            android:text="@string/home_sample_cost"
                             android:textColor="@color/md_theme_primary"
                             android:textSize="16sp"
                             android:textStyle="bold" />
@@ -408,7 +408,7 @@
                             android:layout_weight="3"
                             android:backgroundTint="@color/md_theme_tertiary"
                             android:elevation="8dp"
-                            android:text="Check Out"
+                            android:text="@string/home_check_out"
                             android:textColor="@color/md_theme_onTertiary"
                             android:textSize="14sp"
                             android:textStyle="bold"
@@ -444,7 +444,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center"
-                        android:text="Let's start your new parking lot session!"
+                        android:text="@string/home_start_new_session"
                         android:textColor="@color/md_theme_primary"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -454,7 +454,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:gravity="center"
-                        android:text="No active parking session found"
+                        android:text="@string/home_no_active_session"
                         android:textColor="@color/md_theme_secondary"
                         android:textSize="14sp" />
 
@@ -483,7 +483,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="SAPLS"
+                        android:text="@string/home_app_name"
                         android:textSize="28sp"
                         android:textStyle="bold"
                         android:textColor="@color/md_theme_surface"
@@ -492,7 +492,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Semi-Automatic Parking Lot System"
+                        android:text="@string/home_app_full_name"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="@color/md_theme_surface"
@@ -502,7 +502,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Advanced parking management platform with automated license plate recognition, real-time monitoring, and comprehensive analytics."
+                        android:text="@string/home_app_description"
                         android:textSize="14sp"
                         android:textColor="@color/md_theme_surface"
                         android:layout_marginTop="8dp"
@@ -540,14 +540,14 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="📷"
+                                android:text="@string/home_feature_ai_emoji"
                                 android:textSize="24sp"
                                 android:layout_marginBottom="8dp" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="AI Recognition"
+                                android:text="@string/home_feature_ai_recognition"
                                 android:textSize="12sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/md_theme_onSurfaceVariant"
@@ -579,14 +579,14 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="🔒"
+                                android:text="@string/home_feature_secure_emoji"
                                 android:textSize="24sp"
                                 android:layout_marginBottom="8dp" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Secure"
+                                android:text="@string/home_feature_secure"
                                 android:textSize="12sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/md_theme_onSurfaceVariant"
@@ -609,14 +609,14 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="⚡"
+                                android:text="@string/home_feature_fast_emoji"
                                 android:textSize="24sp"
                                 android:layout_marginBottom="8dp" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="Fast"
+                                android:text="@string/home_feature_fast"
                                 android:textSize="12sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/md_theme_onSurfaceVariant"

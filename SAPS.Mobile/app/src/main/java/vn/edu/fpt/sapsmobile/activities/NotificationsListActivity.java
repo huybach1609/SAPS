@@ -97,13 +97,13 @@ public class NotificationsListActivity extends AppCompatActivity {
 //                    recyclerView.setAdapter(adapter);
 
                 } else {
-                    Toast.makeText(NotificationsListActivity.this, "Error: Unable to fetch data", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NotificationsListActivity.this, getString(R.string.toast_error_unable_to_fetch_data), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<NotificationsResponse> call, Throwable t) {
-                Toast.makeText(NotificationsListActivity.this, "Request failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(NotificationsListActivity.this, getString(R.string.toast_request_failed, t.getMessage()), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -118,7 +118,7 @@ public class NotificationsListActivity extends AppCompatActivity {
             editor.putBoolean("isRead_" + notification.getId(), true);
             editor.apply();
         }
-        Toast.makeText(NotificationsListActivity.this, "All notifications marked as read", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NotificationsListActivity.this, getString(R.string.toast_all_notifications_marked_read), Toast.LENGTH_SHORT).show();
     }
 
     @Override

@@ -41,6 +41,10 @@
     </string-array>
     <string name="history_session_filter">Bộ lọc</string>
 
+    <string name="empty_history_title">Chưa có lịch sử đỗ xe</string>
+    <string name="empty_history_subtitle">Bạn chưa có phiên đỗ xe nào</string>
+    <string name="empty_history_description">Lịch sử đỗ xe của bạn sẽ hiển thị tại đây khi bạn bắt đầu sử dụng dịch vụ đỗ xe của chúng tôi.</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Xin chào fragment trống</string>
     <!-- Group & Logo -->
@@ -127,15 +131,15 @@
 
     <string name="payment_details_title">Chi tiết thanh toán</string>
     <string name="base_rate">Giá cơ bản</string>
-    <string name="base_rate_value">$5.00 / giờ</string>
+    <string name="base_rate_value"></string>
     <string name="time_charged">Thời gian tính phí</string>
-    <string name="time_charged_value">2.25 giờ</string>
+    <string name="time_charged_value"></string>
     <string name="subtotal">Tạm tính</string>
-    <string name="subtotal_value">$11.25</string>
+    <string name="subtotal_value"></string>
     <string name="tax">Thuế</string>
-    <string name="tax_value">$1.13</string>
+    <string name="tax_value"></string>
     <string name="total">Tổng cộng</string>
-    <string name="total_value">$12.38</string>
+    <string name="total_value"></string>
 
     <string name="transaction_details_title">Chi tiết giao dịch</string>
     <string name="sample_txn_id">TXN-20250602-089</string>
@@ -181,10 +185,10 @@
     <string name="title_access_duration">Thời lượng truy cập</string>
 
     <!-- Sample Data -->
-    <string name="sample_user_name">Sarah Johnson</string>
-    <string name="sample_user_code">Share Code: USER-SARAH2024</string>
-    <string name="sample_member_since">Thành viên từ: March 2024</string>
-    <string name="sample_vehicle_access">Cấp quyền truy cập cho: ABC-1234 (Toyota Camry)</string>
+    <string name="sample_user_name"></string>
+    <string name="sample_user_code">Share Code: </string>
+    <string name="sample_member_since">Thành viên từ: </string>
+    <string name="sample_vehicle_access">Cấp quyền truy cập cho: </string>
 
     <!-- Options -->
     <string name="option_permanent_access">Truy cập vĩnh viễn</string>
@@ -208,23 +212,23 @@
 
     <!-- Vehicle section -->
     <string name="section_vehicle_info">Thông tin xe</string>
-    <string name="license_plate_label">Biển số xe: GHI-3456</string>
-    <string name="model_label">Mẫu xe: 2018 Ford Focus</string>
-    <string name="color_label">Màu sắc: Đỏ</string>
-    <string name="status_label">Trạng thái: Quyền truy cập đang hoạt động</string>
+    <string name="license_plate_label">Biển số xe: </string>
+    <string name="model_label">Mẫu xe: </string>
+    <string name="color_label">Màu sắc: </string>
+    <string name="status_label">Trạng thái: </string>
 
     <!-- Owner section -->
     <string name="section_owner">Chủ xe</string>
-    <string name="owner_name">Sarah Johnson</string>
-    <string name="owner_share_code">USER-SARAH2024</string>
-    <string name="owner_member_since">Thành viên từ: March 2024</string>
+    <string name="owner_name"></string>
+    <string name="owner_share_code"></string>
+    <string name="owner_member_since">Thành viên từ: </string>
 
     <!-- Access details -->
     <string name="section_access_details">Chi tiết quyền truy cập</string>
-    <string name="access_duration_label">Thời lượng truy cập: Truy cập vĩnh viễn</string>
-    <string name="access_granted_label">Quyền truy cập được cấp: May 20, 2025</string>
+    <string name="access_duration_label">Thời lượng truy cập: </string>
+    <string name="access_granted_label">Quyền truy cập được cấp: </string>
     <string name="access_expires_label">Hết hạn: Không bao giờ (cho đến khi trả lại hoặc thu hồi)</string>
-    <string name="access_last_used_label">Sử dụng lần cuối: June 2, 2025</string>
+    <string name="access_last_used_label">Sử dụng lần cuối: </string>
 
     <!-- Owner note -->
     <string name="section_note">Ghi chú từ chủ xe</string>
@@ -257,9 +261,9 @@
 
     <!-- Current User -->
     <string name="section_current_user">👤 Người dùng hiện có quyền truy cập</string>
-    <string name="current_user_name">Sarah Johnson</string>
-    <string name="current_user_code">USER-SARAH2024</string>
-    <string name="current_user_granted_date">Quyền truy cập được cấp: May 15, 2025</string>
+    <string name="current_user_name"></string>
+    <string name="current_user_code"></string>
+    <string name="current_user_granted_date">Quyền truy cập được cấp: </string>
     <string name="current_user_duration">Thời lượng: Truy cập vĩnh viễn</string>
     <string name="current_user_active">Đang hoạt động</string>
 
@@ -279,17 +283,17 @@
     <string name="sub_shared_vehicle_access">Xem xét chi tiết xe được chia sẻ</string>
 
     <!-- Sections -->
-    <string name="license_plate_def">Biển số xe: DEF-9012</string>
-    <string name="model_altima">Mẫu xe: 2021 Nissan Altima</string>
-    <string name="color_black">Màu sắc: Đen</string>
-    <string name="status_pending">Trạng thái: Đang chờ phản hồi của bạn</string>
+    <string name="license_plate_def">Biển số xe: </string>
+    <string name="model_altima">Mẫu xe: </string>
+    <string name="color_black">Màu sắc: </string>
+    <string name="status_pending">Trạng thái: </string>
 
-    <string name="owner_john_smith">John Smith</string>
-    <string name="owner_code_john">USER-JOHN2023</string>
-    <string name="member_since_jan">Thành viên từ: January 2023</string>
+    <string name="owner_john_smith"></string>
+    <string name="owner_code_john"></string>
+    <string name="member_since_jan">Thành viên từ: </string>
 
-    <string name="access_duration_perm">Thời lượng truy cập: Truy cập vĩnh viễn</string>
-    <string name="access_invitation_date">Ngày mời: June 3, 2025</string>
+    <string name="access_duration_perm">Thời lượng truy cập: </string>
+    <string name="access_invitation_date">Ngày mời: </string>
     <string name="access_expires_never">Hết hạn: Không bao giờ (cho đến khi thu hồi)</string>
 
     <string name="section_note_owner">Ghi chú từ chủ xe</string>
@@ -346,7 +350,13 @@
     <string name="vehicle_fragment_btn_view_invitation">Xem lời mời</string>
     <string name="invitation_activity_actionbar_title">Lời mời của bạn</string>
     <string name="item_vehicle_invitation_notification">%1$s đã mời bạn sử dụng xe</string>
-    <string name="list_invitation_error_fetch">Không tải được danh sách chia sẻ</string>
+    <string name="item_vehicle_invitation_label_owner">Chủ xe</string>
+    <string name="item_vehicle_invitation_label_color">Màu sắc</string>
+    <string name="item_vehicle_invitation_btn_details">Chấp nhận</string>
+    <string name="list_invitation_error_fetch">Không thể tải danh sách chia sẻ</string>
+    <string name="no_items_found">Không có mục nào</string>
+    <string name="item_vehicle_invitation_btn_reject">Từ chối</string>
+    <string name="item_vehicle_invitation_notification_reject">Bạn có chắc chắn muốn từ chối lời mời này không?</string>
     <string name="vehicle_detail_dialog_recall">Thu hồi</string>
     <string name="vehicle_detail_dialog_remove">Trả xe</string>
     <string name="view_list_invitation_adapter_accept_200">Đã chấp nhận lời mời</string>
@@ -358,5 +368,289 @@
     <string name="share_vehicle_access_search_not_found_search_subtitle">Thử kiểm tra lại mã chia sẻ</string>
     <string name="vehicle_detail_dialog_share">Chia sẻ</string>
 
+    <!-- New strings for hardcoded text -->
+    <!-- Login Activity -->
+    <string name="login_lets_sign_in">Hãy đăng nhập.</string>
+    <string name="login_welcome_back">Chào mừng trở lại</string>
+    <string name="login_youve_been_missed"></string>
+    <string name="login_username_or_email">Tên đăng nhập hoặc Email</string>
+    <string name="login_enter_username_or_email">Nhập tên đăng nhập hoặc email</string>
+    <string name="login_password">Mật khẩu</string>
+    <string name="login_enter_password">Nhập mật khẩu</string>
+    <string name="login_button">Đăng nhập</string>
+    <string name="login_forgot_password">Quên mật khẩu?</string>
+
+    <!-- Forgot Password Activity -->
+    <string name="forgot_password_title">🔒 Quên mật khẩu</string>
+    <string name="forgot_password_description">Nhập email đã đăng ký và chúng tôi sẽ gửi cho bạn liên kết đặt lại mật khẩu.</string>
+    <string name="forgot_password_send_reset_link">Gửi liên kết đặt lại</string>
+
+    <!-- Change Password Activity -->
+    <string name="change_password_new_password">Mật khẩu mới</string>
+    <string name="change_password_description">Nhập và xác nhận mật khẩu mới để lấy lại quyền truy cập</string>
+
+    <!-- Payment Success Activity -->
+    <string name="payment_success_title">Thanh toán hoàn tất thành công!</string>
+    <string name="payment_success_description">Thanh toán của bạn đã được xử lý thành công. Bạn có thể rời khỏi khu vực đỗ xe.</string>
+    <string name="payment_success_transaction_details">Chi tiết giao dịch</string>
+    <string name="payment_success_transaction_id">Mã giao dịch: </string>
+    <string name="payment_success_amount_paid">Số tiền đã thanh toán: </string>
+    <string name="payment_success_payment_method">Phương thức thanh toán: </string>
+    <string name="payment_success_vehicle_time">Xe/Thời gian</string>
+    <string name="payment_success_vehicle">Xe: </string>
+    <string name="payment_success_date_time">Ngày và giờ: </string>
+    <string name="payment_success_done">Xong</string>
+
+    <!-- Payment Fail Activity -->
+    <string name="payment_fail_title">Thanh toán thất bại</string>
+    <string name="payment_fail_description">Chúng tôi không thể xử lý thanh toán của bạn. Vui lòng thử lại hoặc liên hệ hỗ trợ để được trợ giúp.</string>
+    <string name="payment_fail_error_details">Chi tiết lỗi</string>
+    <string name="payment_fail_error_message">Hết thời gian thanh toán - Giao dịch không hoàn tất trong khung thời gian yêu cầu. Vui lòng đảm bảo chuyển khoản ngân hàng của bạn đã hoàn tất và thử lại.</string>
+    <string name="payment_fail_try_again">Thử lại</string>
+    <string name="payment_fail_back_to_home">Về trang chủ</string>
+
+    <!-- Welcome Activity -->
+    <string name="welcome_to">Chào mừng đến với</string>
+
+    <!-- Confirm User Access Activity -->
+    <string name="confirm_user_access_email">user@email.com</string>
+    <string name="confirm_user_access_phone">+1234567890</string>
+    <string name="confirm_user_access_vehicle_info">Thông tin xe</string>
+    <string name="confirm_user_access_vehicle_description">Quyền truy cập sẽ được cấp cho xe này</string>
+
+    <!-- Edit Profile Activity -->
+    <string name="edit_profile_document_icon">📄</string>
+    <string name="edit_profile_auto_fill_note">📋 Thông tin sẽ được tự động điền sau khi tải lên thẻ căn cước</string>
+    <string name="edit_profile_sample_id">0000000000000</string>
+    <string name="edit_profile_sample_gender">Nam</string>
+    <string name="edit_profile_sample_nationality">Việt Nam</string>
+    <string name="edit_profile_sample_name">Nguyễn Văn N</string>
+    <string name="edit_profile_sample_dob">01/01/2000</string>
+    <string name="edit_profile_not_available">Không có sẵn từ thẻ căn cước</string>
+
+    <!-- Parking History Details Activity -->
+    <string name="parking_history_total_duration">Tổng thời gian</string>
+    <string name="parking_history_transaction_id">Mã giao dịch</string>
+    <string name="parking_history_payment_method">Phương thức thanh toán</string>
+    <string name="parking_history_payment_status">Trạng thái thanh toán</string>
+    <string name="parking_history_payment_date">Ngày thanh toán</string>
+    <string name="parking_history_order_code">Mã đơn hàng:</string>
+
+    <!-- Share Vehicle Success Activity -->
+    <string name="share_vehicle_success_title">Cấp quyền truy cập xe thành công!</string>
+    <string name="share_vehicle_success_shared_with">Chia sẻ với</string>
+    <string name="share_vehicle_success_user">Người dùng: John Doe</string>
+    <string name="share_vehicle_success_vehicle">Xe</string>
+    <string name="share_vehicle_success_vehicle_info">Xe: ABC-123 - Toyota Camry</string>
+    <string name="share_vehicle_success_done">Xong</string>
+
+    <!-- Payment Activity -->
+    <string name="payment_amount">$12.38</string>
+    <string name="payment_account_number">000000000</string>
+    <string name="payment_account_name">Hệ thống đỗ xe SAPLS</string>
+    <string name="payment_reference_code">PARK-ABC1234-060325</string>
+    <string name="payment_open_in_browser">Mở trong trình duyệt</string>
+    <string name="payment_note">Lưu ý: Giao dịch ngân hàng có thể mất 1–10 phút để xử lý tự động.</string>
+
+    <!-- Share Vehicle Access Activity -->
+    <string name="share_vehicle_access_title">Chia sẻ xe</string>
+    <string name="share_vehicle_access_license_plate">Biển số xe</string>
+    <string name="share_vehicle_access_brand_model_color">Hãng xe - Mẫu xe - Màu sắc</string>
+    <string name="share_vehicle_access_how_it_works">Cách chia sẻ xe hoạt động</string>
+    <string name="share_vehicle_access_step_1">1. Hỏi người đó về mã chia sẻ cá nhân của họ (ví dụ: USER-SARAH2024)</string>
+    <string name="share_vehicle_access_step_2">2. Nhập mã của họ để xem hồ sơ</string>
+    <string name="share_vehicle_access_step_3">3. Xác nhận để cấp cho họ quyền truy cập vào xe của bạn</string>
+    <string name="share_vehicle_access_important_note">Lưu ý quan trọng</string>
+    <string name="share_vehicle_access_note_1">Mỗi xe chỉ có thể được chia sẻ với một người tại một thời điểm.</string>
+    <string name="share_vehicle_access_note_2">Mỗi người dùng có mã chia sẻ duy nhất của riêng họ</string>
+    <string name="share_vehicle_access_safety_tips">Mẹo an toàn</string>
+    <string name="share_vehicle_access_safety_content">• Chỉ chia sẻ với những người bạn tin tưởng\n• Xác minh danh tính người đó trước khi cấp quyền truy cập\n• Bạn có thể thu hồi quyền truy cập bất cứ lúc nào từ cài đặt</string>
+
+    <!-- Register Phase 2 Fragment -->
+    <string name="register_phase2_review_info">📋 Xem xét thông tin</string>
+    <string name="register_phase2_review_description">Xem xét thông tin đã tự động điền</string>
+    <string name="register_phase2_progress">○ ● ○</string>
+    <string name="register_phase2_id_info">📄 Thông tin từ thẻ căn cước</string>
+    <string name="register_phase2_auto_extracted">✓ Tự động trích xuất từ thẻ căn cước</string>
+    <string name="register_phase2_auto_note">ℹ️ Thông tin này được tự động trích xuất từ thẻ căn cước của bạn. Vui lòng xác minh nó chính xác trước khi tiếp tục.</string>
+    <string name="register_phase2_continue">Tiếp tục đến đăng ký xe →</string>
+
+    <!-- Register Fragment -->
+    <string name="register_title">Đăng ký tài khoản mới</string>
+    <string name="register_subtitle">Tạo tài khoản của bạn</string>
+
+    <!-- View List Invitation Activity -->
+    <string name="view_list_invitation_no_vehicles">Không có xe nào</string>
+    <string name="view_list_invitation_add_first">Hãy thêm xe đầu tiên của bạn</string>
+    <string name="view_list_invitation_add_vehicle">Thêm xe</string>
+
+    <!-- Edit Profile Activity - Additional strings -->
+    <string name="edit_profile_document_emoji">📄</string>
+    <string name="edit_profile_auto_fill_info">📋 Thông tin sẽ được tự động điền sau khi tải lên thẻ căn cước</string>
+    <string name="edit_profile_sample_id_number">0000000000000</string>
+    <string name="edit_profile_sample_gender_male">Nam</string>
+    <string name="edit_profile_sample_nationality_vietnamese">Việt Nam</string>
+    <string name="edit_profile_sample_full_name">Nguyễn Văn N</string>
+    <string name="edit_profile_sample_date_of_birth">01/01/2000</string>
+    <string name="edit_profile_not_available_from_id">Không có sẵn từ thẻ căn cước</string>
+
+    <!-- Home Fragment - Additional strings -->
+    <string name="home_greeting_username">Xin chào UserName!</string>
+    <string name="home_current_session">Phiên hiện tại</string>
+    <string name="home_session_active">ĐANG HOẠT ĐỘNG</string>
+    <string name="home_sample_parking_lot">Bãi đỗ xe Downtown Mall</string>
+    <string name="home_sample_vehicle">Toyota Corolla Altis</string>
+    <string name="home_sample_location">123 Đường Chính, Quận 1, Vị trí A-15</string>
+    <string name="home_session_started">Đã bắt đầu</string>
+    <string name="home_sample_entry_time">14:30, 03 Tháng 7 2025</string>
+    <string name="home_session_duration">Thời lượng</string>
+    <string name="home_sample_duration">4h 49m</string>
+    <string name="home_current_cost">Chi phí hiện tại</string>
+    <string name="home_sample_cost">N/Ạ đ</string>
+    <string name="home_check_out">Check Out</string>
+    <string name="home_start_new_session">Hãy bắt đầu phiên đỗ xe mới của bạn!</string>
+    <string name="home_no_active_session">Không tìm thấy phiên đỗ xe đang hoạt động</string>
+    <string name="home_app_name">SAPLS</string>
+    <string name="home_app_full_name">Hệ thống bãi đỗ xe bán tự động</string>
+    <string name="home_app_description">Nền tảng quản lý đỗ xe tiên tiến với nhận dạng biển số xe tự động, giám sát thời gian thực và phân tích toàn diện.</string>
+    <string name="home_feature_ai_emoji">📷</string>
+    <string name="home_feature_ai_recognition">Nhận dạng AI</string>
+    <string name="home_feature_secure_emoji">🔒</string>
+    <string name="home_feature_secure">An toàn</string>
+    <string name="home_feature_fast_emoji">⚡</string>
+    <string name="home_feature_fast">Nhanh</string>
+
+    <!-- Profile Fragment -->
+    <string name="profile_fragment_name">Tên</string>
+    <string name="profile_fragment_email">example@mail.com</string>
+    <string name="profile_fragment_edit">Chỉnh sửa</string>
+    <string name="profile_fragment_change_password">Đổi mật khẩu</string>
+    <string name="profile_fragment_profile_information">Thông tin hồ sơ</string>
+    <string name="profile_fragment_logout">Đăng xuất</string>
+    <string name="profile_fragment_actions">Hành động</string>
+    <string name="profile_fragment_account_information">Thông tin tài khoản</string>
+    <string name="profile_fragment_id_no">Số CMND:</string>
+    <string name="profile_fragment_date_of_birth">Ngày sinh:</string>
+    <string name="profile_fragment_sex">Giới tính:</string>
+    <string name="profile_fragment_nationality">Quốc tịch:</string>
+    <string name="profile_fragment_place_of_origin">Nơi sinh:</string>
+    <string name="profile_fragment_place_of_residence">Nơi cư trú:</string>
+    <string name="profile_fragment_phone">Điện thoại:</string>
+    <string name="profile_fragment_member_since">Thành viên từ:</string>
+
+    <!-- Add Vehicle Activity -->
+    <string name="add_vehicle_document_emoji">📄</string>
+    <string name="add_vehicle_upload_title">Tải lên đăng ký xe</string>
+    <string name="add_vehicle_upload_description">Chụp ảnh hoặc chọn từ thư viện để cập nhật thông tin của bạn</string>
+    <string name="add_vehicle_btn_take_photo">Chụp ảnh</string>
+    <string name="add_vehicle_btn_front_side">Mặt trước</string>
+    <string name="add_vehicle_btn_back_side">Mặt sau</string>
+    <string name="add_vehicle_auto_fill_info">📋 Thông tin sẽ được tự động điền sau khi tải lên đăng ký xe</string>
+    <string name="add_vehicle_owner_full_name">Họ và tên chủ xe</string>
+    <string name="add_vehicle_license_plate_number">Số biển xe</string>
+    <string name="add_vehicle_vehicle_model">Mẫu xe</string>
+    <string name="add_vehicle_color">Màu sắc</string>
+    <string name="add_vehicle_brand">Hãng xe</string>
+    <string name="add_vehicle_engine_number">Số máy</string>
+    <string name="add_vehicle_chassis_number">Số khung</string>
+    <string name="add_vehicle_vehicle_type">Loại xe</string>
+    <string name="add_vehicle_auto_extracted_note">✓ Tự động trích xuất từ đăng ký xe</string>
+    <string name="add_vehicle_btn_complete_registration">Hoàn tất đăng ký</string>
+
+    <!-- Register Fragment -->
+    <string name="register_fragment_back">Quay lại</string>
+    <string name="register_fragment_email_address">Địa chỉ email</string>
+    <string name="register_fragment_enter_email">Nhập địa chỉ email của bạn</string>
+    <string name="register_fragment_full_name">Họ và tên</string>
+    <string name="register_fragment_enter_full_name">Nhập họ và tên của bạn</string>
+    <string name="register_fragment_phone_number">Số điện thoại</string>
+    <string name="register_fragment_enter_phone">Nhập số điện thoại của bạn</string>
+    <string name="register_fragment_password">Mật khẩu</string>
+    <string name="register_fragment_enter_password">Nhập mật khẩu của bạn</string>
+    <string name="register_fragment_confirm_password">Xác nhận mật khẩu</string>
+    <string name="register_fragment_confirm_password_hint">Xác nhận mật khẩu của bạn</string>
+    <string name="register_fragment_password_requirements">Yêu cầu mật khẩu:\n• Ít nhất 8 ký tự\n• Chữ cái hoa và thường\n• Số và ký hiệu\n• Không được có dấu cách</string>
+    <string name="register_fragment_btn_register">Đăng ký</string>
+
+    <!-- Toast Messages -->
+    <string name="toast_error_unable_to_fetch_data">Lỗi: Không thể tải dữ liệu</string>
+    <string name="toast_request_failed">Yêu cầu thất bại: %1$s</string>
+    <string name="toast_all_notifications_marked_read">Tất cả thông báo đã được đánh dấu đã đọc</string>
+    <string name="toast_please_fill_all_fields">Vui lòng điền tất cả các trường bắt buộc</string>
+    <string name="toast_enter_valid_email">Vui lòng nhập địa chỉ email hợp lệ</string>
+    <string name="toast_enter_valid_phone">Vui lòng nhập số điện thoại hợp lệ</string>
+    <string name="toast_passwords_not_match">Mật khẩu không khớp</string>
+    <string name="toast_password_min_length">Mật khẩu phải có ít nhất 8 ký tự</string>
+    <string name="toast_network_error">Lỗi mạng: %1$s</string>
+    <string name="toast_invalid_vehicle_id">ID xe không hợp lệ</string>
+    <string name="toast_failed_load_vehicle_details">Không thể tải chi tiết xe</string>
+    <string name="toast_connection_error">Lỗi kết nối</string>
+    <string name="toast_edit_vehicle">Chỉnh sửa: %1$s</string>
+    <string name="toast_share_vehicle">Chia sẻ: %1$s</string>
+    <string name="toast_operation_cancelled">Thao tác đã hủy</string>
+    <string name="toast_failed_get_vehicle_details">Không thể lấy chi tiết xe</string>
+    <string name="toast_network_error_get_vehicle">Lỗi mạng khi lấy chi tiết xe</string>
+    <string name="toast_vehicle_recalled_success">Thu hồi xe thành công</string>
+    <string name="toast_failed_recall_vehicle">Không thể thu hồi xe</string>
+    <string name="toast_network_error_recall">Lỗi mạng khi thu hồi xe</string>
+    <string name="toast_invitation_rejected_success">Từ chối lời mời thành công</string>
+    <string name="toast_failed_reject_invitation">Không thể từ chối lời mời</string>
+    <string name="toast_network_error_reject">Lỗi mạng khi từ chối lời mời</string>
+    <string name="toast_missing_user_vehicle_data">Thiếu dữ liệu người dùng hoặc xe</string>
+    <string name="toast_checkout_successful">Check out thành công</string>
+    <string name="toast_checkout_failed">Check out thất bại</string>
+    <string name="toast_session_already_checked_out">Phiên đã được check out</string>
+    <string name="toast_invalid_checkout_request">Yêu cầu check out không hợp lệ</string>
+    <string name="toast_network_error_checkout">Lỗi mạng trong quá trình check out</string>
+    <string name="toast_no_user_data_sign_in">Không có dữ liệu người dùng. Vui lòng đăng nhập lại.</string>
+    <string name="toast_please_upload_image">Vui lòng tải lên ảnh</string>
+    <string name="toast_profile_request_submitted">Yêu cầu cập nhật hồ sơ đã được gửi thành công!</string>
+    <string name="toast_error_reading_images">Lỗi đọc ảnh</string>
+    <string name="toast_please_select_both_sides_id">Vui lòng chọn cả mặt trước và mặt sau của thẻ căn cước</string>
+    <string name="toast_feature_not_supported_recognition">Chức năng này chưa hỗ trợ nhận dạng cả 2 mặt từ ảnh chụp.</string>
+    <string name="toast_auto_filled_from_id">Tự động điền từ thẻ căn cước</string>
+    <string name="toast_error_preparing_upload">Lỗi chuẩn bị tải lên</string>
+    <string name="toast_please_select_both_sides_registration">Vui lòng chọn cả mặt trước và mặt sau của giấy đăng ký xe</string>
+    <string name="toast_auto_filled_from_registration">Tự động điền từ đăng ký xe</string>
+    <string name="toast_upload_failed">Tải lên thất bại: %1$s</string>
+    <string name="toast_registration_failed">Đăng ký thất bại: %1$s</string>
+    <string name="toast_reset_link_sent">Đã gửi liên kết đặt lại. Kiểm tra email của bạn.</string>
+    <string name="toast_reset_failed">Thất bại: %1$s</string>
+
+    <!-- Dialog Messages -->
+    <string name="dialog_confirm_title">Xác nhận</string>
+    <string name="dialog_confirm_action_title">Xác nhận hành động</string>
+    <string name="dialog_confirm_action_message">Bạn có chắc chắn muốn tiếp tục?</string>
+    <string name="dialog_confirm_recall_title">Xác nhận thu hồi</string>
+    <string name="dialog_confirm_recall_message">Bạn có chắc chắn muốn thu hồi quyền truy cập vào xe này?</string>
+    <string name="dialog_confirm_reject_title">Xác nhận từ chối</string>
+    <string name="dialog_confirm_reject_message">Bạn có chắc chắn muốn từ chối lời mời này?</string>
+    <string name="dialog_confirm_share_title">Xác nhận chia sẻ</string>
+    <string name="dialog_confirm_share_message">Bạn có chắc chắn muốn chia sẻ xe này?</string>
+    <string name="dialog_yes">Có</string>
+    <string name="dialog_no">Không</string>
+
+    <!-- Status Messages -->
+    <string name="status_available">Có sẵn</string>
+
+    <!-- Change Password Activity -->
+    <string name="toast_password_confirmation_mismatch">Xác nhận mật khẩu không khớp</string>
+    <string name="toast_password_requirements_not_met">Mật khẩu không đáp ứng yêu cầu</string>
+    <string name="toast_not_logged_in">Chưa đăng nhập</string>
+    <string name="toast_password_changed_success">Đổi mật khẩu thành công!</string>
+    <string name="toast_network_error_occurred">Đã xảy ra lỗi mạng</string>
+    <string name="toast_request_timeout">Yêu cầu hết thời gian. Vui lòng thử lại.</string>
+    <string name="toast_cannot_connect_server">Không thể kết nối đến máy chủ. Vui lòng kiểm tra kết nối.</string>
+    <string name="toast_connection_lost">Mất kết nối. Vui lòng thử lại.</string>
+    <string name="toast_network_error_with_message">Lỗi mạng: %1$s</string>
+    <string name="toast_current_password_incorrect">Mật khẩu hiện tại không đúng hoặc yêu cầu không hợp lệ.</string>
+    <string name="toast_user_not_found">Không tìm thấy người dùng. Vui lòng đăng nhập lại.</string>
+    <string name="toast_server_error">Lỗi máy chủ. Vui lòng thử lại sau.</string>
+    <string name="toast_failed_change_password">Không thể đổi mật khẩu. Vui lòng thử lại.</string>
+
+    <!-- Checkout Activity Error Messages -->
+    <string name="toast_vehicle_information_missing">Thiếu thông tin xe</string>
+    <string name="toast_error_loading_checkout_data">Lỗi tải dữ liệu checkout</string>
+    <string name="toast_invalid_vehicle_information">Thông tin xe không hợp lệ</string>
 
 </resources>
