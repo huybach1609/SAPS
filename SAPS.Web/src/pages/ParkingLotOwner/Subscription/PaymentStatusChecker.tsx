@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { Check, Clock, X, RefreshCw, AlertCircle } from 'lucide-react';
 import { addToast, Button, Spinner } from '@heroui/react';
-import { apiUrl } from '@/config/base';
+import { checkPaymentStatus as checkPaymentStatusApi, PaymentCheckResponse } from '@/services/parkinglot/subscriptionService';
 
 interface PaymentStatusCheckerProps {
   paymentId: string;
@@ -13,16 +13,7 @@ interface PaymentStatusCheckerProps {
   expireAt?: number;//unix timestamp
 }
 
-interface PaymentCheckResponse {
-  code: string;
-  desc: string;
-  data: {
-    status: 'PENDING' | 'PAID' | 'CANCELLED' | 'EXPIRED';
-    orderCode: string;
-    amount: number;
-    [key: string]: any;
-  };
-}
+// Using PaymentCheckResponse from service
 
 enum PaymentStatus {
   IDLE = 'IDLE',
@@ -37,11 +28,7 @@ enum PaymentStatus {
 // truong hop payos return code loi status: ERROR
 // trong hop payment Id not found bt payos: FAILED
 
-interface ErrorResponse {
-  code: string;
-  error: string;
-
-}
+// Removed local ErrorResponse; handled via service error shape
 
 const PaymentStatusChecker: React.FC<PaymentStatusCheckerProps> = ({
   paymentId,
@@ -57,13 +44,11 @@ const PaymentStatusChecker: React.FC<PaymentStatusCheckerProps> = ({
   const [attempts, setAttempts] = useState(0);
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [lastCheckTime, setLastCheckTime] = useState<Date | null>(null);
-  const [currentInterval, setCurrentInterval] = useState(5000); // Start with 5 seconds
+  const [currentInterval, setCurrentInterval] = useState(20000); // Fixed 20 seconds
 
   // Configuration
   const MAX_ATTEMPTS = 36; // 3 minutes total
-  const MIN_INTERVAL = 5000; // 5 seconds
-  const MAX_INTERVAL = 30000; // 30 seconds
-  const BACKOFF_MULTIPLIER = 1.2;
+  const MIN_INTERVAL = 20000; // 20 seconds
 
   // Refs for cleanup
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -103,33 +88,21 @@ const PaymentStatusChecker: React.FC<PaymentStatusCheckerProps> = ({
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // API call to check payment status
+  // API call to check payment status via service
   const checkPaymentStatus = useCallback(async (): Promise<PaymentCheckResponse | null> => {
     try {
-      const response = await fetch(`${apiUrl}/api/payos/${paymentId}/check`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-      });
-
-      if (!response.ok) {
-        const errorResponse: ErrorResponse = await response.json();
-        addToast({
-          title: 'Error',
-          description: 'Payment check failed: ' + errorResponse.error,
-          color: 'danger',
-        });
-        setStatus(PaymentStatus.ERROR);
-        return null;
-      }
-
-      const data: PaymentCheckResponse = await response.json();
+      const data = await checkPaymentStatusApi(paymentId);
+      // console.log('data:', data);
       setLastCheckTime(new Date());
-
       return data;
-    } catch (error) {
+    } catch (error: any) {
+      const errorMessage = error?.response?.data?.error || 'Unknown error';
+      addToast({
+        title: 'Error',
+        description: 'Payment check failed: ' + errorMessage,
+        color: 'danger',
+      });
+      setStatus(PaymentStatus.ERROR);
       console.error('Payment check failed:', error);
       return null;
     }
@@ -187,11 +160,8 @@ const PaymentStatusChecker: React.FC<PaymentStatusCheckerProps> = ({
       return;
     }
 
-    // Calculate next interval with exponential backoff
-    const nextInterval = Math.min(
-      currentInterval * BACKOFF_MULTIPLIER,
-      MAX_INTERVAL
-    );
+    // Keep a fixed interval of 20 seconds
+    const nextInterval = MIN_INTERVAL;
     setCurrentInterval(nextInterval);
 
     timeoutRef.current = setTimeout(() => {

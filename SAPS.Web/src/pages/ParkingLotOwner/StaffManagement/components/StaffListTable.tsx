@@ -99,7 +99,7 @@ export const StaffListTable: React.FC<StaffListTableProps> = ({
                   <DropdownMenu aria-label="action">
                     <DropdownItem
                       key="detail"
-                      onPress={() => navigate(`/owner/staff/${parkingLot?.id}/${entry?.staffProfile?.staffId}`)}
+                      onPress={() => navigate(`/owner/staff/${entry?.staffId}`)}
                     >
                       Detail
                     </DropdownItem>
@@ -112,14 +112,14 @@ export const StaffListTable: React.FC<StaffListTableProps> = ({
                     >
                       Update
                     </DropdownItem> */}
-                    <DropdownItem
+                    {/* <DropdownItem
                       key="delete"
                       className="text-danger"
                       color="danger"
                       onPress={() => handleDeactivateStaff(entry)}
                     >
                       Deactivate
-                    </DropdownItem>
+                    </DropdownItem> */}
                   </DropdownMenu>
                 </Dropdown>
               </TableCell>

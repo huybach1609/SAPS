@@ -1,17 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { CreditCard, Check, Clock, MapPin, User, Copy } from 'lucide-react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import DefaultLayout from '@/layouts/default';
 import { useParkingLot } from '../ParkingLotContext';
 import QRCode from 'qrcode';
 import { Button, Spinner, Tab, Tabs } from '@heroui/react';
 import { formatPrice } from '@/components/utils/stringUtils';
-import { PayOsResponse } from '@/types/ParkingLot';
-import { fetchSubscriptionById } from '@/services/parkinglot/subscriptionService';
+import { PayOsResponse, Subscription } from '@/types/ParkingLot';
+import { createPayment, getLatestPayment, fetchSubscriptions } from '@/services/parkinglot/subscriptionService';
 import PaymentStatusChecker from './PaymentStatusChecker';
-
-
-
 
 
 // Mock data from your response
@@ -74,9 +71,11 @@ const PaymentSubscriptionComponent: React.FC = () => {
 
    const [showQRCode, setShowQRCode] = useState(false);
    const [parkingLotSubscription, setParkingLotSubscription] = useState<PayOsResponse | null>(null);
+   const [subscriptionData, setSubscriptionData] = useState<Subscription | null>(null);
    const [copiedField, setCopiedField] = useState<string | null>(null);
    const [isLoading, setIsLoading] = useState(false);
 
+   const navigate = useNavigate();
 
    const [paymentComplete, setPaymentComplete] = useState(false);
    console.log(paymentComplete);
@@ -84,10 +83,29 @@ const PaymentSubscriptionComponent: React.FC = () => {
    useEffect(() => {
       const fetchSubscription = async () => {
          setIsLoading(true);
-         const response = await fetchSubscriptionById(selectedParkingLot?.id || '', subscriptionId || '');
-         console.log(response);
-         setParkingLotSubscription(response);
-         setIsLoading(false);
+         try {
+            // Step 1: Create payment to get transaction ID
+             await createPayment(selectedParkingLot?.id || '', subscriptionId || '');
+            // console.log('Payment created:', createResponse);
+            
+            // Step 2: Get latest payment details
+            const response = await getLatestPayment(selectedParkingLot?.id || '');
+            // console.log('Latest payment:', response);
+            setParkingLotSubscription(response);
+            
+            // console.log('nothing new:', response.transactionId.data.qrCode);
+            
+            // Step 3: Fetch subscription details separately
+            const subscriptions = await fetchSubscriptions();
+            const currentSubscription = subscriptions.find(sub => sub.id === subscriptionId);
+            if (currentSubscription) {
+               setSubscriptionData(currentSubscription);
+            }
+         } catch (error) {
+            console.error('Error fetching payment:', error);
+         } finally {
+            setIsLoading(false);
+         }
       };
       fetchSubscription();
    }, [selectedParkingLot, subscriptionId]);
@@ -130,13 +148,14 @@ const PaymentSubscriptionComponent: React.FC = () => {
 
       // Show success message for 2 seconds then redirect
       setTimeout(() => {
-         console.log('Payment successful:', data);
-         // navigate(`/parking-lot/${selectedParkingLot?.id}/subscription/success?paymentId=${data.data.id}`);
-      }, 2000);
+         // console.log('Payment successful:', data);
+         
+         navigate(`/owner/parking-info`);
+      }, 10000);
    };
 
    const handlePaymentFailed = (data: any) => {
-      console.log('Payment failed:', data);
+      // console.log('Payment failed:', data);
 
       // Redirect to failure page
       setTimeout(() => {
@@ -158,10 +177,10 @@ const PaymentSubscriptionComponent: React.FC = () => {
          <div className="max-w-md  p-6 rounded-lg  ">
             {/* Header */}
             <div className="mb-6">
-               <h1 className="text-lg font-medium text-gray-900 mb-2">Subscription Plan : {parkingLotSubscription?.subscription?.name}</h1>
+               <h1 className="text-lg font-medium text-gray-900 mb-2">Subscription Plan : {subscriptionData?.name}</h1>
                <div className="flex items-baseline">
                   <span className="text-3xl font-normal text-gray-900">
-                     {formatPrice(Number(getMonthlyPrice(parkingLotSubscription?.subscription?.price || 0, parkingLotSubscription?.subscription?.duration || 0)))}</span>
+                     {formatPrice(Number(getMonthlyPrice(subscriptionData?.price || 0, subscriptionData?.duration || 0)))}</span>
                   <span className="text-sm text-gray-500 ml-2">per month</span>
                </div>
             </div>
@@ -173,13 +192,13 @@ const PaymentSubscriptionComponent: React.FC = () => {
                      <CreditCard className="w-5 h-5 mr-2 text-primary" />
                      Subscription Plan : {subscription.name}
                   </div> */}
-                  <p className="text-foreground/60 mt-1 text-sm mb-5">{parkingLotSubscription?.subscription?.description}</p>
+                  <p className="text-foreground/60 mt-1 text-sm mb-5">{subscriptionData?.description}</p>
                   <div className="grid grid-cols-2 gap-4">
                      <div className="flex items-center">
                         <Clock className="w-4 h-4 text-gray-400 mr-2" />
                         <div className='flex items-center gap-2'>
                            <p className="text-sm text-gray-500">Duration</p>
-                           <p className="font-medium">{formatDuration(parkingLotSubscription?.subscription?.duration || 0)}</p>
+                           <p className="font-medium">{formatDuration(subscriptionData?.duration || 0)}</p>
                         </div>
                      </div>
                      {/* <div className="flex items-center">
@@ -197,8 +216,8 @@ const PaymentSubscriptionComponent: React.FC = () => {
                   <h2 className="text-lg font-semibold text-gray-900 mb-4">Payment Summary</h2>
                   <div className="space-y-3">
                      <div className="flex justify-between">
-                        <span className="text-sm text-gray-600">{parkingLotSubscription?.subscription?.name} </span>
-                        <span className="text-sm font-medium">{formatCurrency(parkingLotSubscription?.subscription?.price || 0)}</span>
+                        <span className="text-sm text-gray-600">{subscriptionData?.name} </span>
+                        <span className="text-sm font-medium">{formatCurrency(subscriptionData?.price || 0)}</span>
                      </div>
                      {/* <div className="mt-4">
                         <div className="flex justify-between">
@@ -215,7 +234,7 @@ const PaymentSubscriptionComponent: React.FC = () => {
 
                      <div className="flex justify-between text-lg font-semibold pt-2">
                         <span>Total</span>
-                        <span className="">{formatCurrency(parkingLotSubscription?.subscription?.price || 0)}</span>
+                        <span className="">{formatCurrency(subscriptionData?.price || 0)}</span>
                      </div>
                   </div>
                </div>
@@ -246,15 +265,15 @@ const PaymentSubscriptionComponent: React.FC = () => {
             </div>
 
             {/* Payment Status Checker */}
-            {parkingLotSubscription?.paymentResponse?.data?.paymentLinkId && (
+            {parkingLotSubscription?.data?.paymentLinkId && (
                <PaymentStatusChecker
-                  paymentId={parkingLotSubscription?.paymentResponse?.data?.paymentLinkId}
+                  paymentId={parkingLotSubscription?.data?.orderCode.toString()}
                   onPaymentSuccess={handlePaymentSuccess}
                   onPaymentFailed={handlePaymentFailed}
                   onTimeout={handlePaymentTimeout}
                   autoStart={true}
                   className="mb-4"
-                  expireAt={parkingLotSubscription?.paymentResponse?.data?.expiredAt}
+                  expireAt={parkingLotSubscription?.data?.expiredAt}
                />
             )}
 
@@ -273,7 +292,7 @@ const PaymentSubscriptionComponent: React.FC = () => {
                                  <Spinner color="primary" />
                               </div>
                            ) : (
-                              <QRCodeImage qrCodeValue={parkingLotSubscription?.paymentResponse?.data?.qrCode || ''} />
+                              <QRCodeImage qrCodeValue={parkingLotSubscription?.data?.qrCode || ''} />
                            )}
                         </div>
                         <p className="text-sm text-gray-600 my-2">
@@ -287,7 +306,7 @@ const PaymentSubscriptionComponent: React.FC = () => {
                         </button>
                         {showQRCode && (
                            <div className="mt-3 p-2 bg-gray-50 rounded text-xs text-gray-600 break-all">
-                              {parkingLotSubscription?.paymentResponse?.data?.qrCode}
+                              {parkingLotSubscription?.data?.qrCode}
                            </div>
                         )}
                      </div>
@@ -297,12 +316,12 @@ const PaymentSubscriptionComponent: React.FC = () => {
                         <div className="flex items-center">
                            <Clock className="w-4 h-4 text-yellow-600 mr-2" />
                            <span className="text-sm text-yellow-800">
-                              Status: {parkingLotSubscription?.paymentResponse?.data?.status}
+                              Status: {parkingLotSubscription?.data?.status}
                            </span>
                         </div>
                      </div>
                      <Button
-                        onPress={() => window.open(parkingLotSubscription?.paymentResponse?.data?.checkoutUrl || '', '_blank')}
+                        onPress={() => window.open(parkingLotSubscription?.data?.checkoutUrl || '', '_blank')}
                         className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center"
                      >
                         <CreditCard className="w-4 h-4 mr-2" />
@@ -310,8 +329,8 @@ const PaymentSubscriptionComponent: React.FC = () => {
                      </Button>
 
                      <div className="text-xs text-gray-500 space-y-1">
-                        <p>Order Code: {parkingLotSubscription?.paymentResponse?.data?.orderCode}</p>
-                        <p>Payment ID: {parkingLotSubscription?.paymentResponse?.data?.paymentLinkId}</p>
+                        <p>Order Code: {parkingLotSubscription?.data?.orderCode}</p>
+                        <p>Payment ID: {parkingLotSubscription?.data?.paymentLinkId}</p>
                      </div>
                   </Tab>
 
@@ -325,11 +344,11 @@ const PaymentSubscriptionComponent: React.FC = () => {
                         <User className="w-4 h-4 text-gray-400 mr-2" />
                         <div>
                            <p className="text-gray-500">Account Name</p>
-                           <p className="font-medium">{parkingLotSubscription?.paymentResponse?.data?.accountName}</p>
+                           <p className="font-medium">{parkingLotSubscription?.data?.accountName}</p>
                         </div>
                      </div>
                      <button
-                        onClick={() => copyToClipboard(parkingLotSubscription?.paymentResponse?.data?.accountName || '', 'accountName')}
+                        onClick={() => copyToClipboard(parkingLotSubscription?.data?.accountName || '', 'accountName')}
                         className="p-1 hover:bg-gray-200 rounded transition-colors"
                         title="Copy account name"
                      >
@@ -346,11 +365,11 @@ const PaymentSubscriptionComponent: React.FC = () => {
                         <CreditCard className="w-4 h-4 text-gray-400 mr-2" />
                         <div>
                            <p className="text-gray-500">Account Number</p>
-                           <p className="font-medium">{parkingLotSubscription?.paymentResponse?.data?.accountNumber}</p>
+                           <p className="font-medium">{parkingLotSubscription?.data?.accountNumber}</p>
                         </div>
                      </div>
                      <button
-                        onClick={() => copyToClipboard(parkingLotSubscription?.paymentResponse?.data?.accountNumber || '', 'accountNumber')}
+                        onClick={() => copyToClipboard(parkingLotSubscription?.data?.accountNumber || '', 'accountNumber')}
                         className="p-1 hover:bg-gray-200 rounded transition-colors"
                         title="Copy account number"
                      >
@@ -367,11 +386,11 @@ const PaymentSubscriptionComponent: React.FC = () => {
                         <CreditCard className="w-4 h-4 text-gray-400 mr-2" />
                         <div>
                            <p className="text-gray-500">Description</p>
-                           <p className="font-medium">{parkingLotSubscription?.paymentResponse?.data?.description}</p>
+                           <p className="font-medium">{parkingLotSubscription?.data?.description}</p>
                         </div>
                      </div>
                      <button
-                        onClick={() => copyToClipboard(parkingLotSubscription?.paymentResponse?.data?.description || '', 'description')}
+                        onClick={() => copyToClipboard(parkingLotSubscription?.data?.description || '', 'description')}
                         className="p-1 hover:bg-gray-200 rounded transition-colors"
                         title="Copy description"
                      >

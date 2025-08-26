@@ -237,7 +237,7 @@ function App() {
           <Route path="parking-info" element={<ParkingLotInfo />} />
           <Route path="staff" element={<StaffManagement />} />
           <Route
-            path="staff/:parkingLotId/:staffId"
+            path="staff/:staffId"
             element={<StaffDetailScreen />}
           />
           <Route path="history" element={<ParkingHistory />} />

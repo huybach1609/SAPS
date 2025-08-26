@@ -154,7 +154,7 @@ export default function IncidentReports() {
   ]);
 
   return (
-    <DefaultLayout title="Incident Reports">
+    <DefaultLayout title="Incident Reports" description="List of all incident reports">
       <IncidentReportStatisticsCard
         loading={parkingLotLoading}
         parkingLotId={selectedParkingLot?.id ?? ""}

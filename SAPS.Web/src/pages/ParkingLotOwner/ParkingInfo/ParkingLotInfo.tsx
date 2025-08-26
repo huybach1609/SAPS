@@ -6,7 +6,7 @@ import { useAuth } from '@/services/auth/AuthContext';
 import { useParkingLot } from '../ParkingLotContext';
 import { Button } from '@heroui/button';
 import { addToast, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spinner, Tab, Tabs, useDisclosure } from '@heroui/react';
-import ParkingLotPayment from './ParkingLotPayment';
+// import ParkingLotPayment from './ParkingLotPayment';
 // import { User } from '@/types/User';
 // import { formatDate } from '@/components/utils/stringUtils';
 import SubscriptionInfo from './SubscriptionInfo';
@@ -72,6 +72,7 @@ const ParkingLotInfoContainer: React.FC = () => {
                 description: editFormData.description || '',
                 totalParkingSlot: editFormData.totalParkingSlot || 0,
                 status: parkingLotData?.status || 'Active',
+                useWhiteList: useWhitelist,
             });
 
             addToast({
@@ -358,16 +359,17 @@ const ParkingLotInfo: React.FC = () => {
             content: <ParkingLotInfoContainer />
         },
 
-        {
-            id: "payment",
-            label: "Payment",
-            content: <ParkingLotPayment />
-        },
+        // {
+        //     id: "payment",
+        //     label: "Payment",
+        //     content: <ParkingLotPayment />
+        // },
 
     ];
 
     return (
-        <DefaultLayout title='Parking Lot Info'>
+        <DefaultLayout title='Parking Lot Info'
+        description='Manage your parking lot information'>
             <Tabs aria-label="Parking Lot Info" items={tabs} className='mt-2'>
                 {(item) => (
                     <Tab key={item.id} title={item.label} aria-label={item.label}>

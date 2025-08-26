@@ -36,7 +36,7 @@ const SubscriptionComponent: React.FC = () => {
   const sortedSubscriptions = [...subscriptions].sort((a, b) => a.duration - b.duration);
 
   return (
-    <DefaultLayout title='subscription' className="my-5">
+    <DefaultLayout title='subscription' className="my-5" description='Choose your subscription plan'>
       <div className="text-center mb-12">
         <h1 className="text-xl font-bold text-primary mb-2">Choose Your Subscription</h1>
         <p className="text-sm text-primary/80 max-w-2xl mx-auto">
@@ -91,9 +91,9 @@ const SubscriptionComponent: React.FC = () => {
 
 
                 {/* Description */}
-                {/* <p className="text-primary/80 text-sm mb-6 leading-relaxed"> */}
-                  {/* {subscription.description} */}
-                {/* </p> */}
+                <p className="text-primary/80 text-sm mb-6 leading-relaxed"> 
+                  {subscription.description}
+                 </p>
 
               </CardBody>
               <CardFooter className=''>

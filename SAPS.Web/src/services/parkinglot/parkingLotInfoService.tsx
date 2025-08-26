@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { ParkingLot} from '@/types/ParkingLot';
+import { ParkingLot } from '@/types/ParkingLot';
 import { Subscription } from '@/types/subscription';
 import { apiUrl } from '@/config/base';
 import { getAuthHeaders } from '../utils/apiUtils';
@@ -29,6 +29,7 @@ interface ParkingLotApiResponse {
     address: string;
     id: string;
     expiredAt?: string;
+    settings?: string;
 }
 
 export const parkingLotInfoService = {
@@ -45,7 +46,7 @@ export const parkingLotInfoService = {
                     "Authorization": `Bearer ${localStorage.getItem('access_token')}`,
                 },
             });
-            
+
             return response.data;
         } catch (error) {
             console.error('Error fetching parking lots:', error);
@@ -66,9 +67,9 @@ export const parkingLotInfoService = {
                     "Authorization": `Bearer ${localStorage.getItem('access_token')}`,
                 },
             });
-            
+
             // console.log('Fetched parking lot by ID:', response.data);
-            
+
             // Map the API response to ParkingLot interface
             const apiData: ParkingLotApiResponse = response.data;
             const parkingLot: ParkingLot = {
@@ -81,9 +82,11 @@ export const parkingLotInfoService = {
                 updatedAt: apiData.parkingLotOwner.updatedAt, // Extract updatedAt from parkingLotOwner
                 status: apiData.parkingLotOwner.status as 'Active' | 'Inactive',
                 parkingLotOwnerId: apiData.parkingLotOwner.id,
-                expiredAt: apiData.expiredAt
+                expiredAt: apiData.expiredAt,
+                settings: apiData.settings
             };
-            
+            console.log('parkingLot:', parkingLot);
+
             return parkingLot;
         } catch (error) {
             console.error('Error fetching parking lot by ID:', error);
@@ -112,18 +115,24 @@ export const parkingLotInfoService = {
         totalParkingSlot: number;
         status: string;
         settings?: string | null;
+        useWhiteList?: boolean;
     }): Promise<void> => {
         try {
+
+            // onsole.log('data:', data.useWhiteList);
+
+            const body = {
+                id: data.id,
+                name: data.name,
+                description: data.description,
+                totalParkingSlot: data.totalParkingSlot,
+                status: data.status,
+                settings: JSON.stringify({ useWhiteList: data.useWhiteList ?? false })
+            };
+            console.log('body:', body);
             await axios.put(
                 `${apiUrl}/api/parkinglot/basic-info`,
-                {
-                    id: data.id,
-                    name: data.name,
-                    description: data.description,
-                    totalParkingSlot: data.totalParkingSlot,
-                    status: data.status,
-                    settings: "{}",
-                },
+                body,
                 { headers: getAuthHeaders() }
             );
         } catch (error) {
