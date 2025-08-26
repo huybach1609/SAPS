@@ -1,4 +1,3 @@
-import axios from "axios";
 import { AdminUser, ApiResponse } from "@/types/admin";
 import { apiUrl } from "@/config/base";
 import { createApiInstance } from "../utils/apiUtils";
