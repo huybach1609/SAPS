@@ -30,7 +30,7 @@ export default function LoginPage() {
       if (userRole) {
         switch (userRole.toLowerCase()) {
           case "admin":
-            navigate("/admin/home");
+            navigate("/admin");
             break;
           case "parkinglotowner":
             navigate("/owner/parking-info");

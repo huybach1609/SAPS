@@ -12,10 +12,10 @@ import BlogPage from "@/pages/blog";
 import AboutPage from "@/pages/about";
 import ErrorPage from "@/pages/ErrorPage";
 import LoginPage from "./pages/Auth/Login";
+import ChangePassword from "./pages/Auth/ChangePassword";
 import OwnerDashboard from "./pages/ParkingLotOwner/Home/OwnerDashboard";
 import { WhitelistManagement } from "./pages/ParkingLotOwner/Whitelist/WhiteListManagement";
 import DefaultLayout from "./layouts/default";
-import AdminDashboardPage from "./pages/Admin/AdminDashboardPage";
 import IncidentReports from "./pages/ParkingLotOwner/IncidentReports/IncidentReports";
 import ParkingHistory from "./pages/ParkingLotOwner/ParkingHistory/HistoryManagement/ParkingHistory";
 import StaffManagement from "./pages/ParkingLotOwner/StaffManagement/StaffManagement";
@@ -114,7 +114,7 @@ const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     // const adminRole = getAdminRole();
 
     if (role === "admin") {
-      return <Navigate to="/admin/home" replace />;
+      return <Navigate to="/admin/requests" replace />;
     } else if (role === "parkinglotowner") {
       return <Navigate to="/owner/parking-info" replace />;
     } else {
@@ -145,7 +145,7 @@ const RoleBasedRedirect: React.FC = () => {
 
   // Kiểm tra role và AdminRole để điều hướng đúng
   if (role === "admin") {
-    return <Navigate to="/admin/home" replace />;
+    return <Navigate to="/admin/requests" replace />;
   } else if (role === "parkinglotowner") {
     return <Navigate to="/owner/parking-info" replace />;
   } else {
@@ -204,8 +204,6 @@ function App() {
             </ProtectedRoute>
           }
         >
-          <Route path="home" element={<AdminDashboardPage />} />
-
           {/* Account Management Routes */}
           <Route path="accounts" element={<AccountListSelector />} />
           <Route path="accounts/users" element={<UserAccountList />} />
@@ -220,6 +218,7 @@ function App() {
           <Route path="requests" element={<AdminRequestList />} />
           <Route path="requests/details/:id" element={<RequestDetails />} />
           <Route path="subscriptions" element={<SubscriptionList />} />
+          <Route path="change-password" element={<ChangePassword />} />
         </Route>
 
         {/* Owner Routes */}
@@ -228,7 +227,9 @@ function App() {
           element={
             <ProtectedRoute requiredRole="parkinglotowner">
               <OwnerParkingLotProviderWrapper>
-                <Outlet />
+                <DefaultLayout title="SAPLS Parking Lot Management">
+                  <Outlet />
+                </DefaultLayout>
               </OwnerParkingLotProviderWrapper>
             </ProtectedRoute>
           }
@@ -241,10 +242,7 @@ function App() {
             element={<StaffDetailScreen />}
           />
           <Route path="history" element={<ParkingHistory />} />
-          <Route
-            path="history/:sessionId"
-            element={<ParkingHistoryDetail />}
-          />
+          <Route path="history/:sessionId" element={<ParkingHistoryDetail />} />
           <Route
             path="incidents"
             element={
@@ -298,6 +296,7 @@ function App() {
             path="subscription/payment/:subscriptionId"
             element={<PaymentSubscriptionComponent />}
           />
+          <Route path="change-password" element={<ChangePassword />} />
         </Route>
 
         {/* Dashboard redirect route */}

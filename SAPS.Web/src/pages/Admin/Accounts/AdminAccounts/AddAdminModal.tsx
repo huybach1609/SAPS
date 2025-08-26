@@ -84,7 +84,7 @@ const AddAdminModal: React.FC<AddAdminModalProps> = ({
       size="2xl"
       className="rounded-b-lg"
     >
-      <ModalContent className="overflow-hidden">
+      <ModalContent className="overflow-y-auto">
         {/* Header */}
         <div className="bg-blue-900 text-white px-6 py-4 flex justify-between items-center">
           <h2 className="text-xl font-semibold">Add New Administrator</h2>
