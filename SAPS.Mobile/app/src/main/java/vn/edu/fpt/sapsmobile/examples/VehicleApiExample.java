@@ -9,7 +9,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import vn.edu.fpt.sapsmobile.network.client.ApiTest;
-import vn.edu.fpt.sapsmobile.network.service.IVehicleApi;
+import vn.edu.fpt.sapsmobile.network.api.IVehicleApi;
 import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleSummaryDto;
 
 /**

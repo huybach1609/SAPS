@@ -5,13 +5,11 @@ import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Button
 import { FeeScheduleModal, VehicleTypeText } from './FeeScheduleModal';
 import { useParkingLot } from '../ParkingLotContext';
 import {
-    fetchFeeSchedules,
-    createFeeSchedule,
-    updateFeeSchedule,
-    deleteFeeSchedule,
+ 
     type ParkingFeeSchedule,
     VehicleType,
-    ParkingFeeError
+    ParkingFeeError,
+    parkinglotFeeScheduleApi
 } from '@/services/parkinglot/parkinglotFeeService';
 import ParkingFeeWeeklyView from './ParkingFeeWeeklyView';
 
@@ -43,7 +41,7 @@ const ParkingFeeManagement: React.FC = () => {
         try {
             if (!selectedParkingLot?.id) return;
             setLoadingFeeSchedules(true);
-            const data = await fetchFeeSchedules(selectedParkingLot.id);
+            const data = await parkinglotFeeScheduleApi.fetchFeeSchedules(selectedParkingLot.id);
             setFeeSchedules(data);
         } catch (error) {
             console.error('Error fetching parking fee schedules:', error);
@@ -118,7 +116,7 @@ const ParkingFeeManagement: React.FC = () => {
 
             if (editingSchedule) {
                 // Update existing schedule
-                const updatedSchedule = await updateFeeSchedule(
+                const updatedSchedule = await parkinglotFeeScheduleApi.updateFeeSchedule(
                     selectedParkingLot.id,
                     editingSchedule.id,
                     scheduleData
@@ -129,6 +127,7 @@ const ParkingFeeManagement: React.FC = () => {
                         schedule.id === editingSchedule.id ? updatedSchedule : schedule
                     )
                 );
+                await loadFeeSchedules();
 
                 // Success announcement for update
                 setErrorModal({
@@ -139,12 +138,13 @@ const ParkingFeeManagement: React.FC = () => {
                 });
             } else {
                 // Create new schedule
-                const createdSchedule = await createFeeSchedule(
+                const createdSchedule = await parkinglotFeeScheduleApi.createFeeSchedule(
                     selectedParkingLot.id,
                     scheduleData
                 );
 
                 setFeeSchedules((schedules) => [...schedules, createdSchedule]);
+                await loadFeeSchedules();
 
                 // Success announcement for create
                 setErrorModal({
@@ -238,7 +238,7 @@ const ParkingFeeManagement: React.FC = () => {
                 return;
             }
 
-            await deleteFeeSchedule(selectedParkingLot.id, id);
+            await parkinglotFeeScheduleApi.deleteFeeSchedule(selectedParkingLot.id, id);
 
             // Only update local state if API call is successful
             setFeeSchedules((schedules) => schedules.filter((schedule) => schedule.id !== id));
@@ -318,7 +318,8 @@ const ParkingFeeManagement: React.FC = () => {
     };
 
     return (
-        <DefaultLayout title="Parking Fee Management">
+        <DefaultLayout title="Parking Fee Management"
+        description='Manage parking fee schedules for your parking lot'>
             <div className="bg-background rounded-lg shadow-sm border border-divider mt-10">
                 <div className="flex flex-col gap-4">
 
@@ -332,6 +333,7 @@ const ParkingFeeManagement: React.FC = () => {
                             <ParkingFeeWeeklyView
                                 schedulesData={feeSchedules}
                                 onEdit={(schedule: ParkingFeeSchedule) => {
+                                    console.log("schedule", schedule);
                                     setEditingSchedule(schedule);
                                     setIsScheduleModalOpen(true);
                                 }}
@@ -339,6 +341,7 @@ const ParkingFeeManagement: React.FC = () => {
                                     handleDeleteSchedule(id);
                                 }}
                                 onAdd={() => setIsScheduleModalOpen(true)}
+                                onRefresh={() => loadFeeSchedules()}
                                 loading={loadingFeeSchedules}
                             />
                         </Tab>
@@ -509,18 +512,6 @@ const FeeSchedulesTab: React.FC<{
             <div className="  overflow-hidden">
                 <Table
                     color='secondary'
-                    // defaultSelectedKeys={['1']}
-                    // selectedKeys={selectSchedule ? [selectSchedule.id] : []}
-                    // onSelectionChange={(keys) => {
-                    //     if (typeof keys === 'string') { // Handle "all" selection
-                    //         setSelectSchedule(null);
-                    //         return;
-                    //     }
-                    //     const [selectedid] = keys;
-                    //     const schedule = schedules.find((s) => s.id === selectedid);
-                    //     setSelectSchedule(schedule || null);
-                    // }}
-                    // selectionMode="single"
                     aria-label="Parking Fee Schedules Table"
                     className="min-w-full"
                 >
@@ -545,12 +536,10 @@ const FeeSchedulesTab: React.FC<{
                                     <div className="flex items-center gap-1 text-sm ">
                                         {schedule.forVehicleType === VehicleType.Car ? (
                                             <Car className="w-3 h-3" />
-                                        ) : schedule.forVehicleType === VehicleType.Motorbike ? (
-                                            <BikeIcon className="w-3 h-3" />
                                         ) : (
                                             <BikeIcon className="w-3 h-3" />
                                         )}
-                                        {VehicleTypeText[schedule.forVehicleType] || 'Car'}
+                                        {VehicleTypeText[schedule.forVehicleType] || 'Motorbike'}
                                     </div>
                                 </TableCell>
                                 <TableCell>
@@ -566,9 +555,31 @@ const FeeSchedulesTab: React.FC<{
                                 </TableCell>
                                 <TableCell>
                                     <div className="text-sm ">
-                                        {Array.isArray(schedule.dayOfWeeks) && schedule.dayOfWeeks.length > 0
-                                            ? schedule.dayOfWeeks.map(idx => ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'][idx]).join(', ')
-                                            : 'All days'}
+                                        {(() => {
+                                            const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+                                            const toArray = (value: unknown): number[] => {
+                                                if (Array.isArray(value)) {
+                                                    return value
+                                                        .map((v) => Number(v))
+                                                        .filter((n) => Number.isFinite(n));
+                                                }
+                                                if (typeof value === 'string') {
+                                                    if (value.trim().length === 0) return [];
+                                                    return value
+                                                        .split(',')
+                                                        .map((s) => Number(s.trim()))
+                                                        .filter((n) => Number.isFinite(n));
+                                                }
+                                                return [];
+                                            };
+                                            const nums = toArray((schedule as any).dayOfWeeks);
+                                            if (nums.length === 0) return 'All days';
+                                            // Support both 0-based [0..6] and 1-based [1..7]
+                                            const isZeroBased = nums.every((n) => n >= 0 && n <= 6) && !nums.some((n) => n === 7);
+                                            const normalized = (isZeroBased ? nums.map((n) => n + 1) : nums)
+                                                .map((n) => dayNames[Math.max(1, Math.min(7, n)) - 1]);
+                                            return normalized.join(', ');
+                                        })()}
                                     </div>
                                 </TableCell>
                                 <TableCell>
@@ -596,7 +607,7 @@ const FeeSchedulesTab: React.FC<{
                                         isIconOnly
                                         variant='solid'
                                         color='danger'
-                                        className='bg-transparent text-danger'
+                                        className='bg-transparent text-danger hidden'
                                         onPress={() => onDelete(schedule.id)}
                                     >
                                         <Trash2 className="w-4 h-4" />

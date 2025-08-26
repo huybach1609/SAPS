@@ -56,8 +56,7 @@ export function WhitelistSearchBar({
           <RefreshCcw size={16} />
         </Button>
       </div>
-      <ButtonGroup>
-        <Button
+         <Button
           className="text-background"
           color="secondary"
           radius="sm"
@@ -67,8 +66,10 @@ export function WhitelistSearchBar({
         >
           Add User
         </Button>
+      <ButtonGroup>
+     
         <Button
-          className="text-background"
+          className="text-background hidden"
           color="success"
           radius="sm"
           size="sm"

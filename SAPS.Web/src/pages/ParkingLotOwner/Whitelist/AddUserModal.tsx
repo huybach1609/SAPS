@@ -35,8 +35,8 @@ const AddUserModal: React.FC<AddUserModalProps> = ({
     const handleSearchUser = async (term: string) => {
       setLoading(true);
       try {
-        const response = await searchUser(term, parkingLotId);
-        setSearchResults(response as unknown as User[]);
+        const user = await searchUser(term);
+        setSearchResults(user ? [user] : []);
       } catch (error) {
         console.error("Failed to search users:", error);
       } finally {

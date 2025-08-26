@@ -41,7 +41,7 @@ export function getUserClaimsFromJwt(token: string) {
 }
 
 // // Example usage:
-// const token = localStorage.getItem('auth_token');
+// const token = localStorage.getItem('access_token');
 // if (token) {
 //   const { userId, email, fullName, googleId } = getUserClaimsFromJwt(token);
 // }

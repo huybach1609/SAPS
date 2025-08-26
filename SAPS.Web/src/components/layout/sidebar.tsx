@@ -1,3 +1,4 @@
+import React from "react";
 import { motion } from "framer-motion";
 import {
   Button,
@@ -68,6 +69,7 @@ const NavigationList: React.FC<NavigationListProps> = ({
   // Only use parking lot context for owner role
   const parkingLotContext = isOwner ? useParkingLot() : null;
   const selectedParkingLot = parkingLotContext?.selectedParkingLot;
+  // console.log("selectedParkingLot", selectedParkingLot);
 
   return (
     <Listbox aria-label="Navigation List" className="flex flex-col gap-2">
@@ -77,14 +79,13 @@ const NavigationList: React.FC<NavigationListProps> = ({
         const isDisabled =
           isOwner &&
           item.isActive !== undefined &&
-          (selectedParkingLot?.status === "Active"
-            ? !item.isActive
-            : item.isActive);
+          (selectedParkingLot?.isExpired
+            ? item.isActive
+            : !item.isActive);
 
         const listboxItem = (
-          <>
+          <React.Fragment key={index}>
             <ListboxItem
-              key={index}
               className={`p-3 
                              ${location.pathname === item.path ? "bg-primary text-background" : ""}
                              hover:bg-primary hover:text-background
@@ -94,7 +95,6 @@ const NavigationList: React.FC<NavigationListProps> = ({
               endContent={
                 isDisabled ? (
                   <Tooltip
-                    key={index}
                     className="text-background"
                     color="warning"
                     content="Renew your subscription to access this feature"
@@ -109,7 +109,7 @@ const NavigationList: React.FC<NavigationListProps> = ({
               title={item.title}
               onClick={() => navigate(item.path)}
             />
-          </>
+          </React.Fragment>
         );
 
         return listboxItem;
@@ -285,17 +285,17 @@ const HeadingBar: React.FC = () => {
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
         <ModalContent>
           <ModalHeader className="flex flex-col gap-1">
-            Xác nhận đăng xuất
+            Confirm Logout
           </ModalHeader>
           <ModalBody>
-            <p>Bạn có chắc chắn muốn đăng xuất khỏi hệ thống không?</p>
+            <p>Are you sure you want to logout?</p>
           </ModalBody>
           <ModalFooter>
             <Button color="danger" variant="light" onPress={onOpenChange}>
-              Hủy
+              Cancel
             </Button>
             <Button color="primary" onPress={confirmLogout}>
-              Đăng xuất
+              Logout
             </Button>
           </ModalFooter>
         </ModalContent>

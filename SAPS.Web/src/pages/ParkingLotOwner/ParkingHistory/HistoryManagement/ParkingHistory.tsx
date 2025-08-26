@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Eye, FolderSearch, RefreshCcw } from "lucide-react";
-import { useParkingLot } from "../../ParkingLotContext";
 import {
   Button,
   Card,
@@ -21,19 +20,18 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/react";
-import { PaginationInfo } from "@/types/Whitelist";
 import { useNavigate } from "react-router-dom";
 import {
-  fetchParkingHistory,
+  parkingHistoryService,
   ParkingSession,
 } from "@/services/parkinglot/parkingHistoryService";
-import ParkingHistoryStatistics from "./ParkingHistoryStatistics";
+// import ParkingHistoryStatistics from "./ParkingHistoryStatistics";
 import { formatDate, formatTime } from "@/components/utils/stringUtils";
-import { ParkingSessionStatus } from "@/types/ParkingSession";
+// import { ParkingSessionStatus } from "@/types/ParkingSession";
 import DefaultLayout from "@/layouts/default";
+import { useParkingLot } from "../../ParkingLotContext";
 
 const ParkingHistory: React.FC = () => {
-  const { selectedParkingLot, loading: parkingLotLoading } = useParkingLot();
   const [parkingSessions, setParkingSessions] = useState<ParkingSession[]>([]);
   // loading for parking sessions list
   const [loading, setLoading] = useState(true);
@@ -44,72 +42,73 @@ const ParkingHistory: React.FC = () => {
   );
 
   // pagination for parking sessions list
-  const [pagination, setPagination] = useState<PaginationInfo | null>(null);
+  const [pagination, setPagination] = useState<any>(null);
   // pagination for parking sessions list
   const [currentPage, setCurrentPage] = useState(1);
 
   // search for search & add field
   const [tableSearch, setTableSearch] = useState("");
-  // filter by date range (entryDateTime, exitDateTime)
+  // filter by date range (exitDateTime)
   const [dateRange, setDateRange] = useState<RangeValue<DateValue> | null>(
     null
   );
   // filter by status
   const [status, setStatus] = useState<string>(
-    ParkingSessionStatus.CURRENTLY_PARKED.toString()
+    "Parking"
   );
+  const { selectedParkingLot } = useParkingLot();
 
   const navigate = useNavigate();
 
   const loadParkingSessions = async () => {
-    if (!selectedParkingLot?.id) return;
-
+    if (!selectedParkingLot?.id) {
+      setLoading(false);
+      return;
+    }
+    
     setLoading(true);
     try {
-      // Convert DateValue objects to ISO strings if present
-      const dateRangeStart = dateRange?.start
-        ? new Date(
-          dateRange.start.year,
-          dateRange.start.month - 1,
-          dateRange.start.day
-        ).toISOString()
+      // Convert DateValue objects to DateOnly format (YYYY-MM-DD) if present
+      const startExitDate = dateRange?.start
+        ? `${dateRange.start.year}-${String(dateRange.start.month).padStart(2, '0')}-${String(dateRange.start.day).padStart(2, '0')}`
         : undefined;
-      const dateRangeEnd = dateRange?.end
-        ? new Date(
-          dateRange.end.year,
-          dateRange.end.month - 1,
-          dateRange.end.day
-        ).toISOString()
+      const endExitDate = dateRange?.end
+        ? `${dateRange.end.year}-${String(dateRange.end.month).padStart(2, '0')}-${String(dateRange.end.day).padStart(2, '0')}`
         : undefined;
       const statusValue = status || undefined;
 
+      let response;
       if (tableSearch != null && tableSearch.trim() !== "") {
-        const response = await fetchParkingHistory(
+        response = await parkingHistoryService.fetchParkingHistory(
           selectedParkingLot.id,
           6,
           currentPage,
           tableSearch,
-          dateRangeStart,
-          dateRangeEnd,
-          statusValue
+          statusValue,
+          startExitDate,
+          endExitDate
         );
-        setParkingSessions(response.data);
-        setPagination(response.pagination);
       } else {
-        const response = await fetchParkingHistory(
+        response = await parkingHistoryService.fetchParkingHistory(
           selectedParkingLot.id,
           6,
           currentPage,
           undefined,
-          dateRangeStart,
-          dateRangeEnd,
-          statusValue
+          statusValue,
+          startExitDate,
+          endExitDate
         );
-        setParkingSessions(response.data);
-        setPagination(response.pagination);
       }
+      
+      // console.log("API Response:", response); // Debug log
+      
+       setParkingSessions(response?.data?.items || []);
+       setPagination(response?.data || null);
     } catch (error) {
       console.error("Failed to load parking sessions:", error);
+      // Set empty arrays on error to prevent undefined issues
+      setParkingSessions([]);
+      setPagination(null);
     } finally {
       setLoading(false);
     }
@@ -128,11 +127,9 @@ const ParkingHistory: React.FC = () => {
 
   // View session details
   const handleViewSessionDetails = async (sessionId: string) => {
-    if (!selectedParkingLot?.id) return;
-
     try {
       // Navigate to session details page or open modal
-      navigate(`/owner/history/${selectedParkingLot.id}/${sessionId}`);
+      navigate(`/owner/history/${sessionId}`);
     } catch (error) {
       console.error("Failed to view session details:", error);
     }
@@ -145,14 +142,14 @@ const ParkingHistory: React.FC = () => {
   function handleReset() {
     setTableSearch("");
     setDateRange(null);
-    setStatus(ParkingSessionStatus.CURRENTLY_PARKED.toString());
+    setStatus("Parking");
     setCurrentPage(1);
     loadParkingSessions();
   }
 
   return (
-    <DefaultLayout title="Parking History">
-      <ParkingHistoryStatistics parkingLotId={selectedParkingLot?.id || ""} />
+    <DefaultLayout title="Parking History" className="p-5" description="View and manage parking sessions for your parking lot">
+      {/* <ParkingHistoryStatistics /> */}
 
       {/* Search & Filter */}
       <Card className="bg-background-100/20 mb-6">
@@ -201,22 +198,22 @@ const ParkingHistory: React.FC = () => {
               >
                 <SelectItem key="">All</SelectItem>
                 <SelectItem
-                  key={ParkingSessionStatus.COMPLETED}
-                  className="text-green-700"
-                >
-                  Completed
-                </SelectItem>
-                <SelectItem
-                  key={ParkingSessionStatus.CURRENTLY_PARKED}
+                  key="Parking"
                   className="text-primary-700"
                 >
-                  Currently Parked
+                  Parking
                 </SelectItem>
                 <SelectItem
-                  key={ParkingSessionStatus.PAYMENT_PENDING}
+                  key="CheckedOut"
                   className="text-yellow-700"
                 >
-                  Payment Pending
+                  Checked Out
+                </SelectItem>
+                <SelectItem
+                  key="Finished"
+                  className="text-green-700"
+                >
+                  Finished
                 </SelectItem>
               </Select>
 
@@ -241,48 +238,43 @@ const ParkingHistory: React.FC = () => {
                 </Button>
               </div>
             </div>
-
-            {/* <ButtonGroup isDisabled={selectedSession === null}>
-                            <Button color='primary' className='text-background' size='sm' startContent={<Eye size={16} />}
-                                onPress={() => handleViewSessionDetails(selectedSession?.id || '')}>View Details</Button>
-                        </ButtonGroup> */}
           </div>
         </CardBody>
       </Card>
 
-      {/*  Table */}
-      <div className="min-h-[70vh] w-full">
-        {parkingLotLoading || loading ? (
-          <div className="flex justify-center items-center h-64">
-            <Spinner />
-          </div>
-        ) : parkingSessions.length === 0 ? (
-          <div className="p-8 text-center text-gray-500">
-            <p>No parking sessions found.</p>
-          </div>
-        ) : (
-          <ParkingHistoryTable
-            parkingSessions={parkingSessions}
-            selectedSession={selectedSession}
-            setSelectedSession={setSelectedSession}
-            handleViewSessionDetails={handleViewSessionDetails}
-          />
-        )}
-      </div>
+             {/*  Table */}
+       <div className="min-h-[70vh] w-full">
+         {loading ? (
+           <div className="flex justify-center items-center h-64">
+             <Spinner />
+           </div>
+         ) :  (!parkingSessions || parkingSessions.length === 0) ? (
+           <div className="p-8 text-center text-gray-500">
+             <p>No parking sessions found.</p>
+           </div>
+         ) : (
+           <ParkingHistoryTable
+             parkingSessions={parkingSessions}
+             selectedSession={selectedSession}
+             setSelectedSession={setSelectedSession}
+             handleViewSessionDetails={handleViewSessionDetails}
+           />
+         )}
+       </div>
 
-      {/* Pagination Controls */}
-      {pagination && pagination.totalPages > 1 && (
-        <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="text-sm text-center sm:text-left">
-            Showing page {pagination.currentPage} of {pagination.totalPages}(
-            {pagination.totalItems} total items)
-          </div>
+             {/* Pagination Controls */}
+       {pagination && pagination.totalPages > 1 && (
+         <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+           <div className="text-sm text-center sm:text-left">
+             Showing page {pagination.pageNumber} of {pagination.totalPages}(
+             {pagination.totalCount} total items)
+           </div>
           <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
             <Button
               onPress={() => {
                 setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev));
               }}
-              disabled={!pagination.hasPreviousPage || parkingLotLoading}
+              disabled={!pagination.hasPreviousPage || loading}
               className=""
             >
               Previous
@@ -290,10 +282,10 @@ const ParkingHistory: React.FC = () => {
             <Pagination
               color="secondary"
               className="text-white"
-              page={pagination.currentPage}
+              page={pagination.pageNumber}
               total={pagination.totalPages}
               onChange={setCurrentPage}
-              isDisabled={parkingLotLoading}
+              isDisabled={loading}
             />
             <Button
               onPress={() => {
@@ -301,7 +293,7 @@ const ParkingHistory: React.FC = () => {
                   prev < pagination.totalPages ? prev + 1 : prev
                 );
               }}
-              disabled={!pagination.hasNextPage || parkingLotLoading}
+              disabled={!pagination.hasNextPage || loading}
               className=""
             >
               Next
@@ -324,20 +316,20 @@ type ParkingHistoryTableProps = {
 
 function ParkingHistoryTable({
   parkingSessions,
-  selectedSession,
-  setSelectedSession,
+  // selectedSession,
+  // setSelectedSession,
   handleViewSessionDetails,
 }: ParkingHistoryTableProps) {
-  console.log(selectedSession);
-  console.log(setSelectedSession);
-  const getStatusBadge = (status: ParkingSessionStatus) => {
+  // console.log(selectedSession);
+  // console.log(setSelectedSession);
+  const getStatusBadge = (status: string) => {
     const baseClasses = "px-3 py-1 rounded-full text-sm font-medium";
     switch (status) {
-      case ParkingSessionStatus.COMPLETED:
+      case "Finished":
         return `${baseClasses} bg-green-100 text-green-800`;
-      case ParkingSessionStatus.CURRENTLY_PARKED:
+      case "Parking":
         return `${baseClasses} bg-blue-100 text-blue-800`;
-      case ParkingSessionStatus.PAYMENT_PENDING:
+      case "CheckedOut":
         return `${baseClasses} bg-yellow-100 text-yellow-800`;
       default:
         return `${baseClasses} bg-gray-100 text-gray-800`;
@@ -353,24 +345,13 @@ function ParkingHistoryTable({
         aria-label="Parking History Table"
         className="w-full"
         color="secondary"
-      // selectedKeys={selectedSession ? [selectedSession.id] : []}
-      // onSelectionChange={(keys: any) => {
-      //     if (typeof keys === 'string') { // Handle "all" selection
-      //         setSelectedSession(null);
-      //         return;
-      //     }
-      //     const [selectedId] = keys;
-      //     const session = parkingSessions.find((s) => s.id === selectedId);
-      //     setSelectedSession(session || null);
-      // }}
-      // selectionMode="single"
       >
         <TableHeader className="">
           <TableColumn
             key="sessionId"
             className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
           >
-            Session ID
+            #
           </TableColumn>
           <TableColumn
             key="licensePlate"
@@ -415,24 +396,26 @@ function ParkingHistoryTable({
             Action
           </TableColumn>
         </TableHeader>
-        <TableBody>
-          {parkingSessions.map((session) => {
-            return (
-              <TableRow key={`${session.id}`}>
+                 <TableBody>
+           {parkingSessions?.map((session, index) => {
+             return (
+               <TableRow key={`${session.id}`}>
                 {/* session id */}
-                <TableCell className="px-6 py-4 whitespace-nowrap text-sm ">
-                  {session.id}
+                <TableCell className="px-6 py-4 whitespace-nowrap text-sm flex flex-col items-start justify-start">
+                  {index + 1}
+                  {/* <span className="text-xs text-primary-900/80 text-left">
+                    {session.id}
+                  </span> */}
                 </TableCell>
                 {/* license plate */}
                 <TableCell className="px-6 py-4 whitespace-nowrap">
                   <div className="flex items-center">
                     <div className="ml-4">
                       <div className="text-sm font-medium ">
-                        {session.vehicle?.licensePlate ||
-                          "Unknown License Plate"}
+                        {session.licensePlate || "Unknown License Plate"}
                       </div>
                       <div className="text-sm text-primary-900/90 ">
-                        {session.vehicle?.brand} {session.vehicle?.model}
+                        {session.parkingLotName}
                       </div>
                     </div>
                   </div>
@@ -461,13 +444,13 @@ function ParkingHistoryTable({
                 </TableCell>
                 {/* duration */}
                 <TableCell
-                  className={`text-sm font-medium ${session.status === ParkingSessionStatus.CURRENTLY_PARKED ? "text-orange-600" : "text-gray-900"}`}
+                  className={`text-sm font-medium ${session.status === "Parking" ? "text-orange-600" : "text-gray-900"}`}
                 >
-                  {session.duration}
+                  {session.duration || "-"}
                 </TableCell>
                 {/* amount */}
                 <TableCell className="px-6 py-4 whitespace-nowrap">
-                  {session.status === ParkingSessionStatus.CURRENTLY_PARKED
+                  {session.status === "Parking"
                     ? "-"
                     : session.cost != null && session.cost > 0
                       ? `${session.cost.toFixed(0)} đ`
@@ -476,11 +459,11 @@ function ParkingHistoryTable({
                 {/* status */}
                 <TableCell className="px-6 py-4 whitespace-nowrap">
                   <span className={getStatusBadge(session.status)}>
-                    {session.status === ParkingSessionStatus.CURRENTLY_PARKED
-                      ? "Currently Parked"
-                      : session.status === ParkingSessionStatus.COMPLETED
-                        ? "Completed"
-                        : "Payment Pending"}
+                    {session.status === "Parking"
+                      ? "Parking"
+                      : session.status === "Finished"
+                        ? "Finished"
+                        : "Checked Out"}
                   </span>
                 </TableCell>
                 {/* action */}

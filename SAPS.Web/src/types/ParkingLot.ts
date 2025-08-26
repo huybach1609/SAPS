@@ -8,15 +8,19 @@ export interface ParkingLot {
     updatedAt: string;
     status: 'Active' | 'Inactive';
     parkingLotOwnerId: string;
+    expiredAt?: string;
+    isExpired?: boolean;
+    settings?: string;
 }
 
 export interface Subscription {
     id: string;
     name: string;
     duration: number; // in milliseconds
-    description: string;
     price: number;
-    status: 'active' | 'inactive';
+    status: 'Active' | 'Inactive';
+    updatedBy: string;
+    description?: string;
 }
 
 export interface ParkingLotSubscription {
@@ -30,8 +34,26 @@ export interface ParkingLotSubscription {
 }
 
 export interface PayOsResponse {
-    paymentResponse: PaymentResponse;
-    subscription: Subscription;
+    
+    code: string;
+    desc: string;
+    data: {
+        bin: string;
+        accountNumber: string;
+        accountName: string;
+        amount: number;
+        description: string;
+        orderCode: number;
+        currency: string;
+        paymentLinkId: string;
+        status: string;
+        checkoutUrl: string;
+        qrCode: string;
+        expiredAt?: number;
+    };
+    signature: string;
+    // Keep subscription data for backward compatibility
+    subscription?: Subscription;
 }
 
 export interface PaymentResponse {

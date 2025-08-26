@@ -27,10 +27,9 @@ import retrofit2.Response;
 import vn.edu.fpt.sapsmobile.dtos.parkingsession.OwnedSessionRequest;
 import vn.edu.fpt.sapsmobile.dtos.parkingsession.OwnedSessionResponse;
 import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleSummaryDto;
-import vn.edu.fpt.sapsmobile.models.Vehicle;
 import vn.edu.fpt.sapsmobile.network.client.ApiTest;
-import vn.edu.fpt.sapsmobile.network.service.IVehicleApi;
-import vn.edu.fpt.sapsmobile.network.service.ParkingSessionApiService;
+import vn.edu.fpt.sapsmobile.network.api.IVehicleApi;
+import vn.edu.fpt.sapsmobile.network.api.ParkingSessionApiService;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.actionhandler.HistoryFragmentHandler;
 import vn.edu.fpt.sapsmobile.adapters.ParkingSessionAdapter;
@@ -195,7 +194,17 @@ public class HistoryFragment extends Fragment {
         OwnedSessionRequest parkingRequest = new OwnedSessionRequest("Desc", "entryDateTime", "Parking");
         parkingRequest.setStatus(null);
 
-        currentCall = parkingSessionApi.getOwnedSessions(userId, parkingRequest);
+        currentCall = parkingSessionApi.getOwnedSessions(
+                userId,
+                parkingRequest.getStatus(),
+                parkingRequest.getStartEntryDate() != null ? parkingRequest.getStartEntryDate().toString() : null,
+                parkingRequest.getEndEntryDate() != null ? parkingRequest.getEndEntryDate().toString() : null,
+                parkingRequest.getStartExitDate() != null ? parkingRequest.getStartExitDate().toString() : null,
+                parkingRequest.getEndExitDate() != null ? parkingRequest.getEndExitDate().toString() : null,
+                parkingRequest.getOrder(),
+                parkingRequest.getSortBy(),
+                parkingRequest.getSearchCriteria()
+        );
         currentCall.enqueue(sessionCallback);
     }
 

@@ -29,8 +29,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import vn.edu.fpt.sapsmobile.network.client.ApiTest;
-import vn.edu.fpt.sapsmobile.network.service.ParkingSessionApiService;
-import vn.edu.fpt.sapsmobile.network.service.IVehicleApi;
+import vn.edu.fpt.sapsmobile.network.api.ParkingSessionApiService;
+import vn.edu.fpt.sapsmobile.network.api.IVehicleApi;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.actionhandler.HistoryFragmentHandler;
 import vn.edu.fpt.sapsmobile.activities.NotificationsListActivity;
@@ -241,10 +241,30 @@ public class HomeFragment extends Fragment {
         String userId = tokenManager.getUserData().getId();
 
         OwnedSessionRequest parkingRequest = new OwnedSessionRequest("Asc", "entryDateTime", "Parking");
-        parkingSessionApi.getOwnedSessions(userId, parkingRequest).enqueue(sessionCallback);
+        parkingSessionApi.getOwnedSessions(
+                userId,
+                parkingRequest.getStatus(),
+                parkingRequest.getStartEntryDate() != null ? parkingRequest.getStartEntryDate().toString() : null,
+                parkingRequest.getEndEntryDate() != null ? parkingRequest.getEndEntryDate().toString() : null,
+                parkingRequest.getStartExitDate() != null ? parkingRequest.getStartExitDate().toString() : null,
+                parkingRequest.getEndExitDate() != null ? parkingRequest.getEndExitDate().toString() : null,
+                parkingRequest.getOrder(),
+                parkingRequest.getSortBy(),
+                parkingRequest.getSearchCriteria()
+        ).enqueue(sessionCallback);
 
         OwnedSessionRequest checkedOutRequest = new OwnedSessionRequest("Asc", "entryDateTime", "CheckedOut");
-        parkingSessionApi.getOwnedSessions(userId, checkedOutRequest).enqueue(sessionCallback);
+        parkingSessionApi.getOwnedSessions(
+                userId,
+                checkedOutRequest.getStatus(),
+                checkedOutRequest.getStartEntryDate() != null ? checkedOutRequest.getStartEntryDate().toString() : null,
+                checkedOutRequest.getEndEntryDate() != null ? checkedOutRequest.getEndEntryDate().toString() : null,
+                checkedOutRequest.getStartExitDate() != null ? checkedOutRequest.getStartExitDate().toString() : null,
+                checkedOutRequest.getEndExitDate() != null ? checkedOutRequest.getEndExitDate().toString() : null,
+                checkedOutRequest.getOrder(),
+                checkedOutRequest.getSortBy(),
+                checkedOutRequest.getSearchCriteria()
+        ).enqueue(sessionCallback);
     }
 
     private void addUniqueItems(List<OwnedSessionResponse.OwnedParkingSessionDto> target,

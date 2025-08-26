@@ -27,8 +27,15 @@ export function useWhitelistManagement(parkingLotId?: string) {
         currentPage,
         tableSearch.trim() || "",
       );
-      setWhitelist(response.data);
-      setPagination(response.pagination);
+      setWhitelist(response.items);
+      setPagination({
+        totalCount: response.totalCount,
+        pageNumber: response.pageNumber,
+        pageSize: response.pageSize,
+        totalPages: response.totalPages,
+        hasPreviousPage: response.hasPreviousPage,
+        hasNextPage: response.hasNextPage,
+      });
     } catch (error) {
       console.error("Failed to load whitelist:", error);
       throw error;
@@ -68,9 +75,7 @@ export function useWhitelistManagement(parkingLotId?: string) {
     if (!updatedEntry || !parkingLotId) return;
 
     try {
-      await updateWhitelistEntry(parkingLotId, updatedEntry.clientId, {
-        expiredDate: expiryDate || undefined,
-      });
+      await updateWhitelistEntry(parkingLotId, updatedEntry.clientId, expiryDate || undefined);
       await loadWhitelist();
     } catch (error) {
       console.error("Failed to update whitelist entry:", error);

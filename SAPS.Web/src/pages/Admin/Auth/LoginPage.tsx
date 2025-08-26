@@ -107,13 +107,13 @@ export default function AdminLogin() {
               <Checkbox defaultSelected>
                 <span className="text-sm">Remember me</span>
               </Checkbox>
-              <a
+              {/* <a
                 href="#"
                 className="text-sm text-[#023E8A] hover:text-[#0077B6]"
                 onClick={(e) => e.preventDefault()}
               >
                 Forgot Password?
-              </a>
+              </a> */}
             </div>
 
             <Button

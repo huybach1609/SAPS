@@ -68,7 +68,7 @@ export function WhitelistManagement() {
   };
 
   return (
-    <DefaultLayout title="Whitelist">
+    <DefaultLayout title="Whitelist" >
       <div className="max-w-7xl mx-auto p-6">
         <WhitelistStatusComponent
           loadparking={parkingLotLoading}
@@ -116,7 +116,7 @@ export function WhitelistManagement() {
         {pagination && pagination.totalPages > 1 && (
           <div className="mt-6 flex items-center justify-between">
             <div className="text-sm">
-              Showing page {pagination.currentPage} of {pagination.totalPages} ({pagination.totalItems} total items)
+              Showing page {pagination.pageNumber} of {pagination.totalPages} ({pagination.totalCount} total items)
             </div>
             <div className="flex space-x-2">
               <Button
@@ -129,7 +129,7 @@ export function WhitelistManagement() {
                 className="text-white"
                 color="secondary"
                 isDisabled={parkingLotLoading}
-                page={pagination.currentPage}
+                page={pagination.pageNumber}
                 total={pagination.totalPages}
                 onChange={setCurrentPage}
               />

@@ -36,11 +36,11 @@ export default function StaffManagement() {
    
 
     return (
-        <DefaultLayout title="Staff List">
-            <StaffListStatusComponent
+        <DefaultLayout title="Staff List" className="mt-5">
+            {/* <StaffListStatusComponent
                 parkingLotId={selectedParkingLot?.id || ''}
                 loadparking={parkingLotLoading}
-            />
+            /> */}
 
             <StaffSearchAndAdd
                 tableSearch={tableSearch}
@@ -80,8 +80,8 @@ export default function StaffManagement() {
             {pagination && pagination.totalPages > 1 && (
                 <div className="mt-6 flex items-center justify-between">
                     <div className="text-sm">
-                        Showing page {pagination.currentPage} of {pagination.totalPages}
-                        ({pagination.totalItems} total items)
+                        Showing page {pagination.pageNumber} of {pagination.totalPages}
+                        ({pagination.totalCount} total items)
                     </div>
                     <div className="flex space-x-2">
                         <Button
@@ -95,7 +95,7 @@ export default function StaffManagement() {
                         <Pagination
                             color="secondary"
                             className="text-white"
-                            page={pagination.currentPage}
+                            page={pagination.pageNumber}
                             total={pagination.totalPages}
                             onChange={setCurrentPage}
                             isDisabled={parkingLotLoading}

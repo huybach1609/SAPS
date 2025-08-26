@@ -1,12 +1,10 @@
-package vn.edu.fpt.sapsmobile.network.service;
+package vn.edu.fpt.sapsmobile.network.api;
 
-import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -18,7 +16,6 @@ import vn.edu.fpt.sapsmobile.dtos.auth.LoginResponse;
 import vn.edu.fpt.sapsmobile.dtos.auth.RefreshTokenRequest;
 import vn.edu.fpt.sapsmobile.dtos.auth.RegisterRequest;
 import vn.edu.fpt.sapsmobile.dtos.auth.RegisterResponse;
-import vn.edu.fpt.sapsmobile.dtos.profile.UserRegisterRequest;
 import vn.edu.fpt.sapsmobile.dtos.profile.UserRegisterResponse;
 
 public interface AuthApi {  // or AuthService, if it fits the rest of your project

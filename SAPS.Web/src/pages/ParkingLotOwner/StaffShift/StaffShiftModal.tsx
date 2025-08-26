@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Select, SelectItem, Spinner, Textarea, Checkbox, ScrollShadow, Divider } from '@heroui/react';
 import { StaffShift, CreateStaffShift } from '@/services/parkinglot/staffShift';
 import { StaffShiftValidator } from '@/components/utils/staffShiftValidator';
-import { searchStaff } from '@/services/parkinglot/staffService';
 import { StaffProfile } from '@/types/User';
 import { formatPhoneNumber } from '@/components/utils/stringUtils';
 import { Trash } from 'lucide-react';
+import { fetchStaffDetail, fetchStaffList } from '@/services/parkinglot/staffService';
 
 interface StaffShiftModalProps {
     isOpen: boolean;
@@ -14,7 +14,6 @@ interface StaffShiftModalProps {
     shift?: StaffShift | null;
     mode: 'add' | 'edit';
     parkingLotId: string;
-
 }
 
 const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
@@ -58,7 +57,7 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
 
     useEffect(() => {
         const handleSearchUser = async (term: string) => {
-            console.log(term);
+            // console.log(term);
             if (keySearchStaff === '') {
                 setStaffList([]);
                 setSearchError('');
@@ -67,16 +66,41 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
             setLoading(true);
             setSearchError('');
             try {
-                const response = await searchStaff(keySearchStaff, parkingLotId);
-                setStaffList(response as unknown as StaffProfile[]);
+                const response = await fetchStaffList(
+                    parkingLotId,
+                    10, // default pageSize
+                    1, // pageNumber
+                    keySearchStaff, // searchCriteria
+                    undefined, // status
+                    undefined, // order
+                    undefined // sortBy
+                );
+
+                if (!response.items || response.items.length === 0) {
+                    setStaffList([]);
+                    return;
+                }
+
+                // Map the response items to StaffProfile format
+                const mappedStaffList: StaffProfile[] = response.items.map(user => ({
+                    userId: user.id,
+                    staffId: user.staffId || '',
+                    parkingLotId: parkingLotId,
+                    status: user.status || '',
+                    user: user,
+                }));
+
+                setSearchError('');
+                setStaffList(mappedStaffList);
             } catch (error) {
-                console.error("Failed to search users:", error);
+                console.error("Failed to search staff:", error);
                 setSearchError('Failed to search staff. Please try again.');
                 setStaffList([]);
             } finally {
                 setLoading(false);
             }
         };
+        // console.log("shift", shift);
         const timeoutId = setTimeout(() => {
             if (keySearchStaff) {
                 handleSearchUser(keySearchStaff);
@@ -88,11 +112,43 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
 
 
     useEffect(() => {
-        setSelectedStaffs(shift?.assignedStaff || []);
+        // console.log("shift", shift);
         if (shift && mode === 'edit') {
+
+            // Fetch staff details for each staff ID
+            const fetchStaffDetails = async () => {
+                if (shift.staffIds && shift.staffIds.length > 0) {
+                    try {
+                        const staffDetailsPromises = shift.staffIds.map(staffId => fetchStaffDetail(staffId));
+                        const staffDetails = await Promise.all(staffDetailsPromises);
+
+                        // Map the fetched staff details to StaffProfile format
+                        const mappedStaffs: StaffProfile[] = staffDetails.map(staff => ({
+                            userId: staff.id,
+                            staffId: staff.staffId || '',
+                            parkingLotId: parkingLotId,
+                            status: staff.status || '',
+                            user: staff,
+                        }));
+
+                        setSelectedStaffs(mappedStaffs);
+                    } catch (error) {
+                        console.error("Error fetching staff details:", error);
+                        // Fallback to assignedStaff if available
+                        setSelectedStaffs(shift?.assignedStaff || []);
+                    }
+                } else {
+                    setSelectedStaffs(shift?.assignedStaff || []);
+                }
+            };
+
+            fetchStaffDetails();
+
+
+            // staff id 
             setFormData({
                 id: shift.id,
-                staffIds: shift.assignedStaff?.map(staff => staff.staffId) || [],
+                staffIds: shift.staffIds || shift.assignedStaff?.map(staff => staff.staffId) || [],
                 parkingLotId: shift.parkingLotId,
                 startTime: shift.startTime,
                 endTime: shift.endTime,
@@ -195,18 +251,7 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
         setSearchError('');
     };
 
-    // const handleTimeChange = (field: 'startTime' | 'endTime', timeString: string) => {
-    //     if (TimeUtils.isValidTimeFormat(timeString)) {
-    //         const minutes = TimeUtils.timeToMinutes(timeString);
-    //         handleInputChange(field, minutes);
-    //         // Clear any existing time format errors
-    //         if (errors[field]) {
-    //             setErrors(prev => ({ ...prev, [field]: '' }));
-    //         }
-    //     } else {
-    //         setErrors(prev => ({ ...prev, [field]: 'Invalid time format (HH:MM)' }));
-    //     }
-    // };
+
 
     const validateForm = () => {
         if (mode === 'add') {
@@ -221,14 +266,7 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
             if (error.field === 'staffIds') {
                 errorMap[error.field] = 'Please select a staff member from the search results';
             }
-            if (error.field === 'dateLogic') {
-                // Map dateLogic errors to appropriate fields based on shift type
-                if (formData.shiftType === 'Regular') {
-                    errorMap['dayOfWeeks'] = error.message;
-                } else if (formData.shiftType === 'Emergency') {
-                    errorMap['specificDate'] = error.message;
-                }
-            }
+
             if (error.field === 'timeRangeSelection') {
                 errorMap['timeRangeSelection'] = error.message;
             }
@@ -243,7 +281,7 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
     };
 
     const handleSubmit = () => {
-        console.log('Submitting form data:', formData);
+        // console.log('Submitting form data:', formData);
 
         if (!validateForm()) {
             console.log('Form validation failed. Current errors:', errors);
@@ -253,18 +291,27 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
         console.log('Form validation passed, saving...');
         if (mode === 'add') {
             onSave(formData as CreateStaffShift);
+            setKeySearchStaff('');
+            setStaffList([]);
+            setSearchError('');
+
         } else {
             const newStaffIds = selectedStaffs.map(s => s.staffId);
 
-            if (formData.shiftType === 'Regular') {
-                handleInputChange('specificDate', null);
-            } else if (formData.shiftType === 'Emergency') {
-                handleInputChange('dayOfWeeks', null);
-            }
+            // Ensure proper data structure for the API
             const updatedFormData = {
-                ...formData,
+                id: formData.id,
+                startTime: formData.startTime,
+                endTime: formData.endTime,
+                shiftType: formData.shiftType,
+                dayOfWeeks: formData.shiftType === 'Regular' ? formData.dayOfWeeks : '',
+                specificDate: formData.shiftType === 'Emergency' ? formData.specificDate : null,
+                isActive: formData.isActive,
+                status: formData.status,
+                notes: formData.notes || '',
                 staffIds: newStaffIds
             };
+            // console.log('Updated form data:', updatedFormData);
 
             onSave(updatedFormData as StaffShift);
         }
@@ -293,7 +340,7 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
                             <Input
                                 id="search-staff-input"
                                 data-testid="search-staff-input"
-                                placeholder="Search by name, email or phone"
+                                placeholder="Search by email, phone or citizen ID"
                                 type="text"
                                 value={keySearchStaff}
                                 onChange={(e) => setKeySearchStaff(e.target.value)}
@@ -318,7 +365,7 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
                                                             {staff.user?.fullName || ''}
                                                         </div>
                                                         <div className="text-sm text-gray-600">{staff.user?.email || ''}</div>
-                                                        <div className="text-sm text-gray-600">{formatPhoneNumber(staff.user?.phone || '')}</div>
+                                                        <div className="text-sm text-gray-600">{formatPhoneNumber(staff.user?.phoneNumber || '')}</div>
                                                     </div>
                                                     <Button isIconOnly variant="light" size="sm" color="danger" onPress={() => {
                                                         setSelectedStaffs(prev => {
@@ -366,7 +413,7 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
                                         >
                                             <div className="font-medium text-sm">{staff.user?.fullName || ''}</div>
                                             <div className="text-sm text-gray-500">{staff.user?.email || ''}</div>
-                                            <div className="text-sm text-gray-500">{formatPhoneNumber(staff.user?.phone || '')}</div>
+                                            <div className="text-sm text-gray-500">{formatPhoneNumber(staff.user?.phoneNumber || '')}</div>
                                             {isSelected && (
                                                 <div className="ml-auto text-sm text-green-600 font-medium">
                                                     ✓ Selected
@@ -448,14 +495,13 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
                         </div>
  */}
                         <div className='flex-row gap-4 hidden'>
-                            {/* Shift Type */}
                             <div className="flex-1">
                                 <label className="block text-sm font-medium mb-1">
                                     Shift Type *
                                 </label>
                                 <Select
                                     aria-label="shift-type"
-                                    selectedKeys={[formData.shiftType || 'Regular']}
+                                    selectedKeys={['Regular']}
                                     onSelectionChange={(keys) => {
                                         const selected = Array.from(keys)[0] as string;
                                         handleShiftTypeChange(selected);
@@ -469,7 +515,7 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
                             </div>
 
                             {/* Status */}
-                            <div className="flex-1 ">
+                            {/* <div className="flex-1 ">
                                 <label className="block text-sm font-medium mb-1">
                                     Status *
                                 </label>
@@ -489,12 +535,12 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
                                     <SelectItem key="Active" aria-label="Active">Active</SelectItem>
                                     <SelectItem key="Deactive" aria-label="Deactive">Deactive</SelectItem>
                                 </Select>
-                            </div>
+                            </div> */}
                         </div>
 
 
                         {/* Days of Week - Show only for Regular shifts */}
-                        {formData.shiftType === 'Regular' && (
+                        {(
                             <div>
                                 <label className="block text-sm font-medium mb-1" htmlFor="days-of-week">
                                     Days of Week *

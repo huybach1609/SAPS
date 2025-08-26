@@ -26,6 +26,9 @@ const StaffShiftManagement: React.FC = () => {
     const addModalDisclosure = useDisclosure();
     const editModalDisclosure = useDisclosure();
     const conflictModalDisclosure = useDisclosure();
+ 
+    
+    
     const loadShifts = async () => {
         try {
             setRefreshing(true);
@@ -235,7 +238,7 @@ const StaffShiftManagement: React.FC = () => {
     };
 
     return (
-        <DefaultLayout className="p-6" title="Staff Shift Management">
+        <DefaultLayout className="p-6" title="Staff Shift Management" description={`Manage staff shifts for ${selectedParkingLot?.name}`}>
             <div className="mb-6">
                 {/* <div className="flex items-center gap-3 mb-4">
                     <div className="p-2 bg-blue-100 rounded-lg">

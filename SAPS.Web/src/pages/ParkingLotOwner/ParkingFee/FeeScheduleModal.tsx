@@ -17,8 +17,6 @@ import {
 export const VehicleTypeText = {
   [VehicleType.Car]: "Car",
   [VehicleType.Motorbike]: "Motorbike",
-  [VehicleType.Bike]: "Bike",
-  [VehicleType.All]: "All",
 };
 
 // Fee Schedule Modal Component
@@ -31,6 +29,8 @@ export const FeeScheduleModal: React.FC<{
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
 
+    // console.log("hours", hours);
+    // console.log("mins", mins);
     return `${hours.toString().padStart(2, "0")}:${mins.toString().padStart(2, "0")}`;
   };
 
@@ -40,16 +40,22 @@ export const FeeScheduleModal: React.FC<{
     return hours * 60 + minutes;
   };
 
+  const initialUiDays = Array.isArray(schedule?.dayOfWeeks)
+    ? (schedule!.dayOfWeeks as number[])
+        .map((n) => (Number.isFinite(n) && n >= 1 && n <= 7 ? n - 1 : n))
+        .filter((n) => n >= 0 && n <= 6)
+    : [];
+
   const [formData, setFormData] = useState({
-    startTime: schedule?.startTime || 0,
-    endTime: schedule?.endTime || 1439, // 23:59
-    initialFee: schedule?.initialFee || 0,
-    initialFeeMinutes: schedule?.initialFeeMinutes || 60,
-    additionalFee: schedule?.additionalFee || 0,
-    additionalMinutes: schedule?.additionalMinutes || 60,
-    dayOfWeeks: schedule?.dayOfWeeks || [],
+    startTime: schedule?.startTime ?? 0,
+    endTime: schedule?.endTime ?? 1439, // 23:59
+    initialFee: schedule?.initialFee ?? 0,
+    initialFeeMinutes: schedule?.initialFeeMinutes ?? 60,
+    additionalFee: schedule?.additionalFee ?? 0,
+    additionalMinutes: schedule?.additionalMinutes ?? 60,
+    dayOfWeeks: initialUiDays,
     isActive: schedule?.isActive !== undefined ? schedule.isActive : true,
-    forVehicleType: schedule?.forVehicleType || VehicleType.Car,
+    forVehicleType: schedule?.forVehicleType ?? VehicleType.Car,
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -68,7 +74,7 @@ export const FeeScheduleModal: React.FC<{
   ];
 
   const [selectedDays, setSelectedDays] = useState<number[]>(
-    Array.isArray(formData.dayOfWeeks) ? formData.dayOfWeeks : [],
+    Array.isArray(formData.dayOfWeeks) ? (formData.dayOfWeeks as number[]) : [],
   );
 
   const handleDayToggle = (idx: number) => {
@@ -146,8 +152,7 @@ export const FeeScheduleModal: React.FC<{
                   ...formData,
                   forVehicleType: parseInt(e.currentKey as string) as
                     | VehicleType.Car
-                    | VehicleType.Motorbike
-                    | VehicleType.Bike,
+                    | VehicleType.Motorbike,
                 })
               }
 
@@ -164,9 +169,6 @@ export const FeeScheduleModal: React.FC<{
               </SelectItem>
               <SelectItem key={VehicleType.Motorbike}>
                 {VehicleTypeText[VehicleType.Motorbike]}
-              </SelectItem>
-              <SelectItem key={VehicleType.Bike}>
-                {VehicleTypeText[VehicleType.Bike]}
               </SelectItem>
             </Select>
           </div>
@@ -247,19 +249,20 @@ export const FeeScheduleModal: React.FC<{
                 required
                 aria-label="Additional Minutes Interval"
                 className=""
-                min="1"
+                min="0"
                 type="number"
                 value={formData.additionalMinutes.toString()}
-                onChange={(e) =>
+                onChange={(e) => {
+                  const raw = e.target.value;
+                  const parsed = raw === "" ? 0 : parseInt(raw, 10);
                   setFormData({
                     ...formData,
-                    additionalMinutes: parseInt(e.target.value) || 60,
-                  })
-                }
+                    additionalMinutes: Number.isNaN(parsed) ? 0 : parsed,
+                  });
+                }}
               />
               <p className="text-xs text-gray-500 mt-1">
-                Additional fee will be charged every{" "}
-                {formData.additionalMinutes} minutes after initial period
+                Additional fee interval (minutes). 0 means no recurring additional fee.
               </p>
             </div>
           </div>

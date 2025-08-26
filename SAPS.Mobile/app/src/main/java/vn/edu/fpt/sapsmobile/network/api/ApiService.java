@@ -1,4 +1,4 @@
-package vn.edu.fpt.sapsmobile.network.service;
+package vn.edu.fpt.sapsmobile.network.api;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
@@ -16,7 +16,6 @@ import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleRegistrationResponse;
 import vn.edu.fpt.sapsmobile.dtos.profile.IdCardResponse;
 import vn.edu.fpt.sapsmobile.dtos.profile.NotificationsResponse;
 import vn.edu.fpt.sapsmobile.dtos.profile.VerificationResponse;
-import vn.edu.fpt.sapsmobile.dtos.profile.ClientProfileRequest;
 import vn.edu.fpt.sapsmobile.models.User;
 
 public interface ApiService {

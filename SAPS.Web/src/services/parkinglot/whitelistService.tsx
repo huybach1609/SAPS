@@ -5,7 +5,7 @@ import { User } from '@/types/User';
 
 // Helper function to get auth headers
 const getAuthHeaders = () => ({
-    'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
     'Content-Type': 'application/json',
 });
 
@@ -20,17 +20,18 @@ export const fetchWhitelist = async (
     try {
         // Build query parameters
         const params = new URLSearchParams({
-            pageSize: pageSize.toString(),
-            currentPage: currentPage.toString()
+            PageSize: pageSize.toString(),
+            PageNumber: currentPage.toString(),
+            ParkingLotId: parkingLotId
         });
 
         // Only add searchKey if it's provided and not empty
         if (searchKey && searchKey.trim()) {
-            params.append('searchKey', searchKey.trim());
+            params.append('SearchCriteria', searchKey.trim());
         }
 
-        console.log(`${apiUrl}/api/Whitelist/${parkingLotId}?${params.toString()}`);
-        const response = await axios.get(`${apiUrl}/api/Whitelist/${parkingLotId}?${params.toString()}`, {
+        console.log(`${apiUrl}/api/whitelist/page?${params.toString()}`);
+        const response = await axios.get(`${apiUrl}/api/whitelist/page?${params.toString()}`, {
             headers: getAuthHeaders()
         });
 
@@ -46,20 +47,19 @@ export const fetchWhitelist = async (
 export const addToWhitelist = async (
     parkingLotId: string,
     clientId: string,
-    expiredDate?: string
+    expireAt?: string
 ): Promise<Whitelist> => {
     try {
         const whitelistData = {
             parkingLotId,
             clientId,
-            addedDate: new Date().toISOString(),
-            expiredDate: expiredDate ? new Date(expiredDate).toISOString() : null,
-            client: null // Add this if required by DTO
+            expireAt: expireAt ? new Date(expireAt).toISOString() : null,
         };
 
+        
         console.log('Whitelist data:', whitelistData);
         const response = await axios.post(
-            `${apiUrl}/api/Whitelist/${parkingLotId}`,
+            `${apiUrl}/api/whitelist`,
             whitelistData,
             { headers: getAuthHeaders() }
         );
@@ -74,10 +74,15 @@ export const addToWhitelist = async (
 // Remove a client from whitelist
 export const removeFromWhitelist = async (parkingLotId: string, clientId: string): Promise<void> => {
     try {
-        await axios.delete(
-            `${apiUrl}/api/Whitelist/${parkingLotId}/${clientId}`,
-            { headers: getAuthHeaders() }
-        );
+        const response = await fetch(`${apiUrl}/api/whitelist`, {
+            method: 'DELETE',
+            headers: getAuthHeaders(),
+            body: JSON.stringify({ parkingLotId, clientId })
+        });
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || 'Failed to remove from whitelist');
+        }
     } catch (error) {
         console.error('Error removing from whitelist:', error);
         throw error;
@@ -88,16 +93,29 @@ export const removeFromWhitelist = async (parkingLotId: string, clientId: string
 export const updateWhitelistEntry = async (
     parkingLotId: string,
     clientId: string,
-    updates: Partial<Whitelist>
+    expiredDate?: string
 ): Promise<Whitelist> => {
-    console.log('Updates:', updates);
     try {
-        const response = await axios.put(
-            `${apiUrl}/api/Whitelist/${parkingLotId}/${clientId}`,
-            updates,
-            { headers: getAuthHeaders() }
-        );
-        return response.data;
+        const body = {
+            parkingLotId,
+            clientId,
+            expiredDate: expiredDate ? new Date(expiredDate).toISOString() : null,
+        };
+
+        const response = await fetch(`${apiUrl}/api/whitelist/expire-date`, {
+            method: 'PUT',
+            headers: getAuthHeaders(),
+            body: JSON.stringify(body),
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || 'Failed to update whitelist entry');
+        }
+
+        // Some APIs return 200 OK with no body
+        const text = await response.text();
+        return text ? JSON.parse(text) : ({} as unknown as Whitelist);
     } catch (error) {
         console.error('Error updating whitelist entry:', error);
         throw error;
@@ -119,17 +137,20 @@ export const fetchWhitelistStatus = async (parkingLotId: string): Promise<Whitel
     }
 };
 
-// Search whitelist entries by user info
-export const searchUser = async (searchTerm: string, parkingLotId?: string): Promise<User[]> => {
+// Search user by phone or email. Returns a single user object or null if not found
+export const searchUser = async (searchTerm: string): Promise<User | null> => {
     try {
-        const url =
-            `${apiUrl}/api/whitelist/${parkingLotId}/search?q=${encodeURIComponent(searchTerm)}`;
+        const url = `${apiUrl}/api/user/search/${encodeURIComponent(searchTerm)}`;
         const response = await axios.get(url, {
             headers: getAuthHeaders()
         });
-        return response.data;
-    } catch (error) {
-        console.error('Error searching whitelist:', error);
+        return response.data ?? null;
+    } catch (error: any) {
+        // If API returns 404 for not found, map to null instead of throwing
+        if (error?.response?.status === 404) {
+            return null;
+        }
+        console.error('Error searching user:', error);
         throw error;
     }
 }; 

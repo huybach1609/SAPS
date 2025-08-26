@@ -246,7 +246,7 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationSe
 
     private void updateUI(User user) {
         boolean isLoggedIn = user != null;
-        signInGoogleButton.setVisibility(isLoggedIn ? View.GONE : View.VISIBLE);
+//        signInGoogleButton.setVisibility(isLoggedIn ? View.GONE : View.VISIBLE);
     }
 
     private void clearInputFields() {

@@ -22,7 +22,7 @@ import StaffManagement from "./pages/ParkingLotOwner/StaffManagement/StaffManage
 import ParkingLotInfo from "./pages/ParkingLotOwner/ParkingInfo/ParkingLotInfo";
 import AdminAccountList from "./pages/Admin/Accounts/AdminAccounts/AdminAccountList";
 import AdminRequestList from "./pages/Admin/Requests/AdminRequestList";
-import { ADMIN_ROLE, OWNER_ROLE } from "./config/base";
+// import { ADMIN_ROLE, OWNER_ROLE } from "./config/base";
 import ParkingFeeManagement from "./pages/ParkingLotOwner/ParkingFee/ParkingFeeManagement";
 import AccountListSelector from "./pages/Admin/Accounts/AccountListSelector";
 import UserAccountList from "./pages/Admin/Accounts/UserAccounts/UserAccountList";
@@ -87,14 +87,15 @@ const ActiveRoute: React.FC<ActiveRouteProps> = ({
   if (loading) {
     return <div>Loading...</div>;
   }
+  // console.log("selectedParkingLot", selectedParkingLot);
 
   // If requireActive is true, check if parking lot is active
-  if (requireActive && selectedParkingLot?.status !== "Active") {
+  if (requireActive && selectedParkingLot?.isExpired) {
     return <Navigate to="/owner/subscription" replace />;
   }
 
   // If requireActive is false, check if parking lot is inactive
-  if (!requireActive && selectedParkingLot?.status === "Active") {
+  if (!requireActive && selectedParkingLot?.isExpired) {
     return <Navigate to="/owner/parking-info" replace />;
   }
 
@@ -102,7 +103,7 @@ const ActiveRoute: React.FC<ActiveRouteProps> = ({
 };
 
 const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isAuthenticated, loading, getUserRole, getAdminRole } = useAuth();
+  const { isAuthenticated, loading, getUserRole } = useAuth();
 
   if (loading) {
     return <div>Loading...</div>; // Or your loading component
@@ -110,7 +111,7 @@ const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   if (isAuthenticated) {
     const role = getUserRole();
-    const adminRole = getAdminRole();
+    // const adminRole = getAdminRole();
 
     if (role === "admin") {
       return <Navigate to="/admin/home" replace />;
@@ -125,7 +126,7 @@ const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 };
 
 const RoleBasedRedirect: React.FC = () => {
-  const { isAuthenticated, loading, getUserRole, getAdminRole } = useAuth();
+  const { isAuthenticated, loading, getUserRole } = useAuth();
 
   if (loading) {
     return (
@@ -140,7 +141,7 @@ const RoleBasedRedirect: React.FC = () => {
   }
 
   const role = getUserRole();
-  const adminRole = getAdminRole();
+  // const adminRole = getAdminRole();
 
   // Kiểm tra role và AdminRole để điều hướng đúng
   if (role === "admin") {
@@ -236,12 +237,12 @@ function App() {
           <Route path="parking-info" element={<ParkingLotInfo />} />
           <Route path="staff" element={<StaffManagement />} />
           <Route
-            path="staff/:parkingLotId/:staffId"
+            path="staff/:staffId"
             element={<StaffDetailScreen />}
           />
           <Route path="history" element={<ParkingHistory />} />
           <Route
-            path="history/:parkingLotId/:sessionId"
+            path="history/:sessionId"
             element={<ParkingHistoryDetail />}
           />
           <Route
@@ -253,7 +254,7 @@ function App() {
             }
           />
           <Route
-            path="incidents/:parkingLotId/:incidentId"
+            path="incidents/:incidentId"
             element={
               <ActiveRoute requireActive={true}>
                 <IncidentDetail />

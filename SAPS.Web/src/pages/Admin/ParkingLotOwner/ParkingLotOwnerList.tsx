@@ -14,8 +14,7 @@ import { format } from "date-fns";
 const statusOptions = [
   { label: "All Status", value: "All" },
   { label: "Active", value: "Active" },
-  { label: "Pending", value: "Pending" },
-  { label: "Suspended", value: "Suspended" },
+  { label: "InActive", value: "InActive" },
 ];
 
 export default function AdminParkingLotOwnerList() {
@@ -36,8 +35,7 @@ export default function AdminParkingLotOwnerList() {
 
   // Stats
   const [activeOwners, setActiveOwners] = useState(0);
-  const [pendingOwners, setPendingOwners] = useState(0);
-  const [suspendedOwners, setSuspendedOwners] = useState(0);
+  const [inactiveOwners, setInactiveOwners] = useState(0);
 
   // Function to fetch owners
   const fetchOwners = async () => {
@@ -73,39 +71,24 @@ export default function AdminParkingLotOwnerList() {
   // Fetch summary statistics
   const fetchStats = async () => {
     try {
-      // Get active owners count
-      const activeResponse = await parkingLotOwnerService.getParkingLotOwners({
-        pageNumber: 1,
-        pageSize: 1,
-        status: "Active",
-        order: 1,
-      });
-      setActiveOwners(activeResponse?.["total-count"] || 0);
+      // Get all owners for statistics
+      const allOwners = await parkingLotOwnerService.getAllParkingLotOwners();
 
-      // Get pending owners count
-      const pendingResponse = await parkingLotOwnerService.getParkingLotOwners({
-        pageNumber: 1,
-        pageSize: 1,
-        status: "Pending",
-        order: 1,
-      });
-      setPendingOwners(pendingResponse?.["total-count"] || 0);
+      // Calculate stats by status
+      const activeCount = allOwners.filter(
+        (owner) => owner.status === "Active"
+      ).length;
+      const inactiveCount = allOwners.filter(
+        (owner) => owner.status === "InActive"
+      ).length;
 
-      // Get suspended owners count
-      const suspendedResponse =
-        await parkingLotOwnerService.getParkingLotOwners({
-          pageNumber: 1,
-          pageSize: 1,
-          status: "Suspended",
-          order: 1,
-        });
-      setSuspendedOwners(suspendedResponse?.["total-count"] || 0);
+      setActiveOwners(activeCount);
+      setInactiveOwners(inactiveCount);
     } catch (error) {
       console.error("Error fetching stats:", error);
       // Reset to safe defaults on error
       setActiveOwners(0);
-      setPendingOwners(0);
-      setSuspendedOwners(0);
+      setInactiveOwners(0);
     }
   };
 
@@ -115,19 +98,10 @@ export default function AdminParkingLotOwnerList() {
     fetchStats();
   }, []);
 
-  // Fetch when filters or pagination change
+  // Fetch when pagination changes (but not filters)
   useEffect(() => {
     fetchOwners();
-  }, [currentPage, statusFilter]);
-
-  // Debounce search input
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchOwners();
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [searchTerm]);
+  }, [currentPage]);
 
   // Format date string
   const formatDate = (dateString: string) => {
@@ -173,7 +147,7 @@ export default function AdminParkingLotOwnerList() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
         <Card className="p-4 bg-[#00B4D8] text-white">
           <div className="text-center">
             <div className="text-4xl font-bold mb-1">{totalOwners}</div>
@@ -188,14 +162,8 @@ export default function AdminParkingLotOwnerList() {
         </Card>
         <Card className="p-4 bg-[#00B4D8] text-white">
           <div className="text-center">
-            <div className="text-4xl font-bold mb-1">{pendingOwners}</div>
-            <div className="text-sm">Pending Approval</div>
-          </div>
-        </Card>
-        <Card className="p-4 bg-[#00B4D8] text-white">
-          <div className="text-center">
-            <div className="text-4xl font-bold mb-1">{suspendedOwners}</div>
-            <div className="text-sm">Suspended Owners</div>
+            <div className="text-4xl font-bold mb-1">{inactiveOwners}</div>
+            <div className="text-sm">InActive Owners</div>
           </div>
         </Card>
       </div>
@@ -224,13 +192,13 @@ export default function AdminParkingLotOwnerList() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
           <div>
             <label className="block text-sm font-medium mb-1">
               Search Owners
             </label>
             <Input
-              placeholder="Search by name, email, etc"
+              placeholder="Search by name, email"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full"
@@ -250,11 +218,6 @@ export default function AdminParkingLotOwnerList() {
                 </option>
               ))}
             </select>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium mb-1">Join Date</label>
-            <Input type="date" className="w-full" />
           </div>
         </div>
 
@@ -292,12 +255,39 @@ export default function AdminParkingLotOwnerList() {
               color="default"
               variant="light"
               className="rounded-full"
-              onPress={() => {
+              onPress={async () => {
                 // Clear all filters
                 setSearchTerm("");
                 setStatusFilter("All");
                 setCurrentPage(1);
-                fetchOwners();
+
+                // Fetch with reset parameters directly
+                try {
+                  setLoading(true);
+                  const response =
+                    await parkingLotOwnerService.getParkingLotOwners({
+                      pageNumber: 1,
+                      pageSize: itemsPerPage,
+                      status: undefined,
+                      order: 1,
+                      searchCriteria: undefined,
+                    });
+
+                  setOwners(response?.items || []);
+                  setTotalOwners(response?.["total-count"] || 0);
+                  setTotalPages(response?.["total-pages"] || 1);
+                  setHasNextPage(response?.["has-next-page"] || false);
+                  setHasPreviousPage(response?.["has-previous-page"] || false);
+                } catch (error) {
+                  console.error("Error fetching parking lot owners:", error);
+                  setOwners([]);
+                  setTotalOwners(0);
+                  setTotalPages(1);
+                  setHasNextPage(false);
+                  setHasPreviousPage(false);
+                } finally {
+                  setLoading(false);
+                }
               }}
             >
               Clear Filters
@@ -416,22 +406,20 @@ export default function AdminParkingLotOwnerList() {
                         <div className="bg-primary p-2 rounded mr-2">
                           <Building2 size={24} className="text-white" />
                         </div>
-                        <div>{owner["parking-lot-owner-id"]}</div>
+                        <div>{owner.parkingLotOwnerId}</div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-sm">{owner["full-name"]}</td>
+                    <td className="px-4 py-3 text-sm">{owner.fullName}</td>
                     <td className="px-4 py-3 text-sm">{owner.email}</td>
                     <td className="px-4 py-3 text-sm">
-                      {formatDate(owner["created-at"])}
+                      {formatDate(owner.createdAt)}
                     </td>
                     <td className="px-4 py-3 text-sm">
                       <span
                         className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${
                           owner.status === "Active"
                             ? "bg-green-200 text-green-800"
-                            : owner.status === "Pending"
-                              ? "bg-yellow-200 text-yellow-800"
-                              : "bg-red-200 text-red-800"
+                            : "bg-red-200 text-red-800"
                         }`}
                       >
                         {owner.status}
@@ -461,8 +449,8 @@ export default function AdminParkingLotOwnerList() {
           <div className="mt-4 p-3 bg-blue-50 text-blue-800 rounded-md">
             <p>
               <span className="font-semibold">Permission Note:</span> Active
-              owners can manage their parking lots independently. Pending owners
-              require approval before their facilities go live.
+              owners can manage their parking lots and process parking sessions.
+              InActive owners cannot access the system.
             </p>
           </div>
         </div>
@@ -545,9 +533,9 @@ export default function AdminParkingLotOwnerList() {
       <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-md">
         <p className="font-semibold">Management Note:</p>
         <p>
-          Active owners can manage their parking lots independently. Pending
-          owners require approval before their facilities go live. Suspended
-          owners cannot process new parking sessions.
+          Active owners can manage their parking lots and process parking
+          sessions independently. InActive owners cannot access the system or
+          manage their facilities.
         </p>
       </div>
 

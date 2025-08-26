@@ -97,6 +97,10 @@ export default function AddFileModal({ addFileModalDisclosure, parkingLotId }: {
             const response = await fetch(apiUrl + `/api/whitelist/${parkingLotId}/upload`, {
                 method: 'POST',
                 body: formData,
+                
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+                },
             });
 
             if (!response.ok) {
