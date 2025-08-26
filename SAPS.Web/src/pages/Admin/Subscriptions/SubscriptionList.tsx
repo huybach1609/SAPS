@@ -57,6 +57,8 @@ export default function SubscriptionList() {
       setAllSubscriptions(mappedResponse);
     } catch (err) {
       console.error("Error fetching all subscriptions:", err);
+      // Set empty array on error to prevent undefined behavior
+      setAllSubscriptions([]);
     }
   };
 
@@ -100,33 +102,54 @@ export default function SubscriptionList() {
     fetchSubscriptions();
   }, []);
 
-  // Fetch when filters or pagination change
+  // Fetch when pagination changes (but not filters)
   useEffect(() => {
     fetchSubscriptions();
-  }, [currentPage, statusFilter]);
+  }, [currentPage]);
 
-  // Debounce search input
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setCurrentPage(1); // Reset to first page when searching
-      fetchSubscriptions();
-    }, 500);
-
-    return () => clearTimeout(timer);
-  }, [searchTerm]);
-
-  // Handle search
+  // Handle search - only when button is clicked
   const handleSearch = () => {
     setCurrentPage(1);
     fetchSubscriptions();
   };
 
   // Handle reset filters
-  const handleReset = () => {
+  const handleReset = async () => {
     setSearchTerm("");
     setStatusFilter("All");
     setCurrentPage(1);
-    fetchSubscriptions();
+
+    // Fetch with reset parameters directly
+    try {
+      setLoading(true);
+      setError(null);
+
+      const params: SubscriptionListParams = {
+        pageNumber: 1,
+        pageSize: itemsPerPage,
+        status: undefined, // Reset to All
+        order: 1,
+        searchCriteria: undefined, // Reset search
+      };
+
+      const response = await subscriptionService.getSubscriptions(params);
+
+      // Map API status to component format
+      const mappedSubscriptions = response.items.map((sub) => ({
+        ...sub,
+        status: sub.status.toLowerCase() as "active" | "inactive",
+      }));
+
+      setSubscriptions(mappedSubscriptions);
+      setTotalSubscriptions(response["total-count"]);
+    } catch (err) {
+      console.error("Error fetching subscriptions:", err);
+      setError("An error occurred while fetching subscriptions");
+      setSubscriptions([]);
+      setTotalSubscriptions(0);
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Handle add subscription
@@ -183,27 +206,36 @@ export default function SubscriptionList() {
     (sub) => sub.status === "inactive"
   ).length;
 
-  // Format duration (days to user-friendly format)
+  // Format duration (days to user-friendly format with hours)
   const formatDuration = (days: number): string => {
     if (days <= 0) return "0 Days";
 
-    const years = Math.floor(days / 365);
-    const remainingAfterYears = days % 365;
-    const months = Math.floor(remainingAfterYears / 30);
-    const remainingAfterMonths = remainingAfterYears % 30;
-    const weeks = Math.floor(remainingAfterMonths / 7);
-    const remainingDays = remainingAfterMonths % 7;
+    // Convert days to total hours first for more precise calculation
+    const totalHours = days * 24;
+
+    const years = Math.floor(totalHours / (365 * 24));
+    const remainingAfterYears = totalHours % (365 * 24);
+
+    const months = Math.floor(remainingAfterYears / (30 * 24));
+    const remainingAfterMonths = remainingAfterYears % (30 * 24);
+
+    const weeks = Math.floor(remainingAfterMonths / (7 * 24));
+    const remainingAfterWeeks = remainingAfterMonths % (7 * 24);
+
+    const daysLeft = Math.floor(remainingAfterWeeks / 24);
+    const hoursLeft = Math.floor(remainingAfterWeeks % 24);
 
     const parts = [];
 
     if (years > 0) parts.push(`${years} Year${years > 1 ? "s" : ""}`);
     if (months > 0) parts.push(`${months} Month${months > 1 ? "s" : ""}`);
     if (weeks > 0) parts.push(`${weeks} Week${weeks > 1 ? "s" : ""}`);
-    if (remainingDays > 0)
-      parts.push(`${remainingDays} Day${remainingDays > 1 ? "s" : ""}`);
+    if (daysLeft > 0) parts.push(`${daysLeft} Day${daysLeft > 1 ? "s" : ""}`);
+    if (hoursLeft > 0)
+      parts.push(`${hoursLeft} Hour${hoursLeft > 1 ? "s" : ""}`);
 
-    // If no parts, it means less than a day
-    if (parts.length === 0) return "Less than 1 Day";
+    // If no parts, it means less than an hour
+    if (parts.length === 0) return "Less than 1 Hour";
 
     // Join parts with commas and "and" for the last item
     if (parts.length === 1) return parts[0];
@@ -213,11 +245,13 @@ export default function SubscriptionList() {
     return parts.join(", ") + " and " + lastPart;
   };
 
-  // Format price (VND)
+  // Format price (VND) - no rounding
   const formatPrice = (price: number): string => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
     }).format(price);
   };
 
@@ -268,7 +302,9 @@ export default function SubscriptionList() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4 w-full">
         <div className="bg-[#00b4d8] rounded-lg p-4 text-white">
           <div className="text-center">
-            <div className="text-4xl font-bold mb-1">{totalSubscriptions}</div>
+            <div className="text-4xl font-bold mb-1">
+              {allSubscriptions.length}
+            </div>
             <div className="text-sm">Total Plans</div>
           </div>
         </div>
@@ -299,7 +335,7 @@ export default function SubscriptionList() {
             <div className="relative">
               <Input
                 type="text"
-                placeholder="Search by name or note"
+                placeholder="Search by name"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full"

@@ -37,7 +37,7 @@ export const userService = {
   // Get all client users (for statistics)
   async getAllClientUsers(): Promise<ApiResponse<ClientUser[]>> {
     try {
-      const { data } = await api.get("/api/client/all?Order=1");
+      const { data } = await api.get("/api/client?Order=1");
       return { success: true, data };
     } catch (error: any) {
       return {
@@ -94,7 +94,7 @@ export const userService = {
   // Get client user by ID
   async getClientUserById(id: string): Promise<ApiResponse<ClientUser>> {
     try {
-      const { data } = await api.get(`/api/Users/clients/${id}`);
+      const { data } = await api.get(`/api/client/user/${id}`);
       return { success: true, data };
     } catch (error: any) {
       return {

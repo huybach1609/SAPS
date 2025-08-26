@@ -86,20 +86,31 @@ const UserDetail: React.FC = () => {
           // Convert to legacy format for compatibility
           const legacyUser: UserDetails = {
             id: response.data.id,
-            fullName: response.data["full-name"],
+            fullName:
+              response.data.fullName || response.data["full-name"] || "",
             email: response.data.email,
-            status: response.data.status.toLowerCase() as
+            status: (response.data.status || "").toLowerCase() as
               | "active"
               | "inactive"
               | "suspended",
-            citizenId: response.data["citizen-id"],
-            dateOfBirth: response.data["date-of-birth"],
-            phone: response.data.phone,
-            address: response.data["place-of-residence"],
+            citizenId:
+              response.data.citizenId || response.data["citizen-id"] || "",
+            dateOfBirth:
+              response.data.dateOfBirth || response.data["date-of-birth"] || "",
+            phone: response.data.phone || response.data.phoneNumber || "",
+            address:
+              response.data.placeOfResidence ||
+              response.data["place-of-residence"] ||
+              "",
             registrationDate: new Date(
-              response.data["created-at"]
+              response.data.createdAt ||
+                response.data["created-at"] ||
+                new Date()
             ).toLocaleDateString(),
-            profileImageUrl: response.data["profile-image-url"] || undefined,
+            profileImageUrl:
+              response.data.profileImageUrl ||
+              response.data["profile-image-url"] ||
+              undefined,
             verificationStatus: "Verified",
             lastLogin: "N/A",
             vehicles: [],
@@ -145,8 +156,12 @@ const UserDetail: React.FC = () => {
         if (response.success && response.data) {
           console.log("✅ Successfully fetched vehicles:", response.data);
           setVehicles(response.data.items);
-          setVehicleTotalPages(response.data["total-pages"]);
-          setVehicleTotalItems(response.data["total-count"]);
+          setVehicleTotalPages(
+            response.data.totalPages || response.data["total-pages"] || 1
+          );
+          setVehicleTotalItems(
+            response.data.totalCount || response.data["total-count"] || 0
+          );
         } else {
           console.error("❌ Failed to fetch vehicles:", response.error);
         }
@@ -182,8 +197,12 @@ const UserDetail: React.FC = () => {
             response.data
           );
           setSharedVehicles(response.data.items);
-          setSharedVehicleTotalPages(response.data["total-pages"]);
-          setSharedVehicleTotalItems(response.data["total-count"]);
+          setSharedVehicleTotalPages(
+            response.data.totalPages || response.data["total-pages"] || 1
+          );
+          setSharedVehicleTotalItems(
+            response.data.totalCount || response.data["total-count"] || 0
+          );
         } else {
           console.error("❌ Failed to fetch shared vehicles:", response.error);
         }
@@ -249,9 +268,42 @@ const UserDetail: React.FC = () => {
             "✅ Successfully fetched paginated parking sessions:",
             response.data
           );
-          setPaginatedParkingSessions(response.data.items);
-          setSessionTotalPages(response.data["total-pages"]);
-          setSessionTotalItems(response.data["total-count"]);
+          console.log("Type of response.data:", typeof response.data);
+          console.log(
+            "Is response.data an array?",
+            Array.isArray(response.data)
+          );
+          console.log("response.data.items:", response.data.items);
+
+          // Kiểm tra cấu trúc response.data
+          if (Array.isArray(response.data)) {
+            // Nếu response.data là một mảng (API trả về mảng trực tiếp)
+            console.log("API returned array directly:", response.data);
+            setPaginatedParkingSessions(response.data);
+            setSessionTotalPages(1); // Không có thông tin phân trang
+            setSessionTotalItems(response.data.length);
+          } else if (Array.isArray(response.data.items)) {
+            // Nếu response.data là một đối tượng có thuộc tính items (Cấu trúc phân trang)
+            console.log("Items to display:", response.data.items);
+            setPaginatedParkingSessions(response.data.items);
+            setSessionTotalPages(
+              response.data.totalPages || response.data["total-pages"] || 1
+            );
+            setSessionTotalItems(
+              response.data.totalCount || response.data["total-count"] || 0
+            );
+          } else if (response.data.data && Array.isArray(response.data.data)) {
+            // Nếu response.data.data là một mảng (API trả về nested data)
+            console.log("Nested data array:", response.data.data);
+            setPaginatedParkingSessions(response.data.data);
+            setSessionTotalPages(1); // Không có thông tin phân trang
+            setSessionTotalItems(response.data.data.length);
+          } else {
+            console.error("Unexpected data format:", response.data);
+            setPaginatedParkingSessions([]);
+            setSessionTotalPages(1);
+            setSessionTotalItems(0);
+          }
         } else {
           console.error(
             "❌ Failed to fetch paginated parking sessions:",
@@ -293,10 +345,13 @@ const UserDetail: React.FC = () => {
     let validSessions = 0;
 
     parkingSessions.forEach((session) => {
-      if (session["exit-date-time"]) {
-        const entryTime = new Date(session["entry-date-time"]);
-        const exitTime = new Date(session["exit-date-time"]);
-        const durationMs = exitTime.getTime() - entryTime.getTime();
+      const exitTime = session["exit-date-time"] || session.exitDateTime;
+      if (exitTime) {
+        const entryTime = new Date(
+          session["entry-date-time"] || session.entryDateTime || ""
+        );
+        const exitTimeDate = new Date(exitTime);
+        const durationMs = exitTimeDate.getTime() - entryTime.getTime();
         const durationMinutes = durationMs / (1000 * 60);
         totalMinutes += durationMinutes;
         validSessions++;
@@ -701,7 +756,7 @@ const UserDetail: React.FC = () => {
                     vehicles.map((vehicle) => (
                       <tr key={vehicle.id} className="hover:bg-gray-50">
                         <td className="px-4 py-3 text-sm font-medium text-blue-600">
-                          {vehicle["license-plate"]}
+                          {vehicle.licensePlate || vehicle["license-plate"]}
                         </td>
                         <td className="px-4 py-3 text-sm">{vehicle.brand}</td>
                         <td className="px-4 py-3 text-sm">{vehicle.model}</td>
@@ -709,27 +764,33 @@ const UserDetail: React.FC = () => {
                         <td className="px-4 py-3 text-sm">
                           <span
                             className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${
-                              vehicle.status.toLowerCase() === "active"
+                              (
+                                vehicle.status || vehicle["status"]
+                              )?.toLowerCase() === "active"
                                 ? "bg-green-100 text-green-800"
                                 : "bg-yellow-100 text-yellow-800"
                             }`}
                           >
-                            {vehicle.status}
+                            {vehicle.status || vehicle["status"]}
                           </span>
                         </td>
                         <td className="px-4 py-3 text-sm">
                           <span
                             className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${
-                              vehicle["sharing-status"].toLowerCase() ===
-                              "available"
+                              (
+                                vehicle.sharingStatus ||
+                                vehicle["sharing-status"]
+                              )?.toLowerCase() === "available"
                                 ? "bg-blue-100 text-blue-800"
-                                : vehicle["sharing-status"].toLowerCase() ===
-                                    "shared"
+                                : (
+                                      vehicle.sharingStatus ||
+                                      vehicle["sharing-status"]
+                                    )?.toLowerCase() === "shared"
                                   ? "bg-green-100 text-green-800"
                                   : "bg-yellow-100 text-yellow-800"
                             }`}
                           >
-                            {vehicle["sharing-status"]}
+                            {vehicle.sharingStatus || vehicle["sharing-status"]}
                           </span>
                         </td>
                       </tr>
@@ -740,7 +801,7 @@ const UserDetail: React.FC = () => {
                         colSpan={6}
                         className="px-4 py-6 text-center text-gray-500"
                       >
-                        No registered vehicles found
+                        No registered vehicles found for this user.
                       </td>
                     </tr>
                   )}
@@ -858,6 +919,9 @@ const UserDetail: React.FC = () => {
                       Owner
                     </th>
                     <th className="px-4 py-3 text-left text-sm font-medium">
+                      Access Duration
+                    </th>
+                    <th className="px-4 py-3 text-left text-sm font-medium">
                       Status
                     </th>
                   </tr>
@@ -867,23 +931,36 @@ const UserDetail: React.FC = () => {
                     sharedVehicles.map((vehicle) => (
                       <tr key={vehicle.id} className="hover:bg-gray-50">
                         <td className="px-4 py-3 text-sm font-medium text-blue-600">
-                          {vehicle["license-plate"]}
+                          {vehicle.licensePlate || vehicle["license-plate"]}
                         </td>
                         <td className="px-4 py-3 text-sm">{vehicle.brand}</td>
                         <td className="px-4 py-3 text-sm">{vehicle.model}</td>
                         <td className="px-4 py-3 text-sm">{vehicle.color}</td>
                         <td className="px-4 py-3 text-sm">
-                          {vehicle["owner-name"]}
+                          {vehicle.ownerName || vehicle["owner-name"]}
+                        </td>
+                        <td className="px-4 py-3 text-sm">
+                          {vehicle.accessDuration || vehicle["access-duration"]
+                            ? `${vehicle.accessDuration || vehicle["access-duration"]} hours`
+                            : "Unlimited"}
                         </td>
                         <td className="px-4 py-3 text-sm">
                           <span
                             className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${
-                              vehicle.status.toLowerCase() === "active"
-                                ? "bg-green-100 text-green-800"
-                                : "bg-yellow-100 text-yellow-800"
+                              (
+                                vehicle.sharingStatus ||
+                                vehicle["sharing-status"]
+                              )?.toLowerCase() === "available"
+                                ? "bg-blue-100 text-blue-800"
+                                : (
+                                      vehicle.sharingStatus ||
+                                      vehicle["sharing-status"]
+                                    )?.toLowerCase() === "shared"
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-yellow-100 text-yellow-800"
                             }`}
                           >
-                            {vehicle.status}
+                            {vehicle.sharingStatus || vehicle["sharing-status"]}
                           </span>
                         </td>
                       </tr>
@@ -891,10 +968,10 @@ const UserDetail: React.FC = () => {
                   ) : (
                     <tr>
                       <td
-                        colSpan={6}
+                        colSpan={7}
                         className="px-4 py-6 text-center text-gray-500"
                       >
-                        No shared vehicles found
+                        No shared vehicles found for this user.
                       </td>
                     </tr>
                   )}
@@ -1062,12 +1139,22 @@ const UserDetail: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
+                  {/* Debug log để kiểm tra dữ liệu */}
+                  {console.log(
+                    "paginatedParkingSessions in render:",
+                    paginatedParkingSessions
+                  )}
                   {paginatedParkingSessions &&
                   paginatedParkingSessions.length > 0 ? (
                     paginatedParkingSessions.map((session) => {
-                      const entryDate = new Date(session["entry-date-time"]);
-                      const exitDate = session["exit-date-time"]
-                        ? new Date(session["exit-date-time"])
+                      console.log("Rendering session:", session);
+                      const entryDate = new Date(
+                        session.entryDateTime || session["entry-date-time"]
+                      );
+                      const exitDateTime =
+                        session.exitDateTime || session["exit-date-time"];
+                      const exitDate = exitDateTime
+                        ? new Date(exitDateTime)
                         : null;
 
                       let duration = "Ongoing";
@@ -1090,10 +1177,11 @@ const UserDetail: React.FC = () => {
                             </div>
                           </td>
                           <td className="px-4 py-3 text-sm">
-                            {session["parking-lot-name"]}
+                            {session.parkingLotName ||
+                              session["parking-lot-name"]}
                           </td>
                           <td className="px-4 py-3 text-sm font-medium text-blue-600">
-                            {session["license-plate"]}
+                            {session.licensePlate || session["license-plate"]}
                           </td>
                           <td className="px-4 py-3 text-sm">{duration}</td>
                           <td className="px-4 py-3 text-sm font-medium">
@@ -1102,14 +1190,22 @@ const UserDetail: React.FC = () => {
                           <td className="px-4 py-3 text-sm">
                             <span
                               className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${
-                                session.status.toLowerCase() === "finished"
+                                (
+                                  session.status || session["status"]
+                                )?.toLowerCase() === "finished"
                                   ? "bg-green-100 text-green-800"
-                                  : session.status.toLowerCase() === "active"
+                                  : (
+                                        session.status || session["status"]
+                                      )?.toLowerCase() === "parking"
                                     ? "bg-blue-100 text-blue-800"
-                                    : "bg-yellow-100 text-yellow-800"
+                                    : (
+                                          session.status || session["status"]
+                                        )?.toLowerCase() === "checkedout"
+                                      ? "bg-purple-100 text-purple-800"
+                                      : "bg-yellow-100 text-yellow-800"
                               }`}
                             >
-                              {session.status}
+                              {session.status || session["status"]}
                             </span>
                           </td>
                         </tr>
@@ -1121,7 +1217,7 @@ const UserDetail: React.FC = () => {
                         colSpan={6}
                         className="px-4 py-6 text-center text-gray-500"
                       >
-                        No parking activity found
+                        No parking activity found for this user.
                       </td>
                     </tr>
                   )}
