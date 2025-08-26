@@ -59,12 +59,12 @@ public class ChangePasswordActivity extends AppCompatActivity {
 
 
             if (!newPass.equals(confirm)) {
-                Snackbar.make(v, "Password confirmation does not match", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(v, getString(R.string.toast_password_confirmation_mismatch), Snackbar.LENGTH_LONG).show();
                 Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
                 return;
             }
             if (newPass.length() < 8 || !newPass.matches(".*\\d.*") || !newPass.matches(".*[A-Z].*")) {
-                Snackbar.make(v, "Password does not meet requirements", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(v, getString(R.string.toast_password_requirements_not_met), Snackbar.LENGTH_LONG).show();
             }
             else {
                 fetchChangePassword(current, newPass);
@@ -77,7 +77,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         // url : /api/user/change-password
         String userId = tokenManager.getUserData() != null ? tokenManager.getUserData().getId() : null;
         if (userId == null) {
-            Snackbar.make(findViewById(android.R.id.content), "Not logged in", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(findViewById(android.R.id.content), getString(R.string.toast_not_logged_in), Snackbar.LENGTH_LONG).show();
             return;
         }
 
@@ -105,7 +105,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
                     edtConfirm.setText("");
 
                     // show snack bar
-                    Snackbar.make(findViewById(android.R.id.content), "Password changed successfully!", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(findViewById(android.R.id.content), getString(R.string.toast_password_changed_success), Snackbar.LENGTH_LONG).show();
 
                 } else {
                     String errorMessage = getErrorMessage(response.code());
@@ -116,15 +116,15 @@ public class ChangePasswordActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 loadingDialog.dismiss();
-                String errorMessage = "Network error occurred";
+                String errorMessage = getString(R.string.toast_network_error_occurred);
                 if (t instanceof java.net.SocketTimeoutException) {
-                    errorMessage = "Request timed out. Please try again.";
+                    errorMessage = getString(R.string.toast_request_timeout);
                 } else if (t instanceof java.net.ConnectException) {
-                    errorMessage = "Cannot connect to server. Please check your connection.";
+                    errorMessage = getString(R.string.toast_cannot_connect_server);
                 } else if (t.getMessage() != null && t.getMessage().contains("Broken pipe")) {
-                    errorMessage = "Connection lost. Please try again.";
+                    errorMessage = getString(R.string.toast_connection_lost);
                 } else if (t.getMessage() != null) {
-                    errorMessage = "Network error: " + t.getMessage();
+                    errorMessage = getString(R.string.toast_network_error_with_message, t.getMessage());
                 }
                 Snackbar.make(findViewById(android.R.id.content), errorMessage, Snackbar.LENGTH_LONG).show();
             }
@@ -134,13 +134,13 @@ public class ChangePasswordActivity extends AppCompatActivity {
     private String getErrorMessage(int statusCode) {
         switch (statusCode) {
             case 400:
-                return "Current password is incorrect or invalid request.";
+                return getString(R.string.toast_current_password_incorrect);
             case 404:
-                return "User not found. Please log in again.";
+                return getString(R.string.toast_user_not_found);
             case 500:
-                return "Server error. Please try again later.";
+                return getString(R.string.toast_server_error);
             default:
-                return "Failed to change password. Please try again.";
+                return getString(R.string.toast_failed_change_password);
         }
     }
 

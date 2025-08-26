@@ -130,7 +130,7 @@ public class InvitationAdapter extends RecyclerView.Adapter<InvitationAdapter.In
             tvNofication.setText(holder.itemView.getContext().getString(R.string.item_vehicle_invitation_notification, vehicle.getOwnerName()));
 
             // Sharing status chip
-            chipSharingStatus.setText(vehicle.getSharingStatus() != null ? vehicle.getSharingStatus() : "Available");
+            chipSharingStatus.setText(vehicle.getSharingStatus() != null ? vehicle.getSharingStatus() : holder.itemView.getContext().getString(R.string.status_available));
 //            chipSharingStatus.setChipBackgroundColor(
 //                    ContextCompat.getColorStateList(
 //                            holder.itemView.getContext(),
@@ -172,7 +172,7 @@ public class InvitationAdapter extends RecyclerView.Adapter<InvitationAdapter.In
             }
             if(btnReject !=null){
                 btnReject.setOnClickListener(v -> {
-                    String title = "Confirm";
+                    String title = holder.itemView.getContext().getString(R.string.dialog_confirm_title);
                     String message = holder.itemView.getContext().getString(
                             R.string.item_vehicle_invitation_notification_reject
                     );

@@ -45,7 +45,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 public void onAuthSuccess(vn.edu.fpt.sapsmobile.models.User user) {
                     runOnUiThread(() -> {
                         loadingDialog.dismiss();
-                        Toast.makeText(ForgotPasswordActivity.this, "Reset link sent. Check your email.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(ForgotPasswordActivity.this, getString(R.string.toast_reset_link_sent), Toast.LENGTH_LONG).show();
                         finish();
                     });
                 }
@@ -54,7 +54,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                 public void onAuthFailure(String error) {
                     runOnUiThread(() -> {
                         loadingDialog.dismiss();
-                        Toast.makeText(ForgotPasswordActivity.this, "Failed: " + error, Toast.LENGTH_LONG).show();
+                        Toast.makeText(ForgotPasswordActivity.this, getString(R.string.toast_reset_failed, error), Toast.LENGTH_LONG).show();
                     });
                 }
             });

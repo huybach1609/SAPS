@@ -117,30 +117,30 @@
     <string name="session_details_subheading">Complete information about your parking session</string>
 
     <string name="session_info_title">Session information</string>
-    <string name="sample_location">Location: Downtown Mall</string>
-    <string name="sample_slot">Parking Slot: A-15</string>
-    <string name="sample_vehicle_plate">ABC-1234</string>
-    <string name="sample_vehicle_model">Toyota Camry</string>
+    <string name="sample_location">Location: </string>
+    <string name="sample_slot">Parking Slot: </string>
+    <string name="sample_vehicle_plate"></string>
+    <string name="sample_vehicle_model"></string>
 
     <string name="time_details_title">Time details</string>
-    <string name="sample_entry_date">Jun 2, 2025</string>
-    <string name="sample_entry_time">14:30</string>
-    <string name="sample_exit_date">Jun 2, 2025</string>
-    <string name="sample_exit_time">16:45</string>
+    <string name="sample_entry_date"></string>
+    <string name="sample_entry_time"></string>
+    <string name="sample_exit_date"></string>
+    <string name="sample_exit_time"></string>
 
     <string name="sample_duration">2 hours 15 minutes</string>
 
     <string name="payment_details_title">Payment details</string>
     <string name="base_rate">Base rate</string>
-    <string name="base_rate_value">$5.00 / hour</string>
+    <string name="base_rate_value"></string>
     <string name="time_charged">Time charged</string>
-    <string name="time_charged_value">2.25 hours</string>
+    <string name="time_charged_value"></string>
     <string name="subtotal">Subtotal</string>
-    <string name="subtotal_value">$11.25</string>
+    <string name="subtotal_value"></string>
     <string name="tax">Tax</string>
-    <string name="tax_value">$1.13</string>
+    <string name="tax_value"></string>
     <string name="total">Cost</string>
-    <string name="total_value">$12.38</string>
+    <string name="total_value"></string>
 
     <string name="transaction_details_title">Transaction details</string>
     <string name="sample_txn_id">TXN-20250602-089</string>
@@ -186,10 +186,10 @@
     <string name="title_access_duration">Access Duration</string>
 
     <!-- Sample Data -->
-    <string name="sample_user_name">Sarah Johnson</string>
-    <string name="sample_user_code">Share Code: USER-SARAH2024</string>
-    <string name="sample_member_since">Member Since: March 2024</string>
-    <string name="sample_vehicle_access">Granting access to: ABC-1234 (Toyota Camry)</string>
+    <string name="sample_user_name"></string>
+    <string name="sample_user_code">Share Code: </string>
+    <string name="sample_member_since">Member Since: </string>
+    <string name="sample_vehicle_access">Granting access to: </string>
 
     <!-- Options -->
     <string name="option_permanent_access">Permanent Access</string>
@@ -263,10 +263,10 @@
 
     <!-- Current User -->
     <string name="section_current_user">👤 Current User with Access</string>
-    <string name="current_user_name">Sarah Johnson</string>
-    <string name="current_user_code">USER-SARAH2024</string>
-    <string name="current_user_granted_date">Access granted: May 15, 2025</string>
-    <string name="current_user_duration">Duration: Permanent Access</string>
+    <string name="current_user_name"></string>
+    <string name="current_user_code"></string>
+    <string name="current_user_granted_date">Access granted: </string>
+    <string name="current_user_duration">Duration: </string>
     <string name="current_user_active">Active</string>
 
     <!-- Note -->
@@ -285,21 +285,21 @@
     <string name="sub_shared_vehicle_access">Review shared vehicle details</string>
 
     <!-- Sections -->
-    <string name="license_plate_def">License Plate: DEF-9012</string>
-    <string name="model_altima">Model: 2021 Nissan Altima</string>
-    <string name="color_black">Color: Black</string>
-    <string name="status_pending">Status: Pending Your Response</string>
+    <string name="license_plate_def">License Plate: </string>
+    <string name="model_altima">Model: </string>
+    <string name="color_black">Color: </string>
+    <string name="status_pending">Status: </string>
 
-    <string name="owner_john_smith">John Smith</string>
-    <string name="owner_code_john">USER-JOHN2023</string>
-    <string name="member_since_jan">Member since: January 2023</string>
+    <string name="owner_john_smith"></string>
+    <string name="owner_code_john"></string>
+    <string name="member_since_jan">Member since: </string>
 
-    <string name="access_duration_perm">Access Duration: Permanent Access</string>
-    <string name="access_invitation_date">Invitation Date: June 3, 2025</string>
+    <string name="access_duration_perm">Access Duration: </string>
+    <string name="access_invitation_date">Invitation Date: </string>
     <string name="access_expires_never">Expires: Never (until revoked)</string>
 
     <string name="section_note_owner">Note from Owner</string>
-    <string name="owner_note_text_access">"Hi Sarah! Feel free to use my car for your daily commute. Please keep it clean and let me know if you need it for long trips. Thanks!"</string>
+    <string name="owner_note_text_access"></string>
 
     <string name="section_important_notes">Important Notes</string>
     <string name="note_parking">• You can use this vehicle for parking at any SAPLS location</string>
@@ -368,5 +368,290 @@
     <string name="share_vehicle_access_search_not_found_search">No results found</string>
     <string name="share_vehicle_access_search_not_found_search_subtitle">Try checking the share code again</string>
     <string name="vehicle_detail_dialog_share">Share</string>
+
+    <!-- New strings for hardcoded text -->
+    <!-- Login Activity -->
+    <string name="login_lets_sign_in">Let\'s Sign you in.</string>
+    <string name="login_welcome_back">Welcome back</string>
+    <string name="login_youve_been_missed">You\'ve been missed!</string>
+    <string name="login_username_or_email">Username or Email</string>
+    <string name="login_enter_username_or_email">Enter Username or Email</string>
+    <string name="login_password">Password</string>
+    <string name="login_enter_password">Enter password</string>
+    <string name="login_button">Login</string>
+    <string name="login_forgot_password">Forgot Password?</string>
+
+    <!-- Forgot Password Activity -->
+    <string name="forgot_password_title">🔒 Forgot Password</string>
+    <string name="forgot_password_description">Enter your registered email and we\'ll send you a password reset link.</string>
+    <string name="forgot_password_send_reset_link">Send Reset Link</string>
+
+    <!-- Change Password Activity -->
+    <string name="change_password_new_password">New Password</string>
+    <string name="change_password_description">Enter and confirm your new password to regain access</string>
+
+    <!-- Payment Success Activity -->
+    <string name="payment_success_title">Payment Completed Successfully!</string>
+    <string name="payment_success_description">Your payment has been processed successfully. You can now exit the parking area.</string>
+    <string name="payment_success_transaction_details">Transaction Details</string>
+    <string name="payment_success_transaction_id">Transaction ID: </string>
+    <string name="payment_success_amount_paid">Amount Paid: </string>
+    <string name="payment_success_payment_method">Payment Method: </string>
+    <string name="payment_success_vehicle_time">Vehicle/Time</string>
+    <string name="payment_success_vehicle">Vehicle: </string>
+    <string name="payment_success_date_time">Date and Time: </string>
+    <string name="payment_success_done">Done</string>
+
+    <!-- Payment Fail Activity -->
+    <string name="payment_fail_title">Payment Failed</string>
+    <string name="payment_fail_description">We were unable to process your payment. Please try again or contact support for assistance.</string>
+    <string name="payment_fail_error_details">Error Details</string>
+    <string name="payment_fail_error_message">Payment timeout - Transaction not completed within the required time frame. Please ensure your bank transfer is completed and try again.</string>
+    <string name="payment_fail_try_again">Try Again</string>
+    <string name="payment_fail_back_to_home">Back to Home</string>
+
+    <!-- Welcome Activity -->
+    <string name="welcome_to">Welcome to</string>
+
+    <!-- Confirm User Access Activity -->
+    <string name="confirm_user_access_email">user@email.com</string>
+    <string name="confirm_user_access_phone">+1234567890</string>
+    <string name="confirm_user_access_vehicle_info">Vehicle Information</string>
+    <string name="confirm_user_access_vehicle_description">Access will be granted to this vehicle</string>
+
+    <!-- Edit Profile Activity -->
+    <string name="edit_profile_document_icon">📄</string>
+    <string name="edit_profile_auto_fill_note">📋 Information will be auto-filled after ID card upload</string>
+    <string name="edit_profile_sample_id">0000000000000</string>
+    <string name="edit_profile_sample_gender">Male</string>
+    <string name="edit_profile_sample_nationality">Vietnamese</string>
+    <string name="edit_profile_sample_name">Nguyen Van N</string>
+    <string name="edit_profile_sample_dob">01/01/2000</string>
+    <string name="edit_profile_not_available">Not available from ID card</string>
+
+    <!-- Parking History Details Activity -->
+    <string name="parking_history_total_duration">Total duration</string>
+    <string name="parking_history_transaction_id">Transaction ID</string>
+    <string name="parking_history_payment_method">Payment Method</string>
+    <string name="parking_history_payment_status">Payment Status</string>
+    <string name="parking_history_payment_date">Payment Date</string>
+    <string name="parking_history_order_code">Order code:</string>
+
+    <!-- Share Vehicle Success Activity -->
+    <string name="share_vehicle_success_title">Vehicle Access Granted Successfully!</string>
+    <string name="share_vehicle_success_shared_with">Shared With</string>
+    <string name="share_vehicle_success_user">User: John Doe</string>
+    <string name="share_vehicle_success_vehicle">Vehicle</string>
+    <string name="share_vehicle_success_vehicle_info">Vehicle: ABC-123 - Toyota Camry</string>
+    <string name="share_vehicle_success_done">Done</string>
+
+    <!-- Payment Activity -->
+    <string name="payment_amount">$12.38</string>
+    <string name="payment_account_number">000000000</string>
+    <string name="payment_account_name">SAPLS Parking System</string>
+    <string name="payment_reference_code">PARK-ABC1234-060325</string>
+    <string name="payment_open_in_browser">Open in Browser</string>
+    <string name="payment_note">Note: Bank transactions may take 1–10 minutes to process automatically.</string>
+
+    <!-- Share Vehicle Access Activity -->
+    <string name="share_vehicle_access_title">Sharing Vehicle</string>
+    <string name="share_vehicle_access_license_plate">License Plate</string>
+    <string name="share_vehicle_access_brand_model_color">Brand Model - Color</string>
+    <string name="share_vehicle_access_how_it_works">How Vehicle Sharing Works</string>
+    <string name="share_vehicle_access_step_1">1. Ask the person for their personal share code (e.g., USER-SARAH2024)</string>
+    <string name="share_vehicle_access_step_2">2. Enter their code to see their profile</string>
+    <string name="share_vehicle_access_step_3">3. Confirm to grant them access to your vehicle</string>
+    <string name="share_vehicle_access_important_note">Important Note</string>
+    <string name="share_vehicle_access_note_1">Each vehicle can only be shared with one person at a time.</string>
+    <string name="share_vehicle_access_note_2">Each user has their own unique share code</string>
+    <string name="share_vehicle_access_safety_tips">Safety Tips</string>
+    <string name="share_vehicle_access_safety_content">• Only share with people you trust\n• Verify the person\'s identity before granting access\n• You can revoke access anytime from settings</string>
+
+    <!-- Register Phase 2 Fragment -->
+    <string name="register_phase2_review_info">📋 Review Information</string>
+    <string name="register_phase2_review_description">Review your auto-filled information</string>
+    <string name="register_phase2_progress">○ ● ○</string>
+    <string name="register_phase2_id_info">📄 Information from ID Card</string>
+    <string name="register_phase2_auto_extracted">✓ Auto-extracted from ID card</string>
+    <string name="register_phase2_auto_note">ℹ️ This information was automatically extracted from your ID card. Please verify it\'s correct before proceeding.</string>
+    <string name="register_phase2_continue">Continue to Vehicle Registration →</string>
+
+    <!-- Register Fragment -->
+    <string name="register_title">Register new Account</string>
+    <string name="register_subtitle">Create your account</string>
+
+    <!-- View List Invitation Activity -->
+    <string name="view_list_invitation_no_vehicles">No vehicles</string>
+    <string name="view_list_invitation_add_first">Add your first vehicle</string>
+    <string name="view_list_invitation_add_vehicle">Add Vehicle</string>
+
+    <!-- Edit Profile Activity - Additional strings -->
+    <string name="edit_profile_document_emoji">📄</string>
+    <string name="edit_profile_auto_fill_info">📋 Information will be auto-filled after ID card upload</string>
+    <string name="edit_profile_sample_id_number">0000000000000</string>
+    <string name="edit_profile_sample_gender_male">Male</string>
+    <string name="edit_profile_sample_nationality_vietnamese">Vietnamese</string>
+    <string name="edit_profile_sample_full_name">Nguyen Van N</string>
+    <string name="edit_profile_sample_date_of_birth">01/01/2000</string>
+    <string name="edit_profile_not_available_from_id">Not available from ID card</string>
+
+    <!-- Home Fragment - Additional strings -->
+    <string name="home_greeting_username">Hello UserName!</string>
+    <string name="home_current_session">Current session</string>
+    <string name="home_session_active">ACTIVE</string>
+    <string name="home_sample_parking_lot">Downtown Mall Parking</string>
+    <string name="home_sample_vehicle">Toyota Corolla Altis</string>
+    <string name="home_sample_location">123 Main Street, District 1, Spot A-15</string>
+    <string name="home_session_started">Started</string>
+    <string name="home_sample_entry_time">14:30, 03 July 2025</string>
+    <string name="home_session_duration">Duration</string>
+    <string name="home_sample_duration">4h 49m</string>
+    <string name="home_current_cost">Current cost</string>
+    <string name="home_sample_cost">N/Ạ đ</string>
+    <string name="home_check_out">Check Out</string>
+    <string name="home_start_new_session">Let\'s start your new parking lot session!</string>
+    <string name="home_no_active_session">No active parking session found</string>
+    <string name="home_app_name">SAPLS</string>
+    <string name="home_app_full_name">Semi-Automatic Parking Lot System</string>
+    <string name="home_app_description">Advanced parking management platform with automated license plate recognition, real-time monitoring, and comprehensive analytics.</string>
+    <string name="home_feature_ai_emoji">📷</string>
+    <string name="home_feature_ai_recognition">AI Recognition</string>
+    <string name="home_feature_secure_emoji">🔒</string>
+    <string name="home_feature_secure">Secure</string>
+    <string name="home_feature_fast_emoji">⚡</string>
+    <string name="home_feature_fast">Fast</string>
+
+    <!-- Profile Fragment -->
+    <string name="profile_fragment_name">Name</string>
+    <string name="profile_fragment_email">example@mail.com</string>
+    <string name="profile_fragment_edit">Edit</string>
+    <string name="profile_fragment_change_password">Change Password</string>
+    <string name="profile_fragment_profile_information">Profile Information</string>
+    <string name="profile_fragment_logout">LogOut</string>
+    <string name="profile_fragment_actions">Actions</string>
+    <string name="profile_fragment_account_information">Account Information</string>
+    <string name="profile_fragment_id_no">ID No:</string>
+    <string name="profile_fragment_date_of_birth">Date of Birth:</string>
+    <string name="profile_fragment_sex">Sex:</string>
+    <string name="profile_fragment_nationality">Nationality:</string>
+    <string name="profile_fragment_place_of_origin">Place of Origin:</string>
+    <string name="profile_fragment_place_of_residence">Place of Residence:</string>
+    <string name="profile_fragment_phone">Phone:</string>
+    <string name="profile_fragment_member_since">Member Since:</string>
+
+    <!-- Add Vehicle Activity -->
+    <string name="add_vehicle_document_emoji">📄</string>
+    <string name="add_vehicle_upload_title">Upload Vehicle Registration</string>
+    <string name="add_vehicle_upload_description">Take a photo or select from gallery to update your information</string>
+    <string name="add_vehicle_btn_take_photo">Take Photo</string>
+    <string name="add_vehicle_btn_front_side">Front Side</string>
+    <string name="add_vehicle_btn_back_side">Back Side</string>
+    <string name="add_vehicle_auto_fill_info">📋 Information will be auto-filled after vehicle registration upload</string>
+    <string name="add_vehicle_owner_full_name">Owner\'s Full Name</string>
+    <string name="add_vehicle_license_plate_number">License Plate Number</string>
+    <string name="add_vehicle_vehicle_model">Vehicle Model</string>
+    <string name="add_vehicle_color">Color</string>
+    <string name="add_vehicle_brand">Brand</string>
+    <string name="add_vehicle_engine_number">Engine Number</string>
+    <string name="add_vehicle_chassis_number">Chassis Number</string>
+    <string name="add_vehicle_vehicle_type">Vehicle Type</string>
+    <string name="add_vehicle_auto_extracted_note">✓ Auto-extracted from vehicle registration</string>
+    <string name="add_vehicle_btn_complete_registration">Complete Registration</string>
+
+    <!-- Register Fragment -->
+    <string name="register_fragment_back">Back</string>
+    <string name="register_fragment_email_address">Email Address</string>
+    <string name="register_fragment_enter_email">Enter your email address</string>
+    <string name="register_fragment_full_name">Full Name</string>
+    <string name="register_fragment_enter_full_name">Enter your full name</string>
+    <string name="register_fragment_phone_number">Phone Number</string>
+    <string name="register_fragment_enter_phone">Enter your phone number</string>
+    <string name="register_fragment_password">Password</string>
+    <string name="register_fragment_enter_password">Enter your password</string>
+    <string name="register_fragment_confirm_password">Confirm Password</string>
+    <string name="register_fragment_confirm_password_hint">Confirm your password</string>
+    <string name="register_fragment_password_requirements">Password Requirements:\n• At least 8 characters\n• Uppercase &amp; lowercase letters\n• Numbers &amp; symbols\n• No spaces</string>
+    <string name="register_fragment_btn_register">Register</string>
+
+    <!-- Toast Messages -->
+    <string name="toast_error_unable_to_fetch_data">Error: Unable to fetch data</string>
+    <string name="toast_request_failed">Request failed: %1$s</string>
+    <string name="toast_all_notifications_marked_read">All notifications marked as read</string>
+    <string name="toast_please_fill_all_fields">Please fill in all required fields</string>
+    <string name="toast_enter_valid_email">Please enter a valid email address</string>
+    <string name="toast_enter_valid_phone">Please enter a valid phone number</string>
+    <string name="toast_passwords_not_match">Passwords do not match</string>
+    <string name="toast_password_min_length">Password must be at least 8 characters</string>
+    <string name="toast_network_error">Network error: %1$s</string>
+    <string name="toast_invalid_vehicle_id">Invalid vehicle ID</string>
+    <string name="toast_failed_load_vehicle_details">Failed to load vehicle details</string>
+    <string name="toast_connection_error">Connection error</string>
+    <string name="toast_edit_vehicle">Edit: %1$s</string>
+    <string name="toast_share_vehicle">Share: %1$s</string>
+    <string name="toast_operation_cancelled">Operation cancelled</string>
+    <string name="toast_failed_get_vehicle_details">Failed to get vehicle details</string>
+    <string name="toast_network_error_get_vehicle">Network error getting vehicle details</string>
+    <string name="toast_vehicle_recalled_success">Vehicle recalled successfully</string>
+    <string name="toast_failed_recall_vehicle">Failed to recall vehicle</string>
+    <string name="toast_network_error_recall">Network error recalling vehicle</string>
+    <string name="toast_invitation_rejected_success">Invitation rejected successfully</string>
+    <string name="toast_failed_reject_invitation">Failed to reject invitation</string>
+    <string name="toast_network_error_reject">Network error rejecting invitation</string>
+    <string name="toast_missing_user_vehicle_data">Missing user or vehicle data</string>
+    <string name="toast_checkout_successful">Checkout successful</string>
+    <string name="toast_checkout_failed">Checkout failed</string>
+    <string name="toast_session_already_checked_out">Session already checked out</string>
+    <string name="toast_invalid_checkout_request">Invalid checkout request</string>
+    <string name="toast_network_error_checkout">Network error during checkout</string>
+    <string name="toast_no_user_data_sign_in">No user data. Please sign in again.</string>
+    <string name="toast_please_upload_image">Please upload Image</string>
+    <string name="toast_profile_request_submitted">Client profile request submitted successfully!</string>
+    <string name="toast_error_reading_images">Error reading images</string>
+    <string name="toast_please_select_both_sides_id">Please select both front and back sides of ID card</string>
+    <string name="toast_feature_not_supported_recognition">This feature does not support recognition of both sides from photos yet.</string>
+    <string name="toast_auto_filled_from_id">Auto-filled from ID card</string>
+    <string name="toast_error_preparing_upload">Error preparing upload</string>
+    <string name="toast_please_select_both_sides_registration">Please select both front and back sides of vehicle registration</string>
+    <string name="toast_auto_filled_from_registration">Auto-filled from vehicle registration</string>
+    <string name="toast_upload_failed">Upload failed: %1$s</string>
+    <string name="toast_registration_failed">Registration failed: %1$s</string>
+    <string name="toast_reset_link_sent">Reset link sent. Check your email.</string>
+    <string name="toast_reset_failed">Failed: %1$s</string>
+
+    <!-- Dialog Messages -->
+    <string name="dialog_confirm_title">Confirm</string>
+    <string name="dialog_confirm_action_title">Confirm action</string>
+    <string name="dialog_confirm_action_message">Are you sure you want to continue?</string>
+    <string name="dialog_confirm_recall_title">Confirm Recall</string>
+    <string name="dialog_confirm_recall_message">Are you sure you want to recall access to this vehicle?</string>
+    <string name="dialog_confirm_reject_title">Confirm Reject</string>
+    <string name="dialog_confirm_reject_message">Are you sure you want to reject this invitation?</string>
+    <string name="dialog_confirm_share_title">Confirm Share</string>
+    <string name="dialog_confirm_share_message">Are you sure you want to share this vehicle?</string>
+    <string name="dialog_yes">Yes</string>
+    <string name="dialog_no">No</string>
+
+    <!-- Status Messages -->
+    <string name="status_available">Available</string>
+
+    <!-- Change Password Activity -->
+    <string name="toast_password_confirmation_mismatch">Password confirmation does not match</string>
+    <string name="toast_password_requirements_not_met">Password does not meet requirements</string>
+    <string name="toast_not_logged_in">Not logged in</string>
+    <string name="toast_password_changed_success">Password changed successfully!</string>
+    <string name="toast_network_error_occurred">Network error occurred</string>
+    <string name="toast_request_timeout">Request timed out. Please try again.</string>
+    <string name="toast_cannot_connect_server">Cannot connect to server. Please check your connection.</string>
+    <string name="toast_connection_lost">Connection lost. Please try again.</string>
+    <string name="toast_network_error_with_message">Network error: %1$s</string>
+    <string name="toast_current_password_incorrect">Current password is incorrect or invalid request.</string>
+    <string name="toast_user_not_found">User not found. Please log in again.</string>
+    <string name="toast_server_error">Server error. Please try again later.</string>
+    <string name="toast_failed_change_password">Failed to change password. Please try again.</string>
+
+    <!-- Checkout Activity Error Messages -->
+    <string name="toast_vehicle_information_missing">Vehicle information is missing</string>
+    <string name="toast_error_loading_checkout_data">Error loading checkout data</string>
+    <string name="toast_invalid_vehicle_information">Invalid vehicle information</string>
 
 </resources>

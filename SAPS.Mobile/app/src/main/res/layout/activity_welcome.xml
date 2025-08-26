@@ -40,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
-            android:text="Welcome to"
+            android:text="@string/welcome_to"
             android:textColor="#6B7280"
             android:textSize="24sp"
             android:textStyle="normal" />

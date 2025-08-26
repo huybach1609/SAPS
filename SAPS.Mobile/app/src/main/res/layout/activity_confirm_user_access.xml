@@ -131,7 +131,7 @@
                             android:id="@+id/tvUserEmail"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="user@email.com"
+                            android:text="@string/confirm_user_access_email"
                             android:textAppearance="?attr/textAppearanceBodySmall"
                             android:textColor="?attr/colorPrimary"
                             android:layout_marginBottom="2dp" />
@@ -140,7 +140,7 @@
                             android:id="@+id/tvUserPhone"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="+1234567890"
+                            android:text="@string/confirm_user_access_phone"
                             android:textAppearance="?attr/textAppearanceBodySmall"
                             android:textColor="?attr/colorPrimary" />
                     </LinearLayout>
@@ -204,7 +204,7 @@
                             android:id="@+id/tvVehicleInfo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Vehicle Information"
+                            android:text="@string/confirm_user_access_vehicle_info"
                             android:textAppearance="?attr/textAppearanceTitleMedium"
                             android:textColor="?attr/colorOnSurface"
                             android:layout_marginBottom="4dp" />
@@ -212,7 +212,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Access will be granted to this vehicle"
+                            android:text="@string/confirm_user_access_vehicle_description"
                             android:textAppearance="?attr/textAppearanceBodyMedium"
                             android:textColor="?attr/colorOnSurfaceVariant" />
 

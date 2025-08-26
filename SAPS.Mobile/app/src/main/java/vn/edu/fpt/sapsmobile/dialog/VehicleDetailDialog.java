@@ -71,28 +71,28 @@ public class VehicleDetailDialog {
                 .create();
 
         btnAction.setOnClickListener(v -> {
-            String title = "Confirm action";
-            String message = "Are you sure you want to continue?";
+            String title = context.getString(R.string.dialog_confirm_action_title);
+            String message = context.getString(R.string.dialog_confirm_action_message);
             
             // Set specific messages based on vehicle status and action
             if (ShareVehicleStatus.SHARED.getValue().equals(vehicle.getSharingStatus())) {
-                title = "Confirm Recall";
-                message = "Are you sure you want to recall access to this vehicle?";
+                title = context.getString(R.string.dialog_confirm_recall_title);
+                message = context.getString(R.string.dialog_confirm_recall_message);
             } else if (ShareVehicleStatus.PENDING.getValue().equals(vehicle.getSharingStatus())) {
-                title = "Confirm Reject";
-                message = "Are you sure you want to reject this invitation?";
+                title = context.getString(R.string.dialog_confirm_reject_title);
+                message = context.getString(R.string.dialog_confirm_reject_message);
             } else if (ShareVehicleStatus.AVAILABLE.getValue().equals(vehicle.getSharingStatus())) {
-                title = "Confirm Share";
-                message = "Are you sure you want to share this vehicle?";
+                title = context.getString(R.string.dialog_confirm_share_title);
+                message = context.getString(R.string.dialog_confirm_share_message);
             }
             
             new AlertDialog.Builder(v.getContext())
                     .setTitle(title)
                     .setMessage(message)
-                    .setPositiveButton("Yes", (dialogInterface, which) -> {
+                    .setPositiveButton(context.getString(R.string.dialog_yes), (dialogInterface, which) -> {
                         vehicleDetailListener.onAction(vehicle, dialog);
                     })
-                    .setNegativeButton("No", (dialogInterface, which) -> {
+                    .setNegativeButton(context.getString(R.string.dialog_no), (dialogInterface, which) -> {
                         dialogInterface.dismiss();
                     })
                     .show();
