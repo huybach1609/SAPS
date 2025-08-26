@@ -227,9 +227,9 @@ function App() {
           element={
             <ProtectedRoute requiredRole="parkinglotowner">
               <OwnerParkingLotProviderWrapper>
-                <DefaultLayout title="SAPLS Parking Lot Management">
+                {/* <DefaultLayout title="SAPLS Parking Lot Management"> */}
                   <Outlet />
-                </DefaultLayout>
+                {/* </DefaultLayout> */}
               </OwnerParkingLotProviderWrapper>
             </ProtectedRoute>
           }
