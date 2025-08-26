@@ -38,7 +38,7 @@ const SubscriptionInfo: React.FC<{ selectedParkingLot: ParkingLot, parkingLots: 
             duration: response.duration,
             price: response.price,
             description: response.description || '',
-            status: response.status
+            status: response.status as 'Active' | 'Inactive'
          },
          parkingLot: selectedParkingLot
       });
@@ -94,7 +94,7 @@ const SubscriptionInfo: React.FC<{ selectedParkingLot: ParkingLot, parkingLots: 
                duration: subscriptionResponse.duration,
                price: subscriptionResponse.price,
                description: subscriptionResponse.description || '',
-               status: subscriptionResponse.status
+               status: subscriptionResponse.status as 'Active' | 'Inactive'
             },
             parkingLot: parkingLotDetails 
          };

@@ -7,7 +7,7 @@ import { AddStaffModal, UpdateStaffModal } from './StaffModal';
 import { useStaffManagement } from '@/hooks/useStaffManagement';
 import { StaffSearchAndAdd } from './components/StaffSearchAndAdd';
 import { StaffListTable } from './components/StaffListTable';
-import { StaffListStatusComponent } from './components/StaffListStatusComponent';
+// import { StaffListStatusComponent } from './components/StaffListStatusComponent';
 
 export default function StaffManagement() {
     const { selectedParkingLot, loading: parkingLotLoading } = useParkingLot();
@@ -25,7 +25,7 @@ export default function StaffManagement() {
         setStatusFilter,
         loadStaffList,
         handleSearch,
-        handleDeactivateStaff,
+        // handleDeactivateStaff,
         handleReset,
     } = useStaffManagement(selectedParkingLot?.id);
 
@@ -70,8 +70,8 @@ export default function StaffManagement() {
                         selectUser={selectedUser}
                         setSelectUser={setSelectedUser}
                         parkingLot={selectedParkingLot}
-                        updateModalDisclosure={updateModalDisclosure}
-                        handleDeactivateStaff={handleDeactivateStaff}
+                        // updateModalDisclosure={updateModalDisclosure}
+                        // handleDeactivateStaff={handleDeactivateStaff}
                     />
                 )}
             </div>

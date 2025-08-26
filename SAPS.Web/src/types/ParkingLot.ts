@@ -19,7 +19,7 @@ export interface Subscription {
     duration: number; // in milliseconds
     price: number;
     status: 'Active' | 'Inactive';
-    updatedBy: string;
+    updatedBy?: string;
     description?: string;
 }
 

@@ -6,7 +6,7 @@ interface ParkingLotContextType {
     parkingLots: ParkingLot[];
     selectedParkingLot: ParkingLot | null;
     selectedParkingLotId: string | null;
-    selectedParkingLotData: ParkingLot | null;
+    // selectedParkingLotData: ParkingLot | null;
     loading: boolean;
     setSelectedParkingLotId: (id: string) => void;
     refresh: () => void;
@@ -21,7 +21,7 @@ export const ParkingLotProvider: React.FC<{ children: React.ReactNode, userId: s
         const saved = localStorage.getItem('selectedParkingLotId');
         return saved || null;
     });
-    const [selectedParkingLotData, setSelectedParkingLotData] = useState<ParkingLot | null>(null);
+    // const [selectedParkingLotData, setSelectedParkingLotData] = useState<ParkingLot | null>(null);
     const [loading, setLoading] = useState(true);
 
     const fetchParkingLots = async () => {
@@ -85,7 +85,7 @@ export const ParkingLotProvider: React.FC<{ children: React.ReactNode, userId: s
             parkingLots, 
             selectedParkingLot, 
             selectedParkingLotId,
-            selectedParkingLotData,
+            // selectedParkingLotData,
             loading, 
             setSelectedParkingLotId: handleSetSelectedParkingLotId,
             refresh: fetchParkingLots 

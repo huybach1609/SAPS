@@ -1,4 +1,4 @@
-import { apiUrl } from "@/config/base";
+// import { apiUrl } from "@/config/base";
 import { ApiResponse } from "@/types/admin";
 import { UserDetails } from "@/types/UserClient";
 import { createApiInstance } from "../utils/apiUtils";
