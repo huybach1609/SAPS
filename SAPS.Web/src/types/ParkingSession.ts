@@ -1,5 +1,5 @@
 export enum ParkingSessionStatus {
-    COMPLETED = 0,
-    CURRENTLY_PARKED = 1,
-    PAYMENT_PENDING = 2,
+    FINISHED = "Finished",
+    PARKING = "Parking",
+    CHECKED_OUT = "Checked Out",
 } 

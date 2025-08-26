@@ -6,29 +6,57 @@ import { useAuth } from '@/services/auth/AuthContext';
 import { useParkingLot } from '../ParkingLotContext';
 import { Button } from '@heroui/button';
 import { addToast, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, Spinner, Tab, Tabs, useDisclosure } from '@heroui/react';
-import axios from 'axios';
-import { apiUrl } from '@/config/base';
 import ParkingLotPayment from './ParkingLotPayment';
-import { User } from '@/types/User';
+// import { User } from '@/types/User';
 // import { formatDate } from '@/components/utils/stringUtils';
 import SubscriptionInfo from './SubscriptionInfo';
+import { parkingLotInfoService } from '@/services/parkinglot/parkingLotInfoService';
 
 
 const ParkingLotInfoContainer: React.FC = () => {
     const [editFormData, setEditFormData] = useState<Partial<ParkingLot>>({});
     const [useWhitelist, setUseWhitelist] = useState(false);
+    const [parkingLotData, setParkingLotData] = useState<ParkingLot | null>(null);
+    const [loadingParkingLot, setLoadingParkingLot] = useState(false);
 
     const { selectedParkingLot, parkingLots, loading, refresh } = useParkingLot();
     const { user } = useAuth();
 
-    console.log(user);
+    // Function to fetch parking lot by ID
+    const fetchParkingLotById = async (parkingLotId: string) => {
+        setLoadingParkingLot(true);
+        try {
+            const data = await parkingLotInfoService.fetchParkingLotById(parkingLotId);
+            setParkingLotData(data);
+        } catch (error) {
+            console.error('Error fetching parking lot by ID:', error);
+            addToast({
+                title: "Error",
+                description: "Failed to fetch parking lot details",
+                color: "danger"
+            });
+        } finally {
+            setLoadingParkingLot(false);
+        }
+    };
+
+    // Fetch parking lot data when selectedParkingLot changes
+    React.useEffect(() => {
+        if (selectedParkingLot?.id) {
+            fetchParkingLotById(selectedParkingLot.id);
+        }
+    }, [selectedParkingLot?.id]);
+
+    // console.log(user);
     const { isOpen, onOpen, onClose } = useDisclosure();
+
+    
 
     const handleEditClick = () => {
         setEditFormData({
-            name: selectedParkingLot?.name || '',
-            description: selectedParkingLot?.description || '',
-            totalParkingSlot: selectedParkingLot?.totalParkingSlot || 0
+            name: parkingLotData?.name || '',
+            description: parkingLotData?.description || '',
+            totalParkingSlot: parkingLotData?.totalParkingSlot || 0
         });
 
         onOpen();
@@ -38,30 +66,31 @@ const ParkingLotInfoContainer: React.FC = () => {
 
     const handleSaveChanges = async () => {
         try {
-            const response = await axios.put(
-                `${apiUrl}/api/ParkingLot/${user?.id}/${selectedParkingLot?.id}`,
-                editFormData,
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    }
-                }
-            );
+            await parkingLotInfoService.updateParkingLotBasicInfo({
+                id: parkingLotData?.id as string,
+                name: editFormData.name || '',
+                description: editFormData.description || '',
+                totalParkingSlot: editFormData.totalParkingSlot || 0,
+                status: parkingLotData?.status || 'Active',
+            });
 
-            if (response.status === 200) {
-                console.log('Parking lot updated successfully:', response.data);
-                addToast({
-                    title: "Success",
-                    description: "update information successfully",
-                    color: "success"
-                })
-                refresh();
+            addToast({
+                title: "Success",
+                description: "update information successfully",
+                color: "success"
+            })
+            // Refresh the parking lot data after successful update
+            if (parkingLotData?.id) {
+                await fetchParkingLotById(parkingLotData.id);
             }
+            refresh();
         } catch (error) {
             console.error('Error updating parking lot:', error);
-
-            // Handle error appropriately (show toast notification, etc.)
+            addToast({
+                title: "Error",
+                description: "Failed to update parking lot information",
+                color: "danger"
+            });
         }
         console.log('Saving changes:', editFormData);
         onClose();
@@ -69,15 +98,29 @@ const ParkingLotInfoContainer: React.FC = () => {
 
     };
 
-    const formatDate = (dateString: string) => {
-        return new Date(dateString).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
+    const formatDate = (dateString: string | null | undefined) => {
+        if (!dateString) {
+            return 'N/A';
+        }
+
+        try {
+            const date = new Date(dateString);
+            if (isNaN(date.getTime())) {
+                return 'Invalid Date';
+            }
+
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        } catch (error) {
+            console.error('Error formatting date:', error);
+            return 'Invalid Date';
+        }
     };
 
-    if (loading) {
+    if (loading || loadingParkingLot) {
         return (
             <div className="flex items-center justify-center h-64">
                 {/* <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div> */}
@@ -86,7 +129,7 @@ const ParkingLotInfoContainer: React.FC = () => {
         );
     }
 
-    if (!selectedParkingLot) {
+    if (!selectedParkingLot || !parkingLotData) {
         return (
             <div className="text-center py-12">
                 <Building2 className="mx-auto h-12 w-12 text-gray-400" />
@@ -101,7 +144,6 @@ const ParkingLotInfoContainer: React.FC = () => {
             {/* System Information Section */}
             <div className=" rounded-lg shadow-md m-2  shadow-background-200/30">
                 <div className="p-6">
-
                     <div className="flex items-center justify-between mb-6">
                         <div className="flex items-center space-x-3">
                             <div className="p-2 bg-muted rounded-lg">
@@ -109,15 +151,16 @@ const ParkingLotInfoContainer: React.FC = () => {
                             </div>
                             <h2 className="text-xl font-semibold ">System Information</h2>
                         </div>
-                        <Button
-                            onPress={handleEditClick}
-                            startContent={<Edit className="h-4 w-4" />}
-                            className="flex items-center space-x-2 px-4
-                             py-2 
-                              rounded-lg hover:bg-background-800 transition-colors bg-background-900 text-background-50"
-                        >
-                            <span>Edit</span>
-                        </Button>
+                        <div className="flex items-center space-x-3">
+                           
+                            <Button
+                                onPress={handleEditClick}
+                                startContent={<Edit className="h-4 w-4" />}
+                                className="flex items-center space-x-2 px-4 py-2 rounded-lg hover:bg-background-800 transition-colors bg-background-900 text-background-50"
+                            >
+                                <span>Edit</span>
+                            </Button>
+                        </div>
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -127,7 +170,7 @@ const ParkingLotInfoContainer: React.FC = () => {
                                 <div className="flex items-start space-x-3">
                                     <MapPin className="h-5 w-5  mt-0.5" />
                                     <div>
-                                        <p className="">{selectedParkingLot.address}</p>
+                                        <p className="">{parkingLotData.address}</p>
                                         <p className="text-sm text-background-900/50 mt-1">Cannot be modified - Contact support to update</p>
                                     </div>
                                 </div>
@@ -140,7 +183,7 @@ const ParkingLotInfoContainer: React.FC = () => {
                                 <div className="flex items-center space-x-3">
                                     <Calendar className="h-5 w-5 " />
                                     <div>
-                                        <p className="">{formatDate(selectedParkingLot.createdAt)}</p>
+                                        <p className="">{formatDate(parkingLotData.createdAt)}</p>
                                         <p className="text-sm text-background-900/50 mt-1">Registration date in SAPLS system</p>
                                     </div>
                                 </div>
@@ -163,10 +206,10 @@ const ParkingLotInfoContainer: React.FC = () => {
                                             <Mail className="h-4 w-4 text-background-950" />
                                             <span className="text-background-950">{user?.email}</span>
                                         </div>
-                                        {user?.phone && (
+                                        {user?.phoneNumber && (
                                             <div className="flex items-center space-x-2">
                                                 <Phone className="h-4 w-4 text-background-950" />
-                                                <span className="text-background-950">{user.phone}</span>
+                                                <span className="text-background-950">{user.phoneNumber}</span>
                                             </div>
                                         )}
                                     </div>
@@ -178,10 +221,10 @@ const ParkingLotInfoContainer: React.FC = () => {
                 </div>
             </div>
             {/* Subscription information section */}
-            <SubscriptionInfo selectedParkingLot={selectedParkingLot} user={user as User} parkingLots={parkingLots} />
+            <SubscriptionInfo selectedParkingLot={parkingLotData} parkingLots={parkingLots} />
 
-            {/* Edit Modal with HeroUI */}
             <Modal
+                aria-label="Edit Parking Lot"
                 isOpen={isOpen}
                 onClose={() => {
                     onClose();
@@ -189,7 +232,8 @@ const ParkingLotInfoContainer: React.FC = () => {
                 size="2xl"
                 scrollBehavior="inside"
             >
-                <ModalContent>
+                <ModalContent
+                aria-label="Edit Parking Lot">
                     {(onClose) => (
                         <>
                             <ModalHeader className="flex items-center space-x-3">
@@ -205,6 +249,7 @@ const ParkingLotInfoContainer: React.FC = () => {
                                         Parking Lot Name
                                     </label>
                                     <input
+                                        aria-label="Parking Lot Name"
                                         type="text"
                                         value={editFormData.name || ''}
                                         onChange={(e) => setEditFormData(prev => ({ ...prev, name: e.target.value }))}
@@ -241,9 +286,24 @@ const ParkingLotInfoContainer: React.FC = () => {
                                 </div>
 
                                 <div>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        Status
+                                    </label>
+                                    <select
+                                        value={parkingLotData?.status || 'Active'}
+                                        onChange={(e) => setParkingLotData(prev => prev ? ({ ...prev, status: e.target.value as any }) : prev)}
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                    >
+                                        <option value="Active">Active</option>
+                                        <option value="Inactive">Inactive</option>
+                                    </select>
+                                </div>
+
+                                <div>
                                     <h3 className="text-lg font-medium text-gray-900 mb-4">Features</h3>
                                     <div className="flex items-center space-x-3">
                                         <input
+                                            aria-label="Use whitelist"
                                             type="checkbox"
                                             id="useWhitelist"
                                             checked={useWhitelist}
@@ -308,9 +368,9 @@ const ParkingLotInfo: React.FC = () => {
 
     return (
         <DefaultLayout title='Parking Lot Info'>
-            <Tabs aria-label="Dynamic tabs" items={tabs} className='mt-2'>
+            <Tabs aria-label="Parking Lot Info" items={tabs} className='mt-2'>
                 {(item) => (
-                    <Tab key={item.id} title={item.label}>
+                    <Tab key={item.id} title={item.label} aria-label={item.label}>
                         {item.content}
                     </Tab>
                 )}

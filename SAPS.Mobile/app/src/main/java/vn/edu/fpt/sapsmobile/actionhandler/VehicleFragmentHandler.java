@@ -8,7 +8,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 
 import vn.edu.fpt.sapsmobile.R;
-import vn.edu.fpt.sapsmobile.activities.checkout.CheckoutActivity;
+import vn.edu.fpt.sapsmobile.activities.sharevehicle.ShareVehicleAccessActivity;
 import vn.edu.fpt.sapsmobile.dialog.VehicleDetailDialog;
 import vn.edu.fpt.sapsmobile.enums.ShareVehicleStatus;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
@@ -66,17 +66,29 @@ public class VehicleFragmentHandler implements VehicleFragmentVehicleDetailListe
             if (currentTab == 0) {
                 // Implement recall API call
                 recallVehicle(vehicle);
-            } else if (currentTab == 1) {
-                // TODO: Implement remove API call not done
-//                Toast.makeText(context, "Removing vehicle: " + vehicle.getLicensePlate(), Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(context, "Checkout: " + vehicle.getLicensePlate(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,  vehicle.getLicensePlate(), Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(context, "Checkout: " + vehicle.getLicensePlate(), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(context,  vehicle.getLicensePlate(), Toast.LENGTH_SHORT).show();
+        }
+        if(ShareVehicleStatus.AVAILABLE.getValue().equals(vehicle.getSharingStatus())){
+            if (currentTab == 0) {
+                // Navigate to ShareVehicleAccessActivity with vehicle data
+                Intent intent = new Intent(context, ShareVehicleAccessActivity.class);
+                intent.putExtra("vehicle", vehicle);
+                context.startActivity(intent);
+            }
+        }
+        if(ShareVehicleStatus.PENDING.getValue().equals(vehicle.getSharingStatus())){
+            if (currentTab == 0) {
+                // Implement reject API call
+                rejectVehicle(vehicle);
+            }
         }
         dialog.dismiss();
     }
+//    private void
     private void recallVehicle(Vehicle vehicle) {
         ShareVehicleApi api = ApiTest.getServiceLast(context).create(ShareVehicleApi.class);
         
@@ -85,7 +97,7 @@ public class VehicleFragmentHandler implements VehicleFragmentVehicleDetailListe
         });
         
         // Step 1: Get shared vehicle details using vehicle.getId()
-        api.getSharedVehicleDetails(vehicle.getId()).enqueue(new retrofit2.Callback<SharedVehicleDetails>() {
+        api.getSharedVehicleDetailsByVehicleId(vehicle.getId()).enqueue(new retrofit2.Callback<SharedVehicleDetails>() {
             @Override
             public void onResponse(retrofit2.Call<SharedVehicleDetails> call, retrofit2.Response<SharedVehicleDetails> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -130,6 +142,63 @@ public class VehicleFragmentHandler implements VehicleFragmentVehicleDetailListe
             public void onFailure(retrofit2.Call<RecallResponse> call, Throwable t) {
                 loadingDialog.dismiss();
                 Toast.makeText(context, "Network error recalling vehicle", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    
+    private void rejectVehicle(Vehicle vehicle) {
+        ShareVehicleApi api = ApiTest.getServiceLast(context).create(ShareVehicleApi.class);
+        
+        loadingDialog.show("Getting vehicle details...", true, () -> {
+            Toast.makeText(context, "Operation cancelled", Toast.LENGTH_SHORT).show();
+        });
+        
+        // Step 1: Get shared vehicle details using vehicle.getId()
+        api.getSharedVehicleDetailsByVehicleId(vehicle.getId()).enqueue(new retrofit2.Callback<SharedVehicleDetails>() {
+            @Override
+            public void onResponse(retrofit2.Call<SharedVehicleDetails> call, retrofit2.Response<SharedVehicleDetails> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    SharedVehicleDetails sharedVehicleDetails = response.body();
+                    
+                    // Step 2: Call reject API with the shared vehicle ID
+                    rejectSharedVehicle(sharedVehicleDetails.getId());
+                } else {
+                    loadingDialog.dismiss();
+                    Toast.makeText(context, "Failed to get vehicle details", Toast.LENGTH_SHORT).show();
+                }
+            }
+            
+            @Override
+            public void onFailure(retrofit2.Call<SharedVehicleDetails> call, Throwable t) {
+                loadingDialog.dismiss();
+                Toast.makeText(context, "Network error getting vehicle details", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+    
+    private void rejectSharedVehicle(String sharedVehicleId) {
+        ShareVehicleApi api = ApiTest.getServiceLast(context).create(ShareVehicleApi.class);
+        
+        loadingDialog.show("Rejecting invitation...", true, () -> {
+            Toast.makeText(context, "Operation cancelled", Toast.LENGTH_SHORT).show();
+        });
+        
+        api.rejectShareVehicle(sharedVehicleId).enqueue(new retrofit2.Callback<Void>() {
+            @Override
+            public void onResponse(retrofit2.Call<Void> call, retrofit2.Response<Void> response) {
+                loadingDialog.dismiss();
+                if (response.isSuccessful()) {
+                    Toast.makeText(context, "Invitation rejected successfully", Toast.LENGTH_SHORT).show();
+                    refreshData();
+                } else {
+                    Toast.makeText(context, "Failed to reject invitation", Toast.LENGTH_SHORT).show();
+                }
+            }
+            
+            @Override
+            public void onFailure(retrofit2.Call<Void> call, Throwable t) {
+                loadingDialog.dismiss();
+                Toast.makeText(context, "Network error rejecting invitation", Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -1,8 +1,8 @@
-import { useState, useEffect } from 'react';
+import  { useState, useEffect } from 'react';
 import { Accordion, AccordionItem, addToast, Button, Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, PressEvent, Select, SelectItem,  UseDisclosureProps } from '@heroui/react';
 import { Calendar, InfoIcon, Users } from 'lucide-react';
-import { AddStaffFormRequest, statusOptions } from '@/components/utils/staffUtils';
-import { StaffStatus, User } from '@/types/User';
+import { AddStaffFormRequest, userStatusOptions } from '@/components/utils/staffUtils';
+import { UserStatus, User } from '@/types/User';
 import { addStaff, updateStaff } from '@/services/parkinglot/staffService';
 
 
@@ -15,7 +15,7 @@ export const AddStaffModal = ({ addModalDisclosure, parkingLotId }: { addModalDi
         phone: '+1 (555) 123-4567',
         employeeId: 'EMP-2025-XXX',
         dateOfBirth: '',
-        status: StaffStatus.ACTIVE
+        status: UserStatus.ACTIVE
     });
 
     const handleInputChange = (field: string, value: string) => {
@@ -28,10 +28,10 @@ export const AddStaffModal = ({ addModalDisclosure, parkingLotId }: { addModalDi
     async function handleAddUser(e: PressEvent): Promise<void> {
         console.log(e);
         // Validation
-        if (!formData.fullName.trim() || !formData.email.trim() || !formData.phone.trim() || !formData.employeeId.trim()) {
+        if (!formData.fullName.trim() || !formData.email.trim() || !formData.phone.trim()) {
             addToast({
                 title: 'Validation Error',
-                description: 'Full Name, Email, Phone, and Employee ID are required.',
+                description: 'Full Name, Email, and Phone are required.',
                 color: 'danger',
             });
             return;
@@ -40,12 +40,43 @@ export const AddStaffModal = ({ addModalDisclosure, parkingLotId }: { addModalDi
             const response = await addStaff(parkingLotId, formData);
             console.log("succces", response);
             addModalDisclosure.onClose?.();
+            addToast({
+                title: 'Success',
+                description: 'Staff member added successfully!',
+                color: 'success',
+            });
         } catch (error) {
             console.error('Error adding staff:', error);
-            // Handle error (show toast notification, etc.)
+            
+            // Handle specific error messages
+            let errorMessage = 'Failed to add staff';
+            let errorTitle = 'Error';
+            
+            if (error instanceof Error) {
+                if (error.message.includes('FULL_NAME_LETTERS_ONLY')) {
+                    errorTitle = 'Invalid Full Name';
+                    errorMessage = 'Full name can only contain letters, spaces, hyphens, apostrophes, and dots. Please check the name format.';
+                } else if (error.message.includes('EMAIL_ALREADY_EXISTS')) {
+                    errorTitle = 'Email Already Exists';
+                    errorMessage = 'An account with this email address already exists. Please use a different email.';
+                } else if (error.message.includes('INVALID_EMAIL')) {
+                    errorTitle = 'Invalid Email';
+                    errorMessage = 'Please enter a valid email address.';
+                } else if (error.message.includes('INVALID_PHONE')) {
+                    errorTitle = 'Invalid Phone Number';
+                    errorMessage = 'Please enter a valid phone number.';
+                } else {
+                    // Try to extract a more specific error message if available
+                    const errorString = error.message;
+                    if (errorString && errorString !== 'Error') {
+                        errorMessage = errorString.replace('Error: ', '');
+                    }
+                }
+            }
+            
             addToast({
-                title: 'Error',
-                description: 'Failed to add staff',
+                title: errorTitle,
+                description: errorMessage,
                 color: 'danger',
             });
         }
@@ -106,10 +137,10 @@ export const AddStaffModal = ({ addModalDisclosure, parkingLotId }: { addModalDi
                                     </div>
 
                                     {/* Employee ID and Date of Birth */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                                    <div className=" grid-cols-1 md:grid-cols-2 gap-4 mb-6 hidden">
                                         <div>
                                             <label className="block text-sm font-medium text-primary-900/90 mb-2">
-                                                Employee ID
+                                                Employee ID (Optional)
                                             </label>
                                             <Input
                                                 type="text"
@@ -121,7 +152,7 @@ export const AddStaffModal = ({ addModalDisclosure, parkingLotId }: { addModalDi
                                         </div>
                                         <div>
                                             <label className="block text-sm font-medium text-primary-900/90 mb-2">
-                                                Date of Birth
+                                                Date of Birth (Optional)
                                             </label>
                                             <div className="relative">
                                                 <Input
@@ -188,27 +219,27 @@ export const AddStaffModal = ({ addModalDisclosure, parkingLotId }: { addModalDi
 }
 export const UpdateStaffModal = ({ updateModalDisclosure, parkingLotId, user }: { updateModalDisclosure: UseDisclosureProps, parkingLotId: string, user: User | null }) => {
 
-    const [selectedStatus, setSelectedStatus] = useState(new Set([user?.staffProfile?.status?.toString() || '0']));
+    const [selectedStatus, setSelectedStatus] = useState(new Set([user?.status || UserStatus.ACTIVE]));
 
-    const [formData, setFormData] = useState<AddStaffFormRequest>({
+    const [formData, setFormData] = useState({
         fullName: user?.fullName || '',
         email: user?.email || '',
-        phone: user?.phone || '',
+        phone: user?.phoneNumber || '',
         employeeId: user?.staffProfile?.staffId || '',
         dateOfBirth: '',
-        status: user?.staffProfile?.status || 0
+        status: user?.status || UserStatus.ACTIVE
     });
     useEffect(() => {
         if (user) {
             setFormData({
                 fullName: user?.fullName || '',
                 email: user?.email || '',
-                phone: user?.phone || '',
+                phone: user?.phoneNumber || '',
                 employeeId: user?.staffProfile?.staffId || '',
                 dateOfBirth: '',
-                status: user?.staffProfile?.status || 0
+                status: user?.status || UserStatus.ACTIVE
             });
-            setSelectedStatus(new Set([user?.staffProfile?.status?.toString() || '0']));
+            setSelectedStatus(new Set([user?.status || UserStatus.ACTIVE]));
         }
     }, [user]);
 
@@ -224,17 +255,17 @@ export const UpdateStaffModal = ({ updateModalDisclosure, parkingLotId, user }: 
         const statusValue = Array.from(keys)[0] as string;
         setFormData(prev => ({
             ...prev,
-            status: parseInt(statusValue)
+            status: statusValue
         }));
     };
 
     async function handleUpdateUser(e: PressEvent): Promise<void> {
         console.log(e);
         // Validation
-        if (!formData.fullName.trim() || !formData.email.trim() || !formData.phone.trim() || !formData.employeeId.trim()) {
+        if (!formData.fullName.trim() || !formData.email.trim() || !formData.phone.trim()) {
             addToast({
                 title: 'Validation Error',
-                description: 'Full Name, Email, Phone, and Employee ID are required.',
+                description: 'Full Name, Email, and Phone are required.',
                 color: 'danger',
             });
             return;
@@ -243,13 +274,43 @@ export const UpdateStaffModal = ({ updateModalDisclosure, parkingLotId, user }: 
             const response = await updateStaff(parkingLotId, formData);
             console.log("succces", response);
             updateModalDisclosure.onClose?.();
-
-        } catch (error) {
-            console.error('Error adding staff:', error);
-            // Handle error (show toast notification, etc.)
             addToast({
-                title: 'Error',
-                description: 'Failed to add staff',
+                title: 'Success',
+                description: 'Staff member updated successfully!',
+                color: 'success',
+            });
+        } catch (error) {
+            console.error('Error updating staff:', error);
+            
+            // Handle specific error messages
+            let errorMessage = 'Failed to update staff';
+            let errorTitle = 'Error';
+            
+            if (error instanceof Error) {
+                if (error.message.includes('FULL_NAME_LETTERS_ONLY')) {
+                    errorTitle = 'Invalid Full Name';
+                    errorMessage = 'Full name can only contain letters, spaces, hyphens, apostrophes, and dots. Please check the name format.';
+                } else if (error.message.includes('EMAIL_ALREADY_EXISTS')) {
+                    errorTitle = 'Email Already Exists';
+                    errorMessage = 'An account with this email address already exists. Please use a different email.';
+                } else if (error.message.includes('INVALID_EMAIL')) {
+                    errorTitle = 'Invalid Email';
+                    errorMessage = 'Please enter a valid email address.';
+                } else if (error.message.includes('INVALID_PHONE')) {
+                    errorTitle = 'Invalid Phone Number';
+                    errorMessage = 'Please enter a valid phone number.';
+                } else {
+                    // Try to extract a more specific error message if available
+                    const errorString = error.message;
+                    if (errorString && errorString !== 'Error') {
+                        errorMessage = errorString.replace('Error: ', '');
+                    }
+                }
+            }
+            
+            addToast({
+                title: errorTitle,
+                description: errorMessage,
                 color: 'danger',
             });
         }
@@ -298,7 +359,7 @@ export const UpdateStaffModal = ({ updateModalDisclosure, parkingLotId, user }: 
                                                 onSelectionChange={handleStatusChange}
                                                 className="w-full"
                                             >
-                                                {statusOptions.map((status) => (
+                                                {userStatusOptions.map((status) => (
                                                     <SelectItem key={status.key}>
                                                         {status.label}
                                                     </SelectItem>
@@ -336,10 +397,10 @@ export const UpdateStaffModal = ({ updateModalDisclosure, parkingLotId, user }: 
                                     </div>
 
                                     {/* Employee ID and Date of Birth */}
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                                    <div className=" grid-cols-1 md:grid-cols-2 gap-4 mb-6 hidden">
                                         <div>
                                             <label className="block text-sm font-medium text-primary-900/90 mb-2">
-                                                Employee ID
+                                                Employee ID (Optional)
                                             </label>
                                             <Input
                                                 isDisabled
@@ -353,7 +414,7 @@ export const UpdateStaffModal = ({ updateModalDisclosure, parkingLotId, user }: 
                                         </div>
                                         <div>
                                             <label className="block text-sm font-medium text-primary-900/90 mb-2">
-                                                Date of Birth
+                                                Date of Birth (Optional)
                                             </label>
                                             <div className="relative">
                                                 <Input

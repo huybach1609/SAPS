@@ -19,7 +19,7 @@ import {
   DateValue,
   DateRangePicker,
 } from "@heroui/react";
-import { BarChart, Eye } from "lucide-react";
+import { BarChart, Eye, RefreshCcw } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 import {
@@ -29,58 +29,59 @@ import {
 import { useParkingLot } from "../ParkingLotContext";
 
 import DefaultLayout from "@/layouts/default";
-import {
-  IncidentReport,
-  IncidentStatus,
-  IncidentPriority,
-} from "@/types/IncidentReport";
+import { IncidentStatus, IncidentPriority } from "@/types/IncidentReport";
 import {
   fetchIncidents,
   fetchIncidentStatistics,
   IncidentReportStatistics,
+  PaginatedIncidentResponse,
 } from "@/services/parkinglot/incidentService";
-import { PaginationInfo } from "@/types/Whitelist";
+import type { IncidentListItem } from "@/services/parkinglot/incidentService";
 
 const statusOptions = [
   { key: "", label: "All Status" },
-  { key: IncidentStatus.Open, label: "Open" },
-  { key: IncidentStatus.InProgress, label: "In Progress" },
-  { key: IncidentStatus.Resolved, label: "Resolved" },
-  { key: IncidentStatus.Closed, label: "Closed" },
+  { key: "Open", label: "Open" },
+  { key: "InProgress", label: "In Progress" },
+  { key: "Resolved", label: "Resolved" },
+  { key: "Close", label: "Closed" },
 ];
 
 const priorityOptions = [
   { key: "", label: "All Priority" },
-  { key: IncidentPriority.Low, label: "Low" },
-  { key: IncidentPriority.Medium, label: "Medium" },
-  { key: IncidentPriority.High, label: "High" },
-  { key: IncidentPriority.Critical, label: "Critical" },
+  { key: "Low", label: "Low" },
+  { key: "Medium", label: "Medium" },
+  { key: "High", label: "High" },
+  { key: "Critical", label: "Critical" },
 ];
 
-const getStatusColor = (status: IncidentStatus) => {
-  switch (status) {
-    case IncidentStatus.Open:
+const getStatusColor = (status: string | IncidentStatus) => {
+  const value = typeof status === "string" ? status.toLowerCase() : IncidentStatus[status].toLowerCase();
+  switch (value) {
+    case "open":
       return "bg-cyan-100 text-cyan-800";
-    case IncidentStatus.InProgress:
+    case "inprogress":
+    case "in progress":
       return "bg-blue-200 text-blue-800";
-    case IncidentStatus.Resolved:
+    case "resolved":
       return "bg-green-200 text-green-800";
-    case IncidentStatus.Closed:
+    case "closed":
+    case "close":
       return "bg-gray-200 text-gray-800";
     default:
       return "bg-gray-100 text-gray-800";
   }
 };
 
-const getPriorityColor = (priority: IncidentPriority) => {
-  switch (priority) {
-    case IncidentPriority.Low:
+const getPriorityColor = (priority: string | IncidentPriority) => {
+  const value = typeof priority === "string" ? priority.toLowerCase() : IncidentPriority[priority].toLowerCase();
+  switch (value) {
+    case "low":
       return "bg-gray-200 text-gray-800";
-    case IncidentPriority.Medium:
+    case "medium":
       return "bg-blue-200 text-blue-800";
-    case IncidentPriority.High:
+    case "high":
       return "bg-yellow-200 text-yellow-800";
-    case IncidentPriority.Critical:
+    case "critical":
       return "bg-red-200 text-red-800";
     default:
       return "bg-gray-100 text-gray-800";
@@ -94,8 +95,8 @@ export default function IncidentReports() {
   const [priority, setPriority] = useState("");
   // const [date, setDate] = useState("");
   const [loading, setLoading] = useState(false);
-  const [incidents, setIncidents] = useState<IncidentReport[]>([]);
-  const [pagination, setPagination] = useState<PaginationInfo | null>(null);
+  const [incidents, setIncidents] = useState<IncidentListItem[]>([]);
+  const [pagination, setPagination] = useState<PaginatedIncidentResponse | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 10;
 
@@ -106,24 +107,21 @@ export default function IncidentReports() {
 
   const navigate = useNavigate();
 
+  // helper to format expected date-only string: YYYY-MM-DD
+  const formatForApi = (year: number, month: number, day: number) => {
+    const two = (n: number) => n.toString().padStart(2, "0");
+    return `${year}-${two(month)}-${two(day)}`;
+  };
+
   // Fetch incidents from API
   useEffect(() => {
     if (!selectedParkingLot?.id) return;
     setLoading(true);
-    // console.log(status, priority, date, search);
     const dateRangeStart = dateRange?.start
-      ? new Date(
-          dateRange.start.year,
-          dateRange.start.month - 1,
-          dateRange.start.day,
-        ).toISOString()
+      ? formatForApi(dateRange.start.year, dateRange.start.month, dateRange.start.day)
       : undefined;
     const dateRangeEnd = dateRange?.end
-      ? new Date(
-          dateRange.end.year,
-          dateRange.end.month - 1,
-          dateRange.end.day,
-        ).toISOString()
+      ? formatForApi(dateRange.end.year, dateRange.end.month, dateRange.end.day)
       : undefined;
 
     fetchIncidents(
@@ -133,12 +131,12 @@ export default function IncidentReports() {
       search,
       dateRangeStart,
       dateRangeEnd,
-      status !== "" ? Number(status) : undefined,
-      priority !== "" ? Number(priority) : undefined,
+      status || undefined,
+      priority || undefined,
     )
       .then((res) => {
-        setIncidents(res.data);
-        setPagination(res.pagination);
+        setIncidents(res.items);
+        setPagination(res);
       })
       .catch(() => {
         setIncidents([]);
@@ -193,7 +191,7 @@ export default function IncidentReports() {
               {statusOptions.map((opt) => (
                 <SelectItem key={opt.key} textValue={opt.label}>
                   <div
-                    className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(opt.key as IncidentStatus)}`}
+                    className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(opt.key)}`}
                   >
                     {opt.label}
                   </div>
@@ -215,7 +213,7 @@ export default function IncidentReports() {
               {priorityOptions.map((opt) => (
                 <SelectItem key={opt.key} textValue={opt.label}>
                   <div
-                    className={`px-2 py-1 rounded-full text-xs font-semibold ${getPriorityColor(opt.key as IncidentPriority)}`}
+                    className={`px-2 py-1 rounded-full text-xs font-semibold ${getPriorityColor(opt.key)}`}
                   >
                     {opt.label}
                   </div>
@@ -235,6 +233,23 @@ export default function IncidentReports() {
             <Button className="text-background" color="primary" size="sm">
               Search
             </Button>
+            <Button
+            isIconOnly
+              className="text-primary"
+              color="default"
+              size="sm"
+              variant="flat"
+              onPress={() => {
+                setSearch("");
+                setStatus("");
+                setPriority("");
+                setDateRange(null);
+                setCurrentPage(1);
+              }}
+              
+            >
+              <RefreshCcw size={16}/>
+            </Button>
           </div>
         </CardBody>
       </Card>
@@ -249,38 +264,20 @@ export default function IncidentReports() {
             ) : (
               <Table aria-label="Incident Reports Table">
                 <TableHeader>
-                  <TableColumn>Incident ID</TableColumn>
-                  <TableColumn>Type</TableColumn>
-                  <TableColumn>Description</TableColumn>
-                  <TableColumn>Reported By</TableColumn>
+                  <TableColumn>No.</TableColumn>
+                  <TableColumn>Header</TableColumn>
                   <TableColumn>Date &amp; Time</TableColumn>
                   <TableColumn>Priority</TableColumn>
                   <TableColumn>Status</TableColumn>
                   <TableColumn>Actions</TableColumn>
                 </TableHeader>
                 <TableBody>
-                  {incidents.map((inc) => (
+                  {incidents.map((inc, index) => (
                     <TableRow key={inc.id}>
                       <TableCell className="text-primary font-bold cursor-pointer">
-                        {inc.id}
+                        {index + 1}
                       </TableCell>
                       <TableCell>{inc.header}</TableCell>
-                      <TableCell className="flex flex-col">
-                        <span>{inc.description}</span>
-                        <span className="text-xs text-background-900/60">
-                          {inc.descriptionNote}
-                        </span>
-                      </TableCell>
-                      <TableCell className="">
-                        <div className="flex flex-col">
-                          <span className="text-primary font-bold cursor-pointer">
-                            {inc.reporter?.name}
-                          </span>
-                          <span className="text-xs text-background-900/60">
-                            {inc.reporter?.role}
-                          </span>
-                        </div>
-                      </TableCell>
                       <TableCell className="flex flex-col">
                         <span>{formatDateTime(inc.reportedDate)}</span>
                         <span className="text-xs text-background-900/60">
@@ -291,14 +288,14 @@ export default function IncidentReports() {
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-semibold ${getPriorityColor(inc.priority)}`}
                         >
-                          {IncidentPriority[inc.priority]}
+                          {typeof inc.priority === "string" ? inc.priority : IncidentPriority[inc.priority]}
                         </span>
                       </TableCell>
                       <TableCell>
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(inc.status)}`}
                         >
-                          {IncidentStatus[inc.status]}
+                          {typeof inc.status === "string" ? inc.status : IncidentStatus[inc.status]}
                         </span>
                       </TableCell>
                       <TableCell>
@@ -308,7 +305,7 @@ export default function IncidentReports() {
                           color="secondary"
                           onPress={() => {
                             navigate(
-                              `/owner/incidents/${selectedParkingLot?.id}/${inc.id}`,
+                              `/owner/incidents/${inc.id}`,
                             );
                           }}
                         >
@@ -327,8 +324,8 @@ export default function IncidentReports() {
       {pagination && pagination.totalPages > 1 && (
         <div className="mt-6 flex items-center justify-between">
           <div className="text-sm ">
-            Showing page {pagination.currentPage} of {pagination.totalPages}(
-            {pagination.totalItems} total items)
+            Showing page {pagination.pageNumber} of {pagination.totalPages}(
+            {pagination.totalCount} total items)
           </div>
           <div className="flex space-x-2">
             <Button
@@ -344,7 +341,7 @@ export default function IncidentReports() {
               className="text-white"
               color="secondary"
               isDisabled={parkingLotLoading}
-              page={pagination.currentPage}
+              page={pagination.pageNumber}
               total={pagination.totalPages}
               onChange={setCurrentPage}
             />
@@ -385,7 +382,7 @@ const IncidentReportStatisticsCard = ({
       <Spinner />
     </div>
   ) : (
-    <Card className="bg-background-100/20 mb-6">
+    <Card className="bg-background-100/20 mb-6 hidden">
       <CardHeader className="flex items-center gap-2">
         <BarChart className="w-6 h-6 text-primary" />
         <h2 className="text-lg font-bold">Incident Report Statistics</h2>

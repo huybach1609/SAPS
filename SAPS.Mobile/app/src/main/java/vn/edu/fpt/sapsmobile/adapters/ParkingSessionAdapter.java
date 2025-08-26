@@ -13,32 +13,50 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.NumberFormat;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.listener.HistoryFragmentVehicleDetailListener;
-import vn.edu.fpt.sapsmobile.models.ParkingSession;
+import vn.edu.fpt.sapsmobile.dtos.parkingsession.OwnedSessionResponse;
+import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleSummaryDto;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
 import vn.edu.fpt.sapsmobile.utils.DateTimeHelper;
+import vn.edu.fpt.sapsmobile.enums.SessionStatus;
 
 public class ParkingSessionAdapter extends RecyclerView.Adapter<ParkingSessionAdapter.ParkingSessionViewHolder> {
 
-    private final List<ParkingSession> sessions;
+    private final List<OwnedSessionResponse.OwnedParkingSessionDto> sessions;
     private final HistoryFragmentVehicleDetailListener listener;
     private final Context context;
     private final String fragment;
+    private Map<String, Vehicle> vehicleMap = new HashMap<>();
 
-    public ParkingSessionAdapter(List<ParkingSession> sessions, HistoryFragmentVehicleDetailListener listener, Context context, String fragment) {
+    public ParkingSessionAdapter(List<OwnedSessionResponse.OwnedParkingSessionDto> sessions, HistoryFragmentVehicleDetailListener listener, Context context, String fragment) {
         this.sessions = sessions;
         this.listener = listener;
         this.context = context;
         this.fragment = fragment;
-
     }
-    public void updateItems(List<ParkingSession> newList) {
+    
+    public void updateItems(List<OwnedSessionResponse.OwnedParkingSessionDto> newList) {
         this.sessions.clear();
         this.sessions.addAll(newList);
+        notifyDataSetChanged();
+    }
+    
+    public void setVehicles(List<VehicleSummaryDto> vehicles) {
+        vehicleMap.clear();
+        for (VehicleSummaryDto vehicleDto : vehicles) {
+            Vehicle vehicle = new Vehicle();
+            vehicle.setId(vehicleDto.getId());
+            vehicle.setLicensePlate(vehicleDto.getLicensePlate());
+            vehicle.setBrand(vehicleDto.getBrand());
+            vehicle.setModel(vehicleDto.getModel());
+            vehicleMap.put(vehicleDto.getLicensePlate(), vehicle);
+        }
         notifyDataSetChanged();
     }
 
@@ -51,7 +69,7 @@ public class ParkingSessionAdapter extends RecyclerView.Adapter<ParkingSessionAd
 
     @Override
     public void onBindViewHolder(@NonNull ParkingSessionViewHolder holder, int position) {
-        ParkingSession session = sessions.get(position);
+        OwnedSessionResponse.OwnedParkingSessionDto session = sessions.get(position);
         holder.bind(session, listener, context);
     }
 
@@ -64,9 +82,8 @@ public class ParkingSessionAdapter extends RecyclerView.Adapter<ParkingSessionAd
 
         TextView tvParkingLotName, tvLocation, tvVehicle, tvDuration, tvDate, tvAmount, tvStatus;
 
-        ParkingSession session;
+        OwnedSessionResponse.OwnedParkingSessionDto session;
         Vehicle vehicle;
-        // No parking lot fetch; we rely on pre-fetched data
 
         public ParkingSessionViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -79,13 +96,13 @@ public class ParkingSessionAdapter extends RecyclerView.Adapter<ParkingSessionAd
             tvStatus = itemView.findViewById(R.id.tvStatus);
         }
 
-        void bind(ParkingSession session, HistoryFragmentVehicleDetailListener listener, Context context) {
+        void bind(OwnedSessionResponse.OwnedParkingSessionDto session, HistoryFragmentVehicleDetailListener listener, Context context) {
             this.session = session;
 
             // Set thời lượng
             if (session.getExitDateTime() == null) {
                 LocalDateTime now = LocalDateTime.now();
-                tvDuration.setText(DateTimeHelper.calculateDuration(session.getEntryDateTime(),now.toString()));
+                tvDuration.setText(DateTimeHelper.calculateDuration(session.getEntryDateTime(), now.toString()));
             } else {
                 tvDuration.setText(DateTimeHelper.calculateDuration(session.getEntryDateTime(), session.getExitDateTime()));
             }
@@ -97,43 +114,48 @@ public class ParkingSessionAdapter extends RecyclerView.Adapter<ParkingSessionAd
             NumberFormat vndFormat = NumberFormat.getCurrencyInstance(new Locale("vi", "VN"));
             tvAmount.setText(vndFormat.format(session.getCost()));
 
-            // Set status
+            // Set status based on SessionStatus from DTO
+            SessionStatus sessionStatus = SessionStatus.fromApiValue(session.getStatus());
+            tvStatus.setText(sessionStatus.getDisplayText());
 
-            String statusCheck = session.getTransactionId() == null ? "Pending" : "Paid";
-            tvStatus.setTextColor(
-                    ContextCompat.getColor(itemView.getContext(), R.color.md_theme_onTertiaryFixedVariant)
-            );
-            if (session.getExitDateTime() == null) {
-                statusCheck = "On Going";
-                tvStatus.setTextColor(
-                        ContextCompat.getColor(itemView.getContext(), R.color.md_theme_tertiaryFixedDim_mediumContrast)
-                );
-            }
-            tvStatus.setText(statusCheck);
-
-            // Use pre-fetched vehicle and parking lot name
-            vehicle = session.getVehicle();
+            // Get vehicle from map or create a basic one
+            vehicle = vehicleMap.get(session.getLicensePlate());
             if (vehicle != null) {
                 tvVehicle.setText(vehicle.getBrand() + " " + vehicle.getModel() + " " + vehicle.getLicensePlate());
             } else {
-                tvVehicle.setText("");
+                tvVehicle.setText(session.getLicensePlate() != null ? session.getLicensePlate() : "");
+                // Create a basic vehicle object for the listener
+                vehicle = new Vehicle();
+                vehicle.setLicensePlate(session.getLicensePlate());
             }
+            
             tvParkingLotName.setText(session.getParkingLotName() != null ? session.getParkingLotName() : "");
             tvLocation.setText("");
 
             itemView.setOnClickListener(v -> {
                 if (listener != null && vehicle != null) {
                     if(fragment.equals("historyFragment")){
-                        Log.i("ParkingSessionAdapter", session.toString());
-                        listener.onParkingSessionSeeDetailClick(session, vehicle, null);
+                        Log.i("ParkingSessionAdapter", "Session ID: " + session.getId());
+
+
+//
+                        listener.onParkingSessionSeeDetailClick(session.getId(), vehicle, null);
                     } else if (fragment.equals("homeFragment")) {
-                        listener.onParkingSessionClickToCheckOut(session, vehicle, null);
+                        // Create a temporary ParkingSession object for the listener
+                        vn.edu.fpt.sapsmobile.models.ParkingSession tempSession = new vn.edu.fpt.sapsmobile.models.ParkingSession();
+                        tempSession.setId(session.getId());
+                        tempSession.setEntryDateTime(session.getEntryDateTime());
+                        tempSession.setExitDateTime(session.getExitDateTime());
+                        tempSession.setCost(session.getCost());
+                        tempSession.setParkingLotName(session.getParkingLotName());
+                        tempSession.setVehicle(vehicle);
+                        tempSession.setVehicleId(vehicle.getId());
+                        tempSession.setTransactionId(session.getPaymentStatus() != null && session.getPaymentStatus().equalsIgnoreCase("PAID") ? "PAID" : null);
+                        
+                        listener.onParkingSessionClickToCheckOut(tempSession, vehicle, null);
                     }
                 }
             });
         }
-
-
-
     }
 }

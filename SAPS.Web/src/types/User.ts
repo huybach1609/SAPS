@@ -3,13 +3,15 @@ export interface User {
   email: string;
   role: 'admin' | 'parkinglotowner';
   fullName: string;
-  phone: string;
+  phoneNumber?: string;
   address: string;
   profileImageUrl: string;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
+  status?: string;
 
+  staffId?: string;
   staffProfile?: StaffProfile;
   clientProfile?: ClientProfile;
   parkingLotOwnerProfile?: ParkingLotOwnerProfile;
@@ -20,14 +22,15 @@ export interface StaffProfile {
   userId: string;
   staffId: string;
   parkingLotId: string;
-  status: number;
+  status: string;
   user?: User;
 }
-export enum StaffStatus {
-  ACTIVE = 0,
-  ON_LEAVE = 1,
-  SUSPENDED = 2,
-  TERMINATED = 3
+
+export enum UserStatus {
+  ACTIVE = "Active",
+  INACTIVE = "Inactive", 
+  DELETED = "Deleted",
+  BANNED = "Banned"
 }
 
 

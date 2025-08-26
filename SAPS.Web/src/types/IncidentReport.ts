@@ -25,22 +25,34 @@ export interface IncidentReport {
     id: string;
     header: string;
     reportedDate: string; // ISO string
-    priority: IncidentPriority;
+    priority: string; // API returns string
+    status: string; // API returns string
     description: string;
-    descriptionNote?: string;
-    status: IncidentStatus;
+    attachments?: Attachment[];
     reporter: ReporterInfo;
-    incidentEvidences?: IncidentEvidence[];
-    
-}
-export interface ReporterInfo
-{
-    id: string;
-    name?: string;
-    role?: string;
 }
 
-// Incident evidence DTO
+export interface ReporterInfo {
+    id: string;
+    email: string;
+    fullName: string;
+    phoneNumber: string;
+    createdAt: string; // ISO string
+    status: string;
+    parkingLotId: string;
+}
+
+// Attachment DTO
+export interface Attachment {
+    id: string;
+    originalFileName: string;
+    fileSize: number;
+    fileExtension: string;
+    downloadUrl: string;
+    uploadedAt: string; // ISO string
+}
+
+// Legacy types for backward compatibility
 export interface IncidentEvidence {
     id: string;
     incidentReportId: string;

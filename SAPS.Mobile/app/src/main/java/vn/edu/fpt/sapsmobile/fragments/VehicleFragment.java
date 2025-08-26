@@ -35,12 +35,11 @@ import retrofit2.Response;
 import vn.edu.fpt.sapsmobile.activities.sharevehicle.InvitationActivity;
 import vn.edu.fpt.sapsmobile.enums.ShareVehicleStatus;
 import vn.edu.fpt.sapsmobile.network.client.ApiTest;
-import vn.edu.fpt.sapsmobile.network.service.ISharedvehicle;
-import vn.edu.fpt.sapsmobile.network.service.IVehicleApi;
+import vn.edu.fpt.sapsmobile.network.api.ISharedvehicle;
+import vn.edu.fpt.sapsmobile.network.api.IVehicleApi;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.actionhandler.VehicleFragmentHandler;
 import vn.edu.fpt.sapsmobile.activities.auth.AddVehicleActivity;
-import vn.edu.fpt.sapsmobile.activities.sharevehicle.ShareVehicleAccessActivity;
 import vn.edu.fpt.sapsmobile.adapters.VehicleAdapter;
 import vn.edu.fpt.sapsmobile.dtos.vehicle.ShareCodeReturnDto;
 import vn.edu.fpt.sapsmobile.models.User;
@@ -198,10 +197,11 @@ public class VehicleFragment extends Fragment {
             if (itemId == R.id.menu_register_own) {
                 startActivitySafely(new Intent(requireContext(), AddVehicleActivity.class));
                 return true;
-            } else if (itemId == R.id.menu_receive_share) {
-                startActivitySafely(new Intent(requireContext(), ShareVehicleAccessActivity.class));
-                return true;
             }
+//            else if (itemId == R.id.menu_receive_share) {
+//                startActivitySafely(new Intent(requireContext(), ShareVehicleAccessActivity.class));
+//                return true;
+//            }
             else {
                 return false;
             }

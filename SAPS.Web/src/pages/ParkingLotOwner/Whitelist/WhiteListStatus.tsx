@@ -1,4 +1,4 @@
-import { fetchWhitelistStatus } from "@/services/parkinglot/whitelistService";
+// import { fetchWhitelistStatus } from "@/services/parkinglot/whitelistService";
 import { WhitelistStatus } from "@/types/Whitelist";
 import { Card, CardBody, CardHeader } from "@heroui/react";
 import { BarChart } from "lucide-react";
@@ -9,8 +9,9 @@ function WhitelistStatusComponent({ parkingLotId, loadparking }: { parkingLotId:
 
 
     const fetch = async () => {
-        const status = await fetchWhitelistStatus(parkingLotId);
-        setWhitelistStatus(status);
+        console.log(parkingLotId);
+        // const status = await fetchWhitelistStatus(parkingLotId);
+        setWhitelistStatus(null);
     };
 
     useEffect(() => {
@@ -22,7 +23,7 @@ function WhitelistStatusComponent({ parkingLotId, loadparking }: { parkingLotId:
 
     return (
 
-        <Card className="bg-background-100/20 mb-6">
+        <Card className="bg-background-100/20 mb-6 hidden">
             <CardHeader className="flex items-center gap-2">
                 <BarChart className="w-6 h-6 text-primary" />
                 <h2 className="text-lg font-bold">Whitelist Status</h2>

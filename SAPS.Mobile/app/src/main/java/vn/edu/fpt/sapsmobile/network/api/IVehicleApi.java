@@ -1,4 +1,4 @@
-package vn.edu.fpt.sapsmobile.network.service;
+package vn.edu.fpt.sapsmobile.network.api;
 
 import java.util.List;
 

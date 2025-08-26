@@ -1,61 +1,60 @@
-import { StaffStatus } from '@/types/User';
+import { UserStatus } from '@/types/User';
+import { Chip } from '@heroui/react';
 
-// Configuration for staff status display
-const staffStatusConfig = {
-    [StaffStatus.ACTIVE]: {
-        label: 'Active',
-        color: 'text-green-600 bg-green-100',
-        dotColor: 'bg-green-600'
-    },
-    [StaffStatus.ON_LEAVE]: {
-        label: 'On Leave',
-        color: 'text-yellow-600 bg-yellow-100',
-        dotColor: 'bg-yellow-600'
-    },
-    [StaffStatus.SUSPENDED]: {
-        label: 'Suspended',
-        color: 'text-orange-600 bg-orange-100',
-        dotColor: 'bg-orange-600'
-    },
-    [StaffStatus.TERMINATED]: {
-        label: 'Terminated',
-        color: 'text-red-600 bg-red-100',
-        dotColor: 'bg-red-600'
-    }
+const userStatusConfig = {
+  [UserStatus.ACTIVE]: {
+    color: 'bg-green-100 text-green-800',
+    icon: <div className="w-2 h-2 rounded-full bg-green-500" />
+  },
+  [UserStatus.INACTIVE]: {
+    color: 'bg-gray-100 text-gray-800',
+    icon: <div className="w-2 h-2 rounded-full bg-gray-500" />
+  },
+  [UserStatus.DELETED]: {
+    color: 'bg-red-100 text-red-800',
+    icon: <div className="w-2 h-2 rounded-full bg-red-500" />
+  },
+  [UserStatus.BANNED]: {
+    color: 'bg-orange-100 text-orange-800',
+    icon: <div className="w-2 h-2 rounded-full bg-orange-500" />
+  }
 };
 
-// Helper function to get status display info
-export const getStaffStatusDisplay = (status: number) => {
-    const config = staffStatusConfig[status as StaffStatus];
-    return config || {
-        label: 'Unknown',
-        color: 'text-gray-600 bg-gray-100',
-        dotColor: 'bg-gray-600'
-    };
+export const getUserStatusDisplay = (status: string) => {
+  const config = userStatusConfig[status as UserStatus];
+  return config || {
+    color: 'bg-gray-100 text-gray-800',
+    icon: <div className="w-2 h-2 rounded-full bg-gray-500" />,
+    label: status || 'Unknown'
+  };
 };
 
-// Component to render status with color
-export const StaffStatusBadge = ({ status }: { status: number }) => {
-    const statusDisplay = getStaffStatusDisplay(status);
-
-    return (
-        <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusDisplay.color}`}>
-            <span className={`w-2 h-2 rounded-full mr-1.5 ${statusDisplay.dotColor}`}></span>
-            {statusDisplay.label}
-        </span>
-    );
+export const UserStatusBadge = ({ status }: { status: string }) => {
+  const statusDisplay = getUserStatusDisplay(status);
+  return (
+    <Chip className={`inline-flex items-center px-1 pl-3 py-0.5 rounded-full text-xs font-medium ${statusDisplay.color}`}
+      startContent={statusDisplay.icon}
+    >
+      {status || 'Unknown'}
+    </Chip>
+  );
 };
 
-// Alternative simple version without badge styling
-export const StaffStatusSimple = ({ status }: { status: number }) => {
-    const statusDisplay = getStaffStatusDisplay(status);
+export const UserStatusSimple = ({ status }: { status: string }) => {
+  const statusDisplay = getUserStatusDisplay(status);
+  return (
+    <span className={`inline-flex items-center px-2 py-1 rounded text-sm font-medium ${statusDisplay.color}`}>
+      {status || 'Unknown'}
+    </span>
+  );
+};
 
-    return (
-        <span className={`font-medium ${statusDisplay.color.split(' ')[0]}`}>
-            {statusDisplay.label}
-        </span>
-    );
-}; 
+export const userStatusOptions = [
+  { key: UserStatus.ACTIVE, label: 'Active' },
+  { key: UserStatus.INACTIVE, label: 'Inactive' },
+  { key: UserStatus.DELETED, label: 'Deleted' },
+  { key: UserStatus.BANNED, label: 'Banned' }
+];
 
 // format date for input
 export const formatDateForInput = (isoString: string) => {
@@ -63,20 +62,12 @@ export const formatDateForInput = (isoString: string) => {
   return isoString.split('T')[0];
 };
 
-// status options for dropdown
-export const statusOptions = [
-  { key: StaffStatus.ACTIVE.toString(), label: 'Active' },
-  { key: StaffStatus.ON_LEAVE.toString(), label: 'On Leave' },
-  { key: StaffStatus.SUSPENDED.toString(), label: 'Suspended' },
-  { key: StaffStatus.TERMINATED.toString(), label: 'Terminated' }
-];
-
 // interface for add staff form request
 export interface AddStaffFormRequest {
   fullName: string;
   email: string;
   phone: string;
-  employeeId: string;
-  dateOfBirth: string;
-  status: number;
+  employeeId?: string; // Optional for new API, kept for backward compatibility
+  dateOfBirth?: string; // Optional for new API, kept for backward compatibility
+  status?: string; // Optional for new API, kept for backward compatibility
 }

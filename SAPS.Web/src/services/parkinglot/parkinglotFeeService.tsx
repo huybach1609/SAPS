@@ -52,15 +52,71 @@ export interface ParkingFeeSchedule {
 
 // Helper function to get auth headers
 const getAuthHeaders = () => ({
-    'Authorization': `Bearer ${localStorage.getItem('auth_token')}`,
+    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
     'Content-Type': 'application/json',
 });
 
+export const parkinglotFeeScheduleApi = {
+    
 // Fetch all fee schedules for a parking lot
-export const fetchFeeSchedules = async (parkingLotId: string): Promise<ParkingFeeSchedule[]> => {
+fetchFeeSchedules: async (parkingLotId: string): Promise<ParkingFeeSchedule[]> => {
     try {
-        const response = await axios.get(`${apiUrl}/api/ParkingFeeSchedule/${parkingLotId}`);
-        return response.data;
+        const response = await axios.get(`${apiUrl}/api/parkingfeeschedule/by-parking-lot/${parkingLotId}`,{
+            headers: getAuthHeaders()
+        });
+        const apiItems: any[] = Array.isArray(response.data) ? response.data : [];
+
+        const toNumberArrayFromString = (value: unknown): number[] => {
+            if (Array.isArray(value)) {
+                return (value as unknown[])
+                    .map((v) => {
+                        const n = Number(v);
+                        return Number.isFinite(n) ? n : undefined;
+                    })
+                    .filter((v): v is number => typeof v === 'number');
+            }
+            if (typeof value !== 'string') return [];
+            return value
+                .split(',')
+                .map((s) => s.trim())
+                .filter((s) => s.length > 0)
+                .map((s) => Number(s))
+                .filter((n) => Number.isFinite(n));
+        };
+
+        const toVehicleTypeEnum = (value: unknown): VehicleType => {
+            if (typeof value !== 'string') return VehicleType.Car;
+            const normalized = value.trim().toLowerCase();
+            switch (normalized) {
+                case 'car':
+                case 'cars':
+                    return VehicleType.Car;
+                case 'motorbike':
+                case 'motorcycle':
+                case 'motorcycles':
+                    return VehicleType.Motorbike;
+                default:
+                    return VehicleType.Car;
+            }
+        };
+
+        const mapped: ParkingFeeSchedule[] = apiItems.map((item) => ({
+            id: String(item.id ?? ''),
+            name: String(item.name ?? ''),
+            startTime: Number(item.startTime ?? 0),
+            endTime: Number(item.endTime ?? 1440),
+            initialFee: Number(item.initialFee ?? 0),
+            additionalFee: Number(item.additionalFee ?? 0),
+            additionalMinutes: Number(item.additionalMinutes ?? 60),
+            dayOfWeeks: toNumberArrayFromString(item.dayOfWeeks),
+            isActive: Boolean(item.isActive ?? true),
+            updatedAt: String(item.updatedAt ?? new Date().toISOString()),
+            forVehicleType: toVehicleTypeEnum(item.forVehicleType),
+            parkingLotId: String(item.parkingLotId ?? parkingLotId),
+            initialFeeMinutes: Number(item.initialFeeMinutes ?? 0),
+        }));
+
+        return mapped;
     } catch (error: any) {
         console.error('Error fetching parking fee schedules:', error);
         if (error.response) {
@@ -86,30 +142,51 @@ export const fetchFeeSchedules = async (parkingLotId: string): Promise<ParkingFe
             throw new ParkingFeeError(error.message || 'An unexpected error occurred');
         }
     }
-};
+},
 
 // Create a new fee schedule
-export const createFeeSchedule = async (
+createFeeSchedule: async (
     parkingLotId: string,
     scheduleData: Partial<ParkingFeeSchedule>
 ): Promise<ParkingFeeSchedule> => {
     try {
-        const newScheduleData = {
-            startTime: scheduleData.startTime || 0,
-            endTime: scheduleData.endTime || 1440,
-            initialFee: scheduleData.initialFee || 0,
-            additionalFee: scheduleData.additionalFee || 0,
-            additionalMinutes: scheduleData.additionalMinutes || 60,
-            dayOfWeeks: scheduleData.dayOfWeeks,
-            isActive: scheduleData.isActive !== undefined ? scheduleData.isActive : true,
-            updatedAt: new Date().toISOString(),
-            forVehicleType: scheduleData.forVehicleType || 'Car',
-            parkingLotId: parkingLotId,
+        const normalizeDayOfWeeks = (value: unknown): number[] => {
+            if (!Array.isArray(value)) return [];
+            const nums = (value as unknown[])
+                .map((v) => Number(v))
+                .filter((n) => Number.isFinite(n)) as number[];
+            // If looks like 0..6, convert to 1..7. If already 1..7, keep.
+            const isZeroBased = nums.every((n) => n >= 0 && n <= 6) && !nums.some((n) => n === 7);
+            return (isZeroBased ? nums.map((n) => n + 1) : nums)
+                .filter((n) => n >= 1 && n <= 7);
+        };
+
+        const vehicleTypeString = (() => {
+            const value = scheduleData.forVehicleType;
+            if (typeof value === 'string') return value; // assume already 'Car' | 'Motorbike'
+            switch (value) {
+                case VehicleType.Motorbike:
+                    return 'Motorbike';
+                case VehicleType.Car:
+                default:
+                    return 'Car';
+            }
+        })();
+
+        const requestBody = {
+            startTime: scheduleData.startTime ?? 0,
+            endTime: scheduleData.endTime ?? 1440,
+            initialFee: scheduleData.initialFee ?? 0,
+            additionalFee: scheduleData.additionalFee ?? 0,
+            additionalMinutes: scheduleData.additionalMinutes ?? 60,
+            dayOfWeeks: normalizeDayOfWeeks(scheduleData.dayOfWeeks as any).join(','),
+            forVehicleType: vehicleTypeString,
+            parkingLotId,
         };
 
         const response = await axios.post(
-            `${apiUrl}/api/ParkingFeeSchedule/${parkingLotId}`,
-            newScheduleData,
+            `${apiUrl}/api/parkingFeeSchedule`,
+            requestBody,
             { headers: getAuthHeaders() }
         );
         return response.data;
@@ -150,21 +227,53 @@ export const createFeeSchedule = async (
             throw new ParkingFeeError(error.message || 'An unexpected error occurred');
         }
     }
-};
+},
 
 // Update an existing fee schedule
-export const updateFeeSchedule = async (
+updateFeeSchedule: async (
     parkingLotId: string,
     scheduleId: string,
     scheduleData: Partial<ParkingFeeSchedule>
 ): Promise<ParkingFeeSchedule> => {
     try {
+        const normalizeDayOfWeeks = (value: unknown): number[] => {
+            if (!Array.isArray(value)) return [];
+            const nums = (value as unknown[])
+                .map((v) => Number(v))
+                .filter((n) => Number.isFinite(n)) as number[];
+            const isZeroBased = nums.every((n) => n >= 0 && n <= 6) && !nums.some((n) => n === 7);
+            return (isZeroBased ? nums.map((n) => n + 1) : nums)
+                .filter((n) => n >= 1 && n <= 7);
+        };
+
+        const vehicleTypeString = (() => {
+            const value = scheduleData.forVehicleType;
+            if (typeof value === 'string') return value; // assume already 'Car' | 'Motorbike'
+            switch (value) {
+                case VehicleType.Motorbike:
+                    return 'Motorbike';
+                case VehicleType.Car:
+                default:
+                    return 'Car';
+            }
+        })();
+
+        const requestBody = {
+            id: scheduleId,
+            startTime: scheduleData.startTime ?? 0,
+            endTime: scheduleData.endTime ?? 1440,
+            initialFee: scheduleData.initialFee ?? 0,
+            additionalFee: scheduleData.additionalFee ?? 0,
+            additionalMinutes: scheduleData.additionalMinutes ?? 60,
+            dayOfWeeks: normalizeDayOfWeeks(scheduleData.dayOfWeeks as any).join(','),
+            forVehicleType: vehicleTypeString,
+            parkingLotId,
+            isActive: scheduleData.isActive ?? true,
+        };
+
         const response = await axios.put(
-            `${apiUrl}/api/ParkingFeeSchedule/${parkingLotId}/${scheduleId}`,
-            {
-                ...scheduleData,
-                UpdatedAt: new Date().toISOString()
-            },
+            `${apiUrl}/api/parkingFeeSchedule`,
+            requestBody,
             { headers: getAuthHeaders() }
         );
         return response.data;
@@ -206,10 +315,10 @@ export const updateFeeSchedule = async (
             throw new ParkingFeeError(error.message || 'An unexpected error occurred');
         }
     }
-};
+},
 
 // Delete a fee schedule
-export const deleteFeeSchedule = async (parkingLotId: string, scheduleId: string): Promise<void> => {
+ deleteFeeSchedule: async (parkingLotId: string, scheduleId: string): Promise<void> => {
     try {
         await axios.delete(
             `${apiUrl}/api/ParkingFeeSchedule/${parkingLotId}/${scheduleId}`,
@@ -255,4 +364,6 @@ export const deleteFeeSchedule = async (parkingLotId: string, scheduleId: string
             throw new ParkingFeeError(error.message || 'An unexpected error occurred');
         }
     }
-};
+}
+
+}

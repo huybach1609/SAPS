@@ -1,126 +1,191 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/main"
-    android:fitsSystemWindows="true"
+    android:background="@color/md_theme_surface"
+    android:fitsSystemWindows="true">
 
-    android:background="#F8F9FD"
-    android:padding="16dp">
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
 
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            style="@style/Widget.Material3.Toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:backgroundTint="?attr/colorSurface"
+            app:titleTextColor="?attr/colorOnSurface"
+            app:navigationIconTint="?attr/colorOnSurface"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:title="Payment Success" />
 
-        <FrameLayout
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:background="@drawable/ic_check_square_green"
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="24dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
             android:layout_gravity="center">
 
+            <!-- Success Icon -->
             <ImageView
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:src="@drawable/ic_check_white"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/ic_check_circle"
+                app:tint="@color/md_theme_primary"
+                android:layout_marginBottom="24dp"
+                android:contentDescription="Success icon" />
 
-                android:layout_gravity="center" />
-        </FrameLayout>
-        <!-- ✅ Title -->
-        <TextView
-            android:layout_marginTop="12dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Transaction Completed Successfully"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="#4CAF50" />
-
-        <!-- ✅ Description -->
-        <TextView
-            android:layout_marginTop="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Your payment has been processed successfully. You can now exit the parking area."
-            android:textSize="14sp"
-            android:gravity="center"
-            android:textColor="#666666" />
-
-        <!-- 📄 Transaction Summary Card -->
-        <LinearLayout
-            android:layout_marginTop="24dp"
-            android:orientation="vertical"
-            android:padding="12dp"
-            android:elevation="2dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
+            <!-- Success Message -->
             <TextView
+                android:id="@+id/tvSuccessMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="📄 Transaction Summary"
+                android:text="Payment Completed Successfully!"
+                android:textSize="24sp"
                 android:textStyle="bold"
+                android:textColor="@color/md_theme_onSurface"
+                android:gravity="center"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Description -->
+            <TextView
+                android:id="@+id/tvDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Your payment has been processed successfully. You can now exit the parking area."
                 android:textSize="16sp"
-                android:textColor="#000000" />
+                android:textColor="@color/md_theme_onSurfaceVariant"
+                android:gravity="center"
+                android:layout_marginBottom="32dp" />
 
-            <TextView
-                android:id="@+id/tvTransactionId"
-                android:layout_marginTop="8dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Transaction ID: "
-                android:textStyle="bold"
-                android:textColor="#000000" />
+            <!-- Transaction Details Card -->
+            <com.google.android.material.card.MaterialCardView
 
-            <TextView
-                android:id="@+id/tvAmountPaid"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Amount Paid: $12.38"
-                android:textStyle="bold"
-                android:textColor="#000000" />
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@android:color/white"
+                android:layout_marginBottom="16dp">
 
-            <TextView
-                android:id="@+id/tvPaymentMethod"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Payment Method:"
-                android:textStyle="bold"
-                android:textColor="#000000" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
-            <TextView
-                android:id="@+id/tvDateTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Date and Time: Jun 3, 2025 - 16:45 PM"
-                android:textStyle="bold"
-                android:textColor="#000000" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Transaction Details"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/md_theme_secondary"
+                        android:layout_marginBottom="8dp" />
 
-            <TextView
-                android:id="@+id/tvVehicle"
-                android:layout_width="wrap_content"
+                    <TextView
+                        android:visibility="gone"
+                        android:id="@+id/tvTransactionId"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Transaction ID: "
+                        android:textSize="16sp"
+                        android:textColor="@color/md_theme_onSurface"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:id="@+id/tvAmountPaid"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Amount Paid: "
+                        android:textSize="16sp"
+                        android:textColor="@color/md_theme_onSurface"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:id="@+id/tvPaymentMethod"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Payment Method: "
+                        android:textSize="16sp"
+                        android:textColor="@color/md_theme_onSurface"
+                        android:layout_marginBottom="4dp" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Vehicle Information Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Vehicle: ABC-1234"
-                android:textStyle="bold"
-                android:textColor="#000000" />
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@android:color/white"
+                android:layout_marginBottom="32dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:visibility="gone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Vehicle/Time"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/md_theme_secondary"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:visibility="gone"
+                        android:id="@+id/tvVehicle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Vehicle: "
+                        android:textSize="16sp"
+                        android:textColor="@color/md_theme_onSurface"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:id="@+id/tvDateTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Date and Time: "
+                        android:textSize="16sp"
+                        android:textColor="@color/md_theme_onSurface" />
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Done Button -->
+            <Button
+                android:id="@+id/btnBack"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Done"
+                android:textSize="16sp"
+                android:padding="16dp"
+                style="@style/Widget.Material3.Button" />
 
         </LinearLayout>
 
-        <!-- 🔙 Back Button -->
-        <Button
-            style="@style/Widget.Material3.Button.Icon"
-            android:id="@+id/btnBack"
-            android:layout_marginTop="24dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/md_theme_primary"
-            android:textColor="@android:color/white"
-            android:text="Back"
-            app:icon="@drawable/chevron_right_"
-            />
+    </androidx.core.widget.NestedScrollView>
 
-    </LinearLayout>
-</ScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

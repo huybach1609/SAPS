@@ -20,6 +20,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONObject;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,8 +36,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import vn.edu.fpt.sapsmobile.network.client.ApiTest;
-import vn.edu.fpt.sapsmobile.network.service.ApiService;
-import vn.edu.fpt.sapsmobile.network.service.IVehicleRegistraionCertOrcApi;
+import vn.edu.fpt.sapsmobile.network.api.ApiService;
+import vn.edu.fpt.sapsmobile.network.api.IVehicleRegistraionCertOrcApi;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleRegistrationResponse;
 import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleResponse;
@@ -43,6 +45,7 @@ import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
 
 public class AddVehicleActivity extends AppCompatActivity {
 
+    private String TAG = "AddVehicleActivity ";
     private static final int REQUEST_PICK_FRONT = 2001;
     private static final int REQUEST_PICK_BACK = 2002;
 
@@ -53,7 +56,7 @@ public class AddVehicleActivity extends AppCompatActivity {
 
     private ImageView previewImageFront, previewImageBack;
     private Button btnTakePhoto, btnPickFront, btnPickBack, completeButton;
-    private EditText ownerInput, plateInput, modelInput, colorInput, brandInput, engineNumberInput, chassisNumberInput;
+    private EditText ownerInput, plateInput, modelInput, colorInput, brandInput, engineNumberInput, chassisNumberInput, vehicleTypeInput;
 
     private Uri frontImageUri;
     private Uri backImageUri;
@@ -108,6 +111,7 @@ public class AddVehicleActivity extends AppCompatActivity {
         brandInput = findViewById(R.id.input_vehicle_brand);
         engineNumberInput = findViewById(R.id.input_engine_number);
         chassisNumberInput = findViewById(R.id.input_chassis_number);
+        vehicleTypeInput = findViewById(R.id.input_vehicle_type);
     }
 
     private void setupClickListeners() {
@@ -307,6 +311,7 @@ public class AddVehicleActivity extends AppCompatActivity {
 
                 if (response.isSuccessful() && response.body() != null) {
                     VehicleResponse vehicleResponse = response.body();
+                    Log.i(TAG, "onResponse: " +vehicleResponse );
                     populateFormFields(vehicleResponse);
                     Toast.makeText(AddVehicleActivity.this, "Auto-filled from vehicle registration", Toast.LENGTH_SHORT).show();
                 } else {
@@ -332,6 +337,7 @@ public class AddVehicleActivity extends AppCompatActivity {
         setTextSafely(brandInput, vehicleResponse.getBrand());
         setTextSafely(engineNumberInput, vehicleResponse.getEngineNumber());
         setTextSafely(chassisNumberInput, vehicleResponse.getChassisNumber());
+        setTextSafely(vehicleTypeInput, vehicleResponse.getVehicleType());
     }
 
     private void setTextSafely(EditText editText, String text) {
@@ -354,19 +360,20 @@ public class AddVehicleActivity extends AppCompatActivity {
         String brand = brandInput.getText().toString().trim();
         String engineNumber = engineNumberInput.getText().toString().trim();
         String chassisNumber = chassisNumberInput.getText().toString().trim();
+        String vehicleType = vehicleTypeInput.getText().toString().trim();
 
         if (licensePlate.isEmpty() || model.isEmpty() || color.isEmpty() || ownerName.isEmpty() ||
-                brand.isEmpty() || engineNumber.isEmpty() || chassisNumber.isEmpty()) {
+                brand.isEmpty() || engineNumber.isEmpty() || chassisNumber.isEmpty() || vehicleType.isEmpty()) {
             Toast.makeText(this, "Please fill in all required fields", Toast.LENGTH_SHORT).show();
             return;
         }
 
         loadingDialog.show("Registering vehicle...");
-        registerVehicleAsync(licensePlate, model, color, ownerName, brand, engineNumber, chassisNumber);
+        registerVehicleAsync(licensePlate, model, color, ownerName, brand, engineNumber, chassisNumber, vehicleType);
     }
 
     private void registerVehicleAsync(String licensePlate, String model, String color, String ownerName,
-                                      String brand, String engineNumber, String chassisNumber) {
+                                      String brand, String engineNumber, String chassisNumber,String vehicleType) {
 
         // Create multipart request body for images (using cached compressed data)
         RequestBody frontBody = RequestBody.create(frontImageBytes, MediaType.parse("image/jpeg"));
@@ -383,6 +390,7 @@ public class AddVehicleActivity extends AppCompatActivity {
         RequestBody brandBody = RequestBody.create(brand, MediaType.parse("text/plain"));
         RequestBody engineNumberBody = RequestBody.create(engineNumber, MediaType.parse("text/plain"));
         RequestBody chassisNumberBody = RequestBody.create(chassisNumber, MediaType.parse("text/plain"));
+        RequestBody vehicleTypeBody = RequestBody.create(vehicleType, MediaType.parse("text/plain"));
 
         // Get API service
         ApiService apiService = ApiTest.getServiceLast(this).create(ApiService.class);
@@ -390,7 +398,7 @@ public class AddVehicleActivity extends AppCompatActivity {
         // Make API call
         Call<VehicleRegistrationResponse> call = apiService.registerVehicle(
                 frontPart, backPart, licensePlateBody, brandBody, modelBody,
-                engineNumberBody, chassisNumberBody, colorBody, ownerNameBody
+                engineNumberBody, chassisNumberBody, colorBody, ownerNameBody, vehicleTypeBody
         );
 
         call.enqueue(new Callback<VehicleRegistrationResponse>() {
@@ -425,16 +433,74 @@ public class AddVehicleActivity extends AppCompatActivity {
     }
 
     private void handleApiError(String prefix, Response<?> response) {
-        String errorBody = "";
+        String errorMessage = "";
+        String userFriendlyMessage = "";
+
         try {
             if (response.errorBody() != null) {
-                errorBody = response.errorBody().string();
+                String errorBody = response.errorBody().string();
+
+                // Try to parse the JSON error response
+                if (errorBody.contains("VEHICLE_ALREADY_EXISTS")) {
+                    userFriendlyMessage = "This vehicle is already registered in the system. Please check your license plate number.";
+                } else if (errorBody.contains("INVALID_LICENSE_PLATE")) {
+                    userFriendlyMessage = "Invalid license plate format. Please check and try again.";
+                } else if (errorBody.contains("MISSING_REQUIRED_FIELD")) {
+                    userFriendlyMessage = "Some required information is missing. Please fill all fields.";
+                } else if (errorBody.contains("INVALID_IMAGE")) {
+                    userFriendlyMessage = "Invalid image format. Please upload valid JPEG images.";
+                } else {
+                    // Try to parse JSON for a generic message
+                    try {
+                        JSONObject errorJson = new JSONObject(errorBody);
+                        String message = errorJson.optString("message", "");
+                        if (!message.isEmpty()) {
+                            userFriendlyMessage = "Registration failed: " + message.replace("_", " ").toLowerCase();
+                        }
+                    } catch (Exception e) {
+                        userFriendlyMessage = "Registration failed. Please try again.";
+                    }
+                }
+                errorMessage = errorBody;
             }
         } catch (IOException e) {
-            errorBody = "Error reading error body";
+            errorMessage = "Error reading error response";
+            userFriendlyMessage = "Registration failed. Please check your connection and try again.";
         }
 
-        Toast.makeText(this, prefix + ": " + response.code() + " - " + errorBody, Toast.LENGTH_LONG).show();
+        // Show user-friendly message
+        Toast.makeText(this, userFriendlyMessage, Toast.LENGTH_LONG).show();
+
+        // Log technical details for debugging
+        Log.e("API_ERROR", prefix + ": " + response.code() + " - " + errorMessage);
+
+        // Handle specific error codes
+        switch (response.code()) {
+            case 400:
+                // Bad Request - usually validation errors or business logic errors like VEHICLE_ALREADY_EXISTS
+                Log.w("API_ERROR", "Bad Request (400): " + errorMessage);
+                break;
+            case 401:
+                // Unauthorized - might need to redirect to login
+                Log.w("API_ERROR", "Unauthorized (401): " + errorMessage);
+                // Optionally redirect to login activity
+                break;
+            case 403:
+                // Forbidden
+                Log.w("API_ERROR", "Forbidden (403): " + errorMessage);
+                break;
+            case 404:
+                // Not Found
+                Log.w("API_ERROR", "Not Found (404): " + errorMessage);
+                break;
+            case 500:
+                // Internal Server Error
+                Log.e("API_ERROR", "Server Error (500): " + errorMessage);
+                break;
+            default:
+                Log.e("API_ERROR", "HTTP " + response.code() + ": " + errorMessage);
+                break;
+        }
     }
 
     // Helper class for async image processing results

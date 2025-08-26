@@ -1,18 +1,21 @@
-package vn.edu.fpt.sapsmobile.network.service;
+package vn.edu.fpt.sapsmobile.network.api;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Body;
+import vn.edu.fpt.sapsmobile.dtos.profile.IdCardBase64Request;
 import vn.edu.fpt.sapsmobile.dtos.profile.UpdateClientProfileRequest;
 import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleRegistrationInfo;
 import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleRegistrationResponse;
 import vn.edu.fpt.sapsmobile.dtos.profile.IdCardResponse;
 import vn.edu.fpt.sapsmobile.dtos.profile.NotificationsResponse;
+import vn.edu.fpt.sapsmobile.dtos.profile.VerificationResponse;
 import vn.edu.fpt.sapsmobile.models.User;
 
 public interface ApiService {
@@ -20,12 +23,16 @@ public interface ApiService {
     Call<NotificationsResponse> getNotifications();
     
     @Multipart
-    @POST("api/Ocr/getInfoIdCard")
+    @POST("api/ocr/citizen-card/file")
     Call<IdCardResponse> getInfoIdCard(
-            @Part MultipartBody.Part front,
-            @Part MultipartBody.Part back
+            @Part MultipartBody.Part FrontImage,
+            @Part MultipartBody.Part BackImage
     );
-    
+
+    @POST("api/ocr/citizen-card/base64")
+    @Headers("Content-Type: application/json")
+    Call<IdCardResponse> getInfoIdCardBase64(@Body IdCardBase64Request request);
+
     @Multipart
     @POST("api/Ocr/getInfoVehicleCard")
     Call<VehicleRegistrationInfo> getInfoVehicle(
@@ -44,25 +51,36 @@ public interface ApiService {
             @Part("EngineNumber") RequestBody engineNumber,
             @Part("ChassisNumber") RequestBody chassisNumber,
             @Part("Color") RequestBody color,
-            @Part("OwnerVehicleFullName") RequestBody ownerVehicleFullName
+            @Part("OwnerVehicleFullName") RequestBody ownerVehicleFullName,
+            @Part("VehicleType") RequestBody vehicleType
             );
 
     @PUT("api/client")
     Call<User> updateClientProfile(@Body UpdateClientProfileRequest request);
 
     @Multipart
-    @PUT("api/client")
-    Call<User> updateClientProfileWithImages(
-            @Part MultipartBody.Part frontIdCardImage,
-            @Part MultipartBody.Part backIdCardImage,
-            @Part("fullName") String fullName,
-            @Part("phone") String phone,
-            @Part("citizenId") String citizenId,
-            @Part("dateOfBirth") String dateOfBirth,
-            @Part("sex") boolean sex,
-            @Part("nationality") String nationality,
-            @Part("placeOfOrigin") String placeOfOrigin,
-            @Part("placeOfResidence") String placeOfResidence
+    @POST("api/client/verify-lvl-2")
+    Call<VerificationResponse> verifyClientLevel2(
+            @Part MultipartBody.Part FrontCitizenCardImage,
+            @Part MultipartBody.Part BackCitizenCardImage,
+            @Part("CitizenId") RequestBody citizenId,
+            @Part("DateOfBirth") RequestBody dateOfBirth,
+            @Part("Sex") RequestBody sex,
+            @Part("Nationality") RequestBody nationality,
+            @Part("PlaceOfOrigin") RequestBody placeOfOrigin,
+            @Part("PlaceOfResidence") RequestBody placeOfResidence,
+            @Part("Id") RequestBody id
+    );
+
+    @Multipart
+    @POST("api/request")
+    Call<VerificationResponse> submitClientProfileRequest(
+            @Part("Header") RequestBody header,
+            @Part("Description") RequestBody description,
+            @Part("DataType") RequestBody dataType,
+            @Part("Data") RequestBody data,
+            @Part MultipartBody.Part attachment1,
+            @Part MultipartBody.Part attachment2
     );
 
 }

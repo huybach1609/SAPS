@@ -8,15 +8,17 @@ export interface ParkingLot {
     updatedAt: string;
     status: 'Active' | 'Inactive';
     parkingLotOwnerId: string;
+    expiredAt?: string;
+    isExpired?: boolean;
 }
 
 export interface Subscription {
     id: string;
     name: string;
     duration: number; // in milliseconds
-    description: string;
     price: number;
-    status: 'active' | 'inactive';
+    status: 'Active' | 'Inactive';
+    updatedBy: string;
 }
 
 export interface ParkingLotSubscription {
