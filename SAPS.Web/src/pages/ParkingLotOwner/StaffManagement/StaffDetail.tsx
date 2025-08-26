@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { User, MapPin, Phone, Mail, Calendar, Badge, Building, Clock, CornerUpLeft } from 'lucide-react';
+import { User, Phone, Mail, Calendar, Badge, Building, Clock, CornerUpLeft } from 'lucide-react';
 
 
 import {  useParams } from 'react-router-dom';
