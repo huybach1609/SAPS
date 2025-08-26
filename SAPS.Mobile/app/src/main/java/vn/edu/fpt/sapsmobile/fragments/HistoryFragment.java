@@ -194,7 +194,17 @@ public class HistoryFragment extends Fragment {
         OwnedSessionRequest parkingRequest = new OwnedSessionRequest("Desc", "entryDateTime", "Parking");
         parkingRequest.setStatus(null);
 
-        currentCall = parkingSessionApi.getOwnedSessions(userId, parkingRequest);
+        currentCall = parkingSessionApi.getOwnedSessions(
+                userId,
+                parkingRequest.getStatus(),
+                parkingRequest.getStartEntryDate() != null ? parkingRequest.getStartEntryDate().toString() : null,
+                parkingRequest.getEndEntryDate() != null ? parkingRequest.getEndEntryDate().toString() : null,
+                parkingRequest.getStartExitDate() != null ? parkingRequest.getStartExitDate().toString() : null,
+                parkingRequest.getEndExitDate() != null ? parkingRequest.getEndExitDate().toString() : null,
+                parkingRequest.getOrder(),
+                parkingRequest.getSortBy(),
+                parkingRequest.getSearchCriteria()
+        );
         currentCall.enqueue(sessionCallback);
     }
 

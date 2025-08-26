@@ -68,7 +68,7 @@ export function WhitelistManagement() {
   };
 
   return (
-    <DefaultLayout title="Whitelist">
+    <DefaultLayout title="Whitelist" >
       <div className="max-w-7xl mx-auto p-6">
         <WhitelistStatusComponent
           loadparking={parkingLotLoading}

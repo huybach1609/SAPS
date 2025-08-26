@@ -6,6 +6,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Body;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import vn.edu.fpt.sapsmobile.dtos.payment.PaymentApiResponseDTO;
 import vn.edu.fpt.sapsmobile.models.ParkingSession;
 import vn.edu.fpt.sapsmobile.dtos.payment.CheckoutRequest;
@@ -29,10 +30,17 @@ public interface ParkingSessionApiService {
     @GET("/parkingSession/{userId}/LastestVehicleParking")
     Call<ParkingSession> getParkingSessionLastestVehicleParking(@Path("userId") String userId);
 
-    @POST("/api/parkingsession/owned/{clientId}")
+    @GET("/api/parkingsession/owned/{clientId}")
     Call<OwnedSessionResponse> getOwnedSessions(
             @Path("clientId") String clientId,
-            @Body OwnedSessionRequest request
+            @Query("Status") String status,
+            @Query("StartEntryDate") String startEntryDate,
+            @Query("EndEntryDate") String endEntryDate,
+            @Query("StartExitDate") String startExitDate,
+            @Query("EndExitDate") String endExitDate,
+            @Query("Order") String order,
+            @Query("SortBy") String sortBy,
+            @Query("SearchCriteria") String searchCriteria
     );
 
     @POST("/api/parkingsession/check-out")

@@ -22,9 +22,9 @@ import {
 
 import {
   IncidentReport,
-  IncidentStatus,
-  IncidentPriority,
-  FileType,
+  // IncidentStatus,
+  // IncidentPriority,
+  // FileType,
 } from "@/types/IncidentReport";
 import DefaultLayout from "@/layouts/default";
 import {
@@ -192,18 +192,19 @@ const IncidentDetail: React.FC = () => {
   return (
     <DefaultLayout
       className="m-2"
-      title={`Incident Details - ${incident.header}`}
+      title={`Incident Details`}
+      description={`${incident.header}`}
     >
       {/* Header */}
-      <div className="mb-8">
+      {/* <div className="mb-8">
         <div className="flex items-center gap-3 mb-2">
           <AlertTriangle className="w-8 h-8 text-yellow-500" />
           <h1 className="text-3xl font-bold text-gray-900">Incident Details</h1>
         </div>
         <p className="text-gray-600">
-          Complete information about incident {incident.id}
+          Complete information about incident 
         </p>
-      </div>
+      </div> */}
 
       {/* Incident Overview */}
       <div className=" rounded-lg shadow-sm border  mb-3">
@@ -222,10 +223,10 @@ const IncidentDetail: React.FC = () => {
                   {incident.header}
                 </h3>
                 <div className="grid grid-cols-2 gap-6">
-                  <div>
+                  {/* <div>
                     <p className="text-sm text-gray-600 mb-1">Incident ID</p>
                     <p className="font-semibold text-gray-900">{incident.id}</p>
-                  </div>
+                  </div> */}
                   <div>
                     <p className="text-sm text-gray-600 mb-1">Priority</p>
                     <span

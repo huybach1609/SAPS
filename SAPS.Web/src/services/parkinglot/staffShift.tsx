@@ -113,7 +113,20 @@ export async function createStaffShift(parkingLotId: string, shiftData: CreateSt
 export async function updateStaffShift(parkingLotId: string, shiftId: string, shiftData: Partial<StaffShift>): Promise<StaffShift> {
   if (!parkingLotId || !shiftId) throw new Error('Parking lot ID and shift ID are required');
   try {
-    const response = await axios.put(`${apiUrl}/api/Shift/${shiftId}`, shiftData, {
+    const requestBody = {
+      id: shiftId,
+      startTime: shiftData.startTime,
+      endTime: shiftData.endTime,
+      shiftType: 'Regular',
+      dayOfWeeks: shiftData.dayOfWeeks || '',
+      specificDate: shiftData.specificDate,
+      isActive: true,
+      status: 'Active',
+      notes: shiftData.notes || '',
+      staffIds: shiftData.staffIds
+    };
+
+    const response = await axios.put(`${apiUrl}/api/parkinglotShift`, requestBody, {
       headers: getAuthHeaders()
     });
     return response.data;

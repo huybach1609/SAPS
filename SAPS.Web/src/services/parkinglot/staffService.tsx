@@ -216,13 +216,13 @@ export const fetchStaffList = async (
   }
 };
 
-// Fetch staff detail by parkingLotId and staffId
-export async function fetchStaffDetail(parkingLotId: string, staffId: string) {
-  if (!staffId || !parkingLotId)
-    throw new Error("Staff ID and Parking Lot ID are required");
+// Fetch staff detail by staffId
+export async function fetchStaffDetail(staffId: string) {
+  if (!staffId)
+    throw new Error("Staff ID is required");
   try {
     const response = await axios.get(
-      `${apiUrl}/api/Staff/${parkingLotId}/${staffId}`,
+      `${apiUrl}/api/staff/${staffId}`,
       {
         headers: getAuthHeaders(),
       }

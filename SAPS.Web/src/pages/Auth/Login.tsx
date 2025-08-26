@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { useAuth } from "@/services/auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@heroui/button";
-import { Lock } from "lucide-react";
+import { Camera, ChartColumnBig, Lock, Zap } from "lucide-react";
 import { Input } from "@heroui/input";
 import { Checkbox } from "@heroui/react";
 
 export default function LoginPage() {
-  const { login, loading, getUserRole, getAdminRole } = useAuth();
+  const { login, loading, getUserRole } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,7 +25,7 @@ export default function LoginPage() {
 
       // After successful login, redirect based on user role
       const userRole = getUserRole();
-      const adminRole = getAdminRole();
+      // const adminRole = getAdminRole();
 
       if (userRole) {
         switch (userRole.toLowerCase()) {
@@ -62,9 +62,9 @@ export default function LoginPage() {
         {/* Left side */}
         <div className="w-1/2 flex flex-col items-center justify-center p-12 bg-gradient-to-b from-blue-900 to-blue-700 text-white">
           <div className="mb-8">
-            <div className="bg-blue-800 p-6 rounded-2xl shadow-lg inline-flex justify-center items-center">
+            <div className="bg-blue-100 p-6 rounded-2xl shadow-lg inline-flex justify-center items-center">
               <span role="img" aria-label="car" className="text-4xl">
-                🚗
+                <img src="/src/assets/Logo/logo.webp" alt="SAPLS Logo" className="w-32 h-32 object-cover" />
               </span>
             </div>
           </div>
@@ -84,7 +84,7 @@ export default function LoginPage() {
                   aria-label="AI Recognition"
                   className="text-xl"
                 >
-                  📷
+                  <Camera size={24} />
                 </span>
               </div>
               <span className="text-xs text-blue-100">AI Recognition</span>
@@ -92,7 +92,7 @@ export default function LoginPage() {
             <div className="flex flex-col items-center">
               <div className="bg-blue-800 p-2.5 rounded-lg mb-2 inline-flex justify-center items-center">
                 <span role="img" aria-label="Analytics" className="text-xl">
-                  📊
+                  <ChartColumnBig size={24} />
                 </span>
               </div>
               <span className="text-xs text-blue-100">Analytics</span>
@@ -100,7 +100,7 @@ export default function LoginPage() {
             <div className="flex flex-col items-center">
               <div className="bg-blue-800 p-2.5 rounded-lg mb-2 inline-flex justify-center items-center">
                 <span role="img" aria-label="Secure" className="text-xl">
-                  🔒
+                  <Lock size={24} />
                 </span>
               </div>
               <span className="text-xs text-blue-100">Secure</span>
@@ -108,7 +108,7 @@ export default function LoginPage() {
             <div className="flex flex-col items-center">
               <div className="bg-blue-800 p-2.5 rounded-lg mb-2 inline-flex justify-center items-center">
                 <span role="img" aria-label="Fast" className="text-xl">
-                  ⚡
+                  <Zap size={24} />
                 </span>
               </div>
               <span className="text-xs text-blue-100">Fast</span>
@@ -119,7 +119,7 @@ export default function LoginPage() {
         <div className="w-1/2 flex flex-col justify-center p-12 bg-white">
           <div className="max-w-md mx-auto w-full">
             <h2 className="text-3xl font-bold text-blue-900 mb-2">
-              Admin Login
+              Login
             </h2>
             <p className="text-gray-500 mb-8">
               Access the administrative dashboard
@@ -127,7 +127,7 @@ export default function LoginPage() {
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label className="block text-blue-900 font-semibold mb-2">
-                  Admin ID / Email
+                  ID / Email
                 </label>
                 <Input
                   type="email"
@@ -166,9 +166,9 @@ export default function LoginPage() {
                   />
                   Remember me
                 </label>
-                <a href="#" className="text-blue-600 text-sm hover:underline">
+                {/* <a href="#" className="text-blue-600 text-sm hover:underline">
                   Forgot Password?
-                </a>
+                </a> */}
               </div>
               {error && (
                 <div className="text-red-500 text-sm bg-red-50 p-3 rounded-lg border border-red-200">

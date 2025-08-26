@@ -148,7 +148,7 @@ const ParkingHistory: React.FC = () => {
   }
 
   return (
-    <DefaultLayout title="Parking History" className="p-5">
+    <DefaultLayout title="Parking History" className="p-5" description="View and manage parking sessions for your parking lot">
       {/* <ParkingHistoryStatistics /> */}
 
       {/* Search & Filter */}

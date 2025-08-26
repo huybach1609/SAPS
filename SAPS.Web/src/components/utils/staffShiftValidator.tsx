@@ -46,19 +46,19 @@ export class StaffShiftValidator {
   /**
    * Validates status constraint
    */
-  static validateStatus(status: string): ValidationError[] {
-    const errors: ValidationError[] = [];
-    const validStatuses = ['Scheduled', 'Active', 'Deactive'];
+  // static validateStatus(status: string): ValidationError[] {
+  //   const errors: ValidationError[] = [];
+  //   const validStatuses = ['Scheduled', 'Active', 'Deactive'];
 
-    if (!validStatuses.includes(status)) {
-      errors.push({
-        field: 'status',
-        message: `Status must be one of: ${validStatuses.join(', ')}`
-      });
-    }
+  //   if (!validStatuses.includes(status)) {
+  //     errors.push({
+  //       field: 'status',
+  //       message: `Status must be one of: ${validStatuses.join(', ')}`
+  //     });
+  //   }
 
-    return errors;
-  }
+  //   return errors;
+  // }
 
   /**
    * Validates date logic constraint (either dayOfWeeks OR specificDate, not both)
@@ -109,7 +109,7 @@ export class StaffShiftValidator {
   static validateRequiredFields(shift: Partial<StaffShift>): ValidationError[] {
     const errors: ValidationError[] = [];
     const requiredFields: (keyof StaffShift)[] = [
-      'id', 'staffIds', 'parkingLotId', 'startTime', 'endTime'
+      'id', 'staffIds',  'startTime', 'endTime'
     ];
 
     for (const field of requiredFields) {
@@ -152,13 +152,6 @@ export class StaffShiftValidator {
       errors.push(...this.validateTime(shift.startTime, shift.endTime));
     }
 
-    if (shift.shiftType) {
-      errors.push(...this.validateShiftType(shift.shiftType));
-    }
-
-    if (shift.status) {
-      errors.push(...this.validateStatus(shift.status));
-    }
 
     if (shift.startTime !== undefined && shift.endTime !== undefined) {
       errors.push(...this.validateTimeRangeSelection(shift.startTime, shift.endTime));
