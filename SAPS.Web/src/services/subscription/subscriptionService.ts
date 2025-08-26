@@ -57,10 +57,11 @@ export const subscriptionService = {
    */
   async getAllSubscriptions(): Promise<Subscription[]> {
     const response = await api.get(`/api/subscription?Order=1`);
-    // Convert milliseconds to days for frontend consumption
+    // Map API response fields and convert milliseconds to days
     return response.data.map((sub: any) => ({
       ...sub,
-      duration: millisecondsTodays(sub.duration),
+      lastUpdatedBy: sub.updatedBy, // Map updatedBy to lastUpdatedBy
+      duration: millisecondsTodays(sub.duration), // Convert milliseconds to days
     }));
   },
 
@@ -88,13 +89,19 @@ export const subscriptionService = {
 
     const response = await api.get(url);
 
-    // Convert milliseconds to days for frontend consumption
+    // Map API response to match frontend expectations
     const result = {
-      ...response.data,
       items: response.data.items.map((sub: any) => ({
         ...sub,
-        duration: millisecondsTodays(sub.duration),
+        lastUpdatedBy: sub.updatedBy, // Map updatedBy to lastUpdatedBy
+        duration: millisecondsTodays(sub.duration), // Convert milliseconds to days
       })),
+      "total-count": response.data.totalCount, // Map totalCount to total-count for compatibility
+      pageNumber: response.data.pageNumber,
+      pageSize: response.data.pageSize,
+      totalPages: response.data.totalPages,
+      hasPreviousPage: response.data.hasPreviousPage,
+      hasNextPage: response.data.hasNextPage,
     };
 
     return result;
@@ -106,10 +113,11 @@ export const subscriptionService = {
   async getSubscriptionById(id: string): Promise<Subscription> {
     const response = await api.get(`/api/subscription/${id}`);
 
-    // Convert response duration from milliseconds to days for frontend
+    // Map API response fields and convert milliseconds to days
     return {
       ...response.data,
-      duration: millisecondsTodays(response.data.duration),
+      lastUpdatedBy: response.data.updatedBy, // Map updatedBy to lastUpdatedBy
+      duration: millisecondsTodays(response.data.duration), // Convert milliseconds to days
     };
   },
 
@@ -119,19 +127,20 @@ export const subscriptionService = {
   async createSubscription(
     data: CreateSubscriptionRequest
   ): Promise<Subscription> {
-    // Ensure status has proper capitalization but keep duration as days
+    // Ensure status has proper capitalization and keep duration as days
     const requestData = {
       ...data,
       status: capitalizeStatus(data.status),
-      // duration stays as days - no conversion to milliseconds
+      // duration stays as days - no conversion needed for request
     };
 
     const response = await api.post(`/api/subscription`, requestData);
 
-    // Convert response duration from milliseconds to days for frontend
+    // Map API response fields and convert milliseconds to days
     return {
       ...response.data,
-      duration: millisecondsTodays(response.data.duration),
+      lastUpdatedBy: response.data.updatedBy, // Map updatedBy to lastUpdatedBy
+      duration: millisecondsTodays(response.data.duration), // Convert milliseconds to days
     };
   },
 
@@ -141,19 +150,20 @@ export const subscriptionService = {
   async updateSubscription(
     data: UpdateSubscriptionRequest
   ): Promise<Subscription> {
-    // Ensure status has proper capitalization but keep duration as days
+    // Ensure status has proper capitalization and keep duration as days
     const requestData = {
       ...data,
       status: capitalizeStatus(data.status),
-      // duration stays as days - no conversion to milliseconds
+      // duration stays as days - no conversion needed for request
     };
 
     const response = await api.put(`/api/subscription`, requestData);
 
-    // Convert response duration from milliseconds to days for frontend
+    // Map API response fields and convert milliseconds to days
     return {
       ...response.data,
-      duration: millisecondsTodays(response.data.duration),
+      lastUpdatedBy: response.data.updatedBy, // Map updatedBy to lastUpdatedBy
+      duration: millisecondsTodays(response.data.duration), // Convert milliseconds to days
     };
   },
 };

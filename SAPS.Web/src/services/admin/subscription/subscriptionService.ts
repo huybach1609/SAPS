@@ -33,19 +33,19 @@ export const subscriptionService = {
   async getAllSubscriptions(): Promise<ApiResponse<Subscription[]>> {
     try {
       // Call actual API
-      const { data } = await api.get("/api/Subscription");
+      const { data } = await api.get("/api/subscription");
 
       // Map the API response to match our interface
       const mappedData = data.map((item: any) => ({
         id: item.id,
         name: item.name,
         duration: item.duration,
-        description: item.description,
+        description: "", // Not provided by API, set default
         price: item.price,
         status: item.status.toLowerCase(), // Convert "Active" to "active"
-        createdAt: item.createdAt,
-        updatedAt: item.updatedAt,
-        lastUpdatedBy: item.lastUpdatedBy,
+        createdAt: "", // Not provided by API, set default
+        updatedAt: "", // Not provided by API, set default
+        lastUpdatedBy: "", // Not provided by API, set default
       }));
 
       return { success: true, data: mappedData };

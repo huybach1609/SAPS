@@ -8,20 +8,20 @@ import {
   CheckCircle2,
   Save,
   FileText,
+  Edit,
 } from "lucide-react";
 import { format } from "date-fns";
 import {
   ParkingLot,
   ParkingLotOwnerDetails as ParkingLotOwnerDetailsType,
-  PaymentSource,
   parkingLotOwnerService,
+  UpdateApiKeysRequest,
 } from "../../../services/parkingLotOwner/parkingLotOwnerService";
 const ParkingLotOwnerDetails: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const [loading, setLoading] = useState(true);
   const [owner, setOwner] = useState<ParkingLotOwnerDetailsType | null>(null);
-  const [paymentSources, setPaymentSources] = useState<PaymentSource[]>([]);
 
   // Parking lots pagination
   const [parkingLots, setParkingLots] = useState<ParkingLot[]>([]);
@@ -29,6 +29,15 @@ const ParkingLotOwnerDetails: React.FC = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalParkingLots, setTotalParkingLots] = useState(0);
   const itemsPerPage = 5;
+
+  // API Keys editing state
+  const [isEditingApiKeys, setIsEditingApiKeys] = useState(false);
+  const [apiKeysForm, setApiKeysForm] = useState({
+    clientKey: "",
+    apiKey: "",
+    checkSumKey: "",
+  });
+  const [isSavingApiKeys, setIsSavingApiKeys] = useState(false);
 
   // Format date string
   const formatDate = (dateString: string) => {
@@ -59,18 +68,12 @@ const ParkingLotOwnerDetails: React.FC = () => {
           await parkingLotOwnerService.getParkingLotOwnerDetails(id);
         setOwner(ownerData);
 
-        // Fetch payment sources
-        const paymentSourcesData =
-          await parkingLotOwnerService.getOwnerPaymentSources(id);
-        setPaymentSources(paymentSourcesData || []);
-
         // Fetch parking lots
         await fetchParkingLots();
       } catch (error) {
         console.error("Error fetching owner details:", error);
         // Reset to safe defaults on error
         setOwner(null);
-        setPaymentSources([]);
         setParkingLots([]);
         setTotalParkingLots(0);
         setTotalPages(1);
@@ -95,8 +98,8 @@ const ParkingLotOwnerDetails: React.FC = () => {
       });
 
       setParkingLots(response?.items || []);
-      setTotalParkingLots(response?.["total-count"] || 0);
-      setTotalPages(response?.["total-pages"] || 1);
+      setTotalParkingLots(response?.totalCount || 0);
+      setTotalPages(response?.totalPages || 1);
     } catch (error) {
       console.error("Error fetching parking lots:", error);
       // Reset to safe defaults on error
@@ -108,6 +111,85 @@ const ParkingLotOwnerDetails: React.FC = () => {
   useEffect(() => {
     fetchParkingLots();
   }, [currentPage]);
+
+  // Initialize API keys form when owner data is loaded
+  useEffect(() => {
+    if (owner && !isEditingApiKeys) {
+      setApiKeysForm({
+        clientKey: owner.clientKey || "",
+        apiKey: owner.apiKey || "",
+        checkSumKey: owner.checkSumKey || "",
+      });
+    }
+  }, [owner, isEditingApiKeys]);
+
+  // Handle API keys editing
+  const handleEditApiKeys = () => {
+    setIsEditingApiKeys(true);
+  };
+
+  const handleCancelEditApiKeys = () => {
+    setIsEditingApiKeys(false);
+    if (owner) {
+      setApiKeysForm({
+        clientKey: owner.clientKey || "",
+        apiKey: owner.apiKey || "",
+        checkSumKey: owner.checkSumKey || "",
+      });
+    }
+  };
+
+  const handleSaveApiKeys = async () => {
+    if (!owner || !id) return;
+
+    setIsSavingApiKeys(true);
+    try {
+      const updateData: UpdateApiKeysRequest = {
+        id: owner.id,
+        parkingLotOwnerId: owner.parkingLotOwnerId,
+        clientKey: apiKeysForm.clientKey,
+        apiKey: apiKeysForm.apiKey,
+        checkSumKey: apiKeysForm.checkSumKey,
+      };
+
+      const updatedOwner =
+        await parkingLotOwnerService.updateApiKeys(updateData);
+
+      // Update owner state with new API keys - merge with existing data
+      setOwner((prevOwner) => ({
+        ...prevOwner!,
+        ...updatedOwner,
+        clientKey: apiKeysForm.clientKey,
+        apiKey: apiKeysForm.apiKey,
+        checkSumKey: apiKeysForm.checkSumKey,
+      }));
+
+      setIsEditingApiKeys(false);
+
+      // Show success message (you can replace this with a proper toast notification)
+      alert("API keys updated successfully!");
+    } catch (error) {
+      console.error("Error updating API keys:", error);
+      alert("Failed to update API keys. Please try again.");
+    } finally {
+      setIsSavingApiKeys(false);
+    }
+  };
+
+  const handleApiKeyInputChange = (
+    field: keyof typeof apiKeysForm,
+    value: string
+  ) => {
+    setApiKeysForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  // Get current API key values for display
+  const getCurrentApiKeyValue = (key: keyof typeof apiKeysForm): string => {
+    return owner?.[key] || "Not set";
+  };
 
   if (loading) {
     return (
@@ -173,11 +255,11 @@ const ParkingLotOwnerDetails: React.FC = () => {
             </div>
             <div className="flex flex-col md:flex-row justify-between w-full">
               <div>
-                <h3 className="text-xl font-bold">{owner["full-name"]}</h3>
+                <h3 className="text-xl font-bold">{owner.fullName}</h3>
                 <div className="grid grid-cols-2 gap-y-2 gap-x-8 mt-1">
                   <div>
                     <div className="text-sm text-gray-500">Owner ID</div>
-                    <div className="font-medium">{owner.id}</div>
+                    <div className="font-medium">{owner.parkingLotOwnerId}</div>
                   </div>
                   <div>
                     <div className="text-sm text-gray-500">Status</div>
@@ -212,7 +294,7 @@ const ParkingLotOwnerDetails: React.FC = () => {
             <div className="text-sm text-gray-500 mb-1">Phone Number</div>
             <input
               type="text"
-              value={owner.phone}
+              value={owner.phoneNumber}
               readOnly
               className="w-full p-2 border border-gray-200 rounded-md bg-gray-50"
             />
@@ -224,7 +306,7 @@ const ParkingLotOwnerDetails: React.FC = () => {
             <div className="text-sm text-gray-500 mb-1">Join Date</div>
             <input
               type="text"
-              value={formatDate(owner["created-at"])}
+              value={formatDate(owner.createdAt)}
               readOnly
               className="w-full p-2 border border-gray-200 rounded-md bg-gray-50"
             />
@@ -233,101 +315,129 @@ const ParkingLotOwnerDetails: React.FC = () => {
             <div className="text-sm text-gray-500 mb-1">Last Activity</div>
             <input
               type="text"
-              value={formatDateTime(owner["updated-at"] || owner["created-at"])}
+              value={formatDateTime(owner.updatedAt || owner.createdAt)}
               readOnly
               className="w-full p-2 border border-gray-200 rounded-md bg-gray-50"
             />
           </div>
         </div>
-
-        <Button
-          color="primary"
-          startContent={<Save size={16} />}
-          className="mt-4 text-white"
-        >
-          Save Changes
-        </Button>
       </Card>
 
-      {/* Current Payment Source */}
+      {/* API Configuration Keys */}
       <Card className="p-6">
-        <h2 className="flex items-center text-lg font-semibold mb-4">
-          <CreditCard size={20} className="mr-2 text-primary" />
-          Current Payment Source
-        </h2>
-
-        {paymentSources.length > 0 ? (
-          <>
-            {paymentSources.map((source, index) => (
-              <div key={index} className="mb-4">
-                <h3 className="text-xl font-semibold text-center mb-6">
-                  {source["bank-name"]}
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6 mb-4">
-                  <div className="flex items-start gap-4">
-                    <div className="bg-primary w-14 h-14 rounded-md flex items-center justify-center flex-shrink-0">
-                      <CreditCard size={28} className="text-white" />
-                    </div>
-                    <div>
-                      <div className="text-sm text-gray-500 mb-1">
-                        Account Number
-                      </div>
-                      <div className="font-medium text-lg">
-                        {source["account-number"]}
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-500 mb-1">
-                      Account Name
-                    </div>
-                    <div className="font-medium text-lg">
-                      {source["account-name"]}
-                    </div>
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-y-4 gap-x-6">
-                  <div>
-                    <div className="text-sm text-gray-500 mb-1">Bank</div>
-                    <div className="font-medium text-primary">
-                      {source["bank-name"]}
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-sm text-gray-500 mb-1">Status</div>
-                    <div className="font-medium">{source.status}</div>
-                  </div>
-                </div>
-
-                <Divider className="my-4" />
-                <div className="bg-blue-50 p-4 rounded-md flex items-center">
-                  <div
-                    className={`w-6 h-6 rounded-full ${source.status === "Active" ? "bg-green-500" : "bg-yellow-500"} flex items-center justify-center mr-3 flex-shrink-0`}
-                  >
-                    <CheckCircle2 size={16} className="text-white" />
-                  </div>
-                  <div className="text-sm">
-                    <span className="font-medium">Payment Account Status:</span>
-                    {source.status === "Active"
-                      ? " Active and verified for payment processing"
-                      : " Pending verification"}
-                  </div>
-                  <div className="ml-auto">
-                    <span
-                      className={`px-3 py-1 rounded-full ${source.status === "Active" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"} text-xs font-medium`}
-                    >
-                      {source.status === "Active" ? "Verified" : "Pending"}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </>
-        ) : (
-          <div className="text-center py-6 text-gray-500">
-            No payment sources found for this owner.
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="flex items-center text-lg font-semibold">
+            <CreditCard size={20} className="mr-2 text-primary" />
+            API Configuration Keys
+          </h2>
+          <div className="flex gap-2">
+            {!isEditingApiKeys ? (
+              <Button
+                variant="light"
+                size="sm"
+                startContent={<Edit size={16} />}
+                onPress={handleEditApiKeys}
+                className="text-primary"
+              >
+                Edit
+              </Button>
+            ) : (
+              <>
+                <Button
+                  variant="light"
+                  size="sm"
+                  onPress={handleCancelEditApiKeys}
+                  isDisabled={isSavingApiKeys}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  color="primary"
+                  size="sm"
+                  startContent={<Save size={16} />}
+                  onPress={handleSaveApiKeys}
+                  isLoading={isSavingApiKeys}
+                  className="text-white"
+                >
+                  Save
+                </Button>
+              </>
+            )}
           </div>
-        )}
+        </div>
+
+        <div className="space-y-4">
+          <div>
+            <div className="text-sm text-gray-500 mb-1">Client Key</div>
+            {isEditingApiKeys ? (
+              <input
+                type="text"
+                value={apiKeysForm.clientKey}
+                onChange={(e) =>
+                  handleApiKeyInputChange("clientKey", e.target.value)
+                }
+                className="w-full p-3 border border-gray-300 rounded-md font-mono text-sm"
+                placeholder="Enter client key"
+              />
+            ) : (
+              <div className="bg-gray-50 p-3 rounded-md border">
+                <code className="text-sm font-mono break-all">
+                  {getCurrentApiKeyValue("clientKey")}
+                </code>
+              </div>
+            )}
+          </div>
+
+          <div>
+            <div className="text-sm text-gray-500 mb-1">API Key</div>
+            {isEditingApiKeys ? (
+              <input
+                type="text"
+                value={apiKeysForm.apiKey}
+                onChange={(e) =>
+                  handleApiKeyInputChange("apiKey", e.target.value)
+                }
+                className="w-full p-3 border border-gray-300 rounded-md font-mono text-sm"
+                placeholder="Enter API key"
+              />
+            ) : (
+              <div className="bg-gray-50 p-3 rounded-md border">
+                <code className="text-sm font-mono break-all">
+                  {getCurrentApiKeyValue("apiKey")}
+                </code>
+              </div>
+            )}
+          </div>
+
+          <div>
+            <div className="text-sm text-gray-500 mb-1">Checksum Key</div>
+            {isEditingApiKeys ? (
+              <input
+                type="text"
+                value={apiKeysForm.checkSumKey}
+                onChange={(e) =>
+                  handleApiKeyInputChange("checkSumKey", e.target.value)
+                }
+                className="w-full p-3 border border-gray-300 rounded-md font-mono text-sm"
+                placeholder="Enter checksum key"
+              />
+            ) : (
+              <div className="bg-gray-50 p-3 rounded-md border">
+                <code className="text-sm font-mono break-all">
+                  {getCurrentApiKeyValue("checkSumKey")}
+                </code>
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="mt-6 p-4 bg-blue-50 text-blue-800 rounded-md">
+          <p>
+            <span className="font-semibold">Security Note:</span> These API keys
+            are used for payment processing integration. Keep them secure and
+            only share with authorized personnel.
+          </p>
+        </div>
       </Card>
 
       {/* Parking Lot List */}
@@ -380,11 +490,17 @@ const ParkingLotOwnerDetails: React.FC = () => {
                         {parkingLot.address}
                       </td>
                       <td className="px-4 py-3 text-sm">
-                        {parkingLot["total-parking-slot"]}
+                        {parkingLot.totalParkingSlot}
                       </td>
                       <td className="px-4 py-3 text-sm">
-                        <span className="inline-block px-2 py-1 rounded-md text-xs font-medium bg-green-200 text-green-800">
-                          Active
+                        <span
+                          className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${
+                            parkingLot.isExpired
+                              ? "bg-red-200 text-red-800"
+                              : "bg-green-200 text-green-800"
+                          }`}
+                        >
+                          {parkingLot.isExpired ? "Expired" : "Active"}
                         </span>
                       </td>
                       <td className="px-4 py-3 text-sm text-gray-600">
@@ -410,7 +526,9 @@ const ParkingLotOwnerDetails: React.FC = () => {
                     color="primary"
                     className="rounded-full flex items-center"
                     isDisabled={currentPage <= 1}
-                    onPress={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                    onPress={() =>
+                      setCurrentPage((prev) => Math.max(1, prev - 1))
+                    }
                   >
                     <svg
                       className="w-4 h-4 ml-1"

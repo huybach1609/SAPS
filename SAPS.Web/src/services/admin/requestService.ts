@@ -1,10 +1,65 @@
 import { ApiResponse } from "@/types/admin";
-import { apiUrl } from "@/config/base";
-import { createApiInstance, getAuthConfig } from "../utils/apiUtils";
+import { createApiInstance } from "../utils/apiUtils";
 
 const api = createApiInstance();
 
-// Define request types
+// Define request types for new API
+export interface ApiRequest {
+  id: string;
+  header: string;
+  status: "Open" | "InProgress" | "Resolved" | "Closed";
+  submittedAt: string;
+  updatedAt: string;
+  senderId?: string;
+  senderFullName?: string;
+}
+
+// New API Request Detail interface
+export interface ApiRequestDetail {
+  id: string;
+  header: string;
+  description: string;
+  status: "Open" | "InProgress" | "Resolved" | "Closed";
+  submittedAt: string;
+  updatedAt: string;
+  senderId: string;
+  senderEmail: string;
+  senderFullName: string;
+  internalNote: string;
+  responseMessage: string;
+  lastUpdateAdminId: string;
+  lastUpdateAdminFullName: string;
+  attachments: {
+    id: string;
+    originalFileName: string;
+    fileSize: number;
+    fileExtension: string;
+    downloadUrl: string;
+    uploadedAt: string;
+  }[];
+}
+
+export interface PaginatedRequestResponse {
+  items: ApiRequest[];
+  totalCount: number;
+  pageNumber: number;
+  pageSize: number;
+  totalPages: number;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
+}
+
+export interface RequestStatsResponse {
+  message: string;
+  data: ApiRequest[];
+}
+
+export interface RequestPageResponse {
+  message: string;
+  data: PaginatedRequestResponse;
+}
+
+// Legacy request types (for backward compatibility)
 export interface Request {
   id: string;
   header: string;
@@ -303,6 +358,45 @@ api.interceptors.request.use((config) => {
 });
 
 export const requestService = {
+  // Get all requests for statistics
+  async getAllRequestsStats(): Promise<RequestStatsResponse> {
+    try {
+      const response = await api.get("/api/request/admin/all");
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching request stats:", error);
+      throw error;
+    }
+  },
+
+  // Get paginated requests
+  async getRequestsPage(
+    pageNumber: number = 1,
+    pageSize: number = 5,
+    userId?: string,
+    searchCriteria?: string,
+    status?: string
+  ): Promise<RequestPageResponse> {
+    try {
+      let url = `/api/request/admin/page?PageSize=${pageSize}&PageNumber=${pageNumber}`;
+      if (userId) {
+        url += `&UserId=${userId}`;
+      }
+      if (searchCriteria) {
+        url += `&searchCriteria=${encodeURIComponent(searchCriteria)}`;
+      }
+      if (status) {
+        url += `&status=${status}`;
+      }
+      const response = await api.get(url);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching requests page:", error);
+      throw error;
+    }
+  },
+
+  // Legacy methods (for backward compatibility)
   // Get all requests
   async getAllRequests(): Promise<ApiResponse<Request[]>> {
     // Simulate API call with mock data
@@ -313,8 +407,19 @@ export const requestService = {
     });
   },
 
-  // Get request by ID
-  async getRequestById(id: string): Promise<ApiResponse<RequestDetail>> {
+  // Get request by ID from new API
+  async getRequestById(id: string): Promise<ApiResponse<ApiRequestDetail>> {
+    try {
+      const response = await api.get(`/api/request/${id}`);
+      return { success: true, data: response.data.data };
+    } catch (error) {
+      console.error("Error fetching request details:", error);
+      return { success: false, error: "Request not found" };
+    }
+  },
+
+  // Legacy get request by ID (for backward compatibility)
+  async getLegacyRequestById(id: string): Promise<ApiResponse<RequestDetail>> {
     // Simulate API call with mock data
     return new Promise((resolve, reject) => {
       setTimeout(() => {
@@ -328,8 +433,29 @@ export const requestService = {
     });
   },
 
-  // Update request status and add response
+  // Update request status for new API
   async updateRequestStatus(
+    requestId: string,
+    status: "Resolved" | "Closed",
+    responseMessage: string,
+    internalNote: string
+  ): Promise<ApiResponse<ApiRequestDetail>> {
+    try {
+      const response = await api.put("/api/request/status", {
+        id: requestId,
+        status,
+        responseMessage,
+        internalNote,
+      });
+      return { success: true, data: response.data.data };
+    } catch (error) {
+      console.error("Error updating request status:", error);
+      return { success: false, error: "Failed to update request status" };
+    }
+  },
+
+  // Legacy update request status (for backward compatibility)
+  async updateLegacyRequestStatus(
     requestId: string,
     status: "Approved" | "Rejected",
     responseMessage: string,

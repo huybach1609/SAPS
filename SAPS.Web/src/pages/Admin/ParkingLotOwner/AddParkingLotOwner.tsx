@@ -1,20 +1,29 @@
-import React, { useState } from "react";
-import { Button, Card, Input, Checkbox, Textarea } from "@heroui/react";
+import React, { useEffect, useState } from "react";
+import { Card, Button, Input, Textarea } from "@heroui/react";
 import {
   Building2,
   CreditCard,
-  Settings,
-  AlertTriangle,
-  Check,
   X,
+  Check,
+  AlertTriangle,
+  Plus,
+  Trash2,
+  User,
 } from "lucide-react";
+import {
+  parkingLotOwnerService,
+  CreateOwnerRequest,
+  CreateParkingLotRequest,
+  Subscription,
+} from "../../../services/parkingLotOwner/parkingLotOwnerService";
 
-interface PaymentSourceInfo {
-  bankName: string;
-  accountNumber: string;
-  accountName: string;
-  branchName: string;
-  swiftCode: string;
+interface ParkingLotForm {
+  id: string;
+  name: string;
+  description: string;
+  address: string;
+  totalParkingSlot: number;
+  subscriptionId: string;
 }
 
 const AddParkingLotOwner: React.FC<{
@@ -22,49 +31,181 @@ const AddParkingLotOwner: React.FC<{
   onSuccess?: () => void;
 }> = ({ onClose, onSuccess }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [enableWhitelist, setEnableWhitelist] = useState(false);
-  const [parkingInfo, setParkingInfo] = useState({
-    name: "",
-    address: "",
-    totalSlots: "",
-    hourlyRate: "",
-    dailyRate: "",
-    operatingHours: "Select operating hours",
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
+
+  // Owner Information
+  const [ownerForm, setOwnerForm] = useState({
+    email: "",
+    fullName: "",
+    phone: "",
+    clientKey: "",
+    apiKey: "",
+    checkSumKey: "",
   });
-  const [paymentInfo, setPaymentInfo] = useState<PaymentSourceInfo>({
-    bankName: "",
-    accountNumber: "",
-    accountName: "",
-    branchName: "",
-    swiftCode: "",
-  });
-  const [description, setDescription] = useState("");
+
+  // Parking Lots
+  const [parkingLots, setParkingLots] = useState<ParkingLotForm[]>([
+    {
+      id: Date.now().toString(),
+      name: "",
+      description: "",
+      address: "",
+      totalParkingSlot: 1,
+      subscriptionId: "",
+    },
+  ]);
+
+  // Load active subscriptions
+  useEffect(() => {
+    const fetchSubscriptions = async () => {
+      try {
+        const subs = await parkingLotOwnerService.getActiveSubscriptions();
+        setSubscriptions(subs);
+      } catch (error) {
+        console.error("Error fetching subscriptions:", error);
+      }
+    };
+
+    fetchSubscriptions();
+  }, []);
+
+  // Generate UUID for parkingLotOwnerId (max 20 characters)
+  const generateUUID = (): string => {
+    // Generate a short UUID with timestamp + random chars (20 chars max)
+    const timestamp = Date.now().toString(36); // Convert timestamp to base36
+    const randomPart = Math.random().toString(36).substring(2, 8); // 6 random chars
+    const shortId = `${timestamp}-${randomPart}`.substring(0, 20);
+    return shortId;
+  };
+
+  // Helper function to convert milliseconds to days for display
+  const millisecondsTodays = (milliseconds: number): number => {
+    return Math.round(milliseconds / (1000 * 60 * 60 * 24));
+  };
+
+  // Add new parking lot
+  const addParkingLot = () => {
+    setParkingLots([
+      ...parkingLots,
+      {
+        id: Date.now().toString(),
+        name: "",
+        description: "",
+        address: "",
+        totalParkingSlot: 1,
+        subscriptionId: "",
+      },
+    ]);
+  };
+
+  // Remove parking lot
+  const removeParkingLot = (id: string) => {
+    if (parkingLots.length > 1) {
+      setParkingLots(parkingLots.filter((lot) => lot.id !== id));
+    }
+  };
+
+  // Update parking lot
+  const updateParkingLot = (
+    id: string,
+    field: keyof ParkingLotForm,
+    value: any
+  ) => {
+    setParkingLots(
+      parkingLots.map((lot) =>
+        lot.id === id ? { ...lot, [field]: value } : lot
+      )
+    );
+  };
+
+  // Form validation
+  const validateForm = (): boolean => {
+    // Validate owner info
+    if (!ownerForm.email || !ownerForm.fullName || !ownerForm.phone) {
+      alert("Please fill in all required owner information fields.");
+      return false;
+    }
+
+    if (!ownerForm.clientKey || !ownerForm.apiKey || !ownerForm.checkSumKey) {
+      alert("Please fill in all API configuration keys.");
+      return false;
+    }
+
+    // Validate parking lots
+    for (const lot of parkingLots) {
+      if (
+        !lot.name ||
+        !lot.address ||
+        !lot.subscriptionId ||
+        lot.totalParkingSlot < 1
+      ) {
+        alert("Please fill in all required parking lot information.");
+        return false;
+      }
+    }
+
+    return true;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
     setIsSubmitting(true);
 
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      // Generate parkingLotOwnerId
+      const parkingLotOwnerId = generateUUID();
+
+      // 1. Register the owner
+      const ownerData: CreateOwnerRequest = {
+        email: ownerForm.email,
+        password: "TempPassword123@", // Fixed password
+        fullName: ownerForm.fullName,
+        phone: ownerForm.phone,
+        profileImage: null, // Empty profile image
+        parkingLotOwnerId: parkingLotOwnerId,
+        clientKey: ownerForm.clientKey,
+        apiKey: ownerForm.apiKey,
+        checkSumKey: ownerForm.checkSumKey,
+      };
+
+      const createdOwner =
+        await parkingLotOwnerService.registerOwner(ownerData);
+
+      // 2. Create parking lots
+      const parkingLotPromises = parkingLots.map((lot) => {
+        const lotData: CreateParkingLotRequest = {
+          parkingLotOwnerId: parkingLotOwnerId,
+          subscriptionId: lot.subscriptionId,
+          name: lot.name,
+          description: lot.description,
+          address: lot.address,
+          totalParkingSlot: lot.totalParkingSlot,
+        };
+        return parkingLotOwnerService.createParkingLot(lotData);
+      });
+
+      await Promise.all(parkingLotPromises);
+
+      alert("Owner and parking lots created successfully!");
       if (onSuccess) onSuccess();
       onClose();
-    }, 1500);
+    } catch (error) {
+      console.error("Error creating owner:", error);
+      alert("Failed to create owner. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const operatingHoursOptions = [
-    "Select operating hours",
-    "24/7 operation",
-    "6AM-10PM",
-    "8AM-8PM",
-    "7AM-11PM",
-    "Custom hours",
-  ];
-
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto mt-">
-      <div className="w-full max-w-3xl mx-4 my-8">
-        <Card className="p-6 max-h-[80vh] overflow-y-auto">
+    <div className="fixed mt-0 inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto ">
+      <div className="w-full max-w-4xl mx-4 my-8">
+        <Card className="p-6 max-h-[90vh] overflow-y-auto">
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center">
               <Building2 size={24} className="mr-2 text-blue-600" />
@@ -81,24 +222,25 @@ const AddParkingLotOwner: React.FC<{
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Parking Lot Information */}
+            {/* Owner Information */}
             <div className="space-y-4">
               <div className="flex items-center text-blue-600 font-semibold border-b pb-2">
-                <Building2 size={20} className="mr-2" />
-                <h3 className="text-lg">Parking Lot Information</h3>
+                <User size={20} className="mr-2" />
+                <h3 className="text-lg">Owner Information</h3>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">
-                    Parking Lot Name <span className="text-red-500">*</span>
+                    Email Address <span className="text-red-500">*</span>
                   </label>
                   <Input
-                    value={parkingInfo.name}
+                    value={ownerForm.email}
                     onChange={(e) =>
-                      setParkingInfo({ ...parkingInfo, name: e.target.value })
+                      setOwnerForm({ ...ownerForm, email: e.target.value })
                     }
-                    placeholder="Enter parking lot name"
+                    placeholder="owner@example.com"
+                    type="email"
                     required
                     className="w-full"
                   />
@@ -106,310 +248,253 @@ const AddParkingLotOwner: React.FC<{
 
                 <div>
                   <label className="block text-sm font-medium mb-1">
-                    Address <span className="text-red-500">*</span>
+                    Full Name <span className="text-red-500">*</span>
                   </label>
                   <Input
-                    value={parkingInfo.address}
+                    value={ownerForm.fullName}
                     onChange={(e) =>
-                      setParkingInfo({
-                        ...parkingInfo,
-                        address: e.target.value,
-                      })
+                      setOwnerForm({ ...ownerForm, fullName: e.target.value })
                     }
-                    placeholder="Include street number, street name, district, city, and postal code"
+                    placeholder="John Doe"
                     required
                     className="w-full"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">
-                    Total Parking Slots <span className="text-red-500">*</span>
-                  </label>
-                  <Input
-                    value={parkingInfo.totalSlots}
-                    onChange={(e) =>
-                      setParkingInfo({
-                        ...parkingInfo,
-                        totalSlots: e.target.value,
-                      })
-                    }
-                    placeholder="150"
-                    type="number"
-                    min="1"
-                    required
-                    className="w-full"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1">
-                    Operating Hours <span className="text-red-500">*</span>
-                  </label>
-                  <select
-                    value={parkingInfo.operatingHours}
-                    onChange={(e) =>
-                      setParkingInfo({
-                        ...parkingInfo,
-                        operatingHours: e.target.value,
-                      })
-                    }
-                    className="w-full p-2 border border-gray-300 rounded-md"
-                    required
-                  >
-                    {operatingHoursOptions.map((option) => (
-                      <option key={option} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium mb-1">
-                    Hourly Rate ($) <span className="text-red-500">*</span>
-                  </label>
-                  <Input
-                    value={parkingInfo.hourlyRate}
-                    onChange={(e) =>
-                      setParkingInfo({
-                        ...parkingInfo,
-                        hourlyRate: e.target.value,
-                      })
-                    }
-                    placeholder="5.00"
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    required
-                    className="w-full"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1">
-                    Daily Rate ($)
-                  </label>
-                  <Input
-                    value={parkingInfo.dailyRate}
-                    onChange={(e) =>
-                      setParkingInfo({
-                        ...parkingInfo,
-                        dailyRate: e.target.value,
-                      })
-                    }
-                    placeholder="25.00"
-                    type="number"
-                    step="0.01"
-                    min="0"
-                    className="w-full"
-                  />
-                  <span className="text-xs text-gray-500">
-                    Optional - leave empty if not applicable
-                  </span>
-                </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Phone Number <span className="text-red-500">*</span>
+                </label>
+                <Input
+                  value={ownerForm.phone}
+                  onChange={(e) =>
+                    setOwnerForm({ ...ownerForm, phone: e.target.value })
+                  }
+                  placeholder="+1234567890"
+                  required
+                  className="w-full"
+                />
               </div>
             </div>
 
-            {/* Payment Source Information */}
+            {/* API Configuration Keys */}
             <div className="space-y-4">
               <div className="flex items-center text-blue-600 font-semibold border-b pb-2">
                 <CreditCard size={20} className="mr-2" />
-                <h3 className="text-lg">Payment Source Information</h3>
+                <h3 className="text-lg">API Configuration Keys</h3>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">
-                    Bank Name <span className="text-red-500">*</span>
+                    Client Key <span className="text-red-500">*</span>
                   </label>
                   <Input
-                    value={paymentInfo.bankName}
+                    value={ownerForm.clientKey}
                     onChange={(e) =>
-                      setPaymentInfo({
-                        ...paymentInfo,
-                        bankName: e.target.value,
-                      })
+                      setOwnerForm({ ...ownerForm, clientKey: e.target.value })
                     }
-                    placeholder="Enter bank name (e.g., Vietcombank, BIDV, Techcombank)"
+                    placeholder="Enter client key"
                     required
-                    className="w-full"
+                    className="w-full font-mono"
                   />
                 </div>
 
                 <div>
                   <label className="block text-sm font-medium mb-1">
-                    Account Number <span className="text-red-500">*</span>
+                    API Key <span className="text-red-500">*</span>
                   </label>
                   <Input
-                    value={paymentInfo.accountNumber}
+                    value={ownerForm.apiKey}
                     onChange={(e) =>
-                      setPaymentInfo({
-                        ...paymentInfo,
-                        accountNumber: e.target.value,
-                      })
+                      setOwnerForm({ ...ownerForm, apiKey: e.target.value })
                     }
-                    placeholder="12345678901234"
+                    placeholder="Enter API key"
                     required
-                    className="w-full"
+                    className="w-full font-mono"
                   />
                 </div>
-              </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-1">
-                    Account Name <span className="text-red-500">*</span>
+                    Checksum Key <span className="text-red-500">*</span>
                   </label>
                   <Input
-                    value={paymentInfo.accountName}
+                    value={ownerForm.checkSumKey}
                     onChange={(e) =>
-                      setPaymentInfo({
-                        ...paymentInfo,
-                        accountName: e.target.value,
+                      setOwnerForm({
+                        ...ownerForm,
+                        checkSumKey: e.target.value,
                       })
                     }
-                    placeholder="Account holder's full name"
+                    placeholder="Enter checksum key"
                     required
-                    className="w-full"
+                    className="w-full font-mono"
                   />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1">
-                    Branch Name
-                  </label>
-                  <Input
-                    value={paymentInfo.branchName}
-                    onChange={(e) =>
-                      setPaymentInfo({
-                        ...paymentInfo,
-                        branchName: e.target.value,
-                      })
-                    }
-                    placeholder="Branch name (e.g., Downtown)"
-                    className="w-full"
-                  />
-                  <span className="text-xs text-gray-500">
-                    Optional - specify if required by bank
-                  </span>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Swift Code / Bank Code
-                </label>
-                <Input
-                  value={paymentInfo.swiftCode}
-                  onChange={(e) =>
-                    setPaymentInfo({
-                      ...paymentInfo,
-                      swiftCode: e.target.value,
-                    })
-                  }
-                  placeholder="BFTVVNVX"
-                  className="w-full"
-                />
-                <span className="text-xs text-gray-500">
-                  Optional - for international transfers
-                </span>
-              </div>
-
-              {/* Payment Processing Note */}
-              <div className="bg-blue-50 p-4 rounded-md">
-                <div className="flex items-start">
-                  <div className="mr-2 mt-0.5">
-                    <AlertTriangle size={16} className="text-blue-600" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-sm text-blue-800">
-                      Payment Processing:
-                    </h4>
-                    <ul className="text-xs text-blue-700 mt-1 space-y-1">
-                      <li>
-                        • This account will receive payments from parking fees
-                      </li>
-                      <li>
-                        • Account information will be verified before activation
-                      </li>
-                      <li>• Payment processing may take 1-2 business days</li>
-                      <li>
-                        • Owner can update payment details later through their
-                        dashboard
-                      </li>
-                    </ul>
-                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Initial Settings */}
+            {/* Parking Lots */}
             <div className="space-y-4">
-              <div className="flex items-center text-blue-600 font-semibold border-b pb-2">
-                <Settings size={20} className="mr-2" />
-                <h3 className="text-lg">Initial Settings</h3>
-              </div>
-
-              <div className="flex items-start">
-                <Checkbox
-                  checked={enableWhitelist}
-                  onChange={() => setEnableWhitelist(!enableWhitelist)}
-                  className="mr-2"
-                />
-                <div>
-                  <label className="text-sm font-medium">
-                    Enable Whitelist Feature
-                  </label>
-                  <p className="text-xs text-gray-500 mt-1">
-                    When enabled, only pre-approved vehicles can park at this
-                    facility
-                  </p>
+              <div className="flex items-center justify-between text-blue-600 font-semibold border-b pb-2">
+                <div className="flex items-center">
+                  <Building2 size={20} className="mr-2" />
+                  <h3 className="text-lg">Parking Lots</h3>
                 </div>
+                <Button
+                  type="button"
+                  size="sm"
+                  color="primary"
+                  variant="light"
+                  startContent={<Plus size={16} />}
+                  onPress={addParkingLot}
+                >
+                  Add Parking Lot
+                </Button>
               </div>
 
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Description (Optional)
-                </label>
-                <Textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Brief description of the parking facility, special features, location highlights..."
-                  className="w-full min-h-[100px]"
-                />
-              </div>
+              {parkingLots.map((lot, index) => (
+                <div
+                  key={lot.id}
+                  className="border border-gray-200 rounded-lg p-4 space-y-4"
+                >
+                  <div className="flex items-center justify-between">
+                    <h4 className="font-semibold text-gray-800">
+                      Parking Lot #{index + 1}
+                    </h4>
+                    {parkingLots.length > 1 && (
+                      <Button
+                        isIconOnly
+                        size="sm"
+                        variant="light"
+                        color="danger"
+                        onPress={() => removeParkingLot(lot.id)}
+                      >
+                        <Trash2 size={16} />
+                      </Button>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-1">
+                        Parking Lot Name <span className="text-red-500">*</span>
+                      </label>
+                      <Input
+                        value={lot.name}
+                        onChange={(e) =>
+                          updateParkingLot(lot.id, "name", e.target.value)
+                        }
+                        placeholder="Downtown Parking"
+                        required
+                        className="w-full"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium mb-1">
+                        Total Parking Slots{" "}
+                        <span className="text-red-500">*</span>
+                      </label>
+                      <Input
+                        value={lot.totalParkingSlot.toString()}
+                        onChange={(e) =>
+                          updateParkingLot(
+                            lot.id,
+                            "totalParkingSlot",
+                            parseInt(e.target.value) || 1
+                          )
+                        }
+                        type="number"
+                        min="1"
+                        required
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Address <span className="text-red-500">*</span>
+                    </label>
+                    <Input
+                      value={lot.address}
+                      onChange={(e) =>
+                        updateParkingLot(lot.id, "address", e.target.value)
+                      }
+                      placeholder="123 Main St, City, State, ZIP"
+                      required
+                      className="w-full"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Subscription Plan <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      value={lot.subscriptionId}
+                      onChange={(e) =>
+                        updateParkingLot(
+                          lot.id,
+                          "subscriptionId",
+                          e.target.value
+                        )
+                      }
+                      className="w-full p-2 border border-gray-300 rounded-md"
+                      required
+                    >
+                      <option value="">Select a subscription plan</option>
+                      {subscriptions.map((sub) => (
+                        <option key={sub.id} value={sub.id}>
+                          {sub.name} - ${sub.price} (
+                          {millisecondsTodays(sub.duration)} days)
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Description
+                    </label>
+                    <Textarea
+                      value={lot.description}
+                      onChange={(e) =>
+                        updateParkingLot(lot.id, "description", e.target.value)
+                      }
+                      placeholder="Brief description of the parking facility..."
+                      className="w-full"
+                      minRows={2}
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
 
             {/* Important Notice */}
             <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-md">
               <div className="flex items-start">
-                <div className="mr-2 mt-0.5">
-                  <AlertTriangle size={16} className="text-blue-600" />
-                </div>
+                <AlertTriangle
+                  size={16}
+                  className="text-blue-600 mr-2 mt-0.5"
+                />
                 <div>
                   <h4 className="font-semibold text-blue-800">
                     Important Notice:
                   </h4>
-                  <ul className="text-sm text-blue-700 mt-1">
+                  <ul className="text-sm text-blue-700 mt-1 list-disc list-inside">
                     <li>
-                      • All information will be verified before account
-                      activation
+                      Owner will be created with status "Active" by default
                     </li>
                     <li>
-                      • The owner will receive login credentials via email
+                      All parking lots will be created with their selected
+                      subscription plans
                     </li>
                     <li>
-                      • Required fields are marked with{" "}
-                      <span className="text-red-500">*</span>
-                    </li>
-                    <li>
-                      • Changes to address and rates can be modified later by
-                      the owner
+                      API keys must be valid for payment processing integration
                     </li>
                   </ul>
                 </div>
@@ -434,7 +519,7 @@ const AddParkingLotOwner: React.FC<{
                 isLoading={isSubmitting}
                 startContent={<Check size={16} />}
               >
-                Add Owner
+                Create Owner & Parking Lots
               </Button>
             </div>
           </form>
