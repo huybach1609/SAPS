@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { apiUrl } from '@/config/base';
-import type { IncidentReport, IncidentStatus } from '@/types/IncidentReport';
+import type { IncidentReport } from '@/types/IncidentReport';
 
 export interface IncidentListItem {
     id: string;

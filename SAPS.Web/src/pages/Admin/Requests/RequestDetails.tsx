@@ -270,21 +270,6 @@ const RequestDetails: React.FC = () => {
     }
   };
 
-  // Alternative: Add a function to copy URL to clipboard
-  const copyUrlToClipboard = async (url: string, fileName: string) => {
-    try {
-      await navigator.clipboard.writeText(url);
-      setDownloadMessage(
-        `📋 URL for "${fileName}" copied to clipboard! Paste in a new browser tab to download.`
-      );
-      setTimeout(() => setDownloadMessage(""), 5000);
-    } catch (error) {
-      console.error("Failed to copy URL:", error);
-      setDownloadMessage(`URL: ${url}`);
-      setTimeout(() => setDownloadMessage(""), 8000);
-    }
-  };
-
   // Handle approve/reject actions
   const handleApproveReject = async (status: "Resolved" | "Closed") => {
     if (!id || !request) return;

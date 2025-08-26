@@ -173,8 +173,7 @@ const AddParkingLotOwner: React.FC<{
         checkSumKey: ownerForm.checkSumKey,
       };
 
-      const createdOwner =
-        await parkingLotOwnerService.registerOwner(ownerData);
+      await parkingLotOwnerService.registerOwner(ownerData);
 
       // 2. Create parking lots
       const parkingLotPromises = parkingLots.map((lot) => {

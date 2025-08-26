@@ -20,8 +20,7 @@ import {
 import {
   EllipsisVertical,
   LogOut,
-  Settings,
-  Home,
+  Key,
   Users,
   Building2,
   FileText,
@@ -79,9 +78,7 @@ const NavigationList: React.FC<NavigationListProps> = ({
         const isDisabled =
           isOwner &&
           item.isActive !== undefined &&
-          (selectedParkingLot?.isExpired
-            ? item.isActive
-            : !item.isActive);
+          (selectedParkingLot?.isExpired ? item.isActive : !item.isActive);
 
         const listboxItem = (
           <React.Fragment key={index}>
@@ -120,11 +117,6 @@ const NavigationList: React.FC<NavigationListProps> = ({
 
 // Configuration for different user roles
 const adminItems: NavigationItem[] = [
-  {
-    icon: <Home size={20} />,
-    title: "Home",
-    path: "/admin/home",
-  },
   {
     icon: <Users size={20} />,
     title: "Account List",
@@ -249,10 +241,20 @@ const HeadingBar: React.FC = () => {
           </Button>
         </DropdownTrigger>
         <DropdownMenu className="dark">
-          <DropdownItem key="settings" textValue="Settings ">
-            <button className="flex items-center gap-2 w-full text-left transition-opacity hover:opacity-80 ">
-              <Settings size={16} />
-              Settings
+          <DropdownItem key="changePassword" textValue="Change Password">
+            <button
+              className="flex items-center gap-2 w-full text-left transition-opacity hover:opacity-80"
+              onClick={() => {
+                const role = getUserRole();
+                if (role === "admin") {
+                  navigate("/admin/change-password");
+                } else if (role === "parkinglotowner") {
+                  navigate("/owner/change-password");
+                }
+              }}
+            >
+              <Key size={16} />
+              Change Password
             </button>
           </DropdownItem>
 
@@ -294,7 +296,7 @@ const HeadingBar: React.FC = () => {
             <Button color="danger" variant="light" onPress={onOpenChange}>
               Cancel
             </Button>
-            <Button color="primary" onPress={confirmLogout}>
+            <Button color="primary" className="text-white" onPress={confirmLogout}>
               Logout
             </Button>
           </ModalFooter>

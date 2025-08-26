@@ -1,4 +1,3 @@
-import axios from "axios";
 import { AdminUser, ApiResponse } from "@/types/admin";
 import { apiUrl } from "@/config/base";
 import { createApiInstance } from "../utils/apiUtils";
@@ -177,6 +176,40 @@ export const adminService = {
         success: false,
         error:
           error.response?.data?.message || "Failed to reset admin password",
+      };
+    }
+  },
+
+  // Request password reset for current user
+  async requestPasswordReset(): Promise<ApiResponse<void>> {
+    try {
+      await api.get("/api/password/request/reset");
+      return { success: true };
+    } catch (error: any) {
+      return {
+        success: false,
+        error:
+          error.response?.data?.message ||
+          "Failed to send password reset request",
+      };
+    }
+  },
+
+  // Update user status (for head admin to update other admins)
+  async updateUserStatus(
+    userId: string,
+    status: string
+  ): Promise<ApiResponse<void>> {
+    try {
+      await api.put("/api/user/status", {
+        id: userId,
+        status: status,
+      });
+      return { success: true };
+    } catch (error: any) {
+      return {
+        success: false,
+        error: error.response?.data?.message || "Failed to update user status",
       };
     }
   },

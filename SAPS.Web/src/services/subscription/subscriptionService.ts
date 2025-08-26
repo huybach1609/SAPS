@@ -1,5 +1,4 @@
 import { PaginatedResponse } from "../../types";
-import { apiUrl } from "@/config/base";
 import { createApiInstance } from "../utils/apiUtils";
 
 const api = createApiInstance();
@@ -90,18 +89,18 @@ export const subscriptionService = {
     const response = await api.get(url);
 
     // Map API response to match frontend expectations
-    const result = {
+    const result: PaginatedResponse<Subscription> = {
       items: response.data.items.map((sub: any) => ({
         ...sub,
         lastUpdatedBy: sub.updatedBy, // Map updatedBy to lastUpdatedBy
         duration: millisecondsTodays(sub.duration), // Convert milliseconds to days
       })),
       "total-count": response.data.totalCount, // Map totalCount to total-count for compatibility
-      pageNumber: response.data.pageNumber,
-      pageSize: response.data.pageSize,
-      totalPages: response.data.totalPages,
-      hasPreviousPage: response.data.hasPreviousPage,
-      hasNextPage: response.data.hasNextPage,
+      "page-number": response.data.pageNumber,
+      "page-size": response.data.pageSize,
+      "total-pages": response.data.totalPages,
+      "has-previous-page": response.data.hasPreviousPage,
+      "has-next-page": response.data.hasNextPage,
     };
 
     return result;

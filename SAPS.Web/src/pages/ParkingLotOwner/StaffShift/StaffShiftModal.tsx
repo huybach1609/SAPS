@@ -57,7 +57,7 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
 
     useEffect(() => {
         const handleSearchUser = async (term: string) => {
-            // console.log(term);
+            console.log(term);
             if (keySearchStaff === '') {
                 setStaffList([]);
                 setSearchError('');

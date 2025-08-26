@@ -37,25 +37,6 @@ export default function AdminRequestList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Helper function to get request type based on header (simplified without icons)
-  const getRequestType = (header: string) => {
-    const lowerHeader = header.toLowerCase();
-    if (lowerHeader.includes("account") || lowerHeader.includes("user")) {
-      return "Account";
-    } else if (lowerHeader.includes("vehicle")) {
-      return "Vehicle";
-    } else if (
-      lowerHeader.includes("whitelist") ||
-      lowerHeader.includes("access")
-    ) {
-      return "Whitelist";
-    } else if (lowerHeader.includes("fee") || lowerHeader.includes("dispute")) {
-      return "Fee";
-    } else {
-      return "UserInfo";
-    }
-  };
-
   // Helper function to format date
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -131,7 +112,6 @@ export default function AdminRequestList() {
   ).length;
 
   // Filter requests based on the applied filters (now handled by API)
-  const filteredRequests = requestsList; // API already handles filtering
 
   // Use API data directly since filtering is done server-side
   const displayRequests = requestsList;

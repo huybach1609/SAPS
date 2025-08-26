@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, UseDisclosureProps } from '@heroui/react';
+import { Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@heroui/react';
 import { EllipsisVertical } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { User } from '@/types/User';
@@ -12,17 +12,17 @@ interface StaffListTableProps {
   selectUser: User | null;
   setSelectUser: React.Dispatch<React.SetStateAction<User | null>>;
   parkingLot: ParkingLot | null;
-  updateModalDisclosure: UseDisclosureProps;
-  handleDeactivateStaff: (user: User) => void;
+  // updateModalDisclosure: UseDisclosureProps;
+  // handleDeactivateStaff: (user: User) => void;
 }
 
 export const StaffListTable: React.FC<StaffListTableProps> = ({
   staffList,
   selectUser,
   setSelectUser,
-  parkingLot,
-  updateModalDisclosure,
-  handleDeactivateStaff,
+  // parkingLot,
+  // updateModalDisclosure,
+  // handleDeactivateStaff,
 }) => {
   const navigate = useNavigate();
 

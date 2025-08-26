@@ -289,9 +289,8 @@ const UserAccountList: React.FC = () => {
             <div className="text-center">
               <div className="text-4xl font-bold mb-1">
                 {
-                  allUsers.filter(
-                    (a: ClientUser) =>
-                      a.status === "suspended" || a.status === "inactive"
+                  allUsers.filter((a: ClientUser) =>
+                    ["suspended", "inactive"].includes(a.status)
                   ).length
                 }
               </div>

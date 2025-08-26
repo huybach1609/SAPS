@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams, Link, useLocation } from "react-router-dom";
 import { Button, Card, Spinner } from "@heroui/react";
-import { ArrowLeft, ShieldAlert, Key } from "lucide-react";
+import { ArrowLeft, ShieldAlert, Key, Settings } from "lucide-react";
 import { adminService } from "@/services/admin/adminService";
 import { AdminUser } from "@/types/admin";
+import { parseJwt } from "@/components/utils/jwtUtils";
 
 const AdminAccountDetails: React.FC = () => {
   const navigate = useNavigate();
@@ -14,17 +15,25 @@ const AdminAccountDetails: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [statusLoading, setStatusLoading] = useState<boolean>(false);
 
-  // Get current user's role from localStorage to check permissions
+  // Get current user's role and ID from JWT token to check permissions
   useEffect(() => {
-    const userStr = localStorage.getItem("admin_user");
-    if (userStr) {
-      try {
-        const user = JSON.parse(userStr);
-        setCurrentUserRole(user.role);
-      } catch (e) {
-        console.error("Error parsing admin user from localStorage", e);
+    try {
+      const accessToken = localStorage.getItem("access_token");
+      if (accessToken) {
+        const claims = parseJwt(accessToken) as any;
+        const adminRole = claims["AdminRole"];
+        const userId =
+          claims[
+            "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier"
+          ];
+        setCurrentUserRole(adminRole?.toLowerCase()); // Convert to lowercase for consistency
+        setCurrentUserId(userId);
       }
+    } catch (e) {
+      console.error("Error parsing JWT token for admin role and ID", e);
     }
   }, []);
 
@@ -64,61 +73,66 @@ const AdminAccountDetails: React.FC = () => {
     fetchAdminDetails();
   }, [id, navigate, location.state]);
 
-  // Handle password reset
+  // Handle password reset - only for current user
   const handleResetPassword = async () => {
-    if (!admin) return;
+    if (!admin || !currentUserId) return;
 
-    // As per requirements, just show a notification message for reset password
-    setSuccessMessage(
-      "Password reset request has been sent. Additional verification will be required."
-    );
+    // Check if the admin being viewed is the current user
+    if (admin.id !== currentUserId) {
+      setError("You can only reset your own password.");
+      return;
+    }
 
-    // Clear success message after 5 seconds
-    setTimeout(() => {
-      setSuccessMessage(null);
-    }, 5000);
+    try {
+      setLoading(true);
+      const response = await adminService.requestPasswordReset();
+
+      if (response.success) {
+        setSuccessMessage(
+          "Password reset request has been sent to your email. Please check your inbox for instructions."
+        );
+      } else {
+        setError(response.error || "Failed to send password reset request");
+      }
+    } catch (err: any) {
+      console.error("Error sending password reset request:", err);
+      setError("An error occurred while sending the password reset request");
+    } finally {
+      setLoading(false);
+      // Clear success message after 5 seconds
+      setTimeout(() => {
+        setSuccessMessage(null);
+      }, 5000);
+    }
   };
 
-  // Handle admin account removal
-  const handleRemoveAccount = async () => {
-    if (!admin) return;
+  // Handle status update - only for head admin updating others
+  const handleStatusUpdate = async (newStatus: string) => {
+    if (!admin || !isHeadAdmin || admin.id === currentUserId) return;
 
-    if (
-      window.confirm(
-        `Are you sure you want to remove ${admin.fullName || "this admin"}'s account? This action cannot be undone.`
-      )
-    ) {
-      try {
-        setLoading(true);
-        // Call the delete API directly as specified in requirements
-        const response = await fetch(
-          `https://localhost:7136/api/Admin/${admin.id}`,
-          {
-            method: "DELETE",
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("admin_token") || localStorage.getItem("access_token")}`,
-              "Content-Type": "application/json",
-            },
-          }
+    try {
+      setStatusLoading(true);
+      const response = await adminService.updateUserStatus(admin.id, newStatus);
+
+      if (response.success) {
+        // Update the local admin data
+        setAdmin((prev) => (prev ? { ...prev, status: newStatus } : null));
+        setSuccessMessage(
+          `Account status updated to ${newStatus} successfully.`
         );
 
-        if (response.ok) {
-          // Success - navigate back to the list
-          navigate("/admin/accounts/admins", {
-            state: {
-              message: `${admin.fullName || "Admin"}'s account has been removed successfully.`,
-            },
-          });
-        } else {
-          // Handle error
-          const data = await response.json();
-          setError(data.message || "Failed to remove account");
-        }
-      } catch (err: any) {
-        setError(err.message || "An error occurred while removing the account");
-      } finally {
-        setLoading(false);
+        // Clear success message after 3 seconds
+        setTimeout(() => {
+          setSuccessMessage(null);
+        }, 3000);
+      } else {
+        setError(response.error || "Failed to update account status");
       }
+    } catch (err: any) {
+      console.error("Error updating account status:", err);
+      setError("An error occurred while updating the account status");
+    } finally {
+      setStatusLoading(false);
     }
   };
 
@@ -177,7 +191,11 @@ const AdminAccountDetails: React.FC = () => {
   }
 
   // Check if current user is head admin (for permissions)
-  const isHeadAdmin = currentUserRole === "head_admin";
+  const isHeadAdmin = currentUserRole === "headadmin";
+  // Check if current user can reset password (only for themselves)
+  const canResetPassword = currentUserId === admin?.id;
+  // Check if head admin can update status (only for other admins, not themselves)
+  const canUpdateStatus = isHeadAdmin && admin?.id !== currentUserId;
 
   return (
     <div className="space-y-6 py-4">
@@ -321,9 +339,7 @@ const AdminAccountDetails: React.FC = () => {
             <div className="text-sm text-gray-500">Created Date</div>
             <div className="p-2 bg-gray-50 rounded border">
               {admin.createdAt
-                ? admin.createdAt instanceof Date
-                  ? admin.createdAt.toLocaleDateString()
-                  : new Date(admin.createdAt).toLocaleDateString()
+                ? new Date(admin.createdAt).toLocaleDateString()
                 : "N/A"}
             </div>
           </div>
@@ -331,9 +347,7 @@ const AdminAccountDetails: React.FC = () => {
             <div className="text-sm text-gray-500">Last Updated</div>
             <div className="p-2 bg-gray-50 rounded border">
               {admin.updatedAt
-                ? admin.updatedAt instanceof Date
-                  ? admin.updatedAt.toLocaleDateString()
-                  : new Date(admin.updatedAt).toLocaleDateString()
+                ? new Date(admin.updatedAt).toLocaleDateString()
                 : "N/A"}
             </div>
           </div>
@@ -362,51 +376,65 @@ const AdminAccountDetails: React.FC = () => {
           <Key size={20} className="mr-2" />
           Account Management
         </h2>
-        <div className="flex flex-col md:flex-row gap-4">
-          {isHeadAdmin ? (
-            <>
-              <Button
-                color="primary"
-                startContent={<Key />}
-                onPress={handleResetPassword}
-              >
-                Reset Password
-              </Button>
 
-              {/* Only show remove account button if the target is not head_admin */}
-              {admin.role !== "head_admin" && (
+        {/* Status Update - Only for Head Admin updating other admins */}
+        {canUpdateStatus && (
+          <div className="mb-6">
+            <h3 className="text-md font-medium mb-4 flex items-center">
+              <Settings size={16} className="mr-2" />
+              Update Account Status
+            </h3>
+            <div className="flex justify-center">
+              {admin?.status === "active" ? (
                 <Button
-                  color="danger"
-                  startContent={
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                      />
-                    </svg>
-                  }
-                  onPress={handleRemoveAccount}
+                  color="warning"
+                  variant="solid"
+                  size="lg"
+                  className="w-auto px-8 py-3 text-white font-medium"
+                  onPress={() => handleStatusUpdate("Inactive")}
+                  isLoading={statusLoading}
                 >
-                  Remove Account
+                  Inactive Account
+                </Button>
+              ) : (
+                <Button
+                  color="success"
+                  variant="solid"
+                  size="lg"
+                  className="w-auto px-8 py-3 text-white font-medium"
+                  onPress={() => handleStatusUpdate("Active")}
+                  isLoading={statusLoading}
+                >
+                  Active Account
                 </Button>
               )}
-            </>
-          ) : (
+            </div>
+          </div>
+        )}
+
+        <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
+          {/* Reset Password - Only for self */}
+          {canResetPassword && (
+            <Button
+              color="primary"
+              className="text-white"
+              startContent={<Key />}
+              onPress={handleResetPassword}
+              isLoading={loading}
+            >
+              Reset My Password
+            </Button>
+          )}
+
+          {/* Show message if no actions available */}
+          {!canResetPassword && !canUpdateStatus && (
             <div className="text-amber-600 bg-amber-50 p-3 rounded-md">
               <p className="font-medium">
-                You don't have permission to manage admin accounts.
+                You don't have permission to manage this admin account.
               </p>
               <p>
-                Only Head Administrators can reset passwords or remove admin
-                accounts.
+                You can only reset your own password. Only Head Administrators
+                can update status of other admin accounts.
               </p>
             </div>
           )}
@@ -414,11 +442,14 @@ const AdminAccountDetails: React.FC = () => {
 
         {/* Permission Note */}
         <div className="mt-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-md">
-          <p className="font-semibold">Permission Note:</p>
-          <p>
-            Only Head Administrators can remove other admin accounts. Password
-            resets require additional verification for admin accounts.
-          </p>
+          <p className="font-semibold">Permission Notes:</p>
+          <ul className="list-disc list-inside mt-2 text-sm space-y-1">
+            <li>You can only reset your own password</li>
+            <li>
+              Only Head Administrators can update status of other admin accounts
+            </li>
+            <li>Head Administrators cannot update their own status</li>
+          </ul>
         </div>
       </Card>
     </div>

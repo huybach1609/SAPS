@@ -11,7 +11,6 @@ import {
   LogOut,
   Settings,
   Users,
-  Home,
   FileText,
   Building2,
   Package,
@@ -104,7 +103,6 @@ export const AdminSidebar: React.FC<SidebarProps> = ({ isOpen }) => {
       <Divider className="my-4" />
 
       <nav className="flex flex-col gap-2">
-        <MenuItem icon={Home} label="Dashboard" to="/admin/dashboard" />
         <MenuItem icon={Users} label="Account List" to="/admin/accounts" />
         <MenuItem
           icon={Building2}

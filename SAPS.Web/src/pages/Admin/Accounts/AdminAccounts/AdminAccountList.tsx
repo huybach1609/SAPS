@@ -45,8 +45,7 @@ const AdminAccountList: React.FC = () => {
             ...admin,
             // Không cần map vì API đã trả về đúng format
             role: admin.adminRole || admin["admin-role"], // Sử dụng adminRole nếu có
-            createdAt: new Date(admin.createdAt || admin["created-at"]),
-            updatedAt: new Date(admin.createdAt || admin["created-at"]),
+            createdAt: admin.createdAt || admin["created-at"], // Keep as string
             status: admin.status.toLowerCase(),
           }));
 
@@ -111,9 +110,8 @@ const AdminAccountList: React.FC = () => {
           // Không cần format data nữa vì API đã trả về đúng format
           const formattedAdmins = response.data.items.map((admin) => ({
             ...admin,
-            // Chỉ cần chuyển đổi ngày và status
-            createdAt: new Date(admin.createdAt),
-            updatedAt: new Date(admin.createdAt),
+            // Chỉ cần chuyển đổi status
+            createdAt: admin.createdAt, // Keep as string
             status: admin.status.toLowerCase(), // Convert "Active" to "active"
             role: admin.adminRole, // Đảm bảo role được gán cho phù hợp
           }));
@@ -159,7 +157,8 @@ const AdminAccountList: React.FC = () => {
   const isHeadAdmin = () => {
     if (!user) return false;
     return (
-      (user.adminRole && user.adminRole.toLowerCase() === "headadmin") ||
+      (user.adminProfile?.role &&
+        user.adminProfile.role.toLowerCase() === "headadmin") ||
       (user["admin-role"] &&
         user["admin-role"].toLowerCase() === "headadmin") ||
       getAdminRole()?.toLowerCase() === "headadmin"
@@ -191,9 +190,8 @@ const AdminAccountList: React.FC = () => {
         // Format the data according to the new API structure
         const formattedAdmins = response.data.items.map((admin) => ({
           ...admin,
-          // Chỉ cần chuyển đổi ngày và status
-          createdAt: new Date(admin.createdAt),
-          updatedAt: new Date(admin.createdAt),
+          // Chỉ cần chuyển đổi status
+          createdAt: admin.createdAt, // Keep as string
           status: admin.status.toLowerCase(), // Convert "Active" to "active"
           role: admin.adminRole, // Đảm bảo role được gán cho phù hợp
         }));
@@ -210,9 +208,8 @@ const AdminAccountList: React.FC = () => {
       if (allAdminsResponse.success && allAdminsResponse.data) {
         const formattedAllAdmins = allAdminsResponse.data.map((admin) => ({
           ...admin,
-          // Chỉ cần chuyển đổi ngày và status
-          createdAt: new Date(admin.createdAt || admin["created-at"]),
-          updatedAt: new Date(admin.createdAt || admin["created-at"]),
+          // Chỉ cần chuyển đổi status
+          createdAt: admin.createdAt || admin["created-at"], // Keep as string
           status: admin.status.toLowerCase(),
           role: admin.adminRole || admin["admin-role"], // Sử dụng adminRole nếu có
         }));
@@ -679,7 +676,7 @@ const AdminAccountList: React.FC = () => {
                     </td>
                     <td className="px-4 py-3 text-sm">
                       {admin.createdAt
-                        ? admin.createdAt.toLocaleDateString()
+                        ? new Date(admin.createdAt).toLocaleDateString()
                         : new Date(admin["created-at"]).toLocaleDateString()}
                     </td>
                     <td className="px-4 py-3 text-sm">
