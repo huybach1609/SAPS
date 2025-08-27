@@ -246,11 +246,11 @@ const AddEditSubscriptionModal: React.FC<AddEditSubscriptionModalProps> = ({
                 />
 
                 <Input
-                  label="Price (in thousands VND)"
+                  label="Price (VND)"
                   type="number"
                   step="1"
                   min="0"
-                  placeholder="Enter price (e.g., 299 for 299,000 VND)"
+                  placeholder="Enter exact price (e.g., 299000 for 299,000₫)"
                   value={price}
                   onChange={(e) => {
                     setPrice(e.target.value);
@@ -265,12 +265,15 @@ const AddEditSubscriptionModal: React.FC<AddEditSubscriptionModalProps> = ({
                       <span className="text-default-400 text-small">₫</span>
                     </div>
                   }
-                  endContent={
-                    <div className="pointer-events-none flex items-center">
-                      <span className="text-default-400 text-small">nghìn</span>
-                    </div>
-                  }
-                  description={`Will be displayed as: ${new Intl.NumberFormat("vi-VN").format(parseFloat(price) || 0)} nghìn đồng`}
+                  description={`Will be displayed as: ${new Intl.NumberFormat(
+                    "vi-VN",
+                    {
+                      style: "currency",
+                      currency: "VND",
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 0,
+                    }
+                  ).format(parseFloat(price) || 0)}`}
                 />
               </div>
             </div>
@@ -364,7 +367,7 @@ const AddEditSubscriptionModal: React.FC<AddEditSubscriptionModalProps> = ({
                       Only active subscriptions are available for purchase
                     </li>
                     <li>
-                      Price is entered in thousands VND (e.g., 299 = 299,000₫)
+                      Enter the exact price in VND (e.g., 299000 = 299,000₫)
                     </li>
                     <li>
                       Changes to existing subscriptions will apply immediately
