@@ -6,6 +6,9 @@ public final class JwtUtils {
 
     private static final String CLAIM_NAME_IDENTIFIER =
             "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier";
+    
+    private static final String CLAIM_SHARE_CODE =
+            "share_code";
 
     /**
      * Extracts the UserId (nameidentifier claim) from the JWT access token.
@@ -27,6 +30,26 @@ public final class JwtUtils {
         }
     }
 
+    /**
+     * Extracts the Share Code from the JWT access token.
+     * @param accessToken The raw JWT string (without "Bearer " prefix).
+     * @return The Share Code as String, or null if not present/invalid.
+     */
+    public static String getShareCodeFromToken(String accessToken) {
+        try {
+            if (accessToken == null || accessToken.trim().isEmpty()) return null;
+
+            // Remove "Bearer " if present
+            String raw = accessToken.replaceFirst("(?i)^Bearer\\s+", "");
+
+            JWT jwt = new JWT(raw);
+            return jwt.getClaim(CLAIM_SHARE_CODE).asString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     // keep your existing readClaims method if you want to debug/inspect all claims
     public static void readClaims(String token) {
         JWT jwt = new JWT(token);
@@ -42,6 +65,7 @@ public final class JwtUtils {
         String phone  = jwt.getClaim("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/mobilephone").asString();
         String name   = jwt.getClaim("http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name").asString();
         String role   = jwt.getClaim("http://schemas.microsoft.com/ws/2008/06/identity/claims/role").asString();
+        String share_code   = jwt.getClaim("http://schemas.microsoft.com/ws/2008/06/identity/claims/share_code").asString();
 
         // You can log/return them as needed
     }

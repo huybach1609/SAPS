@@ -45,6 +45,7 @@ import vn.edu.fpt.sapsmobile.dtos.vehicle.ShareCodeReturnDto;
 import vn.edu.fpt.sapsmobile.models.User;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
 import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleSummaryDto;
+import vn.edu.fpt.sapsmobile.utils.JwtUtils;
 import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
 import vn.edu.fpt.sapsmobile.utils.RecyclerUtils;
 import vn.edu.fpt.sapsmobile.utils.TokenManager;
@@ -59,7 +60,7 @@ public class VehicleFragment extends Fragment {
     private VehicleAdapter vehicleAdapter;
     private TextView tv_share_code;
     private Button btn_copy_code;
-//    private Button btn_add_vehicle;
+    //    private Button btn_add_vehicle;
     private MaterialButtonToggleGroup toggleTabs;
     private MaterialSplitButton splitButton;
     private Button btnViewInvitation;
@@ -179,7 +180,7 @@ public class VehicleFragment extends Fragment {
 
     private void setupSplitButton() {
         // Set up the main button click (default action)
-        btnViewInvitation.setOnClickListener(v ->{
+        btnViewInvitation.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), InvitationActivity.class);
             startActivitySafely(intent);
         });
@@ -188,6 +189,7 @@ public class VehicleFragment extends Fragment {
         expandButton.setOnClickListener(this::showDropdownMenu);
 
     }
+
     private void showDropdownMenu(View anchoView) {
         PopupMenu popup = new PopupMenu(this.getContext(), anchoView);
         popup.getMenuInflater().inflate(R.menu.vehicle_options_menu, popup.getMenu());
@@ -231,7 +233,6 @@ public class VehicleFragment extends Fragment {
     }
 
 
-
     //endregion
     //region DATA LOADING METHODS
 
@@ -242,32 +243,36 @@ public class VehicleFragment extends Fragment {
 
     private void loadShareCode() {
         if (!isFragmentValid()) return;
+        String token = tokenManager.getAccessToken();
+        Log.i(TAG, "loadShareCode: " + token);
+        String sharecode = JwtUtils.getShareCodeFromToken(token);
+        tv_share_code.setText(sharecode);
 
-        tv_share_code.setText(getString(R.string.loading_data));
-
-        shareCodeCall = sharedVehicleApi.getShareCode();
-        shareCodeCall.enqueue(new Callback<ShareCodeReturnDto>() {
-            @Override
-            public void onResponse(Call<ShareCodeReturnDto> call, Response<ShareCodeReturnDto> response) {
-                if (!isFragmentValid()) return;
-
-                if (response.isSuccessful() && response.body() != null) {
-                    tv_share_code.setText(response.body().getShareCode());
-                } else {
-                    handleApiError("Failed to load share code", response.code(), null);
-                    tv_share_code.setText("Error loading code");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ShareCodeReturnDto> call, Throwable t) {
-                if (!isFragmentValid() || call.isCanceled()) return;
-
-                Log.e(TAG, "Failed to load share code", t);
-                handleApiError("Network error loading share code", -1, t);
-                tv_share_code.setText("Network error");
-            }
-        });
+//        tv_share_code.setText(getString(R.string.loading_data));
+//
+//        shareCodeCall = sharedVehicleApi.getShareCode();
+//        shareCodeCall.enqueue(new Callback<ShareCodeReturnDto>() {
+//            @Override
+//            public void onResponse(Call<ShareCodeReturnDto> call, Response<ShareCodeReturnDto> response) {
+//                if (!isFragmentValid()) return;
+//
+//                if (response.isSuccessful() && response.body() != null) {
+//                    tv_share_code.setText(response.body().getShareCode());
+//                } else {
+//                    handleApiError("Failed to load share code", response.code(), null);
+//                    tv_share_code.setText("Error loading code");
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ShareCodeReturnDto> call, Throwable t) {
+//                if (!isFragmentValid() || call.isCanceled()) return;
+//
+//                Log.e(TAG, "Failed to load share code", t);
+//                handleApiError("Network error loading share code", -1, t);
+//                tv_share_code.setText("Network error");
+//            }
+//        });
     }
 
     private void handleTabSelection(int checkedId) {
@@ -352,8 +357,8 @@ public class VehicleFragment extends Fragment {
                     Iterator<VehicleSummaryDto> iterator = list.iterator();
                     while (iterator.hasNext()) {
                         var s = iterator.next();
-                        if ( ShareVehicleStatus.PENDING.getValue().equals(s.getSharingStatus()) ||
-                                ShareVehicleStatus.AVAILABLE.getValue().equals(s.getSharingStatus()) ) {
+                        if (ShareVehicleStatus.PENDING.getValue().equals(s.getSharingStatus()) ||
+                                ShareVehicleStatus.AVAILABLE.getValue().equals(s.getSharingStatus())) {
                             iterator.remove();
                         }
                     }
@@ -406,7 +411,6 @@ public class VehicleFragment extends Fragment {
         }
     }
     //endregion
-
 
 
     //region UTILITY METHODS
