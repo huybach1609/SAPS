@@ -5,7 +5,7 @@ import { Button } from "@heroui/button";
 import { Camera, ChartColumnBig, Lock, Zap } from "lucide-react";
 import { Input } from "@heroui/input";
 import { Checkbox } from "@heroui/react";
-import logoImage from "../../assets/Logo/logo.webp";
+import logoImage from "../../assets/Logo/logo.svg";
 
 export default function LoginPage() {
   const { login, loading, getUserRole } = useAuth();
