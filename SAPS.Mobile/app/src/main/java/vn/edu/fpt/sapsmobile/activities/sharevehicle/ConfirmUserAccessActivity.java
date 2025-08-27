@@ -194,7 +194,7 @@ public class ConfirmUserAccessActivity extends AppCompatActivity {
 
     private void grantVehicleAccess(String notes) {
         if (selectedUser == null || selectedVehicle == null) {
-            Toast.makeText(this, "Missing user or vehicle data", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_missing_user_vehicle_data), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -207,7 +207,7 @@ public class ConfirmUserAccessActivity extends AppCompatActivity {
 
         // Show loading dialog
         loadingDialog.show("Granting vehicle access...", true, () -> {
-            Toast.makeText(this, "Operation cancelled", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_operation_cancelled), Toast.LENGTH_SHORT).show();
         });
 
         // Make API call

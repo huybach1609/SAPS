@@ -54,7 +54,7 @@ public class InvitationDetailActivity extends AppCompatActivity {
 
     private void fetchData() {
         if (shareVehicleId == null || shareVehicleId.isEmpty()) {
-            Toast.makeText(this, "Invalid vehicle ID", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_invalid_vehicle_id), Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
@@ -70,7 +70,7 @@ public class InvitationDetailActivity extends AppCompatActivity {
                     vehicleDetails = response.body();
                     populateUI(vehicleDetails);
                 } else {
-                    Toast.makeText(InvitationDetailActivity.this, "Failed to load vehicle details", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(InvitationDetailActivity.this, getString(R.string.toast_failed_load_vehicle_details), Toast.LENGTH_SHORT).show();
                     finish();
                 }
             }
@@ -79,7 +79,7 @@ public class InvitationDetailActivity extends AppCompatActivity {
             public void onFailure(retrofit2.Call<SharedVehicleDetails> call, Throwable t) {
                 loadingDialog.dismiss();
                 Log.e(TAG, "Error fetching vehicle details", t);
-                Toast.makeText(InvitationDetailActivity.this, "Connection error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(InvitationDetailActivity.this, getString(R.string.toast_connection_error), Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
@@ -196,7 +196,7 @@ public class InvitationDetailActivity extends AppCompatActivity {
             @Override
             public void onFailure(retrofit2.Call<Void> call, Throwable t) {
                 loadingDialog.dismiss();
-                Toast.makeText(InvitationDetailActivity.this, "connection error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(InvitationDetailActivity.this, getString(R.string.toast_connection_error), Toast.LENGTH_SHORT).show();
             }
         });
     }

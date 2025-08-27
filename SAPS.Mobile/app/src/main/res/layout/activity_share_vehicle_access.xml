@@ -53,7 +53,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Sharing Vehicle"
+                android:text="@string/share_vehicle_access_title"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:textColor="@color/md_theme_onPrimaryContainer"
@@ -91,7 +91,7 @@
                             android:id="@+id/tvVehicleLicensePlate"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="License Plate"
+                            android:text="@string/share_vehicle_access_license_plate"
                             android:textSize="18sp"
                             android:textStyle="bold"
                             android:textColor="@color/md_theme_onSurface" />
@@ -100,7 +100,7 @@
                             android:id="@+id/tvVehicleDetails"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Brand Model - Color"
+                            android:text="@string/share_vehicle_access_brand_model_color"
                             android:textSize="14sp"
                             android:textColor="@color/md_theme_secondary"
                             android:layout_marginTop="4dp" />
@@ -256,7 +256,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="How Vehicle Sharing Works"
+                android:text="@string/share_vehicle_access_how_it_works"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="@color/md_theme_onPrimaryContainer"
@@ -279,7 +279,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="1. Ask the person for their personal share code (e.g., USER-SARAH2024)"
+                        android:text="@string/share_vehicle_access_step_1"
                         android:textColor="@color/md_theme_onPrimaryContainer"
                         android:textSize="14sp"
                         android:layout_marginBottom="8dp"
@@ -290,7 +290,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="2. Enter their code to see their profile"
+                        android:text="@string/share_vehicle_access_step_2"
                         android:textColor="@color/md_theme_onPrimaryContainer"
                         android:textSize="14sp"
                         android:layout_marginBottom="8dp"
@@ -301,7 +301,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="3. Confirm to grant them access to your vehicle"
+                        android:text="@string/share_vehicle_access_step_3"
                         android:textColor="@color/md_theme_onPrimaryContainer"
                         android:textSize="14sp"
                         android:drawablePadding="8dp"
@@ -346,7 +346,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Important Note"
+                            android:text="@string/share_vehicle_access_important_note"
                             android:textSize="14sp"
                             android:textStyle="bold"
                             android:textColor="@color/md_theme_error"
@@ -357,14 +357,14 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Each vehicle can only be shared with one person at a time."
+                        android:text="@string/share_vehicle_access_note_1"
                         android:textColor="@color/md_theme_onSurface"
                         android:textSize="13sp" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Each user has their own unique share code"
+                        android:text="@string/share_vehicle_access_note_2"
                         android:textColor="@color/md_theme_secondary"
                         android:textSize="12sp"
                         android:layout_marginTop="4dp" />
@@ -407,7 +407,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Safety Tips"
+                            android:text="@string/share_vehicle_access_safety_tips"
                             android:textSize="14sp"
                             android:textStyle="bold"
                             android:textColor="@color/md_theme_primary"
@@ -418,7 +418,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="• Only share with people you trust\n• Verify the person's identity before granting access\n• You can revoke access anytime from settings"
+                        android:text="@string/share_vehicle_access_safety_content"
                         android:textColor="@color/md_theme_onSurface"
                         android:textSize="13sp"
                         android:lineSpacingMultiplier="1.2" />

@@ -38,7 +38,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="📄"
+                android:text="@string/add_vehicle_document_emoji"
                 android:textSize="40sp"
                 android:textColor="@color/md_theme_primary"
                 android:gravity="center"/>
@@ -46,7 +46,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Upload Vehicle Registration"
+                android:text="@string/add_vehicle_upload_title"
                 android:textColor="@color/md_theme_primary"
                 android:textSize="16sp"
                 android:layout_marginTop="10dp"
@@ -55,7 +55,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Take a photo or select from gallery to update your information"
+                android:text="@string/add_vehicle_upload_description"
                 android:textSize="13sp"
                 android:textColor="@color/md_theme_onSecondary"
                 android:layout_marginTop="5dp"
@@ -73,7 +73,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:icon="@drawable/photo_camera_24dp"
-                    android:text="Take Photo" />
+                    android:text="@string/add_vehicle_btn_take_photo" />
 
 
                 <LinearLayout
@@ -90,7 +90,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         app:icon="@drawable/id_card_24dp"
-                        android:text="Front Side"
+                        android:text="@string/add_vehicle_btn_front_side"
                         android:layout_marginEnd="2dp" />
 
                     <Button
@@ -100,7 +100,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         app:icon="@drawable/credit_card_24dp"
-                        android:text="Back Side"
+                        android:text="@string/add_vehicle_btn_back_side"
                         android:layout_marginStart="2dp" />
 
                     <Button
@@ -164,7 +164,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="📋 Information will be auto-filled after vehicle registration upload"
+            android:text="@string/add_vehicle_auto_fill_info"
             android:textSize="12sp"
             android:textColor="@color/md_theme_onSurface"
             android:gravity="center"
@@ -191,7 +191,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:paddingStart="16dp"
-                    android:text="Owner's Full Name"
+                    android:text="@string/add_vehicle_owner_full_name"
                     android:textColor="@color/md_theme_onSecondaryContainer"
                     android:textSize="16sp" />
 
@@ -225,7 +225,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:paddingStart="16dp"
-                    android:text="License Plate Number"
+                    android:text="@string/add_vehicle_license_plate_number"
                     android:textColor="@color/md_theme_onSecondaryContainer"
                     android:textSize="16sp" />
 
@@ -259,7 +259,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:paddingStart="16dp"
-                    android:text="Vehicle Model"
+                    android:text="@string/add_vehicle_vehicle_model"
                     android:textColor="@color/md_theme_onSecondaryContainer"
                     android:textSize="16sp" />
 
@@ -293,7 +293,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:paddingStart="16dp"
-                    android:text="Color"
+                    android:text="@string/add_vehicle_color"
                     android:textColor="@color/md_theme_onSecondaryContainer"
                     android:textSize="16sp" />
 
@@ -335,7 +335,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:paddingStart="16dp"
-                    android:text="Brand"
+                    android:text="@string/add_vehicle_brand"
                     android:textColor="@color/md_theme_onSecondaryContainer"
                     android:textSize="16sp" />
 
@@ -369,7 +369,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:paddingStart="16dp"
-                    android:text="Engine Number"
+                    android:text="@string/add_vehicle_engine_number"
                     android:textColor="@color/md_theme_onSecondaryContainer"
                     android:textSize="16sp" />
 
@@ -403,7 +403,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:paddingStart="16dp"
-                    android:text="Chassis Number"
+                    android:text="@string/add_vehicle_chassis_number"
                     android:textColor="@color/md_theme_onSecondaryContainer"
                     android:textSize="16sp" />
 
@@ -437,7 +437,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:paddingStart="16dp"
-                    android:text="Vehicle Type"
+                    android:text="@string/add_vehicle_vehicle_type"
                     android:textColor="@color/md_theme_onSecondaryContainer"
                     android:textSize="16sp" />
 
@@ -462,7 +462,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="✓ Auto-extracted from vehicle registration"
+                android:text="@string/add_vehicle_auto_extracted_note"
                 android:textColor="@color/md_theme_primary"
                 android:textSize="12sp"
                 android:gravity="end"
@@ -477,7 +477,7 @@
             style="@style/Widget.Material3.Button.ElevatedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Complete Registration"
+            android:text="@string/add_vehicle_btn_complete_registration"
             android:backgroundTint="@color/md_theme_primaryContainer"
             android:textColor="@color/md_theme_onPrimaryContainer" />
 

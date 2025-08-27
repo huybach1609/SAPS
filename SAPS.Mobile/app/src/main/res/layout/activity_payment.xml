@@ -106,7 +106,7 @@
                             android:id="@+id/tvAmount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="$12.38"
+                            android:text="@string/payment_amount"
                             android:textColor="@color/md_theme_primary"
                             android:textSize="20sp"
                             android:textStyle="bold" />
@@ -174,7 +174,7 @@
                                     android:id="@+id/tvAccountNumber"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="000000000"
+                                    android:text="@string/payment_account_number"
                                     android:textColor="@color/md_theme_primary"
                                     android:textFontWeight="500"
                                     android:textSize="14sp"
@@ -235,7 +235,7 @@
                                     android:id="@+id/tvAccountName"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="SAPLS Parking System"
+                                    android:text="@string/payment_account_name"
                                     android:textColor="@color/md_theme_primary"
                                     android:textFontWeight="500"
                                     android:textSize="14sp" />
@@ -296,7 +296,7 @@
                                     android:id="@+id/tvReferenceCode"
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="PARK-ABC1234-060325"
+                                    android:text="@string/payment_reference_code"
                                     android:textColor="@color/md_theme_primary"
                                     android:textFontWeight="500"
                                     android:textSize="14sp"
@@ -397,7 +397,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="56dp"
                     android:fontFamily="sans-serif-medium"
-                    android:text="Open in Browse"
+                    android:text="@string/payment_open_in_browser"
                     android:textAllCaps="false"
                     android:textColor="@color/md_theme_onSurface"
                     android:textSize="16sp"
@@ -413,7 +413,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="24dp"
                 android:gravity="center"
-                android:text="Lưu ý: Giao dịch qua ngân hàng có thể mất 1–10 phút để xử lý tự động."
+                android:text="@string/payment_note"
                 android:textColor="@color/md_theme_onSurfaceVariant"
                 android:textSize="12sp" />
 

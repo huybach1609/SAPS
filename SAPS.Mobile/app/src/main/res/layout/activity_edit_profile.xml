@@ -50,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="📄"
+                android:text="@string/edit_profile_document_emoji"
                 android:textSize="40sp" />
 
             <TextView
@@ -165,7 +165,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             android:gravity="center"
-            android:text="📋 Information will be auto-filled after ID card upload"
+            android:text="@string/edit_profile_auto_fill_info"
             android:textColor="#7f8c8d"
             android:textSize="12sp" />
 
@@ -198,7 +198,7 @@
                     android:gravity="end"
                     android:paddingStart="0dp"
                     android:paddingEnd="16dp"
-                    android:text="0000000000000"
+                    android:text="@string/edit_profile_sample_id_number"
                     android:textColor="#000000"
                     android:textSize="16sp" />
             </LinearLayout>
@@ -231,7 +231,7 @@
                     android:layout_weight="2"
                     android:gravity="end"
                     android:paddingEnd="16dp"
-                    android:text="Male"
+                    android:text="@string/edit_profile_sample_gender_male"
                     android:textColor="#000000"
                     android:textSize="16sp" />
             </LinearLayout>
@@ -265,7 +265,7 @@
                     android:layout_weight="2"
                     android:gravity="end"
                     android:paddingEnd="16dp"
-                    android:text="Vietnamese"
+                    android:text="@string/edit_profile_sample_nationality_vietnamese"
                     android:textColor="#000000"
                     android:textSize="16sp" />
             </LinearLayout>
@@ -299,7 +299,7 @@
                     android:layout_weight="2"
                     android:gravity="end"
                     android:paddingEnd="16dp"
-                    android:text="Nguyen Van N"
+                    android:text="@string/edit_profile_sample_full_name"
                     android:textColor="#000000"
                     android:textSize="16sp" />
             </LinearLayout>
@@ -332,7 +332,7 @@
                     android:layout_weight="2"
                     android:gravity="end"
                     android:paddingEnd="16dp"
-                    android:text="01/01/2000"
+                    android:text="@string/edit_profile_sample_date_of_birth"
                     android:textColor="#000000"
                     android:textSize="16sp" />
             </LinearLayout>
@@ -515,7 +515,7 @@
                     android:gravity="end"
                     android:paddingStart="0dp"
                     android:paddingEnd="16dp"
-                    android:text="Not available from ID card"
+                    android:text="@string/edit_profile_not_available_from_id"
                     android:textColor="#999999"
                     android:textSize="16sp" />
             </LinearLayout>

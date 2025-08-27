@@ -47,12 +47,12 @@ public class VehicleFragmentHandler implements VehicleFragmentVehicleDetailListe
 
     @Override
     public void onEditClicked(Vehicle vehicle) {
-        Toast.makeText(context, "Edit: " + vehicle.getLicensePlate(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, context.getString(R.string.toast_edit_vehicle, vehicle.getLicensePlate()), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onShareClicked(Vehicle vehicle) {
-        Toast.makeText(context, "Share: " + vehicle.getLicensePlate(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, context.getString(R.string.toast_share_vehicle, vehicle.getLicensePlate()), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -93,7 +93,7 @@ public class VehicleFragmentHandler implements VehicleFragmentVehicleDetailListe
         ShareVehicleApi api = ApiTest.getServiceLast(context).create(ShareVehicleApi.class);
         
         loadingDialog.show("Getting vehicle details...", true, () -> {
-            Toast.makeText(context, "Operation cancelled", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.toast_operation_cancelled), Toast.LENGTH_SHORT).show();
         });
         
         // Step 1: Get shared vehicle details using vehicle.getId()
@@ -107,14 +107,14 @@ public class VehicleFragmentHandler implements VehicleFragmentVehicleDetailListe
                     recallSharedVehicle(sharedVehicleDetails.getId());
                 } else {
                     loadingDialog.dismiss();
-                    Toast.makeText(context, "Failed to get vehicle details", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.toast_failed_get_vehicle_details), Toast.LENGTH_SHORT).show();
                 }
             }
             
             @Override
             public void onFailure(retrofit2.Call<SharedVehicleDetails> call, Throwable t) {
                 loadingDialog.dismiss();
-                Toast.makeText(context, "Network error getting vehicle details", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, context.getString(R.string.toast_network_error_get_vehicle), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -123,7 +123,7 @@ public class VehicleFragmentHandler implements VehicleFragmentVehicleDetailListe
         ShareVehicleApi api = ApiTest.getServiceLast(context).create(ShareVehicleApi.class);
         
         loadingDialog.show("Recalling vehicle...", true, () -> {
-            Toast.makeText(context, "Operation cancelled", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.toast_operation_cancelled), Toast.LENGTH_SHORT).show();
         });
         
         api.recallSharedVehicle(sharedVehicleId).enqueue(new retrofit2.Callback<RecallResponse>() {
@@ -131,17 +131,17 @@ public class VehicleFragmentHandler implements VehicleFragmentVehicleDetailListe
             public void onResponse(retrofit2.Call<RecallResponse> call, retrofit2.Response<RecallResponse> response) {
                 loadingDialog.dismiss();
                 if (response.isSuccessful() && response.body() != null) {
-                    Toast.makeText(context, "Vehicle recalled successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.toast_vehicle_recalled_success), Toast.LENGTH_SHORT).show();
                     refreshData();
                 } else {
-                    Toast.makeText(context, "Failed to recall vehicle", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.toast_failed_recall_vehicle), Toast.LENGTH_SHORT).show();
                 }
             }
             
             @Override
             public void onFailure(retrofit2.Call<RecallResponse> call, Throwable t) {
                 loadingDialog.dismiss();
-                Toast.makeText(context, "Network error recalling vehicle", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, context.getString(R.string.toast_network_error_recall), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -150,7 +150,7 @@ public class VehicleFragmentHandler implements VehicleFragmentVehicleDetailListe
         ShareVehicleApi api = ApiTest.getServiceLast(context).create(ShareVehicleApi.class);
         
         loadingDialog.show("Getting vehicle details...", true, () -> {
-            Toast.makeText(context, "Operation cancelled", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.toast_operation_cancelled), Toast.LENGTH_SHORT).show();
         });
         
         // Step 1: Get shared vehicle details using vehicle.getId()
@@ -164,14 +164,14 @@ public class VehicleFragmentHandler implements VehicleFragmentVehicleDetailListe
                     rejectSharedVehicle(sharedVehicleDetails.getId());
                 } else {
                     loadingDialog.dismiss();
-                    Toast.makeText(context, "Failed to get vehicle details", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.toast_failed_get_vehicle_details), Toast.LENGTH_SHORT).show();
                 }
             }
             
             @Override
             public void onFailure(retrofit2.Call<SharedVehicleDetails> call, Throwable t) {
                 loadingDialog.dismiss();
-                Toast.makeText(context, "Network error getting vehicle details", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, context.getString(R.string.toast_network_error_get_vehicle), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -180,7 +180,7 @@ public class VehicleFragmentHandler implements VehicleFragmentVehicleDetailListe
         ShareVehicleApi api = ApiTest.getServiceLast(context).create(ShareVehicleApi.class);
         
         loadingDialog.show("Rejecting invitation...", true, () -> {
-            Toast.makeText(context, "Operation cancelled", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, context.getString(R.string.toast_operation_cancelled), Toast.LENGTH_SHORT).show();
         });
         
         api.rejectShareVehicle(sharedVehicleId).enqueue(new retrofit2.Callback<Void>() {
@@ -188,17 +188,17 @@ public class VehicleFragmentHandler implements VehicleFragmentVehicleDetailListe
             public void onResponse(retrofit2.Call<Void> call, retrofit2.Response<Void> response) {
                 loadingDialog.dismiss();
                 if (response.isSuccessful()) {
-                    Toast.makeText(context, "Invitation rejected successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.toast_invitation_rejected_success), Toast.LENGTH_SHORT).show();
                     refreshData();
                 } else {
-                    Toast.makeText(context, "Failed to reject invitation", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, context.getString(R.string.toast_failed_reject_invitation), Toast.LENGTH_SHORT).show();
                 }
             }
             
             @Override
             public void onFailure(retrofit2.Call<Void> call, Throwable t) {
                 loadingDialog.dismiss();
-                Toast.makeText(context, "Network error rejecting invitation", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, context.getString(R.string.toast_network_error_reject), Toast.LENGTH_SHORT).show();
             }
         });
     }
