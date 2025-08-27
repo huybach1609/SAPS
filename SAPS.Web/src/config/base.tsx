@@ -11,8 +11,12 @@ export const mockUrl = import.meta.env.VITE_MOCK_URL as string;
 export const localUrl = import.meta.env.VITE_LOCAL_URL as string;
 export const localUrl2 = import.meta.env.VITE_LOCAL_URL2 as string;
 
-export const apiUrl = import.meta.env.VITE_API_URL as string;
 
-export const OWNER_ROLE = (import.meta.env.VITE_OWNER_ROLE as string).toLowerCase();
-export const ADMIN_ROLE = (import.meta.env.VITE_ADMIN_ROLE as string).toLowerCase();
+const apiUrl = import.meta.env.VITE_API_URL;
+export const ADMIN_ROLE = import.meta.env.VITE_ADMIN_ROLE;
+export const OWNER_ROLE = import.meta.env.VITE_OWNER_ROLE;
+
+// export const apiUrl = import.meta.env.VITE_API_URL as string
+// export const OWNER_ROLE = (import.meta.env.VITE_OWNER_ROLE as string).toLowerCase();
+// export const ADMIN_ROLE = (import.meta.env.VITE_ADMIN_ROLE as string).toLowerCase();
 
