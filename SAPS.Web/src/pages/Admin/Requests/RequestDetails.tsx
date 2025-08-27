@@ -30,6 +30,7 @@ const RequestDetails: React.FC = () => {
     new Set()
   );
   const [downloadMessage, setDownloadMessage] = useState<string>("");
+  const [successMessage, setSuccessMessage] = useState<string>("");
 
   // Fetch request details
   useEffect(() => {
@@ -276,6 +277,15 @@ const RequestDetails: React.FC = () => {
 
     try {
       setLoading(true);
+
+      // Log the current form values being sent
+      console.log("Sending update request with:", {
+        requestId: id,
+        status,
+        responseMessage: responseMessage,
+        adminNote: adminNote,
+      });
+
       const response = await requestService.updateRequestStatus(
         id,
         status,
@@ -284,8 +294,23 @@ const RequestDetails: React.FC = () => {
       );
 
       if (response.success) {
-        setRequest(response.data as ApiRequestDetail);
+        // Close the confirmation modal first
         setShowConfirm(null);
+
+        // Show success message
+        setSuccessMessage(`Request ${status.toLowerCase()} successfully!`);
+        setTimeout(() => setSuccessMessage(""), 5000);
+
+        // Reload the request details to get the updated data
+        const updatedResponse = await requestService.getRequestById(id);
+        if (updatedResponse.success && updatedResponse.data) {
+          setRequest(updatedResponse.data as ApiRequestDetail);
+          // Keep the current form values, don't override with response data
+          // setAdminNote and setResponseMessage will keep their current values
+          setError(null); // Clear any previous errors
+        } else {
+          setError("Failed to reload updated request details");
+        }
       } else {
         setError(`Failed to ${status.toLowerCase()} request`);
       }
@@ -324,6 +349,13 @@ const RequestDetails: React.FC = () => {
 
   return (
     <div className="space-y-6">
+      {/* Success Message */}
+      {successMessage && (
+        <div className="bg-green-50 text-green-800 p-4 rounded-lg border border-green-200">
+          <p className="font-medium">✅ {successMessage}</p>
+        </div>
+      )}
+
       {/* Header with back button */}
       <div>
         <Link
@@ -601,6 +633,31 @@ const RequestDetails: React.FC = () => {
         </Card>
       )}
 
+      {/* Status Complete Message */}
+      {(request.status === "Resolved" || request.status === "Closed") && (
+        <Card className="p-6 border border-green-200 bg-green-50">
+          <div className="flex items-center">
+            <CheckCircle className="w-6 h-6 text-green-600 mr-3" />
+            <div>
+              <h3 className="text-lg font-semibold text-green-900">
+                Request {request.status}
+              </h3>
+              <p className="text-green-700 mt-1">
+                This request has been {request.status.toLowerCase()} and no
+                further action is required.
+                {request.lastUpdateAdminFullName && (
+                  <span className="block text-sm mt-1">
+                    Last updated by: {request.lastUpdateAdminFullName} on{" "}
+                    {formatDate(request.updatedAt).date} at{" "}
+                    {formatDate(request.updatedAt).time}
+                  </span>
+                )}
+              </p>
+            </div>
+          </div>
+        </Card>
+      )}
+
       {/* Admin Notes & Actions */}
       <Card className="p-6 border border-gray-200">
         <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
@@ -644,7 +701,7 @@ const RequestDetails: React.FC = () => {
         </div>
       </Card>
 
-      {/* Request Actions */}
+      {/* Request Actions - Only show for Open or InProgress requests */}
       {(request.status === "Open" || request.status === "InProgress") && (
         <Card className="p-6 border border-gray-200">
           <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
@@ -687,7 +744,10 @@ const RequestDetails: React.FC = () => {
 
       {/* Confirmation Modal */}
       {showConfirm && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div
+          className="fixed mt-0 inset-0 bg-black/50 flex items-center justify-center z-50"
+          style={{ marginTop: 0 }}
+        >
           <Card className="w-full max-w-md mx-4 p-6">
             <h3 className="text-xl font-bold mb-4">
               {showConfirm === "approve" ? "Resolve Request" : "Close Request"}
@@ -695,15 +755,6 @@ const RequestDetails: React.FC = () => {
             <p className="text-default-600 mb-6">
               Are you sure you want to{" "}
               {showConfirm === "approve" ? "resolve" : "close"} this request?
-              {responseMessage && (
-                <>
-                  <br />
-                  <br />
-                  <span className="font-medium">Response message:</span>
-                  <br />
-                  {responseMessage}
-                </>
-              )}
             </p>
             <div className="flex justify-end gap-3">
               <Button variant="flat" onPress={() => setShowConfirm(null)}>
