@@ -3,12 +3,12 @@ import { Modal, ModalContent, Button, Input } from "@heroui/react";
 import { X } from "lucide-react";
 import { adminService, CreateAdminDto } from "@/services/admin/adminService";
 
-// Hàm tạo ID ngắn gọn, đảm bảo dưới 36 ký tự
+// Hàm tạo ID ngắn gọn, đảm bảo tối đa 20 ký tự
 const generateShortId = () => {
-  // Tạo chuỗi ngẫu nhiên có độ dài 32 ký tự (dưới 36 ký tự)
+  // Tạo chuỗi ngẫu nhiên có độ dài 20 ký tự
   return "xxxxxxxxxxxxxxxxxxxx".replace(/[x]/g, function () {
-    const r = Math.floor(Math.random() * 20);
-    return r.toString(); // Sử dụng base 36 (0-9, a-z) để tạo ID ngắn hơn
+    const r = Math.floor(Math.random() * 36);
+    return r.toString(36); // Sử dụng base 36 (0-9, a-z) để tạo ID ngắn hơn
   });
 };
 

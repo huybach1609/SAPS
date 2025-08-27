@@ -245,14 +245,14 @@ export default function SubscriptionList() {
     return parts.join(", ") + " and " + lastPart;
   };
 
-  // Format price (VND) - display as thousands
+  // Format price (VND) - display exact price from database
   const formatPrice = (price: number): string => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
-    }).format(price * 1000); // Convert to actual VND (multiply by 1000)
+    }).format(price); // Use exact price from database
   };
 
   // Calculate start and end items for pagination display
