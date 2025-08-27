@@ -11,11 +11,12 @@ import retrofit2.http.Part;
 import retrofit2.http.Body;
 import vn.edu.fpt.sapsmobile.dtos.profile.IdCardBase64Request;
 import vn.edu.fpt.sapsmobile.dtos.profile.UpdateClientProfileRequest;
+import vn.edu.fpt.sapsmobile.dtos.profile.VerificationResponse;
 import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleRegistrationInfo;
 import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleRegistrationResponse;
 import vn.edu.fpt.sapsmobile.dtos.profile.IdCardResponse;
 import vn.edu.fpt.sapsmobile.dtos.profile.NotificationsResponse;
-import vn.edu.fpt.sapsmobile.dtos.profile.VerificationResponse;
+
 import vn.edu.fpt.sapsmobile.models.User;
 
 public interface ApiService {
@@ -55,8 +56,21 @@ public interface ApiService {
             @Part("VehicleType") RequestBody vehicleType
             );
 
+    @Multipart
     @PUT("api/client")
-    Call<User> updateClientProfile(@Body UpdateClientProfileRequest request);
+    Call<User> updateClientProfile(
+            @Part MultipartBody.Part frontCitizenCardImage,
+            @Part MultipartBody.Part backCitizenCardImage,
+            @Part("CitizenId") RequestBody citizenId,
+            @Part("DateOfBirth") RequestBody dateOfBirth,
+            @Part("Sex") RequestBody sex,
+            @Part("Nationality") RequestBody nationality,
+            @Part("PlaceOfOrigin") RequestBody placeOfOrigin,
+            @Part("PlaceOfResidence") RequestBody placeOfResidence,
+            @Part("FullName") RequestBody fullName,
+            @Part("Phone") RequestBody phone,
+            @Part("Id") RequestBody id
+    );
 
     @Multipart
     @POST("api/client/verify-lvl-2")
@@ -72,15 +86,6 @@ public interface ApiService {
             @Part("Id") RequestBody id
     );
 
-    @Multipart
-    @POST("api/request")
-    Call<VerificationResponse> submitClientProfileRequest(
-            @Part("Header") RequestBody header,
-            @Part("Description") RequestBody description,
-            @Part("DataType") RequestBody dataType,
-            @Part("Data") RequestBody data,
-            @Part MultipartBody.Part attachment1,
-            @Part MultipartBody.Part attachment2
-    );
+
 
 }
