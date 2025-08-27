@@ -150,10 +150,10 @@ public class ProfileFragment extends Fragment {
             return false;
         }
 
-        String frontUrl = user.getClientProfile().getIdCardFrontUrl();
-        String backUrl = user.getClientProfile().getIdCardBackUrl();
+//        String frontUrl = user.getClientProfile().getIdCardFrontUrl();
+//        String backUrl = user.getClientProfile().getIdCardBackUrl();
+        return true;
 
-        return isValidUrl(frontUrl) && isValidUrl(backUrl);
     }
 
     private boolean isValidUrl(String url) {

@@ -136,6 +136,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     }
 
+    private final String TAG = "EditProfileActivity";
     private void fetchPutClientProfile() {
         if (currentUser == null) return;
         
@@ -193,7 +194,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
                     MultipartBody.Part frontPart = MultipartBody.Part.createFormData("Attachments", "front.jpg", frontBody);
                     MultipartBody.Part backPart = MultipartBody.Part.createFormData("Attachments", "back.jpg", backBody);
-
+                    Log.i(TAG, "submitClientProfileRequest: " + dataBody);
                     ApiService apiService = ApiTest.getServiceLast(this).create(ApiService.class);
                     retrofit2.Call<VerificationResponse> call = apiService.submitClientProfileRequest(
                             headerBody,
