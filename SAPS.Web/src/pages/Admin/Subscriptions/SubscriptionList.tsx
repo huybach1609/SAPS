@@ -6,7 +6,7 @@ import {
   Pagination,
   useDisclosure,
 } from "@heroui/react";
-import { Search, Plus, Package, Edit, DollarSign, Clock } from "lucide-react";
+import { Search, Plus, Package, Edit, Clock } from "lucide-react";
 import {
   subscriptionService,
   SubscriptionListParams,
@@ -245,14 +245,14 @@ export default function SubscriptionList() {
     return parts.join(", ") + " and " + lastPart;
   };
 
-  // Format price (VND) - no rounding
+  // Format price (VND) - display exact price from database
   const formatPrice = (price: number): string => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(price);
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(price); // Use exact price from database
   };
 
   // Calculate start and end items for pagination display
@@ -515,7 +515,6 @@ export default function SubscriptionList() {
                         </td>
                         <td className="px-4 py-3">
                           <div className="flex items-center font-medium text-green-600">
-                            <DollarSign size={16} className="mr-1" />
                             {formatPrice(subscription.price)}
                           </div>
                         </td>

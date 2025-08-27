@@ -116,7 +116,7 @@ public class AddVehicleActivity extends AppCompatActivity {
 
     private void setupClickListeners() {
         btnTakePhoto.setOnClickListener(v -> {
-            Toast.makeText(this, "Chức năng này chưa hỗ trợ nhận dạng cả 2 mặt từ ảnh chụp.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_feature_not_supported_recognition), Toast.LENGTH_SHORT).show();
         });
 
         btnPickFront.setOnClickListener(v -> {
@@ -168,7 +168,7 @@ public class AddVehicleActivity extends AppCompatActivity {
                     mainHandler.post(() -> {
                         loadingDialog.dismiss();
                         Log.e("IMAGE_PROCESS_ERROR", "Error processing image", throwable);
-                        Toast.makeText(this, "Error processing image: " + throwable.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.toast_upload_failed, throwable.getMessage()), Toast.LENGTH_SHORT).show();
                     });
                     return null;
                 });
@@ -190,7 +190,7 @@ public class AddVehicleActivity extends AppCompatActivity {
         loadingDialog.dismiss();
 
         if (result.error != null) {
-            Toast.makeText(this, "Error processing image: " + result.error.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, getString(R.string.toast_upload_failed, result.error.getMessage()), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -286,7 +286,7 @@ public class AddVehicleActivity extends AppCompatActivity {
 //endregion
     private void performOcrAsync() {
         if (frontImageBytes == null || backImageBytes == null) {
-            Toast.makeText(this, "Vui lòng chọn cả 2 mặt trước và sau của giấy đăng ký xe", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_please_select_both_sides_registration), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -313,7 +313,7 @@ public class AddVehicleActivity extends AppCompatActivity {
                     VehicleResponse vehicleResponse = response.body();
                     Log.i(TAG, "onResponse: " +vehicleResponse );
                     populateFormFields(vehicleResponse);
-                    Toast.makeText(AddVehicleActivity.this, "Auto-filled from vehicle registration", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddVehicleActivity.this, getString(R.string.toast_auto_filled_from_registration), Toast.LENGTH_SHORT).show();
                 } else {
                     handleApiError("OCR failed", response);
                 }
@@ -322,7 +322,7 @@ public class AddVehicleActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<VehicleResponse> call, Throwable t) {
                 loadingDialog.dismiss();
-                Toast.makeText(AddVehicleActivity.this, "Upload failed: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(AddVehicleActivity.this, getString(R.string.toast_upload_failed, t.getMessage()), Toast.LENGTH_SHORT).show();
                 Log.e("VEHICLE_OCR_UPLOAD_ERROR", "Error uploading images: " + t.getMessage());
             }
         });
@@ -364,7 +364,7 @@ public class AddVehicleActivity extends AppCompatActivity {
 
         if (licensePlate.isEmpty() || model.isEmpty() || color.isEmpty() || ownerName.isEmpty() ||
                 brand.isEmpty() || engineNumber.isEmpty() || chassisNumber.isEmpty() || vehicleType.isEmpty()) {
-            Toast.makeText(this, "Please fill in all required fields", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_please_fill_all_fields), Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -426,7 +426,7 @@ public class AddVehicleActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<VehicleRegistrationResponse> call, Throwable t) {
                 loadingDialog.dismiss();
-                Toast.makeText(AddVehicleActivity.this, "Registration failed: " + t.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(AddVehicleActivity.this, getString(R.string.toast_registration_failed, t.getMessage()), Toast.LENGTH_LONG).show();
                 Log.e("VEHICLE_REGISTRATION_ERROR", "Error registering vehicle: " + t.getMessage());
             }
         });

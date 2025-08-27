@@ -153,7 +153,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="Không có xe nào"
+                    android:text="@string/view_list_invitation_no_vehicles"
                     android:textAppearance="?attr/textAppearanceHeadlineSmall"
                     android:textColor="?attr/colorOnSurfaceVariant" />
 
@@ -161,7 +161,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Hãy thêm xe đầu tiên của bạn"
+                    android:text="@string/view_list_invitation_add_first"
                     android:textAppearance="?attr/textAppearanceBodyMedium"
                     android:textColor="?attr/colorOnSurfaceVariant"
                     android:gravity="center" />
@@ -171,7 +171,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="24dp"
-                    android:text="Thêm xe"
+                    android:text="@string/view_list_invitation_add_vehicle"
                     app:icon="@drawable/add_circle_24dp" />
 
             </LinearLayout>

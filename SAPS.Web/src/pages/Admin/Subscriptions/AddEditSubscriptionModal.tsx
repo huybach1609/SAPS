@@ -8,7 +8,7 @@ import {
   Select,
   SelectItem,
 } from "@heroui/react";
-import { Package, DollarSign, Clock, FileText } from "lucide-react";
+import { Package, Clock, FileText } from "lucide-react";
 import {
   Subscription,
   subscriptionService,
@@ -246,11 +246,11 @@ const AddEditSubscriptionModal: React.FC<AddEditSubscriptionModalProps> = ({
                 />
 
                 <Input
-                  label="Price ($)"
+                  label="Price (VND)"
                   type="number"
-                  step="0.01"
+                  step="1"
                   min="0"
-                  placeholder="0.00"
+                  placeholder="Enter exact price (e.g., 299000 for 299,000₫)"
                   value={price}
                   onChange={(e) => {
                     setPrice(e.target.value);
@@ -261,8 +261,19 @@ const AddEditSubscriptionModal: React.FC<AddEditSubscriptionModalProps> = ({
                   isInvalid={!!getFieldError("Price")}
                   errorMessage={getFieldError("Price")}
                   startContent={
-                    <DollarSign size={16} className="text-gray-400" />
+                    <div className="pointer-events-none flex items-center">
+                      <span className="text-default-400 text-small">₫</span>
+                    </div>
                   }
+                  description={`Will be displayed as: ${new Intl.NumberFormat(
+                    "vi-VN",
+                    {
+                      style: "currency",
+                      currency: "VND",
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 0,
+                    }
+                  ).format(parseFloat(price) || 0)}`}
                 />
               </div>
             </div>
@@ -355,7 +366,9 @@ const AddEditSubscriptionModal: React.FC<AddEditSubscriptionModalProps> = ({
                     <li>
                       Only active subscriptions are available for purchase
                     </li>
-                    <li>Price changes will affect new subscriptions only</li>
+                    <li>
+                      Enter the exact price in VND (e.g., 299000 = 299,000₫)
+                    </li>
                     <li>
                       Changes to existing subscriptions will apply immediately
                     </li>

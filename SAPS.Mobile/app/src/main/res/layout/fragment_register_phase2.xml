@@ -14,7 +14,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="📋 Review Information"
+            android:text="@string/register_phase2_review_info"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="#2c3e50"
@@ -24,7 +24,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Review your auto-filled information"
+            android:text="@string/register_phase2_review_description"
             android:textSize="14sp"
             android:textColor="#7f8c8d"
             android:gravity="center"
@@ -34,7 +34,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="○ ● ○"
+            android:text="@string/register_phase2_progress"
             android:textSize="20sp"
             android:textColor="#0077B6"
             android:gravity="center"
@@ -52,7 +52,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="📄 Information from ID Card"
+                android:text="@string/register_phase2_id_info"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="#2e7d32"
@@ -124,7 +124,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="✓ Auto-extracted from ID card"
+                android:text="@string/register_phase2_auto_extracted"
                 android:textColor="#388e3c"
                 android:textSize="12sp"
                 android:gravity="end"
@@ -136,7 +136,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="ℹ️ This information was automatically extracted from your ID card. Please verify it's correct before proceeding."
+            android:text="@string/register_phase2_auto_note"
             android:textSize="12sp"
             android:textColor="#0077B6"
             android:background="#CAF0F8"
@@ -148,7 +148,7 @@
             android:id="@+id/button_next_phase"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Continue to Vehicle Registration →"
+            android:text="@string/register_phase2_continue"
             android:backgroundTint="#0077B6"
             android:textColor="@android:color/white" />
 

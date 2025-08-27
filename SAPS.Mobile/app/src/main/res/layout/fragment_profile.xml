@@ -72,18 +72,16 @@
                     android:layout_marginTop="10dp"
                     android:textColor="#2c3e50"
                     android:textSize="18sp"
-                    android:text="Name"
-                    android:textStyle="bold"
-                    tools:ignore="HardcodedText" />
+                    android:text="@string/profile_fragment_name"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/profile_email"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="example@mail.com"
+                    android:text="@string/profile_fragment_email"
                     android:textColor="#7f8c8d"
-                    android:textSize="14sp"
-                    tools:ignore="HardcodedText" />
+                    android:textSize="14sp" />
             </LinearLayout>
 
 
@@ -167,7 +165,7 @@
                             android:layout_marginStart="16dp"
                             android:layout_weight="1"
                             android:textSize="16sp"
-                            android:text="Edit"
+                            android:text="@string/profile_fragment_edit"
                             android:textColor="@color/md_theme_onSecondaryContainer"
                             />
 
@@ -212,7 +210,7 @@
                             android:textSize="16sp"
                             android:layout_weight="1"
                             android:textColor="@color/md_theme_onSecondaryContainer"
-                            android:text="Change Password"
+                            android:text="@string/profile_fragment_change_password"
                             />
 
                         <ImageView
@@ -256,7 +254,7 @@
                             android:layout_weight="1"
                             android:textSize="16sp"
                             android:textColor="@color/md_theme_onSecondaryContainer"
-                            android:text="Profile Information"
+                            android:text="@string/profile_fragment_profile_information"
                             />
 
                         <ImageView
@@ -299,7 +297,7 @@
                             android:layout_marginStart="16dp"
                             android:textSize="16sp"
                             android:layout_weight="1"
-                            android:text="LogOut"
+                            android:text="@string/profile_fragment_logout"
                             android:textColor="@color/md_theme_onSecondaryContainer"
                         android:textAppearance="?attr/textAppearanceBodyLarge" />
 
@@ -353,7 +351,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
-                android:text="Actions"
+                android:text="@string/profile_fragment_actions"
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
@@ -361,7 +359,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:text="Account Information"
+                android:text="@string/profile_fragment_account_information"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -380,7 +378,7 @@
 
                     <TextView
                         style="@style/ProfileFieldTitle"
-                        android:text="ID No:" />
+                        android:text="@string/profile_fragment_id_no" />
 
                     <TextView
                         android:id="@+id/id_number"
@@ -395,7 +393,7 @@
 
                     <TextView
                         style="@style/ProfileFieldTitle"
-                        android:text="Date of Birth:" />
+                        android:text="@string/profile_fragment_date_of_birth" />
 
                     <TextView
                         android:id="@+id/date_of_birth"
@@ -418,7 +416,7 @@
 
                     <TextView
                         style="@style/ProfileFieldTitle"
-                        android:text="Sex:" />
+                        android:text="@string/profile_fragment_sex" />
 
                     <TextView
                         android:id="@+id/sex"
@@ -433,7 +431,7 @@
 
                     <TextView
                         style="@style/ProfileFieldTitle"
-                        android:text="Nationality:" />
+                        android:text="@string/profile_fragment_nationality" />
 
                     <TextView
                         android:id="@+id/nationality"
@@ -444,7 +442,7 @@
             <!-- Row 3 -->
             <TextView
                 style="@style/ProfileFieldTitle"
-                android:text="Place of Origin:" />
+                android:text="@string/profile_fragment_place_of_origin" />
 
             <TextView
                 android:id="@+id/place_of_origin"
@@ -452,7 +450,7 @@
 
             <TextView
                 style="@style/ProfileFieldTitle"
-                android:text="Place of Residence:" />
+                android:text="@string/profile_fragment_place_of_residence" />
 
             <TextView
                 android:id="@+id/place_of_residence"
@@ -460,7 +458,7 @@
 
             <TextView
                 style="@style/ProfileFieldTitle"
-                android:text="Phone:" />
+                android:text="@string/profile_fragment_phone" />
 
             <TextView
                 android:id="@+id/phone"
@@ -468,7 +466,7 @@
 
             <TextView
                 style="@style/ProfileFieldTitle"
-                android:text="Member Since:" />
+                android:text="@string/profile_fragment_member_since" />
 
             <TextView
                 android:id="@+id/member_since"

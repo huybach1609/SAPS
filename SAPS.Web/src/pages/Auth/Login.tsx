@@ -7,7 +7,7 @@ import { Input } from "@heroui/input";
 import { Checkbox } from "@heroui/react";
 
 export default function LoginPage() {
-  const { login, loading, getUserRole, getAdminRole } = useAuth();
+  const { login, loading, getUserRole } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -25,12 +25,12 @@ export default function LoginPage() {
 
       // After successful login, redirect based on user role
       const userRole = getUserRole();
-      const adminRole = getAdminRole();
+      // const adminRole = getAdminRole();
 
       if (userRole) {
         switch (userRole.toLowerCase()) {
           case "admin":
-            navigate("/admin/home");
+            navigate("/admin");
             break;
           case "parkinglotowner":
             navigate("/owner/parking-info");

@@ -111,7 +111,7 @@ public class EditProfileActivity extends AppCompatActivity {
     private void loadUserAndFill() {
         currentUser = tokenManager.getUserData();
         if (currentUser == null) {
-            Toast.makeText(this, "No user data. Please sign in again.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, getString(R.string.toast_no_user_data_sign_in), Toast.LENGTH_LONG).show();
             finish();
             return;
         }
@@ -147,7 +147,7 @@ public class EditProfileActivity extends AppCompatActivity {
             // Use multipart upload with images for verification
             submitClientProfileRequest();
         } else {
-            Toast.makeText(this, "Please upload Image", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_please_upload_image), Toast.LENGTH_SHORT).show();
         }
     }
     
@@ -211,7 +211,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
                             if (response.isSuccessful() && response.body() != null) {
                                 VerificationResponse verificationResponse = response.body();
-                                Toast.makeText(EditProfileActivity.this, "Client profile request submitted successfully!", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(EditProfileActivity.this, getString(R.string.toast_profile_request_submitted), Toast.LENGTH_SHORT).show();
                                 finish();
                             } else {
                                 String errorMessage = "Failed to submit client profile request";
@@ -247,7 +247,7 @@ public class EditProfileActivity extends AppCompatActivity {
                 runOnUiThread(() -> {
                     loadingDialog.dismiss();
                     Log.e("PROFILE_UPDATE_ERROR", "Error reading images: " + e.getMessage(), e);
-                    Toast.makeText(EditProfileActivity.this, "Error reading images", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditProfileActivity.this, getString(R.string.toast_error_reading_images), Toast.LENGTH_SHORT).show();
                 });
             } finally {
                 executor.shutdown();
@@ -272,7 +272,7 @@ public class EditProfileActivity extends AppCompatActivity {
             if (frontImageUri != null && backImageUri != null) {
                 uploadBothImagesToServer(frontImageUri, backImageUri);
             } else {
-                Toast.makeText(this, "Vui lòng chọn cả 2 mặt trước và sau của căn cước công dân", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.toast_please_select_both_sides_id), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -302,7 +302,7 @@ public class EditProfileActivity extends AppCompatActivity {
     }
 
     private void openCamera() {
-        Toast.makeText(this, "Chức năng này chưa hỗ trợ nhận dạng cả 2 mặt từ ảnh chụp.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.toast_feature_not_supported_recognition), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -404,7 +404,7 @@ public class EditProfileActivity extends AppCompatActivity {
                         IdCardResponse idCard = response.body();
                         fillFromOcr(idCard);
                         saveButton.setEnabled(true);
-                        Toast.makeText(EditProfileActivity.this, "Auto-filled from ID card", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditProfileActivity.this, getString(R.string.toast_auto_filled_from_id), Toast.LENGTH_SHORT).show();
                         Log.i("check", "onResponse: " + response.body());
                     } else {
                         String errorMessage = "OCR failed";
@@ -434,14 +434,14 @@ public class EditProfileActivity extends AppCompatActivity {
         } catch (Exception e) {
             loadingDialog.dismiss();
             Log.e("OCR_API_ERROR", "Error creating API call: " + e.getMessage());
-            Toast.makeText(EditProfileActivity.this, "Error preparing upload", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EditProfileActivity.this, getString(R.string.toast_error_preparing_upload), Toast.LENGTH_SHORT).show();
         }
     }
 
     private void handleError(IOException e) {
         loadingDialog.dismiss();
         Log.e("OCR_IO_ERROR", e.getMessage(), e);
-        Toast.makeText(EditProfileActivity.this, "Error reading images", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EditProfileActivity.this, getString(R.string.toast_error_reading_images), Toast.LENGTH_SHORT).show();
     }
     //endregion
 

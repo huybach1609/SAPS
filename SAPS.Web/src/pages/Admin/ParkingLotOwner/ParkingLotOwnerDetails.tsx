@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Card, Button, Divider, Pagination } from "@heroui/react";
+import { Card, Button, Pagination } from "@heroui/react";
 import {
   ArrowLeft,
   Building2,
   CreditCard,
-  CheckCircle2,
   Save,
   FileText,
   Edit,
@@ -98,8 +97,8 @@ const ParkingLotOwnerDetails: React.FC = () => {
       });
 
       setParkingLots(response?.items || []);
-      setTotalParkingLots(response?.totalCount || 0);
-      setTotalPages(response?.totalPages || 1);
+      setTotalParkingLots(response?.["total-count"] || 0);
+      setTotalPages(response?.["total-pages"] || 1);
     } catch (error) {
       console.error("Error fetching parking lots:", error);
       // Reset to safe defaults on error

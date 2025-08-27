@@ -292,12 +292,15 @@ const UserDetail: React.FC = () => {
             setSessionTotalItems(
               response.data.totalCount || response.data["total-count"] || 0
             );
-          } else if (response.data.data && Array.isArray(response.data.data)) {
-            // Nếu response.data.data là một mảng (API trả về nested data)
-            console.log("Nested data array:", response.data.data);
-            setPaginatedParkingSessions(response.data.data);
+          } else if (
+            response.data.items &&
+            Array.isArray(response.data.items)
+          ) {
+            // Nếu response.data.items là một mảng (API trả về nested data)
+            console.log("Nested data array:", response.data.items);
+            setPaginatedParkingSessions(response.data.items as any[]);
             setSessionTotalPages(1); // Không có thông tin phân trang
-            setSessionTotalItems(response.data.data.length);
+            setSessionTotalItems((response.data.items as any[]).length);
           } else {
             console.error("Unexpected data format:", response.data);
             setPaginatedParkingSessions([]);
@@ -778,19 +781,18 @@ const UserDetail: React.FC = () => {
                           <span
                             className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${
                               (
-                                vehicle.sharingStatus ||
-                                vehicle["sharing-status"]
+                                vehicle.status || vehicle["sharing-status"]
                               )?.toLowerCase() === "available"
                                 ? "bg-blue-100 text-blue-800"
                                 : (
-                                      vehicle.sharingStatus ||
+                                      vehicle.status ||
                                       vehicle["sharing-status"]
                                     )?.toLowerCase() === "shared"
                                   ? "bg-green-100 text-green-800"
                                   : "bg-yellow-100 text-yellow-800"
                             }`}
                           >
-                            {vehicle.sharingStatus || vehicle["sharing-status"]}
+                            {vehicle.status || vehicle["sharing-status"]}
                           </span>
                         </td>
                       </tr>
@@ -948,19 +950,18 @@ const UserDetail: React.FC = () => {
                           <span
                             className={`inline-block px-2 py-1 rounded-md text-xs font-medium ${
                               (
-                                vehicle.sharingStatus ||
-                                vehicle["sharing-status"]
+                                vehicle.status || vehicle["sharing-status"]
                               )?.toLowerCase() === "available"
                                 ? "bg-blue-100 text-blue-800"
                                 : (
-                                      vehicle.sharingStatus ||
+                                      vehicle.status ||
                                       vehicle["sharing-status"]
                                     )?.toLowerCase() === "shared"
                                   ? "bg-green-100 text-green-800"
                                   : "bg-yellow-100 text-yellow-800"
                             }`}
                           >
-                            {vehicle.sharingStatus || vehicle["sharing-status"]}
+                            {vehicle.status || vehicle["sharing-status"]}
                           </span>
                         </td>
                       </tr>
@@ -1139,11 +1140,6 @@ const UserDetail: React.FC = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
-                  {/* Debug log để kiểm tra dữ liệu */}
-                  {console.log(
-                    "paginatedParkingSessions in render:",
-                    paginatedParkingSessions
-                  )}
                   {paginatedParkingSessions &&
                   paginatedParkingSessions.length > 0 ? (
                     paginatedParkingSessions.map((session) => {

@@ -166,7 +166,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Total duration"
+                android:text="@string/parking_history_total_duration"
                 android:layout_marginLeft="12dp"
                 android:textColor="@color/md_theme_onTertiary" />
             <!-- Duration -->
@@ -395,7 +395,7 @@ android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="Transaction ID"
+                        android:text="@string/parking_history_transaction_id"
                         android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                         android:textColor="@color/md_theme_onSurfaceVariant" />
                     <TextView
@@ -431,7 +431,7 @@ android:visibility="gone"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="Payment Method"
+                        android:text="@string/parking_history_payment_method"
                         android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                         android:textColor="@color/md_theme_onSurfaceVariant" />
 
@@ -466,7 +466,7 @@ android:visibility="gone"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="Payment Status"
+                        android:text="@string/parking_history_payment_status"
                         android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                         android:textColor="@color/md_theme_onSurfaceVariant" />
 
@@ -500,7 +500,7 @@ android:visibility="gone"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="Payment Date"
+                        android:text="@string/parking_history_payment_date"
                         android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                         android:textColor="@color/md_theme_onSurfaceVariant" />
 
@@ -534,7 +534,7 @@ android:visibility="gone"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="Order code:"
+                        android:text="@string/parking_history_order_code"
                         android:textAppearance="@style/TextAppearance.Material3.BodySmall"
                         android:textColor="@color/md_theme_onSurfaceVariant" />
                     <TextView

@@ -155,7 +155,7 @@ public class InvitationActivity extends AppCompatActivity implements InvitationA
             @Override
             public void onFailure(retrofit2.Call<java.util.List<ShareVehicleResponse>> call, Throwable t) {
                 loadingDialog.dismiss();
-                Toast.makeText(InvitationActivity.this, "Lỗi kết nối", Toast.LENGTH_SHORT).show();
+                Toast.makeText(InvitationActivity.this, getString(R.string.toast_connection_error), Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -216,7 +216,7 @@ public class InvitationActivity extends AppCompatActivity implements InvitationA
             @Override
             public void onFailure(retrofit2.Call<Void> call, Throwable t) {
                 loadingDialog.dismiss();
-                Toast.makeText(InvitationActivity.this, "connection error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(InvitationActivity.this, getString(R.string.toast_connection_error), Toast.LENGTH_SHORT).show();
             }
         });
 

@@ -1,6 +1,5 @@
 import { PaginatedResponse } from "../../types";
-import { apiUrl } from "@/config/base";
-import { createApiInstance, getAuthConfig } from "../utils/apiUtils";
+import { createApiInstance } from "../utils/apiUtils";
 
 const api = createApiInstance();
 

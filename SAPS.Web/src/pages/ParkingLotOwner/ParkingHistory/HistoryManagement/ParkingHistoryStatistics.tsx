@@ -3,12 +3,12 @@ import { Clock, DollarSign,  Car, Activity } from 'lucide-react';
 import { apiUrl } from '@/config/base';
 
 // Types for the API responses
-interface ParkingStatus {
-    totalSessionsToday: number;
-    revenueToday: number;
-    avgDuration: number;
-    occupancyRate: number;
-}
+// interface ParkingStatus {
+//     totalSessionsToday: number;
+//     revenueToday: number;
+//     avgDuration: number;
+//     occupancyRate: number;
+// }
 
 interface ParkingStatistics {
     totalParkingSessions: number;
@@ -61,7 +61,7 @@ export const getClientId = (): string => {
 
 const ParkingHistoryStatistics: React.FC = () => {
     const [selectedRange] = useState<number>(0);
-    const [status, setStatus] = useState<ParkingStatus | null>(null);
+    // const [status, setStatus] = useState<ParkingStatus | null>(null);
     const [statistics, setStatistics] = useState<ParkingStatistics | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -82,7 +82,7 @@ const ParkingHistoryStatistics: React.FC = () => {
             if (!statusResponse.ok) {
                 throw new Error(`Status API error: ${statusResponse.status}`);
             }
-            const statusData = await statusResponse.json();
+            // const statusData = await statusResponse.json();
 
             // Fetch statistics data
             const statisticsResponse = await fetch(`${apiUrl}/api/parkingsession/statistics/owned/${clientId}?range=${selectedRange}`, {
@@ -95,7 +95,7 @@ const ParkingHistoryStatistics: React.FC = () => {
             }
             const statisticsData = await statisticsResponse.json();
 
-            setStatus(statusData);
+            // setStatus(statusData);
             setStatistics(statisticsData);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred');

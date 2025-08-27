@@ -53,7 +53,7 @@
                 android:id="@+id/tvSuccessMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Vehicle Access Granted Successfully!"
+                android:text="@string/share_vehicle_success_title"
                 android:textSize="24sp"
                 android:textStyle="bold"
                 android:textColor="@color/md_theme_onSurface"
@@ -78,7 +78,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Shared With"
+                        android:text="@string/share_vehicle_success_shared_with"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         android:textColor="@color/md_theme_secondary"
@@ -88,7 +88,7 @@
                         android:id="@+id/tvUserInfo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="User: John Doe"
+                        android:text="@string/share_vehicle_success_user"
                         android:textSize="16sp"
                         android:textColor="@color/md_theme_onSurface" />
 
@@ -114,7 +114,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Vehicle"
+                        android:text="@string/share_vehicle_success_vehicle"
                         android:textSize="14sp"
                         android:textStyle="bold"
                         android:textColor="@color/md_theme_secondary"
@@ -124,7 +124,7 @@
                         android:id="@+id/tvVehicleInfo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Vehicle: ABC-123 - Toyota Camry"
+                        android:text="@string/share_vehicle_success_vehicle_info"
                         android:textSize="16sp"
                         android:textColor="@color/md_theme_onSurface" />
 
@@ -137,7 +137,7 @@
                 android:id="@+id/btnDone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Done"
+                android:text="@string/share_vehicle_success_done"
                 android:textSize="16sp"
                 android:padding="16dp"
                 style="@style/Widget.Material3.Button" />
