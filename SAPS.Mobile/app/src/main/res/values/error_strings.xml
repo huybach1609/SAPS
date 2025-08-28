@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ID_REQUIRED">ID is required</string>
+    <string name="PARKING_LOT_NAME_REQUIRED">Parking lot name is required</string>
+    <string name="EMAIL_ALREADY_EXISTS">This email is already registered</string>
+    <string name="CITIZEN_ID_ALREADY_EXISTS">Citizen ID already exists</string>
+    <string name="ADMIN_ID_ALREADY_EXISTS">Admin ID already exists</string>
+    <string name="STAFF_ID_ALREADY_EXISTS">Staff ID already exists</string>
+    <string name="PARKING_LOT_OWNER_ID_ALREADY_EXISTS">Parking lot owner ID already exists</string>
+    <string name="USER_NOT_FOUND">User not found</string>
+    <string name="INVALID_OLD_PASSWORD">Invalid old password</string>
+</resources>
