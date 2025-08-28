@@ -28,7 +28,7 @@ public interface AuthApi {  // or AuthService, if it fits the rest of your proje
     @POST("api/auth/refresh-token")
     Call<LoginResponse> refreshToken(@Body RefreshTokenRequest request);
 
-    @POST("api/auth/login")
+    @POST("api/auth/client/login")
     Call<LoginResponse> login(@Body LoginRequest request);
 
     @POST("api/auth/register")
