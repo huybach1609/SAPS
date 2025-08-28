@@ -37,13 +37,12 @@ import vn.edu.fpt.sapsmobile.network.client.ApiTest;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.models.ClientProfile;
 import vn.edu.fpt.sapsmobile.dtos.profile.IdCardResponse;
-import vn.edu.fpt.sapsmobile.dtos.profile.VerificationResponse;
-import vn.edu.fpt.sapsmobile.dtos.profile.ClientProfileData;
+
 import vn.edu.fpt.sapsmobile.models.User;
-import com.google.gson.Gson;
+
 import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
 import vn.edu.fpt.sapsmobile.utils.TokenManager;
-import android.util.Base64;
+
 
 public class EditProfileActivity extends AppCompatActivity {
 
@@ -136,6 +135,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     }
 
+    private final String TAG = "EditProfileActivity";
     private void fetchPutClientProfile() {
         if (currentUser == null) return;
         
@@ -162,59 +162,57 @@ public class EditProfileActivity extends AppCompatActivity {
                 // Continue with API call on main thread
                 runOnUiThread(() -> {
                     // Create RequestBody for text fields
-                    RequestBody headerBody = RequestBody.create("Update user info", MediaType.parse("text/plain"));
-                    RequestBody descriptionBody = RequestBody.create("Client profile verification request for level 2 authentication", MediaType.parse("text/plain"));
-                    RequestBody dataTypeBody = RequestBody.create("ClientProfile", MediaType.parse("text/plain"));
-                    
-                    // Encode images to base64
-                    String frontImageBase64 = Base64.encodeToString(frontBytes, Base64.DEFAULT);
-                    String backImageBase64 = Base64.encodeToString(backBytes, Base64.DEFAULT);
-                    
-                    // Create the data object and serialize it to JSON
-                    ClientProfileData profileData = new ClientProfileData(
-                            frontImageBase64,
-                            backImageBase64,
-                            getText(idNoInput),
-                            getText(dobInput),
-                            String.valueOf("Nam".equalsIgnoreCase(getText(sexInput))),
-                            getText(nationalityInput),
-                            getText(placeOriginInput),
-                            getText(placeResidenceInput),
-                            tokenManager.getUserData().getId()
-                    );
-                    
-                    Gson gson = new Gson();
-                    String jsonData = gson.toJson(profileData);
-                    RequestBody dataBody = RequestBody.create(jsonData, MediaType.parse("text/plain"));
+                    RequestBody citizenIdBody = RequestBody.create(getText(idNoInput), MediaType.parse("text/plain"));
+                    RequestBody dateOfBirthBody = RequestBody.create(getText(dobInput), MediaType.parse("text/plain"));
+                    RequestBody sexBody = RequestBody.create(String.valueOf("Nam".equalsIgnoreCase(getText(sexInput))), MediaType.parse("text/plain"));
+                    RequestBody nationalityBody = RequestBody.create(getText(nationalityInput), MediaType.parse("text/plain"));
+                    RequestBody placeOfOriginBody = RequestBody.create(getText(placeOriginInput), MediaType.parse("text/plain"));
+                    RequestBody placeOfResidenceBody = RequestBody.create(getText(placeResidenceInput), MediaType.parse("text/plain"));
+                    RequestBody fullNameBody = RequestBody.create(getText(nameInput), MediaType.parse("text/plain"));
+                    RequestBody phoneBody = RequestBody.create("0375357288", MediaType.parse("text/plain"));
+                    RequestBody idBody = RequestBody.create(tokenManager.getUserData().getId(), MediaType.parse("text/plain"));
 
-                    // Create multipart parts for attachments
-                    RequestBody frontBody = RequestBody.create(frontBytes, MediaType.parse("image/jpeg"));
-                    RequestBody backBody = RequestBody.create(backBytes, MediaType.parse("image/jpeg"));
 
-                    MultipartBody.Part frontPart = MultipartBody.Part.createFormData("Attachments", "front.jpg", frontBody);
-                    MultipartBody.Part backPart = MultipartBody.Part.createFormData("Attachments", "back.jpg", backBody);
+                    // Create multipart parts for images
+                    RequestBody frontImageBody = RequestBody.create(frontBytes, MediaType.parse("image/jpeg"));
+                    RequestBody backImageBody = RequestBody.create(backBytes, MediaType.parse("image/jpeg"));
 
+                    MultipartBody.Part frontPart = MultipartBody.Part.createFormData("FrontCitizenCardImage", "front.jpg", frontImageBody);
+                    MultipartBody.Part backPart = MultipartBody.Part.createFormData("BackCitizenCardImage", "back.jpg", backImageBody);
+
+
+
+
+                    Log.i(TAG, "submitClientProfileRequest: Updating client profile with new API");
                     ApiService apiService = ApiTest.getServiceLast(this).create(ApiService.class);
-                    retrofit2.Call<VerificationResponse> call = apiService.submitClientProfileRequest(
-                            headerBody,
-                            descriptionBody,
-                            dataTypeBody,
-                            dataBody,
+                    retrofit2.Call<User> call = apiService.updateClientProfile(
                             frontPart,
-                            backPart
+                            backPart,
+                            citizenIdBody,
+                            dateOfBirthBody,
+                            sexBody,
+                            nationalityBody,
+                            placeOfOriginBody,
+                            placeOfResidenceBody,
+                            fullNameBody,
+                            phoneBody,
+                            idBody
                     );
 
-                    call.enqueue(new retrofit2.Callback<VerificationResponse>() {
+
+                    call.enqueue(new retrofit2.Callback<User>() {
                         @Override
-                        public void onResponse(retrofit2.Call<VerificationResponse> call, retrofit2.Response<VerificationResponse> response) {
+                        public void onResponse(retrofit2.Call<User> call, retrofit2.Response<User> response) {
                             loadingDialog.dismiss();
 
                             if (response.isSuccessful() && response.body() != null) {
-                                VerificationResponse verificationResponse = response.body();
+                                User updatedUser = response.body();
+                                // Update the stored user data
+                                tokenManager.saveUserData(updatedUser);
                                 Toast.makeText(EditProfileActivity.this, getString(R.string.toast_profile_request_submitted), Toast.LENGTH_SHORT).show();
                                 finish();
                             } else {
-                                String errorMessage = "Failed to submit client profile request";
+                                String errorMessage = "Failed to update client profile";
                                 if (response.code() == 400) {
                                     errorMessage = "Invalid data provided";
                                 } else if (response.code() == 401) {
@@ -223,12 +221,12 @@ public class EditProfileActivity extends AppCompatActivity {
                                     errorMessage = "Server error occurred";
                                 }
                                 Toast.makeText(EditProfileActivity.this, errorMessage, Toast.LENGTH_LONG).show();
-                                Log.e("CLIENT_PROFILE_REQUEST_ERROR", "Code: " + response.code() + ", Message: " + response.message());
+                                Log.e("CLIENT_PROFILE_UPDATE_ERROR", "Code: " + response.code() + ", Message: " + response.message());
                             }
                         }
 
                         @Override
-                        public void onFailure(retrofit2.Call<VerificationResponse> call, Throwable t) {
+                        public void onFailure(retrofit2.Call<User> call, Throwable t) {
                             loadingDialog.dismiss();
                             String errorMessage = "Network error occurred";
                             if (t instanceof java.net.SocketTimeoutException) {
@@ -239,7 +237,7 @@ public class EditProfileActivity extends AppCompatActivity {
                                 errorMessage = "Cannot connect to server. Please check your connection.";
                             }
                             Toast.makeText(EditProfileActivity.this, errorMessage, Toast.LENGTH_LONG).show();
-                            Log.e("CLIENT_PROFILE_REQUEST_ERROR", "Error submitting client profile request: " + t.getMessage(), t);
+                            Log.e("CLIENT_PROFILE_UPDATE_ERROR", "Error updating client profile: " + t.getMessage(), t);
                         }
                     });
                 });

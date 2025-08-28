@@ -375,7 +375,7 @@
     <string name="login_welcome_back">Welcome back</string>
     <string name="login_youve_been_missed">You\'ve been missed!</string>
     <string name="login_username_or_email">Username or Email</string>
-    <string name="login_enter_username_or_email">Enter Username or Email</string>
+    <string name="login_enter_username_or_email">Enter Email or CitizenId</string>
     <string name="login_password">Password</string>
     <string name="login_enter_password">Enter password</string>
     <string name="login_button">Login</string>

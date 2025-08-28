@@ -16,11 +16,17 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.google.android.material.snackbar.Snackbar;
+
+import org.json.JSONObject;
+
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleRegistrationResponse;
 import vn.edu.fpt.sapsmobile.network.api.AuthApi;
 import vn.edu.fpt.sapsmobile.network.client.ApiTest;
 import vn.edu.fpt.sapsmobile.R;
@@ -28,6 +34,7 @@ import vn.edu.fpt.sapsmobile.activities.auth.LoginActivity;
 import vn.edu.fpt.sapsmobile.activities.auth.RegisterActivity;
 import vn.edu.fpt.sapsmobile.dtos.profile.UserRegisterResponse;
 import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
+import vn.edu.fpt.sapsmobile.utils.StringUtils;
 
 public class RegisterFragment extends Fragment {
 
@@ -135,12 +142,13 @@ public class RegisterFragment extends Fragment {
             public void onResponse(Call<UserRegisterResponse> call, Response<UserRegisterResponse> response) {
                 loadingDialog.dismiss();
                 
-                // Debug logging for response
                 Log.d(TAG, "Response code: " + response.code());
                 if (!response.isSuccessful()) {
                     try {
-                        String errorBody = response.errorBody() != null ? response.errorBody().string() : "No error body";
-                        Log.e(TAG, "Error response body: " + errorBody);
+                        String errorBody = response.errorBody().string();
+                        JSONObject jsonObject = new JSONObject(errorBody);
+                        String message = jsonObject.optString("message", "Unknown error");
+                        handleRegistrationError(response.code(), message);
                     } catch (Exception e) {
                         Log.e(TAG, "Error reading error body", e);
                     }
@@ -149,8 +157,6 @@ public class RegisterFragment extends Fragment {
                 if (response.isSuccessful() && response.body() != null) {
                     UserRegisterResponse registerResponse = response.body();
                     handleRegistrationSuccess(email, password, registerResponse);
-                } else {
-                    handleRegistrationError(response.code(), "Registration failed");
                 }
             }
 
@@ -172,8 +178,10 @@ public class RegisterFragment extends Fragment {
     }
 
     private void handleRegistrationError(int statusCode, String defaultMessage) {
-        String errorMessage = getErrorMessage(statusCode, defaultMessage);
-        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show();
+        String errorMessage = StringUtils.getErrorMessage(getContext(), defaultMessage);
+//        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show();
+        assert getView() != null;
+        Snackbar.make(getView(), errorMessage, Snackbar.LENGTH_LONG).show();
     }
 
     private String getErrorMessage(int statusCode, String defaultMessage) {

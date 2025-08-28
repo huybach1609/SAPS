@@ -5,6 +5,7 @@ import { Button } from "@heroui/button";
 import { Camera, ChartColumnBig, Lock, Zap } from "lucide-react";
 import { Input } from "@heroui/input";
 import { Checkbox } from "@heroui/react";
+import logoImage from "../../assets/Logo/logo.svg";
 
 export default function LoginPage() {
   const { login, loading, getUserRole } = useAuth();
@@ -64,7 +65,7 @@ export default function LoginPage() {
           <div className="mb-8">
             <div className="bg-blue-100 p-6 rounded-2xl shadow-lg inline-flex justify-center items-center">
               <span role="img" aria-label="car" className="text-4xl">
-                <img src="/src/assets/Logo/logo.webp" alt="SAPLS Logo" className="w-32 h-32 object-cover" />
+                <img src={logoImage} alt="SAPLS Logo" className="w-32 h-32 object-cover" />
               </span>
             </div>
           </div>

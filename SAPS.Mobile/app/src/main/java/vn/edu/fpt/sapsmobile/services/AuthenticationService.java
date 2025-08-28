@@ -436,10 +436,10 @@ public class AuthenticationService implements SessionActions {
             callback.onAuthFailure("Email and password cannot be empty");
             return false;
         }
-        if (!validateEmail(email)) {
-            callback.onAuthFailure("Please enter a valid email address");
-            return false;
-        }
+//        if (!validateEmail(email)) {
+//            callback.onAuthFailure("Please enter a valid email address");
+//            return false;
+//        }
         return true;
     }
 

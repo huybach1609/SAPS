@@ -1,11 +1,22 @@
 package vn.edu.fpt.sapsmobile.utils;
 
+import android.content.Context;
+
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 
 public class StringUtils {
-    
+    public static String getErrorMessage(Context context, String errorCode) {
+        int resId = context.getResources().getIdentifier(errorCode, "string", context.getPackageName());
+        if (resId != 0) {
+            return context.getString(resId);
+        } else {
+            return "Unknown error"; // fallback nếu chưa khai báo
+        }
+    }
+
+
     // Method 1: Simple VND formatting with thousand separators
     public static String formatVND(double cost) {
         DecimalFormat formatter = new DecimalFormat("#,###");

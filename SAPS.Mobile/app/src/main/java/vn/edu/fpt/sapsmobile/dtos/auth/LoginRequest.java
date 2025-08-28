@@ -1,12 +1,12 @@
 package vn.edu.fpt.sapsmobile.dtos.auth;
 
 public class LoginRequest {
-    private String email;
+    private String emailOrCitizenIdNo;
     private String password;
     private boolean rememberMe;
 
-    public LoginRequest(String email, String password) {
-        this.email = email;
+    public LoginRequest(String emailOrCitizenIdNo, String password) {
+        this.emailOrCitizenIdNo = emailOrCitizenIdNo;
         this.password = password;
         this.rememberMe =true;
     }

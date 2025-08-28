@@ -9,6 +9,8 @@ import { formatPrice } from '@/components/utils/stringUtils';
 import { PayOsResponse, Subscription } from '@/types/ParkingLot';
 import { createPayment, getLatestPayment, fetchSubscriptions } from '@/services/parkinglot/subscriptionService';
 import PaymentStatusChecker from './PaymentStatusChecker';
+import vietQRLogo from '../../../assets/Logo/VietQR_Logo.png';
+import napasLogo from '../../../assets/Logo/Logo-Napas.webp';
 
 
 // Mock data from your response
@@ -283,8 +285,8 @@ const PaymentSubscriptionComponent: React.FC = () => {
                   <Tab key="qr" title="QR Code">
                      <div className="text-center flex flex-col items-center">
                         <div className='flex gap-2 '>
-                           <img src="/src/assets/Logo/VietQR_Logo.png" alt="vietqr" className='w-auto h-5 ' />
-                           <img src="/src/assets/Logo/Logo-Napas.webp" alt="napas247" className='w-auto h-5 m-1' />
+                                           <img src={vietQRLogo} alt="vietqr" className='w-auto h-5 ' />
+                <img src={napasLogo} alt="napas247" className='w-auto h-5 m-1' />
                         </div>
                         <div className="inline-flex items-center justify-center w-full h-full">
                            {isLoading ? (
