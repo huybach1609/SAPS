@@ -12,7 +12,7 @@ public class StringUtils {
         if (resId != 0) {
             return context.getString(resId);
         } else {
-            return "Unknown error"; // fallback nếu chưa khai báo
+            return errorCode; // fallback nếu chưa khai báo
         }
     }
 
