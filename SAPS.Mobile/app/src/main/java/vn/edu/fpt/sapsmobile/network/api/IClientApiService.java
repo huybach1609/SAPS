@@ -6,7 +6,7 @@ import retrofit2.http.Path;
 import vn.edu.fpt.sapsmobile.dtos.profile.ClientProfileResponse;
 import vn.edu.fpt.sapsmobile.dtos.profile.ClientProfileSummaryDto;
 
-public interface ClientApiService {
+public interface IClientApiService {
     @GET("api/client/user/{userId}")
     Call<ClientProfileResponse> getClientProfile(@Path("userId") String userId);
     

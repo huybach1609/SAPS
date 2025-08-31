@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import vn.edu.fpt.sapsmobile.models.User;
 
-public class LoginResponse {
+public class AuthenticateUserResponse {
     @SerializedName("accessToken")
     private String token;
     @SerializedName("refreshToken")

@@ -10,7 +10,6 @@ import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Body;
 import vn.edu.fpt.sapsmobile.dtos.profile.IdCardBase64Request;
-import vn.edu.fpt.sapsmobile.dtos.profile.UpdateClientProfileRequest;
 import vn.edu.fpt.sapsmobile.dtos.profile.VerificationResponse;
 import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleRegistrationInfo;
 import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleRegistrationResponse;
@@ -19,7 +18,7 @@ import vn.edu.fpt.sapsmobile.dtos.profile.NotificationsResponse;
 
 import vn.edu.fpt.sapsmobile.models.User;
 
-public interface ApiService {
+public interface OcrService {
     @GET("notifications")
     Call<NotificationsResponse> getNotifications();
     

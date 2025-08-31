@@ -1,23 +1,20 @@
 package vn.edu.fpt.sapsmobile.network.client;
 
 import android.content.Context;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import vn.edu.fpt.sapsmobile.BuildConfig;
 import vn.edu.fpt.sapsmobile.network.interceptor.TokenInterceptor;
 import vn.edu.fpt.sapsmobile.network.ssl.SSLHelper;
-import vn.edu.fpt.sapsmobile.utils.TokenManager;
 
-public class ApiTest {
-
-    private static final String BASE_URL_LAST = "https://192.168.1.36:7040/";
-
-//    private static final String BASE_URL_LAST = "http://172.188.240.201/";
-//    private static final String BASE_URL_LAST = "https://anemosnguyen2409.southeastasia.cloudapp.azure.com/";
-
+public class ApiClient {
+    private static final String BASE_URL_LAST = BuildConfig.API_BASE_URL;
     private static Retrofit mockApiLast;
 
 
