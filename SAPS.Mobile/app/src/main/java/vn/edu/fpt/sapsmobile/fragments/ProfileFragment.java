@@ -326,6 +326,7 @@ public class ProfileFragment extends Fragment {
     private void showBottomSheet() {
         if (bottomSheetBehavior != null &&
                 bottomSheetBehavior.getState() != BottomSheetBehavior.STATE_EXPANDED) {
+            user = mainActivity.getTokenManager().getUserData();
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         }
     }

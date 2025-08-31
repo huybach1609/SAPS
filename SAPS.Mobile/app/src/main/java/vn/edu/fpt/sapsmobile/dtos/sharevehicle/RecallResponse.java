@@ -1,6 +1,7 @@
 package vn.edu.fpt.sapsmobile.dtos.sharevehicle;
 
 import com.google.gson.annotations.SerializedName;
+import java.util.List;
 
 public class RecallResponse {
     @SerializedName("message")

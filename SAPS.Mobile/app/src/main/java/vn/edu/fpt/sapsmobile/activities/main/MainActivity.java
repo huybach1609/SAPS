@@ -204,6 +204,9 @@ public class MainActivity extends AppCompatActivity implements AuthenticationSer
             if ("vehicle".equals(selectedFragment)) {
                 // Navigate to vehicle fragment
                 navigateToTab(R.id.nav_vehicle);
+            } else if ("profile".equals(selectedFragment)) {
+                // Navigate to profile fragment
+                navigateToTab(R.id.nav_profile);
             }
         }
     }
