@@ -23,7 +23,7 @@
             app:navigationIconTint="?attr/colorOnSurface"
             app:layout_scrollFlags="scroll|enterAlways"
             app:navigationIcon="@drawable/ic_arrow_back"
-            app:title="Danh sách xe"
+            app:title=""
             />
 
 <!--        app:menu="@menu/menu_invitation_list"-->

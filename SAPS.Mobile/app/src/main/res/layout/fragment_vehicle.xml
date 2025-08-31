@@ -66,14 +66,13 @@
                 android:id="@+id/share_code_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:contentDescription="@string/cd_share_code_card"
-                android:background="@drawable/bg_card_corner"
-                android:padding="20dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
+                android:background="@drawable/bg_card_corner"
                 android:backgroundTint="@color/md_theme_secondaryContainer"
-                >
+                android:contentDescription="@string/cd_share_code_card"
+                android:orientation="vertical"
+                android:padding="20dp">
 
                 <TextView
                     android:id="@+id/label_share_code"
@@ -82,16 +81,15 @@
                     android:text="@string/label_share_code"
                     android:textColor="@color/md_theme_onSecondaryContainer"
                     android:textSize="16sp"
-                    android:textStyle="bold"
-                    />
+                    android:textStyle="bold" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_card_corner"
-                    android:backgroundTint="@color/md_theme_surface"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
+                    android:background="@drawable/bg_card_corner"
+                    android:backgroundTint="@color/md_theme_surface"
                     android:paddingTop="8dp"
                     android:paddingBottom="8dp">
 
@@ -111,25 +109,25 @@
                     android:id="@+id/tv_description"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
                     android:layout_marginBottom="12dp"
                     android:text="@string/share_code_description"
                     android:textColor="@color/md_theme_onSecondaryContainer"
-                    android:textSize="10sp"
-                    android:layout_margin="10dp"
-                    />
+                    android:textSize="10sp" />
 
-                <Button
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_copy_code"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     style="@style/Widget.Material3.Button.IconButton.Filled"
                     app:icon="@drawable/ic_copy"
+                    app:iconGravity="textStart"
+                    app:iconPadding="8dp"
                     android:text="@string/btn_copy_my_share_code"
                     android:textAllCaps="false"
-                    android:contentDescription="@string/btn_copy_share_code_desc"
+                    android:contentDescription="@string/btn_copy_share_code_desc" />
 
-                    />
             </LinearLayout>
         </LinearLayout>
 

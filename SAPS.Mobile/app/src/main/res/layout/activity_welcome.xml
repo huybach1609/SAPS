@@ -52,7 +52,6 @@
             android:layout_marginTop="4dp"
             android:fontFamily="sans-serif"
             android:text="@string/app_name"
-            android:textColor="#111827"
             android:textSize="32sp"
             android:textStyle="bold" />
 
@@ -88,11 +87,10 @@
             android:layout_height="80dp"
             android:layout_marginBottom="5dp"
             android:text="@string/common_signin_button_text"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="@color/material_dynamic_primary20"
+            android:textColor="@color/md_theme_onPrimary"
+            android:backgroundTint="@color/md_theme_primary"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:fontFamily="sans-serif-medium"
             />
 
         <Button
@@ -102,7 +100,7 @@
             android:layout_height="80dp"
             android:text="@string/registernewaccount"
             android:backgroundTint="@color/md_theme_background"
-            android:textColor="@color/material_dynamic_primary20"
+            android:textColor="@color/md_theme_onBackground"
             android:textSize="16sp"
             android:textStyle="bold"
             android:fontFamily="sans-serif-medium"

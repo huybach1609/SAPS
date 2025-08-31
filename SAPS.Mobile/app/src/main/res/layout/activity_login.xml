@@ -56,13 +56,13 @@
             android:textSize="16sp" />
 
         <!-- Form Section -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:fontFamily="sans-serif-medium"
-            android:text="@string/login_username_or_email"
-            android:textSize="14sp" />
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginBottom="4dp"-->
+<!--            android:fontFamily="sans-serif-medium"-->
+<!--            android:text="@string/login_username_or_email"-->
+<!--            android:textSize="14sp" />-->
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/email_input"
@@ -71,26 +71,30 @@
             android:layout_marginBottom="10dp"
             android:hint="@string/login_enter_username_or_email"
             app:boxBackgroundMode="outline"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusTopStart="12dp">
+            app:startIconDrawable="@drawable/ic_account"
+            app:boxCornerRadiusBottomEnd="@dimen/text_field_default_radius"
+            app:boxCornerRadiusBottomStart="@dimen/text_field_default_radius"
+            app:boxCornerRadiusTopEnd="@dimen/text_field_default_radius"
+            app:boxCornerRadiusTopStart="@dimen/text_field_default_radius"
+
+            >
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/email_input_edit_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+
                 android:inputType="text" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:fontFamily="sans-serif-medium"
-            android:text="@string/login_password"
-            android:textSize="14sp" />
+<!--        <TextView-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginBottom="4dp"-->
+<!--            android:fontFamily="sans-serif-medium"-->
+<!--            android:text="@string/login_password"-->
+<!--            android:textSize="14sp" />-->
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/password_input"
@@ -99,10 +103,11 @@
             android:layout_marginBottom="10dp"
             android:hint="@string/login_enter_password"
             app:boxBackgroundMode="outline"
-            app:boxCornerRadiusBottomEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusTopStart="12dp"
+            app:startIconDrawable="@drawable/password_24dp"
+            app:boxCornerRadiusBottomEnd="@dimen/text_field_default_radius"
+            app:boxCornerRadiusBottomStart="@dimen/text_field_default_radius"
+            app:boxCornerRadiusTopEnd="@dimen/text_field_default_radius"
+            app:boxCornerRadiusTopStart="@dimen/text_field_default_radius"
             app:endIconMode="password_toggle">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -187,7 +192,6 @@
 
         <!-- Forgot Password -->
         <TextView
-            android:visibility="gone"
             android:id="@+id/forgot_password_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

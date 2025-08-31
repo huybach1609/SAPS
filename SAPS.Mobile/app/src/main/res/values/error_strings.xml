@@ -9,4 +9,6 @@
     <string name="PARKING_LOT_OWNER_ID_ALREADY_EXISTS">Parking lot owner ID already exists</string>
     <string name="USER_NOT_FOUND">User not found</string>
     <string name="INVALID_OLD_PASSWORD">Invalid old password</string>
+    <string name="RESET_PASSWORD_REQUEST_SENT_SUCCESSFULLY">Send request success</string>
+    <string name="VEHICLE_CREATED_SUCCESSFULLY">Vehicle created successfully</string>
 </resources>
