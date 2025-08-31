@@ -16,7 +16,7 @@ import com.google.android.material.elevation.SurfaceColors;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.dtos.sharevehicle.SharedVehicleDetails;
 import vn.edu.fpt.sapsmobile.network.api.ShareVehicleApi;
-import vn.edu.fpt.sapsmobile.network.client.ApiTest;
+import vn.edu.fpt.sapsmobile.network.client.ApiClient;
 import vn.edu.fpt.sapsmobile.utils.DateTimeHelper;
 import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
 
@@ -61,7 +61,7 @@ public class InvitationDetailActivity extends AppCompatActivity {
 
         loadingDialog.show("Loading vehicle details...", false, null);
 
-        ShareVehicleApi api = ApiTest.getServiceLast(this).create(ShareVehicleApi.class);
+        ShareVehicleApi api = ApiClient.getServiceLast(this).create(ShareVehicleApi.class);
         api.getSharedVehicleDetails(shareVehicleId).enqueue(new retrofit2.Callback<SharedVehicleDetails>() {
             @Override
             public void onResponse(retrofit2.Call<SharedVehicleDetails> call, retrofit2.Response<SharedVehicleDetails> response) {
@@ -177,7 +177,7 @@ public class InvitationDetailActivity extends AppCompatActivity {
         }
     }
     private void acceptShareVehicle(String shareVehicleId) {
-        ShareVehicleApi api = ApiTest.getServiceLast(this).create(ShareVehicleApi.class);
+        ShareVehicleApi api = ApiClient.getServiceLast(this).create(ShareVehicleApi.class);
 
         loadingDialog.show("Accepting invitation...", true, this::finish);
 

@@ -26,8 +26,8 @@ import com.google.android.material.elevation.SurfaceColors;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import vn.edu.fpt.sapsmobile.network.client.ApiTest;
-import vn.edu.fpt.sapsmobile.network.api.ParkingSessionApiService;
+import vn.edu.fpt.sapsmobile.network.client.ApiClient;
+import vn.edu.fpt.sapsmobile.network.api.IParkingSessionApiService;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.models.ParkingLot;
 import vn.edu.fpt.sapsmobile.models.ParkingSession;
@@ -271,7 +271,7 @@ public class CheckoutActivity extends AppCompatActivity {
             Toast.makeText(this, R.string.activity_check_out_not_available, Toast.LENGTH_SHORT).show();
             return;
         }
-        ParkingSessionApiService api = ApiTest.getServiceLast(this).create(ParkingSessionApiService.class);
+        IParkingSessionApiService api = ApiClient.getServiceLast(this).create(IParkingSessionApiService.class);
         CheckoutRequest request = new CheckoutRequest(parkingSessionToCheckOut.getId(), "Bank");
         api.checkout(request).enqueue(new Callback<CheckoutResponse>() {
             @Override

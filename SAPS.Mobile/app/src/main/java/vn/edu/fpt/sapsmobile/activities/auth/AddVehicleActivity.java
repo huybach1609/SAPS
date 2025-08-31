@@ -35,8 +35,8 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import vn.edu.fpt.sapsmobile.network.client.ApiTest;
-import vn.edu.fpt.sapsmobile.network.api.ApiService;
+import vn.edu.fpt.sapsmobile.network.client.ApiClient;
+import vn.edu.fpt.sapsmobile.network.api.OcrService;
 import vn.edu.fpt.sapsmobile.network.api.IVehicleRegistraionCertOrcApi;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleRegistrationResponse;
@@ -300,7 +300,7 @@ public class AddVehicleActivity extends AppCompatActivity {
         MultipartBody.Part backPart = MultipartBody.Part.createFormData("backImage", "back.jpg", backBody);
 
         // Get OCR API service
-        IVehicleRegistraionCertOrcApi IVehicleRegistraionCertOrcApi = ApiTest.getServiceLast(this).create(IVehicleRegistraionCertOrcApi.class);
+        IVehicleRegistraionCertOrcApi IVehicleRegistraionCertOrcApi = ApiClient.getServiceLast(this).create(IVehicleRegistraionCertOrcApi.class);
 
         // Make API call
         Call<VehicleResponse> call = IVehicleRegistraionCertOrcApi.uploadVehicleRegistration(frontPart, backPart);
@@ -393,10 +393,10 @@ public class AddVehicleActivity extends AppCompatActivity {
         RequestBody vehicleTypeBody = RequestBody.create(vehicleType, MediaType.parse("text/plain"));
 
         // Get API service
-        ApiService apiService = ApiTest.getServiceLast(this).create(ApiService.class);
+        OcrService ocrService = ApiClient.getServiceLast(this).create(OcrService.class);
 
         // Make API call
-        Call<VehicleRegistrationResponse> call = apiService.registerVehicle(
+        Call<VehicleRegistrationResponse> call = ocrService.registerVehicle(
                 frontPart, backPart, licensePlateBody, brandBody, modelBody,
                 engineNumberBody, chassisNumberBody, colorBody, ownerNameBody, vehicleTypeBody
         );
