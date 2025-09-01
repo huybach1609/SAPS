@@ -12,7 +12,7 @@ export interface StaffShift {
   startTime: number; // Minutes from midnight (0-1439)
   endTime: number; // Minutes from midnight (0-1439)
   shiftType: 'Regular' | 'Emergency';
-  dayOfWeeks?: string | null; // Comma-separated: "1,2,3,4,5" or null
+  dayOfWeeks?: string | null; // Comma-separated: "0,1,2,3,4,5" or null (Sunday = 0, Saturday = 6)
   specificDate?: string | null; // ISO date string or null
   isActive: boolean;
   status: 'Scheduled' | 'Active' | 'Deactive';
