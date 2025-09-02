@@ -65,7 +65,7 @@ const ParkingHistory: React.FC = () => {
       setLoading(false);
       return;
     }
-    
+
     setLoading(true);
     try {
       // Convert DateValue objects to DateOnly format (YYYY-MM-DD) if present
@@ -99,11 +99,11 @@ const ParkingHistory: React.FC = () => {
           endExitDate
         );
       }
-      
+
       // console.log("API Response:", response); // Debug log
-      
-       setParkingSessions(response?.data?.items || []);
-       setPagination(response?.data || null);
+
+      setParkingSessions(response?.data?.items || []);
+      setPagination(response?.data || null);
     } catch (error) {
       console.error("Failed to load parking sessions:", error);
       // Set empty arrays on error to prevent undefined issues
@@ -242,65 +242,68 @@ const ParkingHistory: React.FC = () => {
         </CardBody>
       </Card>
 
-             {/*  Table */}
-       <div className="min-h-[70vh] w-full">
-         {loading ? (
-           <div className="flex justify-center items-center h-64">
-             <Spinner />
-           </div>
-         ) :  (!parkingSessions || parkingSessions.length === 0) ? (
-           <div className="p-8 text-center text-gray-500">
-             <p>No parking sessions found.</p>
-           </div>
-         ) : (
-           <ParkingHistoryTable
-             parkingSessions={parkingSessions}
-             selectedSession={selectedSession}
-             setSelectedSession={setSelectedSession}
-             handleViewSessionDetails={handleViewSessionDetails}
-           />
-         )}
-       </div>
-
-             {/* Pagination Controls */}
-       {pagination && pagination.totalPages > 1 && (
-         <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-           <div className="text-sm text-center sm:text-left">
-             Showing page {pagination.pageNumber} of {pagination.totalPages}(
-             {pagination.totalCount} total items)
-           </div>
-          <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
-            <Button
-              onPress={() => {
-                setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev));
-              }}
-              disabled={!pagination.hasPreviousPage || loading}
-              className=""
-            >
-              Previous
-            </Button>
-            <Pagination
-              color="secondary"
-              className="text-white"
-              page={pagination.pageNumber}
-              total={pagination.totalPages}
-              onChange={setCurrentPage}
-              isDisabled={loading}
-            />
-            <Button
-              onPress={() => {
-                setCurrentPage((prev) =>
-                  prev < pagination.totalPages ? prev + 1 : prev
-                );
-              }}
-              disabled={!pagination.hasNextPage || loading}
-              className=""
-            >
-              Next
-            </Button>
+      {/*  Table */}
+      <div className="min-h-[70vh] w-full">
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <Spinner />
           </div>
-        </div>
-      )}
+        ) : (!parkingSessions || parkingSessions.length === 0) ? (
+          <div className="p-8 text-center text-gray-500">
+            <p>No parking sessions found.</p>
+          </div>
+        ) : (
+          <ParkingHistoryTable
+            parkingSessions={parkingSessions}
+            selectedSession={selectedSession}
+            setSelectedSession={setSelectedSession}
+            handleViewSessionDetails={handleViewSessionDetails}
+            bottomContent={<>
+              {/* Pagination Controls */}
+              {pagination && pagination.totalPages > 1 && (
+                <div className="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <div className="text-sm text-center sm:text-left">
+                    Showing page {pagination.pageNumber} of {pagination.totalPages}(
+                    {pagination.totalCount} total items)
+                  </div>
+                  <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                    <Button
+                      onPress={() => {
+                        setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev));
+                      }}
+                      disabled={!pagination.hasPreviousPage || loading}
+                      className=""
+                    >
+                      Previous
+                    </Button>
+                    <Pagination
+                      color="secondary"
+                      className="text-white"
+                      page={pagination.pageNumber}
+                      total={pagination.totalPages}
+                      onChange={setCurrentPage}
+                      isDisabled={loading}
+                    />
+                    <Button
+                      onPress={() => {
+                        setCurrentPage((prev) =>
+                          prev < pagination.totalPages ? prev + 1 : prev
+                        );
+                      }}
+                      disabled={!pagination.hasNextPage || loading}
+                      className=""
+                    >
+                      Next
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </>}
+          />
+        )}
+      </div>
+
+
     </DefaultLayout>
   );
 };
@@ -312,6 +315,7 @@ type ParkingHistoryTableProps = {
     React.SetStateAction<ParkingSession | null>
   >;
   handleViewSessionDetails: (sessionId: string) => void;
+  bottomContent: any;
 };
 
 function ParkingHistoryTable({
@@ -319,6 +323,7 @@ function ParkingHistoryTable({
   // selectedSession,
   // setSelectedSession,
   handleViewSessionDetails,
+  bottomContent,
 }: ParkingHistoryTableProps) {
   // console.log(selectedSession);
   // console.log(setSelectedSession);
@@ -345,6 +350,7 @@ function ParkingHistoryTable({
         aria-label="Parking History Table"
         className="w-full"
         color="secondary"
+        bottomContent={bottomContent}
       >
         <TableHeader className="">
           <TableColumn
@@ -396,10 +402,10 @@ function ParkingHistoryTable({
             Action
           </TableColumn>
         </TableHeader>
-                 <TableBody>
-           {parkingSessions?.map((session, index) => {
-             return (
-               <TableRow key={`${session.id}`}>
+        <TableBody>
+          {parkingSessions?.map((session, index) => {
+            return (
+              <TableRow key={`${session.id}`}>
                 {/* session id */}
                 <TableCell className="px-6 py-4 whitespace-nowrap text-sm flex flex-col items-start justify-start">
                   {index + 1}

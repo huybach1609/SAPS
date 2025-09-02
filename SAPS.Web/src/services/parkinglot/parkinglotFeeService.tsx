@@ -14,18 +14,6 @@ export class ParkingFeeError extends Error {
     }
 }
 
-// // Types based on the database schema
-// export interface ParkingLot {
-//     id: string;
-//     name: string;
-//     description?: string;
-//     address: string;
-//     totalParkingSlot: number;
-//     createdAt: string;
-//     updatedAt: string;
-//     status: 'Active' | 'Inactive';
-//     parkingLotOwnerId: string;
-// }
 
 export enum VehicleType {
     All = 0,
@@ -233,15 +221,15 @@ updateFeeSchedule: async (
     scheduleData: Partial<ParkingFeeSchedule>
 ): Promise<ParkingFeeSchedule> => {
     try {
-        const normalizeDayOfWeeks = (value: unknown): number[] => {
-            if (!Array.isArray(value)) return [];
-            const nums = (value as unknown[])
-                .map((v) => Number(v))
-                .filter((n) => Number.isFinite(n)) as number[];
-            const isZeroBased = nums.every((n) => n >= 0 && n <= 6) && !nums.some((n) => n === 7);
-            return (isZeroBased ? nums.map((n) => n + 1) : nums)
-                .filter((n) => n >= 1 && n <= 7);
-        };
+        // const normalizeDayOfWeeks = (value: unknown): number[] => {
+        //     if (!Array.isArray(value)) return [];
+        //     const nums = (value as unknown[])
+        //         .map((v) => Number(v))
+        //         .filter((n) => Number.isFinite(n)) as number[];
+        //     const isZeroBased = nums.every((n) => n >= 0 && n <= 6) && !nums.some((n) => n === 7);
+        //     return (isZeroBased ? nums.map((n) => n + 1) : nums)
+        //         .filter((n) => n >= 1 && n <= 7);
+        // };
 
         const vehicleTypeString = (() => {
             const value = scheduleData.forVehicleType;
@@ -262,7 +250,7 @@ updateFeeSchedule: async (
             initialFee: scheduleData.initialFee ?? 0,
             additionalFee: scheduleData.additionalFee ?? 0,
             additionalMinutes: scheduleData.additionalMinutes ?? 60,
-            dayOfWeeks: normalizeDayOfWeeks(scheduleData.dayOfWeeks as any).join(','),
+            dayOfWeeks: scheduleData.dayOfWeeks?.join(','),
             forVehicleType: vehicleTypeString,
             parkingLotId,
             isActive: scheduleData.isActive ?? true,

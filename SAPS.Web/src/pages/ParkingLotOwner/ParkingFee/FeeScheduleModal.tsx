@@ -42,8 +42,8 @@ export const FeeScheduleModal: React.FC<{
 
   const initialUiDays = Array.isArray(schedule?.dayOfWeeks)
     ? (schedule!.dayOfWeeks as number[])
-        .map((n) => (Number.isFinite(n) && n >= 1 && n <= 7 ? n - 1 : n))
-        .filter((n) => n >= 0 && n <= 6)
+      .map((n) => (Number.isFinite(n) && n >= 1 && n <= 7 ? n - 1 : n))
+      .filter((n) => n >= 0 && n <= 6)
     : [];
 
   const [formData, setFormData] = useState({
@@ -53,14 +53,18 @@ export const FeeScheduleModal: React.FC<{
     initialFeeMinutes: schedule?.initialFeeMinutes ?? 60,
     additionalFee: schedule?.additionalFee ?? 0,
     additionalMinutes: schedule?.additionalMinutes ?? 60,
-    dayOfWeeks: initialUiDays,
+    dayOfWeeks: schedule?.dayOfWeeks ?? [],
     isActive: schedule?.isActive !== undefined ? schedule.isActive : true,
     forVehicleType: schedule?.forVehicleType ?? VehicleType.Car,
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
+    const normalizedDays = Array.isArray(formData.dayOfWeeks)
+      ? Array.from(new Set((formData.dayOfWeeks as number[]).filter((n) => Number.isFinite(n)))).sort((a, b) => a - b)
+      : [];
+    const payload = { ...formData, dayOfWeeks: normalizedDays };
+    onSave(payload);
   };
 
   const dayOptions = [
@@ -156,12 +160,12 @@ export const FeeScheduleModal: React.FC<{
                 })
               }
 
-              // selectedKeys={new Set([formData.forVehicleType.toString()])}
-              // onSelectionChange={(keys) => {
-              //     const value = parseInt(Array.from(keys)[0] as string);
-              //     setFormData({ ...formData, forVehicleType: value as VehicleType });
-              // }}
-              // defaultSelectedKeys={[formData.forVehicleType.toString()]}
+            // selectedKeys={new Set([formData.forVehicleType.toString()])}
+            // onSelectionChange={(keys) => {
+            //     const value = parseInt(Array.from(keys)[0] as string);
+            //     setFormData({ ...formData, forVehicleType: value as VehicleType });
+            // }}
+            // defaultSelectedKeys={[formData.forVehicleType.toString()]}
             >
               {/* <SelectItem key={VehicleType.Car} >{VehicleTypeText[VehicleType.Car]}</SelectItem> */}
               <SelectItem key={VehicleType.Car}>
@@ -269,11 +273,12 @@ export const FeeScheduleModal: React.FC<{
 
           <div>
             <label htmlFor="dayofweek" className="block text-sm font-medium   mb-2">
-              Days of Week (leave empty for all days)
+              Days of Week
             </label>
             <div id="dayofweek" className="grid grid-cols-2 gap-2">
-              {dayOptions.map((day, idx) => (
-                <label key={day} className="flex items-center space-x-2">
+              {dayOptions.map((day, idx) => {
+                console.log('idx-day-selectedDays', idx, day, selectedDays);
+                return (<label key={day} className="flex items-center space-x-2">
                   <input
                     checked={selectedDays.includes(idx)}
                     className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
@@ -281,8 +286,8 @@ export const FeeScheduleModal: React.FC<{
                     onChange={() => handleDayToggle(idx)}
                   />
                   <span className="text-sm hover:text-secondary  ">{day}</span>
-                </label>
-              ))}
+                </label>)
+              })}
             </div>
           </div>
 

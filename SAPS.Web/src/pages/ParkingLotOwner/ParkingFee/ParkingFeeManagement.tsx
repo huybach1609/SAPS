@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Clock, Car, Edit2, BikeIcon, Trash2 } from 'lucide-react';
+import { Plus, Clock, Car, Edit2, BikeIcon, Trash2, CircleAlert } from 'lucide-react';
 import DefaultLayout from '@/layouts/default';
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Tabs, Tab } from '@heroui/react';
+import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Tabs, Tab, Tooltip } from '@heroui/react';
 import { FeeScheduleModal, VehicleTypeText } from './FeeScheduleModal';
 import { useParkingLot } from '../ParkingLotContext';
 import {
- 
+
     type ParkingFeeSchedule,
     VehicleType,
     ParkingFeeError,
     parkinglotFeeScheduleApi
 } from '@/services/parkinglot/parkinglotFeeService';
 import ParkingFeeWeeklyView from './ParkingFeeWeeklyView';
+import FeeSchedulesTab from './FeeSchedulesTab';
 
 
 const ParkingFeeManagement: React.FC = () => {
@@ -43,6 +44,7 @@ const ParkingFeeManagement: React.FC = () => {
             setLoadingFeeSchedules(true);
             const data = await parkinglotFeeScheduleApi.fetchFeeSchedules(selectedParkingLot.id);
             setFeeSchedules(data);
+            // console.log('feeSchedules', data);
         } catch (error) {
             console.error('Error fetching parking fee schedules:', error);
 
@@ -115,6 +117,7 @@ const ParkingFeeManagement: React.FC = () => {
             if (!selectedParkingLot?.id) return;
 
             if (editingSchedule) {
+                console.log('scheduleData', scheduleData);
                 // Update existing schedule
                 const updatedSchedule = await parkinglotFeeScheduleApi.updateFeeSchedule(
                     selectedParkingLot.id,
@@ -319,16 +322,31 @@ const ParkingFeeManagement: React.FC = () => {
 
     return (
         <DefaultLayout title="Parking Fee Management"
-        description='Manage parking fee schedules for your parking lot'>
+            description='Manage parking fee schedules for your parking lot'>
             <div className="bg-background rounded-lg shadow-sm border border-divider mt-10">
                 <div className="flex flex-col gap-4">
 
                 </div>
                 {/* Fee Schedules Table */}
                 <div className="p-6">
+
                     <Tabs aria-label="Options">
 
-                        <Tab key="weekly" title="Weekly view">
+                        <Tab key="weekly" title={
+                            <div className="flex items-center gap-1">
+                                <div>Weekly view</div>
+                                <Tooltip
+                                    className="text-background"
+                                    color="warning"
+                                    content="This view only view active schedules"
+                                    placement="bottom"
+                                >
+                                    <CircleAlert size={16} className="text-primary-900/40" />
+                                </Tooltip>
+
+                            </div>
+                        }
+                        >
                             {/* day of week view */}
                             <ParkingFeeWeeklyView
                                 schedulesData={feeSchedules}
@@ -361,7 +379,11 @@ const ParkingFeeManagement: React.FC = () => {
                             />
                         </Tab>
 
+
                     </Tabs>
+
+
+
 
 
                 </div>
@@ -467,159 +489,15 @@ const ParkingFeeManagement: React.FC = () => {
 };
 
 export const minutesToTime = (minutes: number): string => {
-        const hours = Math.floor(minutes / 60);
-        const mins = minutes % 60;
-        return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
-    };
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
+};
 
 export const formatDays = (dayOfWeeks: number[]): string => {
     const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     if (!Array.isArray(dayOfWeeks) || dayOfWeeks.length === 0) return 'All days';
     return dayOfWeeks.map(idx => days[idx] || '').filter(Boolean).join(', ');
-};
-
-
-// Fee Schedules Tab Component
-const FeeSchedulesTab: React.FC<{
-    schedules: ParkingFeeSchedule[];
-    onEdit: (schedule: ParkingFeeSchedule | null) => void;
-    onDelete: (id: string) => void;
-    onAdd: () => void;
-}> = ({ schedules, onEdit, onDelete, onAdd }) => {
-
-    // const [selectSchedule, setSelectSchedule] = useState<ParkingFeeSchedule | null>(null);
-
-      return (
-        <div>
-            <div className="flex justify-between items-center mb-6">
-                <h2 className="text-lg font-semibold text-gray-900">Fee Schedules</h2>
-
-                <div>
-
-                    <Button
-                        color="default"
-                        onPress={onAdd}
-                        variant='flat'
-                        size='sm'
-                        className="ml-2"
-                    >
-                        <Plus size={16} />
-                        Add Fee Schedule
-                    </Button>
-                </div>
-            </div>
-
-            <div className="  overflow-hidden">
-                <Table
-                    color='secondary'
-                    aria-label="Parking Fee Schedules Table"
-                    className="min-w-full"
-                >
-                    <TableHeader>
-                        <TableColumn>Time Period</TableColumn>
-                        <TableColumn>Vehicle Type</TableColumn>
-                        <TableColumn>Fees</TableColumn>
-                        <TableColumn>Days</TableColumn>
-                        <TableColumn>Status</TableColumn>
-                        <TableColumn>Action</TableColumn>
-                    </TableHeader>
-                    <TableBody>
-                        {schedules.map((schedule) => (
-                            <TableRow key={schedule.id}>
-                                <TableCell>
-                                    <div className="flex items-center gap-1 text-sm ">
-                                        <Clock className="w-4 h-4" />
-                                        {minutesToTime(schedule.startTime || 0)} - {minutesToTime(schedule.endTime || 1440)}
-                                    </div>
-                                </TableCell>
-                                <TableCell>
-                                    <div className="flex items-center gap-1 text-sm ">
-                                        {schedule.forVehicleType === VehicleType.Car ? (
-                                            <Car className="w-3 h-3" />
-                                        ) : (
-                                            <BikeIcon className="w-3 h-3" />
-                                        )}
-                                        {VehicleTypeText[schedule.forVehicleType] || 'Motorbike'}
-                                    </div>
-                                </TableCell>
-                                <TableCell>
-                                    <div className="text-sm ">
-                                        <div className="flex items-center gap-1">
-                                            {/* <DollarSign className="w-4 h-4" /> */}
-                                            {(schedule.initialFee || 0).toFixed(0)}đ initial
-                                        </div>
-                                        <div className="text-xs ">
-                                            +{(schedule.additionalFee || 0).toFixed(0)}đ per {schedule.additionalMinutes || 60}min
-                                        </div>
-                                    </div>
-                                </TableCell>
-                                <TableCell>
-                                    <div className="text-sm ">
-                                        {(() => {
-                                            const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-                                            const toArray = (value: unknown): number[] => {
-                                                if (Array.isArray(value)) {
-                                                    return value
-                                                        .map((v) => Number(v))
-                                                        .filter((n) => Number.isFinite(n));
-                                                }
-                                                if (typeof value === 'string') {
-                                                    if (value.trim().length === 0) return [];
-                                                    return value
-                                                        .split(',')
-                                                        .map((s) => Number(s.trim()))
-                                                        .filter((n) => Number.isFinite(n));
-                                                }
-                                                return [];
-                                            };
-                                            const nums = toArray((schedule as any).dayOfWeeks);
-                                            if (nums.length === 0) return 'All days';
-                                            // Support both 0-based [0..6] and 1-based [1..7]
-                                            const isZeroBased = nums.every((n) => n >= 0 && n <= 6) && !nums.some((n) => n === 7);
-                                            const normalized = (isZeroBased ? nums.map((n) => n + 1) : nums)
-                                                .map((n) => dayNames[Math.max(1, Math.min(7, n)) - 1]);
-                                            return normalized.join(', ');
-                                        })()}
-                                    </div>
-                                </TableCell>
-                                <TableCell>
-                                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${schedule.isActive
-                                        ? 'bg-green-100 text-green-800'
-                                        : 'bg-red-100 text-red-800'
-                                        }`}>
-                                        {schedule.isActive ? 'Active' : 'Inactive'}
-                                    </span>
-                                </TableCell>
-                                <TableCell>
-                                    <Button
-                                        size='sm'
-                                        isIconOnly
-                                        color='primary'
-                                        variant='solid'
-                                        className='bg-transparent'
-                                        onPress={() => onEdit(schedule)}
-
-                                    >
-                                        <Edit2 className="w-4 h-4" />
-                                    </Button>
-                                    <Button
-                                        size='sm'
-                                        isIconOnly
-                                        variant='solid'
-                                        color='danger'
-                                        className='bg-transparent text-danger hidden'
-                                        onPress={() => onDelete(schedule.id)}
-                                    >
-                                        <Trash2 className="w-4 h-4" />
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </div>
-        </div>
-    );
 };
 
 
