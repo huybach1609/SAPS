@@ -11,4 +11,7 @@
     <string name="INVALID_OLD_PASSWORD">Invalid old password</string>
     <string name="RESET_PASSWORD_REQUEST_SENT_SUCCESSFULLY">Send request success</string>
     <string name="VEHICLE_CREATED_SUCCESSFULLY">Vehicle created successfully</string>
+    <string name="PARKING_FEE_SCHEDULE_NOT_FOUND">Parking fee schedule not found</string>
+    <string name="PARKING_SESSION_ALREADY_CHECKED_OUT">Parking session has already been checked out</string>
+    <string name="PARKING_SESSION_CHECKOUT_UPDATED_SUCCESSFULLY">Parking session checked out successfully</string>
 </resources>

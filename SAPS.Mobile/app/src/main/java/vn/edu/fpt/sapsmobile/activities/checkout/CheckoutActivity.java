@@ -282,7 +282,8 @@ public class CheckoutActivity extends AppCompatActivity {
                     String message = body.getMessage();
 
                     if (message != null && message.equals("PARKING_SESSION_CHECKOUT_UPDATED_SUCCESSFULLY")) {
-                        Toast.makeText(CheckoutActivity.this, getString(R.string.toast_checkout_successful), Toast.LENGTH_SHORT).show();
+                        String successMessage = StringUtils.getErrorMessage(CheckoutActivity.this, "PARKING_SESSION_CHECKOUT_UPDATED_SUCCESSFULLY");
+                        Toast.makeText(CheckoutActivity.this, successMessage, Toast.LENGTH_SHORT).show();
                         navigateToPayment();
                         return;
                     }
@@ -294,7 +295,8 @@ public class CheckoutActivity extends AppCompatActivity {
                             String errorJson = response.errorBody().string();
                             // Parse the error JSON manually or use Gson
                             if (errorJson.contains("PARKING_SESSION_ALREADY_CHECKED_OUT")) {
-                                Toast.makeText(CheckoutActivity.this, getString(R.string.toast_session_already_checked_out), Toast.LENGTH_SHORT).show();
+                                String errorMessage = StringUtils.getErrorMessage(CheckoutActivity.this, "PARKING_SESSION_ALREADY_CHECKED_OUT");
+                                Toast.makeText(CheckoutActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
                                 navigateToPayment();
                                 return;
                             }
@@ -317,8 +319,6 @@ public class CheckoutActivity extends AppCompatActivity {
                 Toast.makeText(CheckoutActivity.this, getString(R.string.toast_network_error_checkout), Toast.LENGTH_SHORT).show();
             }
         });
-
-
     }
 
     private void navigateToPayment() {
