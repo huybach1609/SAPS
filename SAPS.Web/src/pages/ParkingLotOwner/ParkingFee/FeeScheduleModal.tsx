@@ -64,13 +64,13 @@ export const FeeScheduleModal: React.FC<{
   };
 
   const dayOptions = [
+    "Sunday",
     "Monday",
     "Tuesday",
     "Wednesday",
     "Thursday",
     "Friday",
-    "Saturday",
-    "Sunday",
+    "Saturday"
   ];
 
   const [selectedDays, setSelectedDays] = useState<number[]>(

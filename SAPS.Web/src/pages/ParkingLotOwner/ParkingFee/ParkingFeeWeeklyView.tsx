@@ -29,7 +29,7 @@ const ParkingFeeWeeklyView: React.FC<ParkingFeeWeeklyViewProps> = ({
     const [vehicleFilter, setVehicleFilter] = useState<VehicleType>(selectedVehicleType);
 
     
-    const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     // const hours = Array.from({ length: 24 }, (_, i) => i);
 
     const minutesToTime = (minutes: number): string => {

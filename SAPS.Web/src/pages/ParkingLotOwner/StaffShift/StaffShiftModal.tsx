@@ -548,43 +548,43 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
                                 <div className="grid grid-cols-2 gap-2">
                                     <Checkbox
                                         isSelected={selectedDays.includes(1)}
-                                        onValueChange={(isSelected) => handleDaySelection(1, isSelected)}
+                                        onValueChange={(isSelected) => handleDaySelection(0, isSelected)}
                                     >
                                         Monday
                                     </Checkbox>
                                     <Checkbox
                                         isSelected={selectedDays.includes(2)}
-                                        onValueChange={(isSelected) => handleDaySelection(2, isSelected)}
+                                        onValueChange={(isSelected) => handleDaySelection(1, isSelected)}
                                     >
                                         Tuesday
                                     </Checkbox>
                                     <Checkbox
                                         isSelected={selectedDays.includes(3)}
-                                        onValueChange={(isSelected) => handleDaySelection(3, isSelected)}
+                                        onValueChange={(isSelected) => handleDaySelection(2, isSelected)}
                                     >
                                         Wednesday
                                     </Checkbox>
                                     <Checkbox
                                         isSelected={selectedDays.includes(4)}
-                                        onValueChange={(isSelected) => handleDaySelection(4, isSelected)}
+                                        onValueChange={(isSelected) => handleDaySelection(3, isSelected)}
                                     >
                                         Thursday
                                     </Checkbox>
                                     <Checkbox
                                         isSelected={selectedDays.includes(5)}
-                                        onValueChange={(isSelected) => handleDaySelection(5, isSelected)}
+                                        onValueChange={(isSelected) => handleDaySelection(4, isSelected)}
                                     >
                                         Friday
                                     </Checkbox>
                                     <Checkbox
                                         isSelected={selectedDays.includes(6)}
-                                        onValueChange={(isSelected) => handleDaySelection(6, isSelected)}
+                                        onValueChange={(isSelected) => handleDaySelection(5, isSelected)}
                                     >
                                         Saturday
                                     </Checkbox>
                                     <Checkbox
                                         isSelected={selectedDays.includes(7)}
-                                        onValueChange={(isSelected) => handleDaySelection(7, isSelected)}
+                                        onValueChange={(isSelected) => handleDaySelection(6, isSelected)}
                                     >
                                         Sunday
                                     </Checkbox>

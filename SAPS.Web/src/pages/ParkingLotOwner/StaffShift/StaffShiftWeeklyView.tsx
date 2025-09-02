@@ -28,7 +28,7 @@ const StaffShiftWeeklyView: React.FC<StaffShiftWeeklyViewProps> = ({
 
 
 
-    const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     // const hours = Array.from({ length: 24 }, (_, i) => i);
 
     const minutesToTime = (minutes: number): string => {
@@ -50,7 +50,7 @@ const StaffShiftWeeklyView: React.FC<StaffShiftWeeklyViewProps> = ({
             }
             // Parse comma-separated day numbers (1=Monday, 7=Sunday)
             const dayNumbers = shift.dayOfWeeks.split(',').map(d => parseInt(d.trim()));
-            return dayNumbers.includes(dayIndex + 1); // Convert to 1-based indexing
+            return dayNumbers.includes(dayIndex); // Convert to 1-based indexing
         });
     };
 

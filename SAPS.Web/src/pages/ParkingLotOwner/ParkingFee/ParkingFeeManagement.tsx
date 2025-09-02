@@ -556,7 +556,7 @@ const FeeSchedulesTab: React.FC<{
                                 <TableCell>
                                     <div className="text-sm ">
                                         {(() => {
-                                            const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+                                            const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
                                             const toArray = (value: unknown): number[] => {
                                                 if (Array.isArray(value)) {
                                                     return value
