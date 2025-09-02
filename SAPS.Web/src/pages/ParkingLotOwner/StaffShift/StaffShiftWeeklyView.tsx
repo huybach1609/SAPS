@@ -123,28 +123,7 @@ const StaffShiftWeeklyView: React.FC<StaffShiftWeeklyViewProps> = ({
                 </div>
             </div>
 
-            {/* Time Header */}
-            {/* <div className="mb-4 pr-10 mr-10">
-                <div className="grid grid-cols-[120px_1fr] gap-2">
-                    <div></div>
-                    <div className="relative">
-                        <div className="flex justify-between text-xs text-gray-500 mb-1">
-                            {[0, 3, 6, 9, 12, 15, 18, 21, 24].map(hour => (
-                                <div key={hour} className="flex flex-col items-center">
-                                    <span>{hour}</span>
-                                    <span className="text-gray-400">
-                                        {hour === 0 ? '12am' : hour === 12 ? '12pm' : hour > 12 ? `${hour - 12}pm` : `${hour}am`}
-                                    </span>
-                                </div>
-                            ))}
-                        </div>
-                        <div className="h-px bg-gray-300"></div>
-                    </div>
-                </div>
-            </div> */}
-
-            {/* Weekly Grid */}
-
+          
 
             {/* Weekly Grid - Horizontal Days, Vertical Time Slots */}
             <div className="space-y-2 ">
@@ -155,7 +134,7 @@ const StaffShiftWeeklyView: React.FC<StaffShiftWeeklyViewProps> = ({
                         { label: '10:00 AM - 2:00 PM', start: 600, end: 840 },   // 10:00-14:00
                         { label: '2:00 PM - 6:00 PM', start: 840, end: 1080 },   // 14:00-18:00
                         { label: '6:00 PM - 10:00 PM', start: 1080, end: 1320 }, // 18:00-22:00
-                        { label: '10:00 PM - 2:00 AM', start: 1320, end: 1560 }, // 22:00-02:00 (next day)
+                        { label: '10:00 PM - 2:00 AM', start: 1320, end: 119 }, // 22:00-02:00 (next day)
                         { label: '2:00 AM - 6:00 AM', start: 120, end: 360 }     // 02:00-06:00
                     ];
 

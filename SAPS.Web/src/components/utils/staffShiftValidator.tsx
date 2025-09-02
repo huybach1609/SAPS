@@ -79,7 +79,7 @@ export class StaffShiftValidator {
     if (!hasDayOfWeeks && !hasSpecificDate) {
       errors.push({
         field: 'dateLogic',
-        message: 'Must have either dayOfWeeks or specificDate set.'
+        message: 'Must have either dayOfWeeks set.'
       });
     }
 
