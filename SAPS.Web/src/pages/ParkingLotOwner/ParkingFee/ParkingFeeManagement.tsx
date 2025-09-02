@@ -473,7 +473,7 @@ export const minutesToTime = (minutes: number): string => {
     };
 
 export const formatDays = (dayOfWeeks: number[]): string => {
-    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
     if (!Array.isArray(dayOfWeeks) || dayOfWeeks.length === 0) return 'All days';
     return dayOfWeeks.map(idx => days[idx] || '').filter(Boolean).join(', ');
 };

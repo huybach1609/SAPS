@@ -42,7 +42,7 @@ export interface ParkingFeeSchedule {
     initialFee: number;
     additionalFee: number;
     additionalMinutes: number;
-    dayOfWeeks?: number[]; // 0=Monday, 6=Sunday
+    dayOfWeeks?: number[]; // 0=Sunday, 6=Saturday
     isActive: boolean;
     updatedAt: string;
     forVehicleType: VehicleType;
@@ -155,10 +155,7 @@ createFeeSchedule: async (
             const nums = (value as unknown[])
                 .map((v) => Number(v))
                 .filter((n) => Number.isFinite(n)) as number[];
-            // If looks like 0..6, convert to 1..7. If already 1..7, keep.
-            const isZeroBased = nums.every((n) => n >= 0 && n <= 6) && !nums.some((n) => n === 7);
-            return (isZeroBased ? nums.map((n) => n + 1) : nums)
-                .filter((n) => n >= 1 && n <= 7);
+            return nums;
         };
 
         const vehicleTypeString = (() => {
