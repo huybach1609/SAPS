@@ -39,6 +39,7 @@ import IncidentDetail from "./pages/ParkingLotOwner/IncidentReports/IncidentDeta
 import SubscriptionPricingSelect from "./pages/ParkingLotOwner/Subscription/SubscriptionPricingSelect";
 import StaffShiftManagement from "./pages/ParkingLotOwner/StaffShift/StaffShiftManagement";
 import PaymentSubscriptionComponent from "./pages/ParkingLotOwner/Subscription/PaymentSubscriptionComponent";
+import { useTranslation } from "react-i18next";
 // import AdminRequestList from "@/pages/Admin/Requests/AdminRequestList.tsx";
 // import DefaultLayout from "@/layouts/default.tsx";
 
@@ -53,9 +54,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   requiredRole,
 }) => {
   const { isAuthenticated, loading, getUserRole } = useAuth();
+  const { t } = useTranslation();
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>{t("loading")}</div>;
   }
 
   if (!isAuthenticated) {
@@ -104,9 +106,10 @@ const ActiveRoute: React.FC<ActiveRouteProps> = ({
 
 const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, loading, getUserRole } = useAuth();
+  const { t } = useTranslation();
 
   if (loading) {
-    return <div>Loading...</div>; // Or your loading component
+    return <div>{t("loading")}</div>; // Or your loading component
   }
 
   if (isAuthenticated) {
