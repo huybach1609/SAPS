@@ -191,7 +191,7 @@ export default function IncidentReports() {
               {statusOptions.map((opt) => (
                 <SelectItem key={opt.key} textValue={opt.label}>
                   <div
-                    className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(opt.key)}`}
+                    className={`px-2 py-1 w-fit rounded-full text-xs font-semibold flex items-center justify-center ${getStatusColor(opt.key)}`}
                   >
                     {opt.label}
                   </div>
@@ -213,7 +213,7 @@ export default function IncidentReports() {
               {priorityOptions.map((opt) => (
                 <SelectItem key={opt.key} textValue={opt.label}>
                   <div
-                    className={`px-2 py-1 rounded-full text-xs font-semibold ${getPriorityColor(opt.key)}`}
+                    className={`px-2 py-1 w-fit rounded-full text-xs font-semibold flex items-center justify-center ${getPriorityColor(opt.key)}`}
                   >
                     {opt.label}
                   </div>

@@ -13,7 +13,7 @@ export interface ParkingFeeWeeklyViewProps {
     onRefresh?: () => void;
     selectedVehicleType?: VehicleType;
     loading?: boolean;
-    
+
 }
 
 const ParkingFeeWeeklyView: React.FC<ParkingFeeWeeklyViewProps> = ({
@@ -22,13 +22,13 @@ const ParkingFeeWeeklyView: React.FC<ParkingFeeWeeklyViewProps> = ({
     onDelete,
     onAdd,
     onRefresh,
-    selectedVehicleType = VehicleType.All,
+    selectedVehicleType = VehicleType.Motorbike,
     loading = false
 }) => {
     const [hoveredSchedule, setHoveredSchedule] = useState<string | null>(null);
     const [vehicleFilter, setVehicleFilter] = useState<VehicleType>(selectedVehicleType);
 
-    
+
     const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
     // const hours = Array.from({ length: 24 }, (_, i) => i);
 
@@ -75,32 +75,31 @@ const ParkingFeeWeeklyView: React.FC<ParkingFeeWeeklyViewProps> = ({
     };
 
     const vehicleTypeOptions = [
-        { label: 'All', key: VehicleType.All },
+        // { label: 'All', key: VehicleType.All },
         { label: 'Car', key: VehicleType.Car },
         { label: 'Motorbike', key: VehicleType.Motorbike }
     ]
-    if(loading){
+    if (loading) {
         return <Spinner />
     }
     return (
-        <div className=" rounded-xl shadow-sm border border-primary-200/10 my-3 p-3">
+        <div className="">
             <div className="flex justify-between items-center mb-6">
                 <div className="flex items-center gap-4">
-                    <h2 className="text-lg font-semibold text-gray-900">Weekly Fee Schedule</h2>
+                    <h2 className="text-lg font-semibold text-foreground">Weekly Fee Schedule</h2>
 
                     {/* Vehicle Type Filter */}
                     <div className="flex items-center gap-2">
-                        <span className="text-sm text-gray-600">Vehicle:</span>
-
-                       
+                        {/* <span className="text-sm text-foreground">Vehicle:</span> */}
                         <Select
                             aria-label="Vehicle Type"
                             className="text-sm w-44 rounded px-2 py-1"
                             selectedKeys={[vehicleFilter.toString()]}
                             defaultSelectedKeys={[vehicleFilter.toString()]}
                             onSelectionChange={(e) => setVehicleFilter(parseInt(e.currentKey as string) as VehicleType)}
+                            selectionMode='single'
+                            disallowEmptySelection={true}
                         >
-
                             {vehicleTypeOptions.map((item) =>
                                 <SelectItem key={item.key} aria-label={item.label}>{item.label}</SelectItem>)}
                         </Select>
@@ -131,17 +130,17 @@ const ParkingFeeWeeklyView: React.FC<ParkingFeeWeeklyViewProps> = ({
                 <div className="grid grid-cols-[120px_1fr] gap-2">
                     <div></div>
                     <div className="relative">
-                        <div className="flex justify-between text-xs text-gray-500 mb-1">
+                        <div className="flex justify-between text-xs text-foreground/50 mb-1">
                             {[0, 3, 6, 9, 12, 15, 18, 21, 24].map(hour => (
                                 <div key={hour} className="flex flex-col items-center">
                                     <span>{hour}</span>
-                                    <span className="text-gray-400">
+                                    <span className="text-foreground/50">
                                         {hour === 0 ? '12am' : hour === 12 ? '12pm' : hour > 12 ? `${hour - 12}pm` : `${hour}am`}
                                     </span>
                                 </div>
                             ))}
                         </div>
-                        <div className="h-px bg-gray-300"></div>
+                        <div className="h-px bg-primary-300/20"></div>
                     </div>
                 </div>
             </div>
@@ -154,16 +153,16 @@ const ParkingFeeWeeklyView: React.FC<ParkingFeeWeeklyViewProps> = ({
 
                     return (
                         <div key={day} className="grid grid-cols-[120px_1fr] gap-2">
-                            <div className="flex items-center py-3 px-2 bg-gray-50 rounded-l-md">
-                                <span className="font-medium text-gray-700">{day}</span>
+                            <div className="flex items-center justify-center py-3 px-2 bg-primary-100/10 rounded-2xl">
+                                <span className="font-medium text-foreground/90">{day}</span>
                             </div>
 
-                            <div className="relative min-h-20 bg-gray-50 rounded-r-md border border-gray-200">
+                            <div className="relative min-h-20 bg-primary-100/10  border border-primary-300/20 rounded-xl ">
                                 {/* Hour Grid Lines */}
-                                {[0, 3, 6, 9, 12, 15, 18, 21, 24].map(hour => (
+                                {[3, 6, 9, 12, 15, 18, 21].map(hour => (
                                     <div
                                         key={hour}
-                                        className="absolute top-0 bottom-0 w-px bg-gray-200"
+                                        className="absolute top-0 bottom-0 w-px bg-primary-300/20"
                                         style={{ left: `${(hour / 24) * 100}%` }}
                                     />
                                 ))}
@@ -176,7 +175,8 @@ const ParkingFeeWeeklyView: React.FC<ParkingFeeWeeklyViewProps> = ({
                                     return (
                                         <div
                                             key={schedule.id}
-                                            className={`absolute top-1 bottom-1 p-2 rounded-md border-2 cursor-pointer transition-all duration-200 ${hoveredSchedule === schedule.id ? 'z-10 scale-105 shadow-lg' : ''}`}
+                                            className={`absolute top-1 bottom-1 p-2 rounded-2xl  cursor-pointer transition-all duration-200 
+                                                ${hoveredSchedule === schedule.id ? 'z-10 scale-102 shadow-lg' : ''}`}
                                             style={{
                                                 height: 'auto',
                                                 minHeight: '56px',
@@ -207,7 +207,7 @@ const ParkingFeeWeeklyView: React.FC<ParkingFeeWeeklyViewProps> = ({
 
                                             {/* Hover Actions */}
                                             {hoveredSchedule === schedule.id && (
-                                                <div className="absolute top-0 right-0 transform translate-x-full -translate-y-1 flex gap-1 z-20">
+                                                <div className="absolute top-0 right-4 transform translate-x-full -translate-y-1 flex gap-1 z-20">
                                                     <button
                                                         onClick={(e) => {
                                                             e.stopPropagation();
@@ -231,7 +231,7 @@ const ParkingFeeWeeklyView: React.FC<ParkingFeeWeeklyViewProps> = ({
                                         </div>
                                     );
                                 })}
-                        
+
                                 {/* Empty State */}
                                 {daySchedules.length === 0 && (
                                     <div className="absolute inset-0 flex items-center justify-center text-gray-400 text-sm">
@@ -251,7 +251,7 @@ const ParkingFeeWeeklyView: React.FC<ParkingFeeWeeklyViewProps> = ({
                     {getFilteredSchedules().map((schedule) => (
                         <div
                             key={schedule.id}
-                            className="p-2 rounded-md border-2"
+                            className="p-2 rounded-md "
                             style={getScheduleStyle(schedule)}
                         >
                             <div className="flex items-center justify-between">

@@ -35,7 +35,7 @@ export interface ParkingFeeSchedule {
     updatedAt: string;
     forVehicleType: VehicleType;
     parkingLotId: string;
-    initialFeeMinutes: number;
+    initialMinutes: number;
 }
 
 // Helper function to get auth headers
@@ -101,7 +101,7 @@ fetchFeeSchedules: async (parkingLotId: string): Promise<ParkingFeeSchedule[]> =
             updatedAt: String(item.updatedAt ?? new Date().toISOString()),
             forVehicleType: toVehicleTypeEnum(item.forVehicleType),
             parkingLotId: String(item.parkingLotId ?? parkingLotId),
-            initialFeeMinutes: Number(item.initialFeeMinutes ?? 0),
+            initialMinutes: Number(item.initialMinutes ?? 0),
         }));
 
         return mapped;
@@ -163,6 +163,7 @@ createFeeSchedule: async (
             endTime: scheduleData.endTime ?? 1440,
             initialFee: scheduleData.initialFee ?? 0,
             additionalFee: scheduleData.additionalFee ?? 0,
+            initialMinutes: scheduleData.initialMinutes ?? 0,
             additionalMinutes: scheduleData.additionalMinutes ?? 60,
             dayOfWeeks: normalizeDayOfWeeks(scheduleData.dayOfWeeks as any).join(','),
             forVehicleType: vehicleTypeString,
@@ -249,6 +250,7 @@ updateFeeSchedule: async (
             endTime: scheduleData.endTime ?? 1440,
             initialFee: scheduleData.initialFee ?? 0,
             additionalFee: scheduleData.additionalFee ?? 0,
+            initialMinutes: scheduleData.initialMinutes ?? 0,
             additionalMinutes: scheduleData.additionalMinutes ?? 60,
             dayOfWeeks: scheduleData.dayOfWeeks?.join(','),
             forVehicleType: vehicleTypeString,

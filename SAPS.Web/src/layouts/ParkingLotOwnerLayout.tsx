@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button, Select, SelectItem, Spinner } from "@heroui/react";
+import { Button, ScrollShadow, Select, SelectItem, Spinner } from "@heroui/react";
 import { Menu, Building2 } from "lucide-react";
 import { SideBar } from "@/components/layout/sidebar";
 import { useParkingLot } from "@/pages/ParkingLotOwner/ParkingLotContext";
@@ -99,9 +99,11 @@ export function ParkingLotOwnerLayout({
         </div>
 
         {/* Main Content */}
-        <main className={`container mx-auto max-w-7xl px-6 flex-grow overflow-auto ${className}`}>
+        <ScrollShadow className={`container mx-auto  max-w-7xl px-10 flex-grow overflow-auto ${className}`}
+         hideScrollBar={true}
+        >
           {children}
-        </main>
+        </ScrollShadow>
       </div>
 
       {/* Backdrop for mobile */}
