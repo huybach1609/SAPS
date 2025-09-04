@@ -94,7 +94,7 @@ export function handleParkingLotError(error: any, operation: string = 'parking l
 }
 
 // Specific error handler for authentication operations
-export function handleAuthError(error: any, operation: string = 'authentication'): never {
+export function handleAuthError(error: any): never {
   const defaultMessage = `Authentication failed. Please try again.`;
   return handleApiValidationError(error, defaultMessage, 'Authentication Error');
 }

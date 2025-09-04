@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CircleAlert } from 'lucide-react';
 import DefaultLayout from '@/layouts/default';
-import { Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Tabs, Tab, Tooltip, ScrollShadow } from '@heroui/react';
+import { Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Tabs, Tab, Tooltip } from '@heroui/react';
 import { FeeScheduleModal } from './FeeScheduleModal';
 import { useParkingLot } from '../ParkingLotContext';
 import { type ParkingFeeSchedule, ParkingFeeError, parkinglotFeeScheduleApi } from '@/services/parkinglot/parkinglotFeeService';

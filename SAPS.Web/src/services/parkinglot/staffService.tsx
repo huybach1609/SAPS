@@ -1,7 +1,7 @@
 import { AddStaffFormRequest } from "@/components/utils/staffUtils";
 import { apiUrl } from "@/config/base";
 import { User } from "@/types/User";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { getAuthConfig, getAuthHeaders } from "../utils/apiUtils";
 import { handleStaffError } from "@/utils/errorHandler";
 // import { AddStaffFormRequest } from '../../pages/ParkingLotOwner/StaffManagement/StaffManagement';
