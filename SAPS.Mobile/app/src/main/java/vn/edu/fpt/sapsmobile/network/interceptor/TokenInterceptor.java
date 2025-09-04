@@ -170,8 +170,9 @@ public class TokenInterceptor implements Interceptor {
             // Add access token to header if available and not expired
             if (accessToken != null) {
                 String cleanToken = accessToken.replaceFirst("(?i)^Bearer\\s+", "");
-                Log.i(TAG, "cleanToken:" + cleanToken );
-                requestBuilder.header("Authorization", "Bearer " + cleanToken);
+                String bearerToken = "Bearer " + cleanToken;
+                Log.i(TAG, "bearer: " + bearerToken );
+                requestBuilder.header("Authorization", bearerToken);
             } else {
                 return false;
             }

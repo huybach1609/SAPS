@@ -2,7 +2,7 @@ package vn.edu.fpt.sapsmobile.dtos.vehicle;
 
 import com.google.gson.annotations.SerializedName;
 
-public class VehicleRegistrationResponse {
+public class MessageServerResponse {
 
     @SerializedName("message")
     private String message;  // e.g. "Vehicle created successfully"

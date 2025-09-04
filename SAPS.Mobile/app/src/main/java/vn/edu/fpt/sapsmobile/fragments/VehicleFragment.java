@@ -244,7 +244,7 @@ public class VehicleFragment extends Fragment {
     private void loadShareCode() {
         if (!isFragmentValid()) return;
         String token = tokenManager.getAccessToken();
-        Log.i(TAG, "loadShareCode: " + token);
+//        Log.i(TAG, "loadShareCode: " + token);
         String sharecode = JwtUtils.getShareCodeFromToken(token);
         tv_share_code.setText(sharecode);
 

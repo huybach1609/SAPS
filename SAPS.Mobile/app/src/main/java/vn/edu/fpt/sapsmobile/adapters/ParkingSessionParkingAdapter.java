@@ -90,7 +90,7 @@ public class ParkingSessionParkingAdapter extends RecyclerView.Adapter<ParkingSe
         void bind(ParkingSession session, HistoryFragmentVehicleDetailListener listener, Context context) {
             this.session = session;
 
-            // Set thời lượng
+            // Set time
             if (session.getExitDateTime() == null) {
                 LocalDateTime now = LocalDateTime.now();
                 tvDuration.setText(DateTimeHelper.calculateDuration(session.getEntryDateTime(),now.toString()));

@@ -11,5 +11,7 @@
     <string name="INVALID_OLD_PASSWORD">Invalid old password</string>
     <string name="RESET_PASSWORD_REQUEST_SENT_SUCCESSFULLY">Gửi yêu cầu thành công</string>
     <string name="VEHICLE_CREATED_SUCCESSFULLY">Tạo phương tiện thành công</string>
-
+    <string name="PARKING_FEE_SCHEDULE_NOT_FOUND">Không tìm thấy bảng phí đỗ xe</string>
+    <string name="PARKING_SESSION_ALREADY_CHECKED_OUT">Phiên đỗ xe đã được Checkout</string>
+    <string name="PARKING_SESSION_CHECKOUT_UPDATED_SUCCESSFULLY">CheckOut phiên đỗ xe thành công</string>
 </resources>

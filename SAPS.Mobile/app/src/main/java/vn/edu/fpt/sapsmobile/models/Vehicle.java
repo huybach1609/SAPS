@@ -101,5 +101,7 @@ public class Vehicle implements Serializable {
                 ", updatedAt='" + updatedAt + '\'' +
                 ", ownerId='" + ownerId + '\'' +
                 '}';
+
     }
+
 }

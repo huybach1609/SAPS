@@ -12,7 +12,7 @@ import retrofit2.http.Body;
 import vn.edu.fpt.sapsmobile.dtos.profile.IdCardBase64Request;
 import vn.edu.fpt.sapsmobile.dtos.profile.VerificationResponse;
 import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleRegistrationInfo;
-import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleRegistrationResponse;
+import vn.edu.fpt.sapsmobile.dtos.vehicle.MessageServerResponse;
 import vn.edu.fpt.sapsmobile.dtos.profile.IdCardResponse;
 import vn.edu.fpt.sapsmobile.dtos.profile.NotificationsResponse;
 
@@ -42,7 +42,7 @@ public interface OcrService {
 
     @Multipart
     @POST("api/vehicle/register")
-    Call<VehicleRegistrationResponse> registerVehicle(
+    Call<MessageServerResponse> registerVehicle(
             @Part MultipartBody.Part FrontVehicleRegistrationCertImage,
             @Part MultipartBody.Part BackVehicleRegistrationCertImage,
             @Part("LicensePlate") RequestBody licensePlate,

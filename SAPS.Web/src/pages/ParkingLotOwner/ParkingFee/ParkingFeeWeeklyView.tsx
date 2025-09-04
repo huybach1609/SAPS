@@ -40,6 +40,7 @@ const ParkingFeeWeeklyView: React.FC<ParkingFeeWeeklyViewProps> = ({
 
     const getFilteredSchedules = () => {
         return schedulesData.filter(schedule => {
+            if (!schedule.isActive) return false;
             if (vehicleFilter === VehicleType.All) return true;
             return schedule.forVehicleType === vehicleFilter;
         });
