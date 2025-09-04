@@ -31,7 +31,7 @@ export const errorMessages: Record<string, string> = {
   
   // Authentication errors
   UNAUTHORIZED: "You are not authorized to perform this action.",
-  INVALID_CREDENTIALS: "Invalid credentials. Please check your login information.",
+  INVALID_CREDENTIALS: "Invalid credentials. Please check your email and password.",
   SESSION_EXPIRED: "Your session has expired. Please log in again.",
   
   // File upload errors
