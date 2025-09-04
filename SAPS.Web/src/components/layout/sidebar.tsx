@@ -31,6 +31,7 @@ import {
   CreditCard,
   CircleAlert,
   Clock,
+  Home,
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -117,6 +118,11 @@ const NavigationList: React.FC<NavigationListProps> = ({
 
 // Configuration for different user roles
 const adminItems: NavigationItem[] = [
+  {
+    icon: <Home size={20} />,
+    title: "Admin Dashboard",
+    path: "/admin/dashboard",
+  },
   {
     icon: <Users size={20} />,
     title: "Account List",
@@ -296,7 +302,11 @@ const HeadingBar: React.FC = () => {
             <Button color="danger" variant="light" onPress={onOpenChange}>
               Cancel
             </Button>
-            <Button color="primary" className="text-white" onPress={confirmLogout}>
+            <Button
+              color="primary"
+              className="text-white"
+              onPress={confirmLogout}
+            >
               Logout
             </Button>
           </ModalFooter>
