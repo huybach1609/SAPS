@@ -40,6 +40,7 @@ import blankProfile from "../../assets/Default/blank-profile-picture.webp";
 import { useAuth } from "@/services/auth/AuthContext";
 import { OWNER_ROLE } from "@/config/base";
 import { useParkingLot } from "@/pages/ParkingLotOwner/ParkingLotContext";
+import LanguageSwitcher from "../LanguageSwitcher";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -262,6 +263,7 @@ const HeadingBar: React.FC = () => {
             <ThemeSwitch className="w-full" showLabel={true} variant="button" />
           </DropdownItem>
           {getUserRole() === OWNER_ROLE ? (
+            <>
             <DropdownItem key="subscription" textValue="Subscription">
               <button
                 className="flex items-center gap-2 w-full text-left transition-opacity hover:opacity-80 "
@@ -270,6 +272,11 @@ const HeadingBar: React.FC = () => {
                 <CreditCard size={16} /> Subscription
               </button>
             </DropdownItem>
+            {/* <DropdownItem key="language" textValue="Language">
+              <LanguageSwitcher />
+            </DropdownItem> */}
+            </>
+            
           ) : null}
           <DropdownItem key="logout" textValue="Logout">
             <button

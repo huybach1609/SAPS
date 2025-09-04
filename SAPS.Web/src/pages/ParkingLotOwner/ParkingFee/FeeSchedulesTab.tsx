@@ -3,7 +3,7 @@ import { BikeIcon, Car, Clock, Edit2, Plus, Trash2 } from 'lucide-react';
 import { Button, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow, Select, SelectItem, Chip } from '@heroui/react';
 import { VehicleType, type ParkingFeeSchedule } from '@/services/parkinglot/parkinglotFeeService';
 import { VehicleTypeText } from './FeeScheduleModal';
-import { formatDate, formatTime, getTimezoneOffsetString } from '@/components/utils/stringUtils';
+import { formatDate, formatTime } from '@/components/utils/stringUtils';
 
 const FeeSchedulesTab: React.FC<{
    schedules: ParkingFeeSchedule[];
@@ -38,7 +38,7 @@ const FeeSchedulesTab: React.FC<{
    return (
       <div>
          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-lg font-semibold text-gray-900">Fee Schedules</h2>
+            <h2 className="text-lg font-semibold text-foreground">Fee Schedules</h2>
 
             <div>
                <Button
@@ -55,13 +55,10 @@ const FeeSchedulesTab: React.FC<{
          </div>
 
          {/* Filters */}
-
-
          <div className="  overflow-hidden">
             <Table
-               color='secondary'
+               className="min-w-full "
                aria-label="Parking Fee Schedules Table"
-               className="min-w-full"
                topContent={
                   <>
                      <div className="flex gap-4 rounded-lg">
@@ -71,7 +68,9 @@ const FeeSchedulesTab: React.FC<{
                               aria-label="Active Status Filter"
                               className="w-32"
                               selectedKeys={[activeFilter]}
+
                               onSelectionChange={(keys) => setActiveFilter(Array.from(keys)[0] as 'all' | 'active' | 'inactive')}
+                              disallowEmptySelection={true}
                            >
                               <SelectItem key="all">All</SelectItem>
                               <SelectItem key="active">Active</SelectItem>
@@ -86,6 +85,7 @@ const FeeSchedulesTab: React.FC<{
                               className="w-32"
                               selectedKeys={[vehicleTypeFilter.toString()]}
                               onSelectionChange={(keys) => setVehicleTypeFilter(parseInt(Array.from(keys)[0] as string) as VehicleType)}
+                              disallowEmptySelection={true}
                            >
                               <SelectItem key={VehicleType.All.toString()}>All</SelectItem>
                               <SelectItem key={VehicleType.Car.toString()}>Car</SelectItem>
