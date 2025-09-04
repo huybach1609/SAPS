@@ -40,7 +40,7 @@ import blankProfile from "../../assets/Default/blank-profile-picture.webp";
 import { useAuth } from "@/services/auth/AuthContext";
 import { OWNER_ROLE } from "@/config/base";
 import { useParkingLot } from "@/pages/ParkingLotOwner/ParkingLotContext";
-import LanguageSwitcher from "../LanguageSwitcher";
+// import LanguageSwitcher from "../LanguageSwitcher";
 
 interface SidebarProps {
   isOpen: boolean;
