@@ -21,8 +21,8 @@ import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.adapters.ShareCodeSearchAdapter;
 import vn.edu.fpt.sapsmobile.dtos.profile.ClientProfileSummaryDto;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
-import vn.edu.fpt.sapsmobile.network.client.ApiTest;
-import vn.edu.fpt.sapsmobile.network.api.ClientApiService;
+import vn.edu.fpt.sapsmobile.network.client.ApiClient;
+import vn.edu.fpt.sapsmobile.network.api.IClientApiService;
 import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
 import vn.edu.fpt.sapsmobile.utils.TokenManager;
 
@@ -56,7 +56,7 @@ public class ShareVehicleAccessActivity extends AppCompatActivity {
     private static final int SEARCH_DELAY = 1000; // ms
     
     // API and Adapter
-    private ClientApiService clientApiService;
+    private IClientApiService IClientApiService;
     private ShareCodeSearchAdapter searchAdapter;
 
     @Override
@@ -93,7 +93,7 @@ public class ShareVehicleAccessActivity extends AppCompatActivity {
         tvVehicleDetails = findViewById(R.id.tvVehicleDetails);
 
         // Setup API service
-        clientApiService = ApiTest.getServiceLast(this).create(ClientApiService.class);
+        IClientApiService = ApiClient.getServiceLast(this).create(IClientApiService.class);
         
         // Setup RecyclerView and Adapter
         rvSearchResults.setLayoutManager(new LinearLayoutManager(this));
@@ -176,7 +176,7 @@ public class ShareVehicleAccessActivity extends AppCompatActivity {
         showLoadingState();
 
         // Call API to get client by share code
-        clientApiService.getClientByShareCode(query.trim()).enqueue(new retrofit2.Callback<ClientProfileSummaryDto>() {
+        IClientApiService.getClientByShareCode(query.trim()).enqueue(new retrofit2.Callback<ClientProfileSummaryDto>() {
             @Override
             public void onResponse(retrofit2.Call<ClientProfileSummaryDto> call, retrofit2.Response<ClientProfileSummaryDto> response) {
                 if (response.isSuccessful() && response.body() != null) {

@@ -27,9 +27,9 @@ import retrofit2.Response;
 import vn.edu.fpt.sapsmobile.dtos.parkingsession.OwnedSessionRequest;
 import vn.edu.fpt.sapsmobile.dtos.parkingsession.OwnedSessionResponse;
 import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleSummaryDto;
-import vn.edu.fpt.sapsmobile.network.client.ApiTest;
+import vn.edu.fpt.sapsmobile.network.client.ApiClient;
 import vn.edu.fpt.sapsmobile.network.api.IVehicleApi;
-import vn.edu.fpt.sapsmobile.network.api.ParkingSessionApiService;
+import vn.edu.fpt.sapsmobile.network.api.IParkingSessionApiService;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.actionhandler.HistoryFragmentHandler;
 import vn.edu.fpt.sapsmobile.adapters.ParkingSessionAdapter;
@@ -139,8 +139,8 @@ public class HistoryFragment extends Fragment {
     }
 
     private void fetchOwnedSessions() {
-        ParkingSessionApiService parkingSessionApi = ApiTest.getServiceLast(requireContext())
-                .create(ParkingSessionApiService.class);
+        IParkingSessionApiService parkingSessionApi = ApiClient.getServiceLast(requireContext())
+                .create(IParkingSessionApiService.class);
 
         List<OwnedSessionResponse.OwnedParkingSessionDto> sessionDtoList = new ArrayList<>();
 
@@ -220,7 +220,7 @@ public class HistoryFragment extends Fragment {
     }
 
     private void fetchVehiclesAndBind(List<OwnedSessionResponse.OwnedParkingSessionDto> dtoList) {
-        IVehicleApi vehicleApi = ApiTest.getServiceLast(requireContext()).create(IVehicleApi.class);
+        IVehicleApi vehicleApi = ApiClient.getServiceLast(requireContext()).create(IVehicleApi.class);
         vehicleApi.getMyVehicles(null, null).enqueue(new Callback<List<VehicleSummaryDto>>() {
             @Override
             public void onResponse(Call<List<VehicleSummaryDto>> call, Response<List<VehicleSummaryDto>> response) {

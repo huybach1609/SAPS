@@ -34,7 +34,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import vn.edu.fpt.sapsmobile.activities.sharevehicle.InvitationActivity;
 import vn.edu.fpt.sapsmobile.enums.ShareVehicleStatus;
-import vn.edu.fpt.sapsmobile.network.client.ApiTest;
+import vn.edu.fpt.sapsmobile.network.client.ApiClient;
 import vn.edu.fpt.sapsmobile.network.api.ISharedvehicle;
 import vn.edu.fpt.sapsmobile.network.api.IVehicleApi;
 import vn.edu.fpt.sapsmobile.R;
@@ -163,8 +163,8 @@ public class VehicleFragment extends Fragment {
     }
 
     private void initializeApiServices() {
-        vehicleApi = ApiTest.getServiceLast(requireContext()).create(IVehicleApi.class);
-        sharedVehicleApi = ApiTest.getServiceLast(requireContext()).create(ISharedvehicle.class);
+        vehicleApi = ApiClient.getServiceLast(requireContext()).create(IVehicleApi.class);
+        sharedVehicleApi = ApiClient.getServiceLast(requireContext()).create(ISharedvehicle.class);
     }
 
     private void setupToggleButtons() {
@@ -244,7 +244,7 @@ public class VehicleFragment extends Fragment {
     private void loadShareCode() {
         if (!isFragmentValid()) return;
         String token = tokenManager.getAccessToken();
-        Log.i(TAG, "loadShareCode: " + token);
+//        Log.i(TAG, "loadShareCode: " + token);
         String sharecode = JwtUtils.getShareCodeFromToken(token);
         tv_share_code.setText(sharecode);
 

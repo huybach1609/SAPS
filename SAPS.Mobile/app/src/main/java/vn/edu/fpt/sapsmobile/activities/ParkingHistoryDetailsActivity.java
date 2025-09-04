@@ -24,8 +24,8 @@ import java.util.Locale;
 import retrofit2.Callback;
 import retrofit2.Response;
 import vn.edu.fpt.sapsmobile.dtos.parkingsession.ParkingSessionDetailsResponse;
-import vn.edu.fpt.sapsmobile.network.client.ApiTest;
-import vn.edu.fpt.sapsmobile.network.api.ParkingSessionApiService;
+import vn.edu.fpt.sapsmobile.network.client.ApiClient;
+import vn.edu.fpt.sapsmobile.network.api.IParkingSessionApiService;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.models.ParkingLot;
 import vn.edu.fpt.sapsmobile.models.ParkingSession;
@@ -126,7 +126,7 @@ public class ParkingHistoryDetailsActivity extends AppCompatActivity {
     }
 
     private void fetchParkingSessionDetails(String sessionId) {
-        ParkingSessionApiService apiService = ApiTest.getServiceLast(this).create(ParkingSessionApiService.class);
+        IParkingSessionApiService apiService = ApiClient.getServiceLast(this).create(IParkingSessionApiService.class);
         retrofit2.Call<ParkingSessionDetailsResponse> call = apiService.getParkingSessionDetails(sessionId);
 
         call.enqueue(new Callback<ParkingSessionDetailsResponse>() {

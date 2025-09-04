@@ -1,3 +1,4 @@
+
 export const formatPhoneNumber = (phone: string): string => {
   // Remove all non-digit characters
   const digits = phone.replace(/\D/g, '');
@@ -23,12 +24,32 @@ export const formatPhoneNumber = (phone: string): string => {
   return phone;
 };
 
+// export const formatDate = (dateTime: string): string => {
+//   const date = new Date(dateTime);
+//   return date.toLocaleDateString('en-US', {
+//     month: 'short',
+//     day: 'numeric',
+//     year: 'numeric'
+//   });
+// };
+
+// export const formatTime = (dateTime: string | null): string => {
+//   if (!dateTime) return '-';
+//   const date = new Date(dateTime);
+//   return date.toLocaleTimeString('en-US', {
+//     hour: '2-digit',
+//     minute: '2-digit',
+//     hour12: true
+//   });
+// };
+
 export const formatDate = (dateTime: string): string => {
   const date = new Date(dateTime);
   return date.toLocaleDateString('en-US', {
     month: 'short',
     day: 'numeric',
-    year: 'numeric'
+    year: 'numeric',
+    timeZone: 'UTC'
   });
 };
 
@@ -38,10 +59,10 @@ export const formatTime = (dateTime: string | null): string => {
   return date.toLocaleTimeString('en-US', {
     hour: '2-digit',
     minute: '2-digit',
-    hour12: true
+    hour12: true,
+    timeZone: 'UTC'
   });
 };
-
 
 export const formatPrice = (price: number | undefined): string => {
   if (!price) return '0';
@@ -57,4 +78,19 @@ export const formatDuration = (milliseconds: number | undefined): string => {
   if (years >= 1) return `${years} year${years > 1 ? 's' : ''}`;
   if (months >= 1) return `${months} month${months > 1 ? 's' : ''}`;
   return `${days} day${days > 1 ? 's' : ''}`;
+};
+
+// Helper function to get user's timezone name
+export const getUserTimezone = (): string => {
+  return Intl.DateTimeFormat().resolvedOptions().timeZone;
+};
+
+// Helper function to get timezone offset as string
+export const getTimezoneOffsetString = (): string => {
+  const date = new Date();
+  const offset = date.getTimezoneOffset();
+  const hours = Math.abs(Math.floor(offset / 60));
+  const minutes = Math.abs(offset % 60);
+  const sign = offset <= 0 ? '+' : '-';
+  return `UTC${sign}${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 };

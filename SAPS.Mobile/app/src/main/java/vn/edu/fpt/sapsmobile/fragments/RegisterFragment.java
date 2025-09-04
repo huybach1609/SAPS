@@ -16,24 +16,30 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import com.google.android.material.snackbar.Snackbar;
+
+import org.json.JSONObject;
+
 import okhttp3.MediaType;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import vn.edu.fpt.sapsmobile.network.api.AuthApi;
-import vn.edu.fpt.sapsmobile.network.client.ApiTest;
+import vn.edu.fpt.sapsmobile.network.client.ApiClient;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.activities.auth.LoginActivity;
 import vn.edu.fpt.sapsmobile.activities.auth.RegisterActivity;
 import vn.edu.fpt.sapsmobile.dtos.profile.UserRegisterResponse;
 import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
+import vn.edu.fpt.sapsmobile.utils.StringUtils;
 
 public class RegisterFragment extends Fragment {
 
     private static final String TAG = "RegisterFragment";
-    
-    private Button btnRegister ;
+
+    private Button btnRegister;
     private ImageButton btnBack;
     private EditText emailInput, passwordInput, confirmPasswordInput, fullNameInput, phoneInput;
     private Uri frontImageUri, backImageUri;
@@ -57,9 +63,9 @@ public class RegisterFragment extends Fragment {
         confirmPasswordInput = view.findViewById(R.id.edit_text_confirm_password);
 
         loadingDialog = new LoadingDialog(requireActivity());
-        
+
         // Initialize API service
-        authApi = ApiTest.getServiceLast(requireActivity()).create(AuthApi.class);
+        authApi = ApiClient.getServiceLast(requireActivity()).create(AuthApi.class);
 
         btnRegister.setOnClickListener(v -> {
             // Validate user input fields
@@ -99,7 +105,7 @@ public class RegisterFragment extends Fragment {
             // Proceed with registration
             registerUser(email, password, fullName, phone);
         });
-        btnBack.setOnClickListener(v-> {
+        btnBack.setOnClickListener(v -> {
             getActivity().finish();
         });
 
@@ -113,44 +119,43 @@ public class RegisterFragment extends Fragment {
         activity.registerData.setPassword(password);
         activity.registerData.setFullName(fullName);
         activity.registerData.setPhone(phone);
-        
+
         loadingDialog.show("Registering user...");
-        
+
         // Create RequestBody objects for multipart form data
         RequestBody emailBody = RequestBody.create(email, MediaType.parse("text/plain"));
         RequestBody passwordBody = RequestBody.create(password, MediaType.parse("text/plain"));
         RequestBody fullNameBody = RequestBody.create(fullName, MediaType.parse("text/plain"));
         RequestBody phoneBody = RequestBody.create(phone, MediaType.parse("text/plain"));
-        
+
         // Debug logging
         Log.d(TAG, "Sending registration request:");
         Log.d(TAG, "Email: " + email);
         Log.d(TAG, "FullName: " + fullName);
         Log.d(TAG, "Phone: " + phone);
         Log.d(TAG, "Password: " + (password != null ? "***" : "null"));
-        
+
         Call<UserRegisterResponse> call = authApi.registerUser(emailBody, passwordBody, fullNameBody, phoneBody);
         call.enqueue(new Callback<UserRegisterResponse>() {
             @Override
             public void onResponse(Call<UserRegisterResponse> call, Response<UserRegisterResponse> response) {
                 loadingDialog.dismiss();
-                
-                // Debug logging for response
+
                 Log.d(TAG, "Response code: " + response.code());
                 if (!response.isSuccessful()) {
                     try {
-                        String errorBody = response.errorBody() != null ? response.errorBody().string() : "No error body";
-                        Log.e(TAG, "Error response body: " + errorBody);
+                        String errorBody = response.errorBody().string();
+                        JSONObject jsonObject = new JSONObject(errorBody);
+                        String message = jsonObject.optString("message", "Unknown error");
+                        handleRegistrationError(response.code(), message);
                     } catch (Exception e) {
                         Log.e(TAG, "Error reading error body", e);
                     }
                 }
-                
+
                 if (response.isSuccessful() && response.body() != null) {
                     UserRegisterResponse registerResponse = response.body();
                     handleRegistrationSuccess(email, password, registerResponse);
-                } else {
-                    handleRegistrationError(response.code(), "Registration failed");
                 }
             }
 
@@ -165,30 +170,17 @@ public class RegisterFragment extends Fragment {
 
     private void handleRegistrationSuccess(String email, String password, UserRegisterResponse response) {
         String message = response.getMessage() != null ? response.getMessage() : "Registration successful!";
-        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show();
-        
+        String toastMessage = StringUtils.getErrorMessage(getContext(), message);
+        Toast.makeText(requireContext(), toastMessage, Toast.LENGTH_SHORT).show();
+
         // Navigate to LoginActivity with pre-filled credentials
         navigateToLoginWithCredentials(email, password);
     }
 
     private void handleRegistrationError(int statusCode, String defaultMessage) {
-        String errorMessage = getErrorMessage(statusCode, defaultMessage);
-        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_LONG).show();
-    }
-
-    private String getErrorMessage(int statusCode, String defaultMessage) {
-        switch (statusCode) {
-            case 400:
-                return "Bad request. Please check your input data.";
-            case 409:
-                return "Email already exists. Please use a different email address.";
-            case 422:
-                return "Invalid data provided. Please check your email, phone number, and other fields.";
-            case 500:
-                return "Server error. Please try again later.";
-            default:
-                return defaultMessage;
-        }
+        String errorMessage = StringUtils.getErrorMessage(getContext(), defaultMessage);
+        assert getView() != null;
+        Snackbar.make(getView(), errorMessage, Snackbar.LENGTH_LONG).show();
     }
 
     private void navigateToLoginWithCredentials(String email, String password) {

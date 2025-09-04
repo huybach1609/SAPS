@@ -20,6 +20,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
@@ -35,13 +37,14 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import vn.edu.fpt.sapsmobile.network.client.ApiTest;
-import vn.edu.fpt.sapsmobile.network.api.ApiService;
+import vn.edu.fpt.sapsmobile.network.client.ApiClient;
+import vn.edu.fpt.sapsmobile.network.api.OcrService;
 import vn.edu.fpt.sapsmobile.network.api.IVehicleRegistraionCertOrcApi;
 import vn.edu.fpt.sapsmobile.R;
-import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleRegistrationResponse;
+import vn.edu.fpt.sapsmobile.dtos.vehicle.MessageServerResponse;
 import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleResponse;
 import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
+import vn.edu.fpt.sapsmobile.utils.StringUtils;
 
 public class AddVehicleActivity extends AppCompatActivity {
 
@@ -300,7 +303,7 @@ public class AddVehicleActivity extends AppCompatActivity {
         MultipartBody.Part backPart = MultipartBody.Part.createFormData("backImage", "back.jpg", backBody);
 
         // Get OCR API service
-        IVehicleRegistraionCertOrcApi IVehicleRegistraionCertOrcApi = ApiTest.getServiceLast(this).create(IVehicleRegistraionCertOrcApi.class);
+        IVehicleRegistraionCertOrcApi IVehicleRegistraionCertOrcApi = ApiClient.getServiceLast(this).create(IVehicleRegistraionCertOrcApi.class);
 
         // Make API call
         Call<VehicleResponse> call = IVehicleRegistraionCertOrcApi.uploadVehicleRegistration(frontPart, backPart);
@@ -393,24 +396,30 @@ public class AddVehicleActivity extends AppCompatActivity {
         RequestBody vehicleTypeBody = RequestBody.create(vehicleType, MediaType.parse("text/plain"));
 
         // Get API service
-        ApiService apiService = ApiTest.getServiceLast(this).create(ApiService.class);
+        OcrService ocrService = ApiClient.getServiceLast(this).create(OcrService.class);
 
         // Make API call
-        Call<VehicleRegistrationResponse> call = apiService.registerVehicle(
+        Call<MessageServerResponse> call = ocrService.registerVehicle(
                 frontPart, backPart, licensePlateBody, brandBody, modelBody,
                 engineNumberBody, chassisNumberBody, colorBody, ownerNameBody, vehicleTypeBody
         );
 
-        call.enqueue(new Callback<VehicleRegistrationResponse>() {
+        call.enqueue(new Callback<MessageServerResponse>() {
             @Override
-            public void onResponse(Call<VehicleRegistrationResponse> call, Response<VehicleRegistrationResponse> response) {
+            public void onResponse(Call<MessageServerResponse> call, Response<MessageServerResponse> response) {
                 loadingDialog.dismiss();
 
                 if (response.isSuccessful() && response.body() != null) {
-                    VehicleRegistrationResponse vehicleResponse = response.body();
-                    Toast.makeText(AddVehicleActivity.this,
-                            vehicleResponse.getMessage() != null ? vehicleResponse.getMessage() : "Vehicle registered successfully",
-                            Toast.LENGTH_LONG).show();
+                    MessageServerResponse vehicleResponse = response.body();
+                    if(vehicleResponse.getMessage() != null){
+                        String message = StringUtils.getErrorMessage(AddVehicleActivity.this, vehicleResponse.getMessage());
+                        Snackbar.make(findViewById(android.R.id.content), message, Snackbar.LENGTH_LONG).show();
+                    } else {
+                        Snackbar.make(findViewById(android.R.id.content), "Vehicle registered successfully", Snackbar.LENGTH_LONG).show();
+                    }
+//                    Toast.makeText(AddVehicleActivity.this,
+//                            vehicleResponse.getMessage() != null ? vehicleResponse.getMessage() : "",
+//                            Toast.LENGTH_LONG).show();
 
                     // Return success result
                     Intent resultIntent = new Intent();
@@ -424,7 +433,7 @@ public class AddVehicleActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<VehicleRegistrationResponse> call, Throwable t) {
+            public void onFailure(Call<MessageServerResponse> call, Throwable t) {
                 loadingDialog.dismiss();
                 Toast.makeText(AddVehicleActivity.this, getString(R.string.toast_registration_failed, t.getMessage()), Toast.LENGTH_LONG).show();
                 Log.e("VEHICLE_REGISTRATION_ERROR", "Error registering vehicle: " + t.getMessage());

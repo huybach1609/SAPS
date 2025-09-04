@@ -6,6 +6,7 @@ import { Camera, ChartColumnBig, Lock, Zap } from "lucide-react";
 import { Input } from "@heroui/input";
 import { Checkbox } from "@heroui/react";
 import logoImage from "../../assets/Logo/logo.svg";
+import { getErrorMessage } from "@/errors/errorMessages";
 
 export default function LoginPage() {
   const { login, loading, getUserRole } = useAuth();
@@ -31,7 +32,7 @@ export default function LoginPage() {
       if (userRole) {
         switch (userRole.toLowerCase()) {
           case "admin":
-            navigate("/admin");
+            navigate("/admin/dashboard");
             break;
           case "parkinglotowner":
             navigate("/owner/parking-info");
@@ -45,12 +46,13 @@ export default function LoginPage() {
       }
     } catch (err) {
       console.log(err);
-      const message =
-        err instanceof Error
-          ? err.message
-          : typeof err === "object" && err && "message" in (err as any)
-            ? String((err as any).message)
-            : "Invalid email or password";
+      const message = getErrorMessage(err.message);
+      // const message =
+      //   err instanceof Error
+      //     ? err.message
+      //     : typeof err === "object" && err && "message" in (err as any)
+      //       ? String((err as any).message)
+      //       : "Invalid email or password";
       setError(message);
     } finally {
       setSubmitting(false);
@@ -65,7 +67,11 @@ export default function LoginPage() {
           <div className="mb-8">
             <div className="bg-blue-100 p-6 rounded-2xl shadow-lg inline-flex justify-center items-center">
               <span role="img" aria-label="car" className="text-4xl">
-                <img src={logoImage} alt="SAPLS Logo" className="w-32 h-32 object-cover" />
+                <img
+                  src={logoImage}
+                  alt="SAPLS Logo"
+                  className="w-32 h-32 object-cover"
+                />
               </span>
             </div>
           </div>
@@ -119,9 +125,7 @@ export default function LoginPage() {
         {/* Right side */}
         <div className="w-1/2 flex flex-col justify-center p-12 bg-white">
           <div className="max-w-md mx-auto w-full">
-            <h2 className="text-3xl font-bold text-blue-900 mb-2">
-              Login
-            </h2>
+            <h2 className="text-3xl font-bold text-blue-900 mb-2">Login</h2>
             <p className="text-gray-500 mb-8">
               Access the administrative dashboard
             </p>

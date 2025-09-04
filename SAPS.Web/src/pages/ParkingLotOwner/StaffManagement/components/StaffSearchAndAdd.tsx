@@ -89,7 +89,7 @@ export const StaffSearchAndAdd: React.FC<StaffSearchAndAddProps> = ({
           </div>
           <Button
             onPress={onAddStaffer}
-            startContent={<PlusIcon size={16} />}
+            startContent={<PlusIcon size={30} />}
             radius="sm"
             size="sm"
             color="secondary"

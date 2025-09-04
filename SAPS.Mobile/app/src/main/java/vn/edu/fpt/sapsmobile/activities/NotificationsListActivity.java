@@ -15,8 +15,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import vn.edu.fpt.sapsmobile.network.api.ApiService;
-import vn.edu.fpt.sapsmobile.network.client.ApiTest;
+import vn.edu.fpt.sapsmobile.network.api.OcrService;
+import vn.edu.fpt.sapsmobile.network.client.ApiClient;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.adapters.NotificationAdapter;
 import vn.edu.fpt.sapsmobile.models.Notification;
@@ -50,9 +50,9 @@ public class NotificationsListActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("NotificationsPrefs", MODE_PRIVATE);
 
 
-       ApiService apiService =  ApiTest.getService(this).create(ApiService.class);
+       OcrService ocrService =  ApiClient.getServiceLast(this).create(OcrService.class);
 
-        apiService.getNotifications().enqueue(new Callback<NotificationsResponse>() {
+        ocrService.getNotifications().enqueue(new Callback<NotificationsResponse>() {
             @Override
             public void onResponse(Call<NotificationsResponse> call, Response<NotificationsResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {

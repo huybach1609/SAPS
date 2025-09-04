@@ -82,6 +82,7 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationSe
     private void initializeViews() {
         // Input fields
         emailInput = findViewById(R.id.email_input_edit_text);
+
         passwordInput = findViewById(R.id.password_input_edit_text);
 
         // Buttons
@@ -188,15 +189,9 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationSe
 
     private boolean isValidEmail(String email) {
         if (TextUtils.isEmpty(email)) {
-            showEmailError("Email is required");
+            showEmailError("Email or CitizenId is required");
             return false;
         }
-
-        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            showEmailError("Please enter a valid email address");
-            return false;
-        }
-
         return true;
     }
 

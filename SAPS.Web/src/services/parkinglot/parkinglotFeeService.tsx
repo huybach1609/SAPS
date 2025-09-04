@@ -14,18 +14,6 @@ export class ParkingFeeError extends Error {
     }
 }
 
-// // Types based on the database schema
-// export interface ParkingLot {
-//     id: string;
-//     name: string;
-//     description?: string;
-//     address: string;
-//     totalParkingSlot: number;
-//     createdAt: string;
-//     updatedAt: string;
-//     status: 'Active' | 'Inactive';
-//     parkingLotOwnerId: string;
-// }
 
 export enum VehicleType {
     All = 0,
@@ -42,12 +30,12 @@ export interface ParkingFeeSchedule {
     initialFee: number;
     additionalFee: number;
     additionalMinutes: number;
-    dayOfWeeks?: number[]; // 0=Monday, 6=Sunday
+    dayOfWeeks?: number[]; // 0=Sunday, 6=Saturday
     isActive: boolean;
     updatedAt: string;
     forVehicleType: VehicleType;
     parkingLotId: string;
-    initialFeeMinutes: number;
+    initialMinutes: number;
 }
 
 // Helper function to get auth headers
@@ -113,7 +101,7 @@ fetchFeeSchedules: async (parkingLotId: string): Promise<ParkingFeeSchedule[]> =
             updatedAt: String(item.updatedAt ?? new Date().toISOString()),
             forVehicleType: toVehicleTypeEnum(item.forVehicleType),
             parkingLotId: String(item.parkingLotId ?? parkingLotId),
-            initialFeeMinutes: Number(item.initialFeeMinutes ?? 0),
+            initialMinutes: Number(item.initialMinutes ?? 0),
         }));
 
         return mapped;
@@ -155,10 +143,7 @@ createFeeSchedule: async (
             const nums = (value as unknown[])
                 .map((v) => Number(v))
                 .filter((n) => Number.isFinite(n)) as number[];
-            // If looks like 0..6, convert to 1..7. If already 1..7, keep.
-            const isZeroBased = nums.every((n) => n >= 0 && n <= 6) && !nums.some((n) => n === 7);
-            return (isZeroBased ? nums.map((n) => n + 1) : nums)
-                .filter((n) => n >= 1 && n <= 7);
+            return nums;
         };
 
         const vehicleTypeString = (() => {
@@ -178,6 +163,7 @@ createFeeSchedule: async (
             endTime: scheduleData.endTime ?? 1440,
             initialFee: scheduleData.initialFee ?? 0,
             additionalFee: scheduleData.additionalFee ?? 0,
+            initialMinutes: scheduleData.initialMinutes ?? 0,
             additionalMinutes: scheduleData.additionalMinutes ?? 60,
             dayOfWeeks: normalizeDayOfWeeks(scheduleData.dayOfWeeks as any).join(','),
             forVehicleType: vehicleTypeString,
@@ -236,15 +222,15 @@ updateFeeSchedule: async (
     scheduleData: Partial<ParkingFeeSchedule>
 ): Promise<ParkingFeeSchedule> => {
     try {
-        const normalizeDayOfWeeks = (value: unknown): number[] => {
-            if (!Array.isArray(value)) return [];
-            const nums = (value as unknown[])
-                .map((v) => Number(v))
-                .filter((n) => Number.isFinite(n)) as number[];
-            const isZeroBased = nums.every((n) => n >= 0 && n <= 6) && !nums.some((n) => n === 7);
-            return (isZeroBased ? nums.map((n) => n + 1) : nums)
-                .filter((n) => n >= 1 && n <= 7);
-        };
+        // const normalizeDayOfWeeks = (value: unknown): number[] => {
+        //     if (!Array.isArray(value)) return [];
+        //     const nums = (value as unknown[])
+        //         .map((v) => Number(v))
+        //         .filter((n) => Number.isFinite(n)) as number[];
+        //     const isZeroBased = nums.every((n) => n >= 0 && n <= 6) && !nums.some((n) => n === 7);
+        //     return (isZeroBased ? nums.map((n) => n + 1) : nums)
+        //         .filter((n) => n >= 1 && n <= 7);
+        // };
 
         const vehicleTypeString = (() => {
             const value = scheduleData.forVehicleType;
@@ -264,8 +250,9 @@ updateFeeSchedule: async (
             endTime: scheduleData.endTime ?? 1440,
             initialFee: scheduleData.initialFee ?? 0,
             additionalFee: scheduleData.additionalFee ?? 0,
+            initialMinutes: scheduleData.initialMinutes ?? 0,
             additionalMinutes: scheduleData.additionalMinutes ?? 60,
-            dayOfWeeks: normalizeDayOfWeeks(scheduleData.dayOfWeeks as any).join(','),
+            dayOfWeeks: scheduleData.dayOfWeeks?.join(','),
             forVehicleType: vehicleTypeString,
             parkingLotId,
             isActive: scheduleData.isActive ?? true,

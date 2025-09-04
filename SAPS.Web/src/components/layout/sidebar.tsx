@@ -31,6 +31,7 @@ import {
   CreditCard,
   CircleAlert,
   Clock,
+  Home,
 } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -40,6 +41,7 @@ import blankProfile from "../../assets/Default/blank-profile-picture.webp";
 import { useAuth } from "@/services/auth/AuthContext";
 import { OWNER_ROLE } from "@/config/base";
 import { useParkingLot } from "@/pages/ParkingLotOwner/ParkingLotContext";
+// import LanguageSwitcher from "../LanguageSwitcher";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -117,6 +119,11 @@ const NavigationList: React.FC<NavigationListProps> = ({
 
 // Configuration for different user roles
 const adminItems: NavigationItem[] = [
+  {
+    icon: <Home size={20} />,
+    title: "Admin Dashboard",
+    path: "/admin/dashboard",
+  },
   {
     icon: <Users size={20} />,
     title: "Account List",
@@ -262,6 +269,7 @@ const HeadingBar: React.FC = () => {
             <ThemeSwitch className="w-full" showLabel={true} variant="button" />
           </DropdownItem>
           {getUserRole() === OWNER_ROLE ? (
+            <>
             <DropdownItem key="subscription" textValue="Subscription">
               <button
                 className="flex items-center gap-2 w-full text-left transition-opacity hover:opacity-80 "
@@ -270,6 +278,11 @@ const HeadingBar: React.FC = () => {
                 <CreditCard size={16} /> Subscription
               </button>
             </DropdownItem>
+            {/* <DropdownItem key="language" textValue="Language">
+              <LanguageSwitcher />
+            </DropdownItem> */}
+            </>
+            
           ) : null}
           <DropdownItem key="logout" textValue="Logout">
             <button
@@ -296,7 +309,11 @@ const HeadingBar: React.FC = () => {
             <Button color="danger" variant="light" onPress={onOpenChange}>
               Cancel
             </Button>
-            <Button color="primary" className="text-white" onPress={confirmLogout}>
+            <Button
+              color="primary"
+              className="text-white"
+              onPress={confirmLogout}
+            >
               Logout
             </Button>
           </ModalFooter>

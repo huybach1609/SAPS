@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Clock, Car, Edit2, BikeIcon, Trash2 } from 'lucide-react';
+import { CircleAlert } from 'lucide-react';
 import DefaultLayout from '@/layouts/default';
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Tabs, Tab } from '@heroui/react';
-import { FeeScheduleModal, VehicleTypeText } from './FeeScheduleModal';
+import { Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Tabs, Tab, Tooltip } from '@heroui/react';
+import { FeeScheduleModal } from './FeeScheduleModal';
 import { useParkingLot } from '../ParkingLotContext';
-import {
- 
-    type ParkingFeeSchedule,
-    VehicleType,
-    ParkingFeeError,
-    parkinglotFeeScheduleApi
-} from '@/services/parkinglot/parkinglotFeeService';
+import { type ParkingFeeSchedule, ParkingFeeError, parkinglotFeeScheduleApi } from '@/services/parkinglot/parkinglotFeeService';
 import ParkingFeeWeeklyView from './ParkingFeeWeeklyView';
+import FeeSchedulesTab from './FeeSchedulesTab';
 
 
 const ParkingFeeManagement: React.FC = () => {
@@ -43,6 +38,7 @@ const ParkingFeeManagement: React.FC = () => {
             setLoadingFeeSchedules(true);
             const data = await parkinglotFeeScheduleApi.fetchFeeSchedules(selectedParkingLot.id);
             setFeeSchedules(data);
+            // console.log('feeSchedules', data);
         } catch (error) {
             console.error('Error fetching parking fee schedules:', error);
 
@@ -107,52 +103,14 @@ const ParkingFeeManagement: React.FC = () => {
         }
     }, [loading, selectedParkingLot?.id]);
 
-    // Helper functions
-    // const generateid = () => Math.random().toString(36).substr(2, 9);
-    // Fee Schedule CRUD operations
     const handleSaveSchedule = async (scheduleData: Partial<ParkingFeeSchedule>) => {
         try {
             if (!selectedParkingLot?.id) return;
 
             if (editingSchedule) {
-                // Update existing schedule
-                const updatedSchedule = await parkinglotFeeScheduleApi.updateFeeSchedule(
-                    selectedParkingLot.id,
-                    editingSchedule.id,
-                    scheduleData
-                );
-
-                setFeeSchedules((schedules) =>
-                    schedules.map((schedule) =>
-                        schedule.id === editingSchedule.id ? updatedSchedule : schedule
-                    )
-                );
-                await loadFeeSchedules();
-
-                // Success announcement for update
-                setErrorModal({
-                    isOpen: true,
-                    title: "Success",
-                    message: "Fee schedule updated successfully",
-                    type: "success"
-                });
+                await handleUpdateSchedule(scheduleData);
             } else {
-                // Create new schedule
-                const createdSchedule = await parkinglotFeeScheduleApi.createFeeSchedule(
-                    selectedParkingLot.id,
-                    scheduleData
-                );
-
-                setFeeSchedules((schedules) => [...schedules, createdSchedule]);
-                await loadFeeSchedules();
-
-                // Success announcement for create
-                setErrorModal({
-                    isOpen: true,
-                    title: "Success",
-                    message: "Fee schedule created successfully",
-                    type: "success"
-                });
+                await handleAddSchedule(scheduleData);
             }
         } catch (error) {
             console.error('Error saving parking fee schedule:', error);
@@ -229,7 +187,57 @@ const ParkingFeeManagement: React.FC = () => {
         setIsScheduleModalOpen(false);
         setEditingSchedule(null);
     };
+    const handleAddSchedule = async (scheduleData: Partial<ParkingFeeSchedule>) => {
+        try {
+            // Create new schedule
+            const createdSchedule = await parkinglotFeeScheduleApi.createFeeSchedule(
+                selectedParkingLot.id,
+                scheduleData
+            );
 
+            setFeeSchedules((schedules) => [...schedules, createdSchedule]);
+            await loadFeeSchedules();
+
+            // Success announcement for create
+            setErrorModal({
+                isOpen: true,
+                title: "Success",
+                message: "Fee schedule created successfully",
+                type: "success"
+            });
+
+        } catch (error) {
+            console.error('Error adding parking fee schedule:', error);
+        }
+    }
+    const handleUpdateSchedule = async (scheduleData: Partial<ParkingFeeSchedule>) => {
+        try {
+            console.log('scheduleData', scheduleData);
+            // Update existing schedule
+            const updatedSchedule = await parkinglotFeeScheduleApi.updateFeeSchedule(
+                selectedParkingLot.id,
+                editingSchedule.id,
+                scheduleData
+            );
+
+            setFeeSchedules((schedules) =>
+                schedules.map((schedule) =>
+                    schedule.id === editingSchedule.id ? updatedSchedule : schedule
+                )
+            );
+            await loadFeeSchedules();
+
+            // Success announcement for update
+            setErrorModal({
+                isOpen: true,
+                title: "Success",
+                message: "Fee schedule updated successfully",
+                type: "success"
+            });
+        } catch (error) {
+            console.error('Error updating parking fee schedule:', error);
+        }
+    }
     const handleDeleteSchedule = async (id: string) => {
         try {
             if (!selectedParkingLot?.id) return;
@@ -319,307 +327,172 @@ const ParkingFeeManagement: React.FC = () => {
 
     return (
         <DefaultLayout title="Parking Fee Management"
-        description='Manage parking fee schedules for your parking lot'>
-            <div className="bg-background rounded-lg shadow-sm border border-divider mt-10">
-                <div className="flex flex-col gap-4">
+            description='Manage parking fee schedules for your parking lot'
+            className='p-6  w-full'>
 
-                </div>
+
+
                 {/* Fee Schedules Table */}
-                <div className="p-6">
-                    <Tabs aria-label="Options">
-
-                        <Tab key="weekly" title="Weekly view">
-                            {/* day of week view */}
-                            <ParkingFeeWeeklyView
-                                schedulesData={feeSchedules}
-                                onEdit={(schedule: ParkingFeeSchedule) => {
-                                    console.log("schedule", schedule);
-                                    setEditingSchedule(schedule);
-                                    setIsScheduleModalOpen(true);
-                                }}
-                                onDelete={(id: string) => {
-                                    handleDeleteSchedule(id);
-                                }}
-                                onAdd={() => setIsScheduleModalOpen(true)}
-                                onRefresh={() => loadFeeSchedules()}
-                                loading={loadingFeeSchedules}
-                            />
-                        </Tab>
-
-                        <Tab key="table" title="Table view">
-                            <FeeSchedulesTab
-                                schedules={feeSchedules}
-                                onEdit={(schedule) => {
-                                    if (schedule == null) {
-                                        return;
-                                    }
-                                    setEditingSchedule(schedule);
-                                    setIsScheduleModalOpen(true);
-                                }}
-                                onDelete={handleDeleteSchedule}
-                                onAdd={() => setIsScheduleModalOpen(true)}
-                            />
-                        </Tab>
-
-                    </Tabs>
-
-
-                </div>
-            </div>
-
-
-            {/* Modal */}
-            <Modal
-                isOpen={isScheduleModalOpen}
-                size="xl"
-                onClose={() => {
-                    setIsScheduleModalOpen(false);
-                    setEditingSchedule(null);
-                }}
-            >
-                <ModalContent>
-                    {() => (
-                        <>
-                            {/* The content of FeeScheduleModal should be refactored and placed here. */}
-                            {isScheduleModalOpen && (
-                                <FeeScheduleModal
-                                    schedule={editingSchedule}
-                                    onSave={handleSaveSchedule}
-                                    onClose={() => {
-                                        setIsScheduleModalOpen(false);
-                                        setEditingSchedule(null);
-                                    }} />
-                            )}
-
-                        </>
-                    )}
-                </ModalContent>
-            </Modal>
-
-            {/* Error/Success Modal */}
-            <Modal
-                isOpen={errorModal.isOpen}
-                size="md"
-                onClose={() => setErrorModal({ ...errorModal, isOpen: false })}
-            >
-                <ModalContent>
-                    {() => (
-                        <>
-                            <ModalHeader className="flex flex-col gap-1">
-                                <div className={`flex items-center gap-2 ${errorModal.type === 'error' ? 'text-danger' :
-                                    errorModal.type === 'warning' ? 'text-warning' :
-                                        'text-success'
-                                    }`}>
-                                    {errorModal.type === 'error' && (
-                                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                                        </svg>
-                                    )}
-                                    {errorModal.type === 'warning' && (
-                                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                                        </svg>
-                                    )}
-                                    {errorModal.type === 'success' && (
-                                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                                        </svg>
-                                    )}
-                                    {errorModal.title}
-                                </div>
-                            </ModalHeader>
-                            <ModalBody>
-                                <p className="text-sm text-gray-600">
-                                    {/* {errorModal.message} */}
-                                </p>
-                                {errorModal.messages && errorModal.messages.length > 0 && (
-
-                                    <ul className="mt-2 list-disc list-inside text-sm text-danger">
-                                        {errorModal.messages.map((msg, idx) => {
-                                            const schedule = feeSchedules.find(s => s.id === msg);
-                                            if (!schedule) return null;
-                                            return (
-                                                <li key={idx}>
-                                                    {formatDays(schedule.dayOfWeeks ?? [])} | {minutesToTime(schedule.startTime)} - {minutesToTime(schedule.endTime)}
-                                                    {/* Optionally: | {VehicleTypeText[schedule.forVehicleType]} */}
-                                                </li>
-                                            )
-                                        })}
-                                    </ul>
-                                )}
-                            </ModalBody>
-                            <ModalFooter>
-                                <Button
-                                    color={errorModal.type === 'success' ? 'primary' : 'default'}
-                                    className='text-background'
-                                    onPress={() => setErrorModal({ ...errorModal, isOpen: false })}
+                <Tabs aria-label="Options">
+                    <Tab key="weekly"
+                        title={
+                            <div className="flex items-center gap-1">
+                                <div>Weekly view</div>
+                                <Tooltip
+                                    className="text-background"
+                                    color="primary"
+                                    content="This view only view active schedules"
+                                    placement="bottom"
                                 >
-                                    {errorModal.type === 'success' ? 'Continue' : 'OK'}
-                                </Button>
-                            </ModalFooter>
-                        </>
-                    )}
-                </ModalContent>
-            </Modal>
+                                    <CircleAlert size={16} className="text-primary-900/40" />
+                                </Tooltip>
 
-        </DefaultLayout>
+                            </div>
+                        }
+                    >
+                        {/* day of week view */}
+                        <ParkingFeeWeeklyView
+                            schedulesData={feeSchedules}
+                            onEdit={(schedule: ParkingFeeSchedule) => {
+                                console.log("schedule", schedule);
+                                setEditingSchedule(schedule);
+                                setIsScheduleModalOpen(true);
+                            }}
+                            onDelete={(id: string) => {
+                                handleDeleteSchedule(id);
+                            }}
+                            onAdd={() => setIsScheduleModalOpen(true)}
+                            onRefresh={() => loadFeeSchedules()}
+                            loading={loadingFeeSchedules}
+                        />
+                    </Tab>
+
+                    <Tab key="table" title="Table view">
+                        <FeeSchedulesTab
+                            schedules={feeSchedules}
+                            onEdit={(schedule) => {
+                                if (schedule == null) {
+                                    return;
+                                }
+                                setEditingSchedule(schedule);
+                                setIsScheduleModalOpen(true);
+                            }}
+                            onDelete={handleDeleteSchedule}
+                            onAdd={() => setIsScheduleModalOpen(true)}
+                        />
+                    </Tab>
+
+
+                </Tabs>
+
+
+                {/* Modal */}
+                <Modal
+                    isOpen={isScheduleModalOpen}
+                    size="xl"
+                    onClose={() => {
+                        setIsScheduleModalOpen(false);
+                        setEditingSchedule(null);
+                    }}
+                >
+                    <ModalContent>
+                        {() => (
+                            <>
+                                {/* The content of FeeScheduleModal should be refactored and placed here. */}
+                                {isScheduleModalOpen && (
+                                    <FeeScheduleModal
+                                        schedule={editingSchedule}
+                                        onSave={handleSaveSchedule}
+                                        onClose={() => {
+                                            setIsScheduleModalOpen(false);
+                                            setEditingSchedule(null);
+                                        }} />
+                                )}
+
+                            </>
+                        )}
+                    </ModalContent>
+                </Modal>
+
+                {/* Error/Success Modal */}
+                <Modal
+                    isOpen={errorModal.isOpen}
+                    size="md"
+                    onClose={() => setErrorModal({ ...errorModal, isOpen: false })}
+                >
+                    <ModalContent>
+                        {() => (
+                            <>
+                                <ModalHeader className="flex flex-col gap-1">
+                                    <div className={`flex items-center gap-2 ${errorModal.type === 'error' ? 'text-danger' :
+                                        errorModal.type === 'warning' ? 'text-warning' :
+                                            'text-success'
+                                        }`}>
+                                        {errorModal.type === 'error' && (
+                                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                                            </svg>
+                                        )}
+                                        {errorModal.type === 'warning' && (
+                                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                            </svg>
+                                        )}
+                                        {errorModal.type === 'success' && (
+                                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                            </svg>
+                                        )}
+                                        {errorModal.title}
+                                    </div>
+                                </ModalHeader>
+                                <ModalBody>
+                                    <p className="text-sm text-gray-600">
+                                        {/* {errorModal.message} */}
+                                    </p>
+                                    {errorModal.messages && errorModal.messages.length > 0 && (
+
+                                        <ul className="mt-2 list-disc list-inside text-sm text-danger">
+                                            {errorModal.messages.map((msg, idx) => {
+                                                const schedule = feeSchedules.find(s => s.id === msg);
+                                                if (!schedule) return null;
+                                                return (
+                                                    <li key={idx}>
+                                                        {formatDays(schedule.dayOfWeeks ?? [])} | {minutesToTime(schedule.startTime)} - {minutesToTime(schedule.endTime)}
+                                                        {/* Optionally: | {VehicleTypeText[schedule.forVehicleType]} */}
+                                                    </li>
+                                                )
+                                            })}
+                                        </ul>
+                                    )}
+                                </ModalBody>
+                                <ModalFooter>
+                                    <Button
+                                        color={errorModal.type === 'success' ? 'primary' : 'default'}
+                                        className='text-background'
+                                        onPress={() => setErrorModal({ ...errorModal, isOpen: false })}
+                                    >
+                                        {errorModal.type === 'success' ? 'Continue' : 'OK'}
+                                    </Button>
+                                </ModalFooter>
+                            </>
+                        )}
+                    </ModalContent>
+                </Modal>
+        </ DefaultLayout>
     );
 };
 
 export const minutesToTime = (minutes: number): string => {
-        const hours = Math.floor(minutes / 60);
-        const mins = minutes % 60;
-        return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
-    };
-
-export const formatDays = (dayOfWeeks: number[]): string => {
-    const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-    if (!Array.isArray(dayOfWeeks) || dayOfWeeks.length === 0) return 'All days';
-    return dayOfWeeks.map(idx => days[idx] || '').filter(Boolean).join(', ');
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+    return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
 };
 
-
-// Fee Schedules Tab Component
-const FeeSchedulesTab: React.FC<{
-    schedules: ParkingFeeSchedule[];
-    onEdit: (schedule: ParkingFeeSchedule | null) => void;
-    onDelete: (id: string) => void;
-    onAdd: () => void;
-}> = ({ schedules, onEdit, onDelete, onAdd }) => {
-
-    // const [selectSchedule, setSelectSchedule] = useState<ParkingFeeSchedule | null>(null);
-
-      return (
-        <div>
-            <div className="flex justify-between items-center mb-6">
-                <h2 className="text-lg font-semibold text-gray-900">Fee Schedules</h2>
-
-                <div>
-
-                    <Button
-                        color="default"
-                        onPress={onAdd}
-                        variant='flat'
-                        size='sm'
-                        className="ml-2"
-                    >
-                        <Plus className="w-4 h-4" />
-                        Add Fee Schedule
-                    </Button>
-                </div>
-            </div>
-
-            <div className="  overflow-hidden">
-                <Table
-                    color='secondary'
-                    aria-label="Parking Fee Schedules Table"
-                    className="min-w-full"
-                >
-                    <TableHeader>
-                        <TableColumn>Time Period</TableColumn>
-                        <TableColumn>Vehicle Type</TableColumn>
-                        <TableColumn>Fees</TableColumn>
-                        <TableColumn>Days</TableColumn>
-                        <TableColumn>Status</TableColumn>
-                        <TableColumn>Action</TableColumn>
-                    </TableHeader>
-                    <TableBody>
-                        {schedules.map((schedule) => (
-                            <TableRow key={schedule.id}>
-                                <TableCell>
-                                    <div className="flex items-center gap-1 text-sm ">
-                                        <Clock className="w-4 h-4" />
-                                        {minutesToTime(schedule.startTime || 0)} - {minutesToTime(schedule.endTime || 1440)}
-                                    </div>
-                                </TableCell>
-                                <TableCell>
-                                    <div className="flex items-center gap-1 text-sm ">
-                                        {schedule.forVehicleType === VehicleType.Car ? (
-                                            <Car className="w-3 h-3" />
-                                        ) : (
-                                            <BikeIcon className="w-3 h-3" />
-                                        )}
-                                        {VehicleTypeText[schedule.forVehicleType] || 'Motorbike'}
-                                    </div>
-                                </TableCell>
-                                <TableCell>
-                                    <div className="text-sm ">
-                                        <div className="flex items-center gap-1">
-                                            {/* <DollarSign className="w-4 h-4" /> */}
-                                            {(schedule.initialFee || 0).toFixed(0)}đ initial
-                                        </div>
-                                        <div className="text-xs ">
-                                            +{(schedule.additionalFee || 0).toFixed(0)}đ per {schedule.additionalMinutes || 60}min
-                                        </div>
-                                    </div>
-                                </TableCell>
-                                <TableCell>
-                                    <div className="text-sm ">
-                                        {(() => {
-                                            const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-                                            const toArray = (value: unknown): number[] => {
-                                                if (Array.isArray(value)) {
-                                                    return value
-                                                        .map((v) => Number(v))
-                                                        .filter((n) => Number.isFinite(n));
-                                                }
-                                                if (typeof value === 'string') {
-                                                    if (value.trim().length === 0) return [];
-                                                    return value
-                                                        .split(',')
-                                                        .map((s) => Number(s.trim()))
-                                                        .filter((n) => Number.isFinite(n));
-                                                }
-                                                return [];
-                                            };
-                                            const nums = toArray((schedule as any).dayOfWeeks);
-                                            if (nums.length === 0) return 'All days';
-                                            // Support both 0-based [0..6] and 1-based [1..7]
-                                            const isZeroBased = nums.every((n) => n >= 0 && n <= 6) && !nums.some((n) => n === 7);
-                                            const normalized = (isZeroBased ? nums.map((n) => n + 1) : nums)
-                                                .map((n) => dayNames[Math.max(1, Math.min(7, n)) - 1]);
-                                            return normalized.join(', ');
-                                        })()}
-                                    </div>
-                                </TableCell>
-                                <TableCell>
-                                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${schedule.isActive
-                                        ? 'bg-green-100 text-green-800'
-                                        : 'bg-red-100 text-red-800'
-                                        }`}>
-                                        {schedule.isActive ? 'Active' : 'Inactive'}
-                                    </span>
-                                </TableCell>
-                                <TableCell>
-                                    <Button
-                                        size='sm'
-                                        isIconOnly
-                                        color='primary'
-                                        variant='solid'
-                                        className='bg-transparent'
-                                        onPress={() => onEdit(schedule)}
-
-                                    >
-                                        <Edit2 className="w-4 h-4" />
-                                    </Button>
-                                    <Button
-                                        size='sm'
-                                        isIconOnly
-                                        variant='solid'
-                                        color='danger'
-                                        className='bg-transparent text-danger hidden'
-                                        onPress={() => onDelete(schedule.id)}
-                                    >
-                                        <Trash2 className="w-4 h-4" />
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </div>
-        </div>
-    );
+export const formatDays = (dayOfWeeks: number[]): string => {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    if (!Array.isArray(dayOfWeeks) || dayOfWeeks.length === 0) return 'All days';
+    return dayOfWeeks.map(idx => days[idx] || '').filter(Boolean).join(', ');
 };
 
 

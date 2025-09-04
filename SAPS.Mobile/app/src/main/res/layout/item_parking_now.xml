@@ -428,20 +428,7 @@
             android:orientation="horizontal"
             android:weightSum="3">
 
-            <!-- Extend Button -->
-            <!--                        <Button-->
-            <!--                            android:id="@+id/btnExtendTime"-->
-            <!--                            style="@style/Widget.Material3.Button.OutlinedButton"-->
-            <!--                            android:layout_width="0dp"-->
-            <!--                            android:layout_height="56dp"-->
-            <!--                            android:layout_weight="1"-->
-            <!--                            android:layout_marginEnd="8dp"-->
-            <!--                            android:text="Extend"-->
-            <!--                            android:textSize="13sp"-->
-            <!--                            app:icon="@drawable/add_circle_24dp"-->
-            <!--                            app:iconSize="16dp" />-->
 
-            <!-- Check Out Button (Made More Prominent) -->
             <Button
                 android:id="@+id/btnCheckOut"
                 android:layout_width="0dp"
@@ -450,11 +437,9 @@
                 android:backgroundTint="@color/md_theme_tertiary"
                 android:elevation="8dp"
                 android:text="Check Out"
-                android:textColor="@color/md_theme_onTertiary"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 app:icon="@drawable/exit_to_app_24dp"
-                android:drawableTint="@color/md_theme_onTertiary"
                 app:iconSize="18dp" />
         </LinearLayout>
 

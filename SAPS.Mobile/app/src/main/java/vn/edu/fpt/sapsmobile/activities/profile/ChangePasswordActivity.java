@@ -17,7 +17,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import vn.edu.fpt.sapsmobile.network.client.ApiTest;
+import vn.edu.fpt.sapsmobile.network.client.ApiClient;
 import vn.edu.fpt.sapsmobile.network.api.UserApiService;
 import vn.edu.fpt.sapsmobile.dtos.auth.ChangePasswordRequest;
 import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
@@ -88,7 +88,7 @@ public class ChangePasswordActivity extends AppCompatActivity {
         loadingDialog.show("Changing password...");
 
         // NOTE: change them to ApiClient
-        Retrofit retrofit = ApiTest.getServiceLast(this);
+        Retrofit retrofit = ApiClient.getServiceLast(this);
         UserApiService usersApiService = retrofit.create(UserApiService.class);
 
         ChangePasswordRequest body = new ChangePasswordRequest(userId, current, newPass);

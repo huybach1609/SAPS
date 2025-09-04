@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#f8f9fa">
+    android:background="@color/md_theme_surface"
+    >
 
     <!-- Main Content - Your existing ScrollView -->
     <ScrollView
@@ -321,20 +322,21 @@
     </ScrollView>
 
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <FrameLayout
         android:id="@+id/standard_bottom_sheet"
         style="@style/Widget.Material3.BottomSheet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:backgroundTint="@color/md_theme_secondaryContainer"
+
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <!-- Thông tin -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
             android:background="@drawable/bottom_sheet_background"
+            android:backgroundTint="@color/md_theme_secondaryContainer"
             android:elevation="4dp"
             android:orientation="vertical"
             android:padding="16dp">
@@ -345,15 +347,9 @@
                 android:layout_height="3dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="15dp"
-                android:background="#CCCCCC" />
+                android:background="@color/md_theme_secondary"
+                />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="15dp"
-                android:text="@string/profile_fragment_actions"
-                android:textSize="17sp"
-                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -361,7 +357,9 @@
                 android:layout_marginBottom="10dp"
                 android:text="@string/profile_fragment_account_information"
                 android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:textColor="@color/md_theme_secondary"
+                />
 
             <!-- Row 1 -->
             <LinearLayout
@@ -378,11 +376,17 @@
 
                     <TextView
                         style="@style/ProfileFieldTitle"
-                        android:text="@string/profile_fragment_id_no" />
+                        android:text="@string/profile_fragment_id_no"
+                        android:textColor="@color/md_theme_secondary"
+
+
+                        />
 
                     <TextView
                         android:id="@+id/id_number"
-                        style="@style/ProfileFieldValue" />
+                        style="@style/ProfileFieldValue"
+                        android:textColor="@color/md_theme_secondary"
+                        />
                 </LinearLayout>
 
                 <LinearLayout
@@ -393,11 +397,15 @@
 
                     <TextView
                         style="@style/ProfileFieldTitle"
-                        android:text="@string/profile_fragment_date_of_birth" />
+                        android:text="@string/profile_fragment_date_of_birth"
+                        android:textColor="@color/md_theme_secondary"
+                        />
 
                     <TextView
                         android:id="@+id/date_of_birth"
-                        style="@style/ProfileFieldValue" />
+                        style="@style/ProfileFieldValue"
+                        android:textColor="@color/md_theme_secondary"
+                        />
                 </LinearLayout>
             </LinearLayout>
 
@@ -416,11 +424,15 @@
 
                     <TextView
                         style="@style/ProfileFieldTitle"
-                        android:text="@string/profile_fragment_sex" />
+                        android:text="@string/profile_fragment_sex"
+                        android:textColor="@color/md_theme_secondary"
+                        />
 
                     <TextView
                         android:id="@+id/sex"
-                        style="@style/ProfileFieldValue" />
+                        style="@style/ProfileFieldValue"
+                        android:textColor="@color/md_theme_secondary"
+                        />
                 </LinearLayout>
 
                 <LinearLayout
@@ -431,46 +443,66 @@
 
                     <TextView
                         style="@style/ProfileFieldTitle"
-                        android:text="@string/profile_fragment_nationality" />
+                        android:text="@string/profile_fragment_nationality"
+                        android:textColor="@color/md_theme_secondary"
+                        />
 
                     <TextView
                         android:id="@+id/nationality"
-                        style="@style/ProfileFieldValue" />
+                        style="@style/ProfileFieldValue"
+                        android:textColor="@color/md_theme_secondary"
+                        />
                 </LinearLayout>
             </LinearLayout>
 
             <!-- Row 3 -->
             <TextView
                 style="@style/ProfileFieldTitle"
-                android:text="@string/profile_fragment_place_of_origin" />
+                android:text="@string/profile_fragment_place_of_origin"
+                android:textColor="@color/md_theme_secondary"
+                />
 
             <TextView
                 android:id="@+id/place_of_origin"
-                style="@style/ProfileFieldValue" />
+                style="@style/ProfileFieldValue"
+                android:textColor="@color/md_theme_secondary"
+                />
 
             <TextView
                 style="@style/ProfileFieldTitle"
-                android:text="@string/profile_fragment_place_of_residence" />
+                android:text="@string/profile_fragment_place_of_residence"
+                android:textColor="@color/md_theme_secondary"
+                />
 
             <TextView
                 android:id="@+id/place_of_residence"
-                style="@style/ProfileFieldValue" />
+                style="@style/ProfileFieldValue"
+                android:textColor="@color/md_theme_secondary"
+                />
 
             <TextView
                 style="@style/ProfileFieldTitle"
-                android:text="@string/profile_fragment_phone" />
+                android:text="@string/profile_fragment_phone"
+                android:textColor="@color/md_theme_secondary"
+                />
 
             <TextView
                 android:id="@+id/phone"
-                style="@style/ProfileFieldValue" />
+                style="@style/ProfileFieldValue"
+                android:textColor="@color/md_theme_secondary"
+                />
 
             <TextView
                 style="@style/ProfileFieldTitle"
-                android:text="@string/profile_fragment_member_since" />
+                android:text="@string/profile_fragment_member_since"
+                android:textColor="@color/md_theme_secondary"
+                />
 
             <TextView
                 android:id="@+id/member_since"
-                style="@style/ProfileFieldValue" />
+                style="@style/ProfileFieldValue"
+                android:textColor="@color/md_theme_secondary"
+                />
         </LinearLayout>
     </FrameLayout>
 
