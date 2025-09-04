@@ -2,6 +2,10 @@ package vn.edu.fpt.sapsmobile.utils;
 
 import com.auth0.android.jwt.JWT;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+
 public final class JwtUtils {
 
     private static final String CLAIM_NAME_IDENTIFIER =
@@ -78,6 +82,28 @@ public final class JwtUtils {
             return jwt.isExpired(leewaySeconds);
         } catch (Exception e) {
             return true; // treat parse errors as expired
+        }
+    }
+    public static String getExpired(String token) {
+
+        String raw = token.replaceFirst("(?i)^Bearer\\s+", "");
+
+        try {
+            JWT jwt = new JWT(raw);
+
+            // "exp" is a numeric date in seconds since epoch
+            Long expAt = jwt.getClaim("exp").asLong();
+            if (expAt == null) return "N/A";
+
+            // Convert to Instant
+            Instant instant = Instant.ofEpochSecond(expAt);
+
+            return DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                    .withZone(ZoneId.of("UTC"))
+                    .format(instant);
+
+        } catch (Exception e) {
+            return "N/A"; // treat parse errors as expired
         }
     }
 

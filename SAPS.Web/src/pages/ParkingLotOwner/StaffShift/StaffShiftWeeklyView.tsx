@@ -107,7 +107,7 @@ const StaffShiftWeeklyView: React.FC<StaffShiftWeeklyViewProps> = ({
                             onPress={onRefresh}
                             variant="bordered"
                             className=""
-                            startContent={<RefreshCw className="w-4 h-4" />}
+                            startContent={<RefreshCw size={16} />}
                             isDisabled={loading}
                         >
                             Refresh
@@ -116,7 +116,7 @@ const StaffShiftWeeklyView: React.FC<StaffShiftWeeklyViewProps> = ({
                     <Button
                         onPress={onAdd}
                         className=""
-                        startContent={<Plus className="w-4 h-4" />}
+                        startContent={<Plus size={16} />}
                     >
                         Add Shift
                     </Button>

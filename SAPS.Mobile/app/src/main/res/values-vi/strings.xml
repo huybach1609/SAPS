@@ -374,9 +374,9 @@
     <string name="login_welcome_back">Chào mừng trở lại</string>
     <string name="login_youve_been_missed"></string>
     <string name="login_username_or_email">Tên đăng nhập hoặc Email</string>
-    <string name="login_enter_username_or_email">Nhập tên đăng nhập hoặc email</string>
+    <string name="login_enter_username_or_email">Tên đăng nhập hoặc email</string>
     <string name="login_password">Mật khẩu</string>
-    <string name="login_enter_password">Nhập mật khẩu</string>
+    <string name="login_enter_password">Mật khẩu</string>
     <string name="login_button">Đăng nhập</string>
     <string name="login_forgot_password">Quên mật khẩu?</string>
 

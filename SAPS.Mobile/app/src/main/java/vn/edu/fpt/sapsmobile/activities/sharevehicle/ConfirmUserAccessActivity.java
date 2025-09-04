@@ -2,16 +2,12 @@ package vn.edu.fpt.sapsmobile.activities.sharevehicle;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.elevation.SurfaceColors;
@@ -20,9 +16,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.dtos.profile.ClientProfileSummaryDto;
 import vn.edu.fpt.sapsmobile.dtos.sharevehicle.ShareInvitationRequest;
-import vn.edu.fpt.sapsmobile.models.User;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
-import vn.edu.fpt.sapsmobile.network.client.ApiTest;
+import vn.edu.fpt.sapsmobile.network.client.ApiClient;
 import vn.edu.fpt.sapsmobile.network.api.ShareVehicleApi;
 import vn.edu.fpt.sapsmobile.utils.DateTimeHelper;
 import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
@@ -59,7 +54,7 @@ public class ConfirmUserAccessActivity extends AppCompatActivity {
         // init service
         loadingDialog = new LoadingDialog(this);
         tokenManager = new TokenManager(this);
-        shareVehicleApi = ApiTest.getServiceLast(this).create(ShareVehicleApi.class);
+        shareVehicleApi = ApiClient.getServiceLast(this).create(ShareVehicleApi.class);
         
         // Initialize views
         initViews();

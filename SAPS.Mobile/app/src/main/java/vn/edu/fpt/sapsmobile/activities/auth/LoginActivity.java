@@ -192,12 +192,6 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationSe
             showEmailError("Email or CitizenId is required");
             return false;
         }
-
-//        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-//            showEmailError("Please enter a valid email address");
-//            return false;
-//        }
-
         return true;
     }
 

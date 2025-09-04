@@ -1,8 +1,9 @@
 import { AddStaffFormRequest } from "@/components/utils/staffUtils";
 import { apiUrl } from "@/config/base";
 import { User } from "@/types/User";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { getAuthConfig, getAuthHeaders } from "../utils/apiUtils";
+import { handleStaffError } from "@/utils/errorHandler";
 // import { AddStaffFormRequest } from '../../pages/ParkingLotOwner/StaffManagement/StaffManagement';
 
 // Short ID generation utility for staff IDs
@@ -20,22 +21,22 @@ function generateSecurePassword(): string {
   const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const digits = '0123456789';
   const specialChars = '!@#$%^&*()_+-=[]{};\':"\\|,.<>/?';
-  
+
   // Ensure at least one character from each required category
   let password = '';
   password += lowercase[Math.floor(Math.random() * lowercase.length)]; // 1 lowercase
   password += uppercase[Math.floor(Math.random() * uppercase.length)]; // 1 uppercase
   password += digits[Math.floor(Math.random() * digits.length)]; // 1 digit
   password += specialChars[Math.floor(Math.random() * specialChars.length)]; // 1 special char
-  
+
   // Fill the rest with random characters from all categories
   const allChars = lowercase + uppercase + digits + specialChars;
   const remainingLength = Math.floor(Math.random() * (24 - 8 + 1)) + 8 - 4; // Random length between 8-24, minus the 4 we already added
-  
+
   for (let i = 0; i < remainingLength; i++) {
     password += allChars[Math.floor(Math.random() * allChars.length)];
   }
-  
+
   // Shuffle the password to make it more random
   return password.split('').sort(() => Math.random() - 0.5).join('');
 }
@@ -56,7 +57,7 @@ export async function fetchStaffListStatus(parkingLotId: string) {
     );
     return response.data;
   } catch (error) {
-    throw new Error("Failed to fetch staff list status");
+    handleStaffError(error, 'fetch staff list status');
   }
 }
 
@@ -81,7 +82,7 @@ export async function removeStaff(parkingLotid: string, staffId: string) {
 
     return response.data;
   } catch (error) {
-    throw new Error("Failed to remove staff");
+    handleStaffError(error, 'remove staff');
   }
 }
 
@@ -99,7 +100,7 @@ export async function deactivateStaff(parkingLotid: string, staffId: string) {
 
     return response.data;
   } catch (error) {
-    throw new Error("Failed to deactivate staff");
+    handleStaffError(error, 'deactivate staff');
   }
 }
 
@@ -112,13 +113,13 @@ export async function addStaff(
     if (!validateFullName(staff.fullName)) {
       throw new Error("FULL_NAME_LETTERS_ONLY");
     }
-    
+
     // Generate short ID for staffId to avoid database truncation
     const staffId = generateShortStaffId();
-    
+
     // Generate secure password
     const securePassword = generateSecurePassword();
-    
+
     // Prepare the request body according to the new API structure
     const requestBody = {
       email: staff.email,
@@ -139,8 +140,7 @@ export async function addStaff(
     );
     return response.data;
   } catch (error) {
-    console.log("error", error);
-    throw new Error(error as string);
+    handleStaffError(error, 'add staff');
   }
 }
 export async function updateStaff(
@@ -157,7 +157,7 @@ export async function updateStaff(
     );
     return response.data;
   } catch (error) {
-    throw new Error("Failed to update staff");
+    handleStaffError(error, 'update staff');
   }
 }
 // Fetch all whitelist entries for a parking lot
@@ -197,7 +197,7 @@ export const fetchStaffList = async (
     if (sortBy && sortBy.trim()) {
       params.append("SortBy", sortBy.trim());
     }
-    
+
 
     console.log(`${apiUrl}/api/staff/page?${params.toString()}`);
     const response = await axios.get(
@@ -207,7 +207,7 @@ export const fetchStaffList = async (
       }
     );
 
-    console.log("staffService: fetchStaffList", response.data); 
+    console.log("staffService: fetchStaffList", response.data);
     // Return the complete paginated response
     return response.data;
   } catch (error) {
@@ -259,3 +259,4 @@ export async function searchStaff(keySearch: string, parkingLotId: string) {
     throw new Error("Error searching staff");
   }
 }
+

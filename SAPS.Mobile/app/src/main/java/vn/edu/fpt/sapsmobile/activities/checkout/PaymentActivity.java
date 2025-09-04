@@ -30,9 +30,9 @@ import retrofit2.Response;
 import vn.edu.fpt.sapsmobile.dtos.payment.PaymentApiResponseDTO;
 import vn.edu.fpt.sapsmobile.dtos.payment.PaymentStatusResponseDTO;
 import vn.edu.fpt.sapsmobile.enums.PaymentStatus;
-import vn.edu.fpt.sapsmobile.network.client.ApiTest;
+import vn.edu.fpt.sapsmobile.network.client.ApiClient;
 import vn.edu.fpt.sapsmobile.network.api.TransactionApiService;
-import vn.edu.fpt.sapsmobile.network.api.ParkingSessionApiService;
+import vn.edu.fpt.sapsmobile.network.api.IParkingSessionApiService;
 import vn.edu.fpt.sapsmobile.dtos.payment.PaymentResponseDTO;
 import vn.edu.fpt.sapsmobile.dtos.payment.PaymentDataDTO;
 import vn.edu.fpt.sapsmobile.R;
@@ -124,7 +124,7 @@ public class PaymentActivity extends AppCompatActivity {
     private void loadRequireData() {
         if (sessionID == null || sessionID.isEmpty()) return;
 
-        ParkingSessionApiService api = ApiTest.getServiceLast(this).create(ParkingSessionApiService.class);
+        IParkingSessionApiService api = ApiClient.getServiceLast(this).create(IParkingSessionApiService.class);
         api.getPaymentInfo(sessionID).enqueue(new Callback<PaymentApiResponseDTO>() {
             @Override
             public void onResponse(Call<PaymentApiResponseDTO> call, Response<PaymentApiResponseDTO> response) {
@@ -212,7 +212,7 @@ public class PaymentActivity extends AppCompatActivity {
         }
     }
     private void fetchCheckStatus(String orderCode){
-        TransactionApiService txApi = ApiTest.getServiceLast(this).create(TransactionApiService.class);
+        TransactionApiService txApi = ApiClient.getServiceLast(this).create(TransactionApiService.class);
         txApi.getTransactionPayOs(orderCode).enqueue(new Callback<PaymentStatusResponseDTO>() {
             @Override
             public void onResponse(Call<PaymentStatusResponseDTO> call, Response<PaymentStatusResponseDTO> response) {

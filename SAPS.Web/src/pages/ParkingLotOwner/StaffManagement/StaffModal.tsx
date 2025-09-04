@@ -9,14 +9,24 @@ import { addStaff, updateStaff } from '@/services/parkinglot/staffService';
 export const AddStaffModal = ({ addModalDisclosure, parkingLotId }: { addModalDisclosure: UseDisclosureProps, parkingLotId: string }) => {
 
 
-    const [formData, setFormData] = useState<AddStaffFormRequest>({
+    // const [formData, setFormData] = useState<AddStaffFormRequest>({
+    //     fullName: '',
+    //     email: 'staff@downtownmall.com',
+    //     phone: '+1 (555) 123-4567',
+    //     employeeId: 'EMP-2025-XXX',
+    //     dateOfBirth: '',
+    //     status: UserStatus.ACTIVE
+    // });
+      const [formData, setFormData] = useState<AddStaffFormRequest>({
         fullName: '',
-        email: 'staff@downtownmall.com',
-        phone: '+1 (555) 123-4567',
-        employeeId: 'EMP-2025-XXX',
+        email: '',
+        phone: '',
+        employeeId: '',
         dateOfBirth: '',
         status: UserStatus.ACTIVE
     });
+
+
 
     const handleInputChange = (field: string, value: string) => {
         setFormData(prev => ({
@@ -48,29 +58,20 @@ export const AddStaffModal = ({ addModalDisclosure, parkingLotId }: { addModalDi
         } catch (error) {
             console.error('Error adding staff:', error);
             
-            // Handle specific error messages
+            // Extract error message from the service
             let errorMessage = 'Failed to add staff';
             let errorTitle = 'Error';
             
             if (error instanceof Error) {
-                if (error.message.includes('FULL_NAME_LETTERS_ONLY')) {
-                    errorTitle = 'Invalid Full Name';
-                    errorMessage = 'Full name can only contain letters, spaces, hyphens, apostrophes, and dots. Please check the name format.';
-                } else if (error.message.includes('EMAIL_ALREADY_EXISTS')) {
-                    errorTitle = 'Email Already Exists';
-                    errorMessage = 'An account with this email address already exists. Please use a different email.';
-                } else if (error.message.includes('INVALID_EMAIL')) {
-                    errorTitle = 'Invalid Email';
-                    errorMessage = 'Please enter a valid email address.';
-                } else if (error.message.includes('INVALID_PHONE')) {
-                    errorTitle = 'Invalid Phone Number';
-                    errorMessage = 'Please enter a valid phone number.';
+                // The service now throws errors with format "Title: Message"
+                const errorText = error.message;
+                const colonIndex = errorText.indexOf(':');
+                
+                if (colonIndex !== -1) {
+                    errorTitle = errorText.substring(0, colonIndex).trim();
+                    errorMessage = errorText.substring(colonIndex + 1).trim();
                 } else {
-                    // Try to extract a more specific error message if available
-                    const errorString = error.message;
-                    if (errorString && errorString !== 'Error') {
-                        errorMessage = errorString.replace('Error: ', '');
-                    }
+                    errorMessage = errorText;
                 }
             }
             
@@ -83,9 +84,11 @@ export const AddStaffModal = ({ addModalDisclosure, parkingLotId }: { addModalDi
     }
 
     return (
-        <Modal size='xl' isOpen={addModalDisclosure.isOpen}>
+        <Modal size='xl' isOpen={addModalDisclosure.isOpen} onClose={addModalDisclosure.onClose}
+        scrollBehavior="inside"
+        >
             <ModalContent>
-                {() => (
+                {(onClose) => (
                     <>
                         <ModalHeader className="flex items-center gap-2">
                             <Users className="w-5 h-5 text-primary-900" />
@@ -118,6 +121,7 @@ export const AddStaffModal = ({ addModalDisclosure, parkingLotId }: { addModalDi
                                             <Input
                                                 type="email"
                                                 value={formData.email}
+                                                placeholder=""
                                                 onChange={(e) => handleInputChange('email', e.target.value)}
                                                 className=""
                                             />
@@ -131,6 +135,7 @@ export const AddStaffModal = ({ addModalDisclosure, parkingLotId }: { addModalDi
                                                 type="tel"
                                                 value={formData.phone}
                                                 onChange={(e) => handleInputChange('phone', e.target.value)}
+                                                placeholder=""
                                                 className=""
                                             />
                                         </div>
@@ -202,7 +207,7 @@ export const AddStaffModal = ({ addModalDisclosure, parkingLotId }: { addModalDi
 
                         </ModalBody>
                         <ModalFooter>
-                            <Button color='danger' variant='light' className='' onPress={addModalDisclosure.onClose}>
+                            <Button color='danger' variant='light' className='' onPress={onClose}>
                                 Cancel
                             </Button>
                             <Button color='primary' className='text-background' onPress={handleAddUser}>
@@ -282,29 +287,20 @@ export const UpdateStaffModal = ({ updateModalDisclosure, parkingLotId, user }: 
         } catch (error) {
             console.error('Error updating staff:', error);
             
-            // Handle specific error messages
+            // Extract error message from the service
             let errorMessage = 'Failed to update staff';
             let errorTitle = 'Error';
             
             if (error instanceof Error) {
-                if (error.message.includes('FULL_NAME_LETTERS_ONLY')) {
-                    errorTitle = 'Invalid Full Name';
-                    errorMessage = 'Full name can only contain letters, spaces, hyphens, apostrophes, and dots. Please check the name format.';
-                } else if (error.message.includes('EMAIL_ALREADY_EXISTS')) {
-                    errorTitle = 'Email Already Exists';
-                    errorMessage = 'An account with this email address already exists. Please use a different email.';
-                } else if (error.message.includes('INVALID_EMAIL')) {
-                    errorTitle = 'Invalid Email';
-                    errorMessage = 'Please enter a valid email address.';
-                } else if (error.message.includes('INVALID_PHONE')) {
-                    errorTitle = 'Invalid Phone Number';
-                    errorMessage = 'Please enter a valid phone number.';
+                // The service now throws errors with format "Title: Message"
+                const errorText = error.message;
+                const colonIndex = errorText.indexOf(':');
+                
+                if (colonIndex !== -1) {
+                    errorTitle = errorText.substring(0, colonIndex).trim();
+                    errorMessage = errorText.substring(colonIndex + 1).trim();
                 } else {
-                    // Try to extract a more specific error message if available
-                    const errorString = error.message;
-                    if (errorString && errorString !== 'Error') {
-                        errorMessage = errorString.replace('Error: ', '');
-                    }
+                    errorMessage = errorText;
                 }
             }
             
@@ -317,7 +313,10 @@ export const UpdateStaffModal = ({ updateModalDisclosure, parkingLotId, user }: 
     }
 
     return (
-        <Modal size='xl' isOpen={updateModalDisclosure.isOpen}>
+        <Modal size='xl' isOpen={updateModalDisclosure.isOpen} onClose={updateModalDisclosure.onClose}
+           scrollBehavior="inside"
+           closeButton={true}
+        >
             <ModalContent>
                 {() => (
                     <>

@@ -111,14 +111,14 @@ const ParkingFeeWeeklyView: React.FC<ParkingFeeWeeklyViewProps> = ({
                         onPress={onRefresh}
                         isDisabled={!onRefresh || loading}
                         variant="flat"
-                        startContent={<RefreshCw className="w-4 h-4" />}
+                        startContent={<RefreshCw size={16} />}
                     >
                         Refresh
                     </Button>
                     <Button
                         onPress={onAdd}
                         className=""
-                        startContent={<Plus className="w-4 h-4" />}
+                        startContent={<Plus size={16} />}
                     >
                         Add Schedule
                     </Button>

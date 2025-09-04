@@ -18,6 +18,8 @@ public class DateTimeHelper {
             DateTimeFormatter.ofPattern("HH'h'mm dd/MM/yyyy", new Locale("vi"));
     private static final ZoneId VIETNAM_ZONE = ZoneId.of("Asia/Ho_Chi_Minh");
 
+    private static final DateTimeFormatter FORMATTER_WITH_SPACE = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     // Input formatters for various datetime patterns
     private static final List<DateTimeFormatter> INPUT_FORMATTERS = new ArrayList<>();
 
@@ -61,7 +63,7 @@ public class DateTimeHelper {
      * Input can be UTC (with Z suffix or +00:00) or local datetime.
      * Output: "14h30 ngày 03/07/2025" in Vietnam timezone.
      */
-    private static ZonedDateTime changeToUCT7(String input) {
+    public static ZonedDateTime changeToUCT7(String input) {
 
         LocalDateTime localDateTime = LocalDateTime.parse(input);
 
@@ -73,6 +75,38 @@ public class DateTimeHelper {
         return vietnamDateTime;
     }
 
+    // Alternative method - more flexible with automatic format detection
+    public static ZonedDateTime changeToUCT7Flexible(String input) {
+        if (input == null || input.trim().isEmpty()) {
+            return null;
+        }
+
+        try {
+            String cleanInput = input.trim();
+            LocalDateTime localDateTime;
+
+            // Replace space with 'T' if needed to make it ISO compliant
+            if (cleanInput.contains(" ") && !cleanInput.contains("T")) {
+                cleanInput = cleanInput.replace(" ", "T");
+            }
+
+            // Try parsing with different approaches
+            try {
+                localDateTime = LocalDateTime.parse(cleanInput);
+            } catch (DateTimeParseException e) {
+                // Try with the space format
+                localDateTime = LocalDateTime.parse(input.trim(), FORMATTER_WITH_SPACE);
+            }
+
+            // Convert UTC to Vietnam timezone
+            ZonedDateTime utcDateTime = localDateTime.atZone(ZoneOffset.UTC);
+            return utcDateTime.withZoneSameInstant(VIETNAM_ZONE);
+
+        } catch (Exception e) {
+            System.err.println("Failed to parse datetime: " + input + " - " + e.getMessage());
+            return null;
+        }
+    }
 
     public static String formatDateTime(String input) {
         if (input == null || input.trim().isEmpty()) return "";

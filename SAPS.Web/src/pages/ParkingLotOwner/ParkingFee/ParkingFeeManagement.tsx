@@ -503,7 +503,7 @@ const FeeSchedulesTab: React.FC<{
                         size='sm'
                         className="ml-2"
                     >
-                        <Plus className="w-4 h-4" />
+                        <Plus size={16} />
                         Add Fee Schedule
                     </Button>
                 </div>
