@@ -9,9 +9,6 @@ import vn.edu.fpt.sapsmobile.dtos.vehicle.ShareCodeReturnDto;
 import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleSummaryDto;
 
 public interface ISharedvehicle {
-    @GET("/api/sharedVehicle/getShareCode")
-    Call<ShareCodeReturnDto> getShareCode();
-
     @GET("/api/sharedVehicle")
     Call<List<VehicleSummaryDto>> getShareVehicles(
             @Query("sharedPersonId") String sharedPersonId
