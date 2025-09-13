@@ -51,7 +51,6 @@
 //                    callback.onOcrSuccess(response.body());
 //                } else {
 //                    callback.onOcrFailure(parseErrorMessage(response));
-//                }
 //            }
 //
 //            @Override
