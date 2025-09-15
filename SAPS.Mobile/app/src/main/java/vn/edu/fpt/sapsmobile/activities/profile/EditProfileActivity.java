@@ -6,8 +6,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,11 +16,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.elevation.SurfaceColors;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,36 +33,39 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Callback;
 import retrofit2.Response;
-import vn.edu.fpt.sapsmobile.network.api.ApiService;
-import vn.edu.fpt.sapsmobile.network.client.ApiTest;
+import vn.edu.fpt.sapsmobile.network.api.OcrService;
+import vn.edu.fpt.sapsmobile.network.client.ApiClient;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.models.ClientProfile;
 import vn.edu.fpt.sapsmobile.dtos.profile.IdCardResponse;
 
 import vn.edu.fpt.sapsmobile.models.User;
 
+import vn.edu.fpt.sapsmobile.services.AuthenticationService;
 import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
 import vn.edu.fpt.sapsmobile.utils.TokenManager;
 
 
 public class EditProfileActivity extends AppCompatActivity {
-
+    //service
+    private TokenManager tokenManager;
+    private AuthenticationService authenticationService;
+    private LoadingDialog loadingDialog;
+    // component
+    private MaterialToolbar toolbar;
     private EditText phoneInput;
     private TextView nameInput, idNoInput, sexInput,
             nationalityInput, dobInput, placeOriginInput,
             placeResidenceInput, issueDateInput, issuePlaceInput;
     private Button saveButton, btnFetchAgain;
-    private TokenManager tokenManager;
     private User currentUser;
     private ImageView previewImage, previewImageBack;
-
-    private LoadingDialog loadingDialog;
-
+    private Uri frontImageUri;
+    private Uri backImageUri;
+    // config
     private static final int REQUEST_PICK_FRONT = 2001;
     private static final int REQUEST_PICK_BACK = 2002;
 
-    private Uri frontImageUri;
-    private Uri backImageUri;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -69,27 +73,39 @@ public class EditProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
-        setupActionBar();
         bindViews();
+        setupToolbar();
 
         tokenManager = new TokenManager(this);
         loadingDialog = new LoadingDialog(this);
+        authenticationService = new AuthenticationService(this);
 
         loadUserAndFill();
 
         setupButtons();
     }
+    private void setupToolbar() {
 
-    private void setupActionBar() {
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setTitle(R.string.edit_profile_heading_main);
-            actionBar.setSubtitle(R.string.edit_profile_heading_sub);
-            actionBar.setDisplayHomeAsUpEnabled(true);
+
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(R.string.edit_profile_heading_main);
+            getSupportActionBar().setSubtitle(R.string.edit_profile_heading_sub);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+            int surface = SurfaceColors.SURFACE_0.getColor(this);
+            getWindow().setStatusBarColor(surface);
+            getWindow().setNavigationBarColor(surface);
+
+
+            toolbar.setNavigationOnClickListener(v -> onBackPressed());
         }
     }
 
+
+
     private void bindViews() {
+        toolbar = findViewById(R.id.topAppBar);
         nameInput = findViewById(R.id.input_name);                // TextView
         idNoInput = findViewById(R.id.input_id_no);               // TextView
         sexInput = findViewById(R.id.input_sex);                  // TextView
@@ -184,8 +200,8 @@ public class EditProfileActivity extends AppCompatActivity {
 
 
                     Log.i(TAG, "submitClientProfileRequest: Updating client profile with new API");
-                    ApiService apiService = ApiTest.getServiceLast(this).create(ApiService.class);
-                    retrofit2.Call<User> call = apiService.updateClientProfile(
+                    OcrService ocrService = ApiClient.getServiceLast(this).create(OcrService.class);
+                    retrofit2.Call<User> call = ocrService.updateClientProfile(
                             frontPart,
                             backPart,
                             citizenIdBody,
@@ -206,11 +222,23 @@ public class EditProfileActivity extends AppCompatActivity {
                             loadingDialog.dismiss();
 
                             if (response.isSuccessful() && response.body() != null) {
-                                User updatedUser = response.body();
+                                User updatedUser = authenticationService.getCurrentUser();
                                 // Update the stored user data
                                 tokenManager.saveUserData(updatedUser);
                                 Toast.makeText(EditProfileActivity.this, getString(R.string.toast_profile_request_submitted), Toast.LENGTH_SHORT).show();
-                                finish();
+                                // Add 2-second delay before navigating to ProfileFragment
+                                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        // Navigate to MainActivity with ProfileFragment selected
+                                        Intent intent = new Intent(EditProfileActivity.this, vn.edu.fpt.sapsmobile.activities.main.MainActivity.class);
+                                        intent.putExtra("selected_fragment", "profile");
+                                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                }, 2000); // 2000 milliseconds = 2 seconds
+//                                finish();
                             } else {
                                 String errorMessage = "Failed to update client profile";
                                 if (response.code() == 400) {
@@ -375,8 +403,8 @@ public class EditProfileActivity extends AppCompatActivity {
             MultipartBody.Part frontPart = MultipartBody.Part.createFormData("FrontImage", "front.jpg", frontBody);
             MultipartBody.Part backPart = MultipartBody.Part.createFormData("BackImage", "back.jpg", backBody);
 
-            ApiService apiService = ApiTest.getServiceLast(this).create(ApiService.class);
-            retrofit2.Call<IdCardResponse> call = apiService.getInfoIdCard(frontPart, backPart);
+            OcrService ocrService = ApiClient.getServiceLast(this).create(OcrService.class);
+            retrofit2.Call<IdCardResponse> call = ocrService.getInfoIdCard(frontPart, backPart);
             // Convert byte arrays to Base64
 //            String frontBase64 = Base64.encodeToString(frontBytes, Base64.NO_WRAP);
 //            String backBase64 = Base64.encodeToString(backBytes, Base64.NO_WRAP);
@@ -470,12 +498,5 @@ public class EditProfileActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            finish();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
+
 }

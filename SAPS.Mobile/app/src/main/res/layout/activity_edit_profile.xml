@@ -1,10 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:clipToPadding="false">
+    android:background="@color/md_theme_surface"
+    android:fitsSystemWindows="true">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            style="@style/Widget.Material3.Toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:backgroundTint="?attr/colorSurface"
+            app:titleTextColor="?attr/colorOnSurface"
+            app:navigationIconTint="?attr/colorOnSurface"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:navigationIcon="@drawable/ic_arrow_back"
+            app:title=""
+            />
+
+        <!--        app:menu="@menu/menu_invitation_list"-->
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,31 +47,14 @@
 
 
 
-        <!-- Title -->
-<!--        <TextView-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:gravity="start"-->
-<!--            android:text="@string/edit_profile_heading_main"-->
-<!--            android:textSize="20sp"-->
-<!--            android:textStyle="bold" />-->
 
-<!--        <TextView-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_marginBottom="20dp"-->
-<!--            android:gravity="start"-->
-<!--            android:text="@string/edit_profile_heading_sub"-->
-<!--            android:textSize="14sp" />-->
-
-        <!-- Upload Section -->
         <LinearLayout
             android:background="@drawable/rounded_alert_background"
             android:id="@+id/upload_card_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:backgroundTint="@color/md_theme_onPrimaryContainer"
+            android:backgroundTint="@color/md_theme_primaryContainer"
             android:gravity="center"
             android:orientation="vertical"
             android:padding="20dp">
@@ -66,7 +79,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
-                android:textColor="@color/md_theme_onSecondary"
+                android:textColor="@color/md_theme_onPrimaryContainer"
                 android:gravity="center"
                 android:text="@string/edit_profile_card_sub"
                 android:textSize="13sp"
@@ -83,13 +96,14 @@
                 <!--                android:text="📷 Take Photo"-->
                 <!--                android:text="🖼️ Front Side"-->
                 <!--                android:text="🖼️ Back Side"-->
+
                 <Button
                     android:id="@+id/btn_take_photo"
                     style="@style/Widget.Material3.Button.Icon"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:icon="@drawable/photo_camera_24dp"
-                    android:text="@string/edit_profile_btn_take_photo"/>
+                    android:text="@string/edit_profile_btn_take_photo"
+                    app:icon="@drawable/photo_camera_24dp" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -199,7 +213,7 @@
                     android:paddingStart="0dp"
                     android:paddingEnd="16dp"
                     android:text="@string/edit_profile_sample_id_number"
-                    android:textColor="#000000"
+                    android:textColor="@color/md_theme_onSurface"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -232,7 +246,7 @@
                     android:gravity="end"
                     android:paddingEnd="16dp"
                     android:text="@string/edit_profile_sample_gender_male"
-                    android:textColor="#000000"
+                    android:textColor="@color/md_theme_onSurface"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -266,7 +280,7 @@
                     android:gravity="end"
                     android:paddingEnd="16dp"
                     android:text="@string/edit_profile_sample_nationality_vietnamese"
-                    android:textColor="#000000"
+                    android:textColor="@color/md_theme_onSurface"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -300,7 +314,7 @@
                     android:gravity="end"
                     android:paddingEnd="16dp"
                     android:text="@string/edit_profile_sample_full_name"
-                    android:textColor="#000000"
+                    android:textColor="@color/md_theme_onSurface"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -333,7 +347,7 @@
                     android:gravity="end"
                     android:paddingEnd="16dp"
                     android:text="@string/edit_profile_sample_date_of_birth"
-                    android:textColor="#000000"
+                    android:textColor="@color/md_theme_onSurface"
                     android:textSize="16sp" />
             </LinearLayout>
 
@@ -370,7 +384,7 @@
                     android:gravity="end"
                     android:paddingStart="0dp"
                     android:paddingEnd="16dp"
-                    android:textColor="#000000"
+                    android:textColor="@color/md_theme_onSurface"
                     android:textColorHint="#CCCCCC" />
 
 
@@ -408,7 +422,7 @@
                     android:gravity="end"
                     android:paddingStart="0dp"
                     android:paddingEnd="16dp"
-                    android:textColor="#000000"
+                    android:textColor="@color/md_theme_onSurface"
                     android:textColorHint="#CCCCCC" />
             </LinearLayout>
 
@@ -445,7 +459,7 @@
                     android:gravity="end"
                     android:paddingStart="0dp"
                     android:paddingEnd="16dp"
-                    android:textColor="#000000"
+                    android:textColor="@color/md_theme_onSurface"
                     android:textColorHint="#CCCCCC" />
             </LinearLayout>
 
@@ -481,7 +495,7 @@
                     android:gravity="end"
                     android:paddingStart="0dp"
                     android:paddingEnd="16dp"
-                    android:textColor="#000000"
+                    android:textColor="@color/md_theme_onSurface"
                     android:textColorHint="#CCCCCC" />
             </LinearLayout>
 
@@ -559,12 +573,12 @@
         <!-- Submit -->
         <Button
             android:id="@+id/btn_save_profile"
-            style="@style/Widget.Material3.Button.ElevatedButton"
+            style="@style/Widget.Material3.Button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:backgroundTint="@color/md_theme_primaryContainer"
             android:text="@string/edit_profile_btn_submit_update"
-            android:textColor="@color/md_theme_onPrimary" />
+            />
     </LinearLayout>
-</ScrollView>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

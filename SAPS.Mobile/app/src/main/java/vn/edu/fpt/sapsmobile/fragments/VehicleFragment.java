@@ -1,8 +1,10 @@
 package vn.edu.fpt.sapsmobile.fragments;
 
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -26,31 +28,23 @@ import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.button.MaterialSplitButton;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import vn.edu.fpt.sapsmobile.activities.sharevehicle.InvitationActivity;
-import vn.edu.fpt.sapsmobile.enums.ShareVehicleStatus;
-import vn.edu.fpt.sapsmobile.network.client.ApiTest;
-import vn.edu.fpt.sapsmobile.network.api.ISharedvehicle;
-import vn.edu.fpt.sapsmobile.network.api.IVehicleApi;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.actionhandler.VehicleFragmentHandler;
 import vn.edu.fpt.sapsmobile.activities.auth.AddVehicleActivity;
 import vn.edu.fpt.sapsmobile.adapters.VehicleAdapter;
-import vn.edu.fpt.sapsmobile.dtos.vehicle.ShareCodeReturnDto;
 import vn.edu.fpt.sapsmobile.models.User;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
 import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleSummaryDto;
+import vn.edu.fpt.sapsmobile.services.vehicle.VehicleService;
 import vn.edu.fpt.sapsmobile.utils.JwtUtils;
 import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
 import vn.edu.fpt.sapsmobile.utils.RecyclerUtils;
 import vn.edu.fpt.sapsmobile.utils.TokenManager;
 
-public class VehicleFragment extends Fragment {
+public class VehicleFragment extends Fragment implements VehicleService.VehicleCallBack {
 
     private static final String TAG = "VehicleFragment";
 
@@ -65,18 +59,14 @@ public class VehicleFragment extends Fragment {
     private MaterialSplitButton splitButton;
     private Button btnViewInvitation;
     private Button expandButton;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     // Data
     private List<Vehicle> vehicleList;
     private TokenManager tokenManager;
 
     // API Services
-    private IVehicleApi vehicleApi;
-    private ISharedvehicle sharedVehicleApi;
-
-    // Current API calls (for cancellation)
-    private Call<List<VehicleSummaryDto>> currentVehicleCall;
-    private Call<ShareCodeReturnDto> shareCodeCall;
+    private VehicleService vehicleService;
 
     // Tab states
     private static final int TAB_MY_VEHICLES = 0;
@@ -84,7 +74,6 @@ public class VehicleFragment extends Fragment {
     private int currentTab = TAB_MY_VEHICLES;
 
     public VehicleFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -93,6 +82,7 @@ public class VehicleFragment extends Fragment {
 
         initializeComponents(view);
         setupStatusBar();
+        setupSwipeRefresh(view);
         setupSplitButton();
         setupRecyclerView();
         setupClickListeners();
@@ -100,12 +90,10 @@ public class VehicleFragment extends Fragment {
         return view;
     }
 
-
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        initializeApiServices();
         setupToggleButtons();
         loadInitialData();
     }
@@ -113,16 +101,15 @@ public class VehicleFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        cancelAllApiCalls();
         loadingDialog.dismiss();
     }
 
     //region INITIALIZATION METHODS
-
     private void initializeComponents(View view) {
         tokenManager = new TokenManager(getActivity());
         loadingDialog = new LoadingDialog(getActivity());
         vehicleList = new ArrayList<>();
+        vehicleService = new VehicleService(getContext());
 
         // Find views
         rvVehicles = view.findViewById(R.id.rvVehicles);
@@ -134,6 +121,9 @@ public class VehicleFragment extends Fragment {
         splitButton = view.findViewById(R.id.splitbutton);
         btnViewInvitation = view.findViewById(R.id.btn_view_invitation);
         expandButton = view.findViewById(R.id.expand_more_or_less_filled);
+        
+        // swipe refresh layout
+        swipeRefreshLayout = view.findViewById(R.id.swipeRefreshLayout);
     }
 
     private void setupStatusBar() {
@@ -158,13 +148,19 @@ public class VehicleFragment extends Fragment {
         rvVehicles.setAdapter(vehicleAdapter);
     }
 
-    private void setupClickListeners() {
-        btn_copy_code.setOnClickListener(this::onCopyCodeClicked);
+    private void setupSwipeRefresh(View view) {
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setColorSchemeColors(
+                    ContextCompat.getColor(getContext(), R.color.md_theme_primary)
+            );
+            swipeRefreshLayout.setOnRefreshListener(() -> {
+                loadInitialData();
+            });
+        }
     }
 
-    private void initializeApiServices() {
-        vehicleApi = ApiTest.getServiceLast(requireContext()).create(IVehicleApi.class);
-        sharedVehicleApi = ApiTest.getServiceLast(requireContext()).create(ISharedvehicle.class);
+    private void setupClickListeners() {
+        btn_copy_code.setOnClickListener(this::onCopyCodeClicked);
     }
 
     private void setupToggleButtons() {
@@ -177,17 +173,13 @@ public class VehicleFragment extends Fragment {
     //endregion
 
     //region CLICK HANDLERS
-
     private void setupSplitButton() {
-        // Set up the main button click (default action)
         btnViewInvitation.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), InvitationActivity.class);
             startActivitySafely(intent);
         });
-
         // Set up the dropdown button click
         expandButton.setOnClickListener(this::showDropdownMenu);
-
     }
 
     private void showDropdownMenu(View anchoView) {
@@ -199,12 +191,7 @@ public class VehicleFragment extends Fragment {
             if (itemId == R.id.menu_register_own) {
                 startActivitySafely(new Intent(requireContext(), AddVehicleActivity.class));
                 return true;
-            }
-//            else if (itemId == R.id.menu_receive_share) {
-//                startActivitySafely(new Intent(requireContext(), ShareVehicleAccessActivity.class));
-//                return true;
-//            }
-            else {
+            } else {
                 return false;
             }
         });
@@ -231,48 +218,26 @@ public class VehicleFragment extends Fragment {
             showToast("Failed to copy code");
         }
     }
-
-
     //endregion
-    //region DATA LOADING METHODS
 
+    //region DATA LOADING METHODS
     private void loadInitialData() {
         loadShareCode();
-        loadMyVehicles();
+        loadVehicle();
+    }
+
+    private void loadVehicle() {
+        if (!isFragmentValid()) return;
+        showLoadingDialog();
+        vehicleService.loadMyVehicles(this);
     }
 
     private void loadShareCode() {
         if (!isFragmentValid()) return;
         String token = tokenManager.getAccessToken();
-        Log.i(TAG, "loadShareCode: " + token);
         String sharecode = JwtUtils.getShareCodeFromToken(token);
         tv_share_code.setText(sharecode);
-
-//        tv_share_code.setText(getString(R.string.loading_data));
-//
-//        shareCodeCall = sharedVehicleApi.getShareCode();
-//        shareCodeCall.enqueue(new Callback<ShareCodeReturnDto>() {
-//            @Override
-//            public void onResponse(Call<ShareCodeReturnDto> call, Response<ShareCodeReturnDto> response) {
-//                if (!isFragmentValid()) return;
-//
-//                if (response.isSuccessful() && response.body() != null) {
-//                    tv_share_code.setText(response.body().getShareCode());
-//                } else {
-//                    handleApiError("Failed to load share code", response.code(), null);
-//                    tv_share_code.setText("Error loading code");
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ShareCodeReturnDto> call, Throwable t) {
-//                if (!isFragmentValid() || call.isCanceled()) return;
-//
-//                Log.e(TAG, "Failed to load share code", t);
-//                handleApiError("Network error loading share code", -1, t);
-//                tv_share_code.setText("Network error");
-//            }
-//        });
+//        Log.i(TAG, "loadShareCode: " + token);
     }
 
     private void handleTabSelection(int checkedId) {
@@ -284,7 +249,7 @@ public class VehicleFragment extends Fragment {
                 handler.setCurrentTab(currentTab);
                 handler.setOnActionCompletedListener(this::refreshCurrentTabData);
             }
-            loadMyVehicles();
+            loadVehicle();
         } else if (checkedId == R.id.btnSharedVehicles) {
             currentTab = TAB_SHARED_VEHICLES;
             vehicleAdapter.setCurrentTab(currentTab);
@@ -293,95 +258,58 @@ public class VehicleFragment extends Fragment {
                 handler.setCurrentTab(currentTab);
                 handler.setOnActionCompletedListener(this::refreshCurrentTabData);
             }
-            loadSharedVehicles();
+
+            if (!isFragmentValid()) return;
+            User user = tokenManager.getUserData();
+            if (user == null || user.getId() == null) {
+                showToast("User data not available");
+                return;
+            }
+            showLoadingDialog();
+            vehicleService.loadSharedVehicles(user.getId(), this);
         }
     }
 
-    private void loadMyVehicles() {
-        if (!isFragmentValid()) return;
-
-        cancelCurrentVehicleCall();
-
-        currentVehicleCall = vehicleApi.getMyVehicles(null, null);
-        showLoadingDialog();
-
-        currentVehicleCall.enqueue(new Callback<List<VehicleSummaryDto>>() {
-            @Override
-            public void onResponse(Call<List<VehicleSummaryDto>> call, Response<List<VehicleSummaryDto>> response) {
-                loadingDialog.dismiss();
-                if (!isFragmentValid()) return;
-
-                if (response.isSuccessful() && response.body() != null) {
-                    updateVehicleList(response.body());
-                } else {
-                    handleApiError("Failed to load my vehicles", response.code(), null);
-                    showEmptyVehicleList();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<VehicleSummaryDto>> call, Throwable t) {
-                loadingDialog.dismiss();
-                if (!isFragmentValid() || call.isCanceled()) return;
-
-                Log.e(TAG, "Failed to load my vehicles", t);
-                handleApiError("Network error loading vehicles", -1, t);
-                showEmptyVehicleList();
-            }
-        });
-    }
-
-    private void loadSharedVehicles() {
-        if (!isFragmentValid()) return;
-
-        User user = tokenManager.getUserData();
-        if (user == null || user.getId() == null) {
-            showToast("User data not available");
-            return;
+    @Override
+    public void OnVehicleFetchSuccess(List<VehicleSummaryDto> vehicleSummaryDtos) {
+        loadingDialog.dismiss();
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setRefreshing(false);
         }
-
-        cancelCurrentVehicleCall();
-
-        currentVehicleCall = sharedVehicleApi.getShareVehicles(user.getId());
-        showLoadingDialog();
-
-        currentVehicleCall.enqueue(new Callback<List<VehicleSummaryDto>>() {
-            @Override
-            public void onResponse(Call<List<VehicleSummaryDto>> call, Response<List<VehicleSummaryDto>> response) {
-                loadingDialog.dismiss();
-                if (!isFragmentValid()) return;
-
-                if (response.isSuccessful() && response.body() != null) {
-                    List<VehicleSummaryDto> list = new ArrayList<>(response.body());
-
-                    Iterator<VehicleSummaryDto> iterator = list.iterator();
-                    while (iterator.hasNext()) {
-                        var s = iterator.next();
-                        if (ShareVehicleStatus.PENDING.getValue().equals(s.getSharingStatus()) ||
-                                ShareVehicleStatus.AVAILABLE.getValue().equals(s.getSharingStatus())) {
-                            iterator.remove();
-                        }
-                    }
-                    updateVehicleList(list);
-                } else {
-                    handleApiError("Failed to load shared vehicles", response.code(), null);
-                    showEmptyVehicleList();
-                }
-            }
-
-            @Override
-            public void onFailure(Call<List<VehicleSummaryDto>> call, Throwable t) {
-                loadingDialog.dismiss();
-                if (!isFragmentValid() || call.isCanceled()) return;
-
-                Log.e(TAG, "Failed to load shared vehicles", t);
-                handleApiError("Network error loading shared vehicles", -1, t);
-                showEmptyVehicleList();
-            }
-        });
+        if (!isFragmentValid()) return;
+        updateVehicleList(vehicleSummaryDtos);
     }
 
+    @Override
+    public void OnVehicleFetchFailure(String message) {
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
+        showToast(message);
+        showEmptyVehicleList();
+    }
+
+    @Override
+    public void OnSharedVehicleFetchSuccess(List<VehicleSummaryDto> vehicleSummaryDtos) {
+        loadingDialog.dismiss();
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
+        if (!isFragmentValid()) return;
+        updateVehicleList(vehicleSummaryDtos);
+    }
+
+    @Override
+    public void OnSharedVehicleFetchFailure(String message) {
+        loadingDialog.dismiss();
+        if (swipeRefreshLayout != null) {
+            swipeRefreshLayout.setRefreshing(false);
+        }
+        showToast(message);
+        showEmptyVehicleList();
+    }
     //endregion
+
     //region UI UPDATE METHODS
 
     private void updateVehicleList(List<VehicleSummaryDto> summaryDtos) {
@@ -397,7 +325,6 @@ public class VehicleFragment extends Fragment {
 
     private void showLoadingDialog() {
         loadingDialog.show("Loading vehicles...", true, () -> {
-            cancelCurrentVehicleCall();
             showToast("Loading cancelled");
         });
     }
@@ -405,16 +332,21 @@ public class VehicleFragment extends Fragment {
     private void refreshCurrentTabData() {
         // Refresh data based on current tab
         if (currentTab == TAB_MY_VEHICLES) {
-            loadMyVehicles();
+            showLoadingDialog();
+            vehicleService.loadMyVehicles(this);
         } else if (currentTab == TAB_SHARED_VEHICLES) {
-            loadSharedVehicles();
+            User user = tokenManager.getUserData();
+            if (user == null || user.getId() == null) {
+                showToast("User data not available");
+                return;
+            }
+            showLoadingDialog();
+            vehicleService.loadSharedVehicles(user.getId(), this);
         }
     }
     //endregion
 
-
     //region UTILITY METHODS
-
     private boolean isFragmentValid() {
         return isAdded() && getContext() != null && !isDetached();
     }
@@ -425,61 +357,12 @@ public class VehicleFragment extends Fragment {
         }
     }
 
-    private void handleApiError(String message, int responseCode, Throwable throwable) {
-        String errorMessage = message;
-
-        if (responseCode > 0) {
-            switch (responseCode) {
-                case 400:
-                    errorMessage = "Bad request - please check your data";
-                    break;
-                case 401:
-                    errorMessage = "Unauthorized - please login again";
-                    break;
-                case 403:
-                    errorMessage = "Access forbidden";
-                    break;
-                case 404:
-                    errorMessage = "Data not found";
-                    break;
-                case 500:
-                    errorMessage = "Server error - please try again later";
-                    break;
-                default:
-                    errorMessage = message + " (Code: " + responseCode + ")";
-            }
-        } else if (throwable != null) {
-            if (throwable.getMessage() != null && throwable.getMessage().contains("timeout")) {
-                errorMessage = "Request timeout - please check your connection";
-            } else if (throwable.getMessage() != null && throwable.getMessage().contains("Unable to resolve host")) {
-                errorMessage = "No internet connection";
-            }
-        }
-
-        Log.e(TAG, errorMessage, throwable);
-        showToast(errorMessage);
-    }
-
     private void startActivitySafely(Intent intent) {
         try {
             startActivity(intent);
         } catch (Exception e) {
             Log.e(TAG, "Failed to start activity", e);
             showToast("Failed to open activity");
-        }
-    }
-
-    private void cancelCurrentVehicleCall() {
-        if (currentVehicleCall != null && !currentVehicleCall.isCanceled()) {
-            currentVehicleCall.cancel();
-        }
-    }
-
-    private void cancelAllApiCalls() {
-        cancelCurrentVehicleCall();
-
-        if (shareCodeCall != null && !shareCodeCall.isCanceled()) {
-            shareCodeCall.cancel();
         }
     }
 

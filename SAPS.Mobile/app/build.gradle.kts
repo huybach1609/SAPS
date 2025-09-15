@@ -6,21 +6,33 @@ android {
     namespace = "vn.edu.fpt.sapsmobile"
     compileSdk = 35
 
-    buildFeatures{
+    buildFeatures {
         buildConfig = true
     }
     buildTypes {
         debug {
-            buildConfigField("String", "GOOGLE_CLIENT_ID", "\"275429573503-526ri9oq1obai6d1qmj4qd07njuhahtk.apps.googleusercontent.com\"")
-            buildConfigField("String", "SERVER_BASE_URL", "\"http://10.35.88.37:5093/\"")
-            buildConfigField("String", "MOCK_BASE_URL", "\"https://48073b2d-bd5d-43d0-adbd-e5e9713061aa.mock.pstmn.io/\"")
+            buildConfigField(
+                "String",
+                "GOOGLE_CLIENT_ID",
+                "\"275429573503-526ri9oq1obai6d1qmj4qd07njuhahtk.apps.googleusercontent.com\""
+            )
+            buildConfigField("String", "API_BASE_URL", "\"https://192.168.1.25:7040/\"")
+            buildConfigField("boolean", "ENABLE_LOGGING", "true")
+
         }
         release {
             isMinifyEnabled = false
-
-            buildConfigField("String", "GOOGLE_CLIENT_ID", "\"275429573503-526ri9oq1obai6d1qmj4qd07njuhahtk.apps.googleusercontent.com\"")
-            buildConfigField("String", "SERVER_BASE_URL", "\"http://10.35.88.37:5093/\"")
-            buildConfigField("String", "MOCK_BASE_URL", "\"https://48073b2d-bd5d-43d0-adbd-e5e9713061aa.mock.pstmn.io/\"")
+            buildConfigField(
+                "String",
+                "GOOGLE_CLIENT_ID",
+                "\"275429573503-526ri9oq1obai6d1qmj4qd07njuhahtk.apps.googleusercontent.com\""
+            )
+            buildConfigField(
+                "String",
+                "API_BASE_URL",
+                "\"https://anemosnguyen2409.southeastasia.cloudapp.azure.com/\""
+            )
+            buildConfigField("boolean", "ENABLE_LOGGING", "false")
         }
     }
 
@@ -32,6 +44,15 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "BASE_URL_DEV", "\"https://192.168.1.25:7040/\"")
+        buildConfigField("String", "BASE_URL_STAGING", "\"http://172.188.240.201/\"")
+        buildConfigField(
+            "String",
+            "BASE_URL_PROD",
+            "\"https://anemosnguyen2409.southeastasia.cloudapp.azure.com/\""
+        )
+        buildConfigField("boolean", "ENABLE_LOGGING", "true")
     }
 
     buildTypes {
@@ -51,15 +72,15 @@ android {
 
 dependencies {
 
-    implementation ("com.github.bumptech.glide:glide:4.16.0")
-    implementation ("com.google.android.material:material:1.14.0-alpha01")
-    implementation ("com.google.android.gms:play-services-auth:21.3.0")
-    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
-    implementation ("com.google.code.gson:gson:2.10.1")
-    implementation ("com.squareup.okhttp3:logging-interceptor:4.11.0")
-    implementation ("com.journeyapps:zxing-android-embedded:4.3.0")
-    implementation ("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+    implementation("com.google.android.material:material:1.14.0-alpha01")
+    implementation("com.google.android.gms:play-services-auth:21.3.0")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+    implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("com.auth0.android:jwtdecode:2.0.2")
 
     implementation(libs.appcompat)

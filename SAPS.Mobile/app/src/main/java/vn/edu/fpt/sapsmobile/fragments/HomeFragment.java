@@ -18,35 +18,28 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import vn.edu.fpt.sapsmobile.network.client.ApiTest;
-import vn.edu.fpt.sapsmobile.network.api.ParkingSessionApiService;
-import vn.edu.fpt.sapsmobile.network.api.IVehicleApi;
+import vn.edu.fpt.sapsmobile.activities.auth.LoginActivity;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.actionhandler.HistoryFragmentHandler;
 import vn.edu.fpt.sapsmobile.activities.NotificationsListActivity;
 import vn.edu.fpt.sapsmobile.adapters.ParkingSessionParkingAdapter;
 import vn.edu.fpt.sapsmobile.models.ParkingSession;
 import vn.edu.fpt.sapsmobile.models.User;
-import vn.edu.fpt.sapsmobile.models.Vehicle;
-import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleSummaryDto;
-import vn.edu.fpt.sapsmobile.dtos.parkingsession.OwnedSessionRequest;
-import vn.edu.fpt.sapsmobile.dtos.parkingsession.OwnedSessionResponse;
+import vn.edu.fpt.sapsmobile.services.ParkingSessionService;
 import vn.edu.fpt.sapsmobile.utils.TokenManager;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements 
+        ParkingSessionService.ParkingSessionCallback,
+        ParkingSessionService.DataLoadingCallback {
 
     // UI Components
-//    private RecyclerView rvParkingHistory;
     private RecyclerView rvCurrentSessions;
     private SwipeRefreshLayout swipeRefreshLayout;
     private TextView tvGreating;
@@ -60,8 +53,11 @@ public class HomeFragment extends Fragment {
     private ParkingSessionParkingAdapter parkingSessionAdapter;
     private List<ParkingSession> parkingSessionList;
 
+    // Services
+    private ParkingSessionService parkingSessionService;
     private TokenManager tokenManager;
 
+    private final String TAG = "HomeFragment";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -95,7 +91,7 @@ public class HomeFragment extends Fragment {
 
     private void initializeComponents(View view) {
         tokenManager = new TokenManager(getActivity());
-//        durationHandler = new Handler(Looper.getMainLooper());
+        parkingSessionService = new ParkingSessionService(requireContext());
     }
 
     private void setupStatusBar() {
@@ -125,7 +121,6 @@ public class HomeFragment extends Fragment {
             rvCurrentSessions.setLayoutManager(new LinearLayoutManager(getContext()));
         }
 
-
         parkingSessionAdapter = new ParkingSessionParkingAdapter(
                 new ArrayList<>(),
                 new HistoryFragmentHandler(requireContext()),
@@ -136,12 +131,9 @@ public class HomeFragment extends Fragment {
         if (rvCurrentSessions != null) {
             rvCurrentSessions.setAdapter(parkingSessionAdapter);
         }
-
     }
 
-
     private void findViews(View view) {
-
         btnCheckOut = view.findViewById(R.id.btnCheckOut);
         btnNotification = view.findViewById(R.id.btnNotification);
         tvGreating = view.findViewById(R.id.tvGreeting);
@@ -175,202 +167,58 @@ public class HomeFragment extends Fragment {
     // ================ DATA LOADING METHODS ================
 
     private void loadParkingSessionData() {
-        startRefreshing();
-        resetSessionData();
-        fetchOwnedSessions();
+        parkingSessionService.fetchOwnedSessions(this, this);
     }
 
-    private void startRefreshing() {
+    // ================ PARKING SESSION SERVICE CALLBACKS ================
+
+    @Override
+    public void onSuccess(List<ParkingSession> parkingSessions) {
+        if (!isAdded() || getContext() == null) return;
+        
+        parkingSessionList = parkingSessions;
+        parkingSessionAdapter.updateItems(parkingSessionList);
+        
+        // Hide both containers when we have data
+        if (parkingSessionContainer != null) {
+            parkingSessionContainer.setVisibility(View.GONE);
+        }
+        if (noSessionContainer != null) {
+            noSessionContainer.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onError(String errorMessage) {
+        if (!isAdded() || getContext() == null) return;
+        
+        Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onNoSessions() {
+        if (!isAdded() || getContext() == null) return;
+        
+        showNoSessionMessage();
+    }
+
+    @Override
+    public void onDataLoadingStarted() {
+        if (!isAdded() || getContext() == null) return;
+        
         if (!swipeRefreshLayout.isRefreshing()) {
             swipeRefreshLayout.setRefreshing(true);
         }
     }
 
-    private void resetSessionData() {
+    @Override
+    public void onDataLoadingFinished() {
+        if (!isAdded() || getContext() == null) return;
+        
+        swipeRefreshLayout.setRefreshing(false);
     }
 
-    private void fetchOwnedSessions() {
-        ParkingSessionApiService parkingSessionApi = ApiTest.getServiceLast(requireContext())
-                .create(ParkingSessionApiService.class);
-
-        List<OwnedSessionResponse.OwnedParkingSessionDto> sessionDtoList = new ArrayList<>();
-
-        final AtomicInteger completedCalls = new AtomicInteger(0);
-        final int totalCalls = 2;
-
-        Runnable onCallComplete = () -> {
-            if (completedCalls.incrementAndGet() == totalCalls) {
-                swipeRefreshLayout.setRefreshing(false);
-                if (sessionDtoList.isEmpty()) {
-                    showNoSessionMessage();
-                } else {
-                    fetchVehiclesAndBind(sessionDtoList);
-                }
-            }
-        };
-
-        // Generic callback for both calls
-        Callback<OwnedSessionResponse> sessionCallback = new Callback<OwnedSessionResponse>() {
-            @Override
-            public void onResponse(Call<OwnedSessionResponse> call, Response<OwnedSessionResponse> response) {
-                if (!isAdded() || getContext() == null) {
-                    swipeRefreshLayout.setRefreshing(false);
-                    return;
-                }
-
-                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
-                    synchronized (sessionDtoList) {
-                        addUniqueItems(sessionDtoList, response.body().getData());
-                    }
-                }
-                onCallComplete.run();
-            }
-
-            @Override
-            public void onFailure(Call<OwnedSessionResponse> call, Throwable t) {
-                if (isAdded() && getContext() != null) {
-                    // Continue even if one call fails
-                    onCallComplete.run();
-                } else {
-                    swipeRefreshLayout.setRefreshing(false);
-                }
-            }
-        };
-
-        // Make both calls simultaneously
-        String userId = tokenManager.getUserData().getId();
-
-        OwnedSessionRequest parkingRequest = new OwnedSessionRequest("Asc", "entryDateTime", "Parking");
-        parkingSessionApi.getOwnedSessions(
-                userId,
-                parkingRequest.getStatus(),
-                parkingRequest.getStartEntryDate() != null ? parkingRequest.getStartEntryDate().toString() : null,
-                parkingRequest.getEndEntryDate() != null ? parkingRequest.getEndEntryDate().toString() : null,
-                parkingRequest.getStartExitDate() != null ? parkingRequest.getStartExitDate().toString() : null,
-                parkingRequest.getEndExitDate() != null ? parkingRequest.getEndExitDate().toString() : null,
-                parkingRequest.getOrder(),
-                parkingRequest.getSortBy(),
-                parkingRequest.getSearchCriteria()
-        ).enqueue(sessionCallback);
-
-        OwnedSessionRequest checkedOutRequest = new OwnedSessionRequest("Asc", "entryDateTime", "CheckedOut");
-        parkingSessionApi.getOwnedSessions(
-                userId,
-                checkedOutRequest.getStatus(),
-                checkedOutRequest.getStartEntryDate() != null ? checkedOutRequest.getStartEntryDate().toString() : null,
-                checkedOutRequest.getEndEntryDate() != null ? checkedOutRequest.getEndEntryDate().toString() : null,
-                checkedOutRequest.getStartExitDate() != null ? checkedOutRequest.getStartExitDate().toString() : null,
-                checkedOutRequest.getEndExitDate() != null ? checkedOutRequest.getEndExitDate().toString() : null,
-                checkedOutRequest.getOrder(),
-                checkedOutRequest.getSortBy(),
-                checkedOutRequest.getSearchCriteria()
-        ).enqueue(sessionCallback);
-    }
-
-    private void addUniqueItems(List<OwnedSessionResponse.OwnedParkingSessionDto> target,
-                                List<OwnedSessionResponse.OwnedParkingSessionDto> source) {
-        for (OwnedSessionResponse.OwnedParkingSessionDto dto : source) {
-            boolean exists = target.stream()
-                    .anyMatch(existing -> existing.getId() != null && existing.getId().equals(dto.getId()));
-            if (!exists) {
-                target.add(dto);
-            }
-        }
-    }
-
-    private void fetchVehiclesAndBind(List<OwnedSessionResponse.OwnedParkingSessionDto> dtoList) {
-        IVehicleApi vehicleApi = ApiTest.getServiceLast(requireContext()).create(IVehicleApi.class);
-        vehicleApi.getMyVehicles(null, null).enqueue(new Callback<List<VehicleSummaryDto>>() {
-            @Override
-            public void onResponse(Call<List<VehicleSummaryDto>> call, Response<List<VehicleSummaryDto>> response) {
-                if (!isAdded() || getContext() == null) {
-                    swipeRefreshLayout.setRefreshing(false);
-                    return;
-                }
-
-                List<VehicleSummaryDto> vehicles = response.isSuccessful() && response.body() != null ? response.body() : new ArrayList<>();
-                List<ParkingSession> mapped = mapDtosToSessions(dtoList, vehicles);
-                parkingSessionList = mapped;
-                parkingSessionAdapter.updateItems(parkingSessionList);
-
-                if (parkingSessionContainer != null) {
-                    parkingSessionContainer.setVisibility(View.GONE);
-                }
-                if (noSessionContainer != null) {
-                    noSessionContainer.setVisibility(View.GONE);
-                }
-
-                swipeRefreshLayout.setRefreshing(false);
-            }
-
-            @Override
-            public void onFailure(Call<List<VehicleSummaryDto>> call, Throwable t) {
-                if (!isAdded() || getContext() == null) {
-                    return;
-                }
-                List<ParkingSession> mapped = mapDtosToSessions(dtoList, new ArrayList<>());
-                parkingSessionList = mapped;
-                parkingSessionAdapter.updateItems(parkingSessionList);
-
-                if (parkingSessionContainer != null) {
-                    parkingSessionContainer.setVisibility(View.GONE);
-                }
-                if (noSessionContainer != null) {
-                    noSessionContainer.setVisibility(View.GONE);
-                }
-
-                swipeRefreshLayout.setRefreshing(false);
-            }
-        });
-    }
-
-    private List<ParkingSession> mapDtosToSessions(List<OwnedSessionResponse.OwnedParkingSessionDto> dtoList, List<VehicleSummaryDto> vehicles) {
-        List<ParkingSession> result = new ArrayList<>();
-        for (OwnedSessionResponse.OwnedParkingSessionDto dto : dtoList) {
-            ParkingSession ps = new ParkingSession();
-            ps.setId(dto.getId());
-            ps.setEntryDateTime(dto.getEntryDateTime());
-            ps.setExitDateTime(dto.getExitDateTime());
-            ps.setCost(dto.getCost());
-            ps.setParkingLotName(dto.getParkingLotName());
-
-            // map vehicle by license plate
-            VehicleSummaryDto match = null;
-            for (VehicleSummaryDto v : vehicles) {
-                if (v.getLicensePlate() != null && v.getLicensePlate().equalsIgnoreCase(dto.getLicensePlate())) {
-                    match = v; break;
-                }
-            }
-            if (match != null) {
-                Vehicle v = new Vehicle();
-                v.setId(match.getId());
-                v.setLicensePlate(match.getLicensePlate());
-                v.setBrand(match.getBrand());
-                v.setModel(match.getModel());
-                ps.setVehicle(v);
-                ps.setVehicleId(v.getId());
-            } else {
-                Vehicle v = new Vehicle();
-                v.setLicensePlate(dto.getLicensePlate());
-                ps.setVehicle(v);
-            }
-            result.add(ps);
-        }
-        return result;
-    }
-
-
-
-    private void setupBtnNotification() {
-        btnNotification.setOnClickListener(v-> {
-            Intent intent = new Intent(getActivity(), NotificationsListActivity.class);
-            startActivity(intent);
-        });
-    }
-
-   // ================ UI STATE METHODS ================
-
-
+    // ================ UI STATE METHODS ================
 
     private void showNoSessionMessage() {
         if (parkingSessionContainer != null) {
@@ -381,7 +229,12 @@ public class HomeFragment extends Fragment {
         }
     }
 
-
+    private void setupBtnNotification() {
+        btnNotification.setOnClickListener(v-> {
+            Intent intent = new Intent(getActivity(), NotificationsListActivity.class);
+            startActivity(intent);
+        });
+    }
 
     // ================ LIFECYCLE METHODS ================
 

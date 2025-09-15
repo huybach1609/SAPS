@@ -32,6 +32,7 @@ const AddParkingLotOwner: React.FC<{
 }> = ({ onClose, onSuccess }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   // Owner Information
   const [ownerForm, setOwnerForm] = useState({
@@ -69,7 +70,49 @@ const AddParkingLotOwner: React.FC<{
     fetchSubscriptions();
   }, []);
 
-  // Generate UUID for parkingLotOwnerId (max 20 characters)
+  // State for validation errors
+  const [validationErrors, setValidationErrors] = useState<{
+    fullName?: string;
+    phone?: string;
+  }>({});
+
+  // Validation functions
+  const validateFullName = (name: string): string | null => {
+    const nameRegex = /^[a-zA-ZÀ-ỹ\s]+$/; // Only letters (including Vietnamese characters) and spaces
+    if (!name.trim()) {
+      return "Full name is required";
+    }
+    if (!nameRegex.test(name)) {
+      return "Full name must contain only letters";
+    }
+    return null;
+  };
+
+  const validatePhone = (phone: string): string | null => {
+    const phoneRegex = /^\d{10,15}$/; // Only digits, 10-15 characters
+    if (!phone.trim()) {
+      return "Phone number is required";
+    }
+    if (!phoneRegex.test(phone)) {
+      return "Phone number must contain only digits (10-15 characters)";
+    }
+    return null;
+  };
+
+  // Handle input changes with validation
+  const handleFullNameChange = (value: string) => {
+    setOwnerForm({ ...ownerForm, fullName: value });
+    const error = validateFullName(value);
+    setValidationErrors((prev) => ({ ...prev, fullName: error || undefined }));
+  };
+
+  const handlePhoneChange = (value: string) => {
+    // Remove any non-digit characters
+    const cleanValue = value.replace(/\D/g, "");
+    setOwnerForm({ ...ownerForm, phone: cleanValue });
+    const error = validatePhone(cleanValue);
+    setValidationErrors((prev) => ({ ...prev, phone: error || undefined }));
+  };
   const generateUUID = (): string => {
     // Generate a short UUID with timestamp + random chars (20 chars max)
     const timestamp = Date.now().toString(36); // Convert timestamp to base36
@@ -81,6 +124,55 @@ const AddParkingLotOwner: React.FC<{
   // Helper function to convert milliseconds to days for display
   const millisecondsTodays = (milliseconds: number): number => {
     return Math.round(milliseconds / (1000 * 60 * 60 * 24));
+  };
+
+  // Format duration (days to user-friendly format with hours)
+  const formatDuration = (days: number): string => {
+    if (days <= 0) return "0 Days";
+
+    // Convert days to total hours first for more precise calculation
+    const totalHours = days * 24;
+
+    const years = Math.floor(totalHours / (365 * 24));
+    const remainingAfterYears = totalHours % (365 * 24);
+
+    const months = Math.floor(remainingAfterYears / (30 * 24));
+    const remainingAfterMonths = remainingAfterYears % (30 * 24);
+
+    const weeks = Math.floor(remainingAfterMonths / (7 * 24));
+    const remainingAfterWeeks = remainingAfterMonths % (7 * 24);
+
+    const daysLeft = Math.floor(remainingAfterWeeks / 24);
+    const hoursLeft = Math.floor(remainingAfterWeeks % 24);
+
+    const parts = [];
+
+    if (years > 0) parts.push(`${years} Year${years > 1 ? "s" : ""}`);
+    if (months > 0) parts.push(`${months} Month${months > 1 ? "s" : ""}`);
+    if (weeks > 0) parts.push(`${weeks} Week${weeks > 1 ? "s" : ""}`);
+    if (daysLeft > 0) parts.push(`${daysLeft} Day${daysLeft > 1 ? "s" : ""}`);
+    if (hoursLeft > 0)
+      parts.push(`${hoursLeft} Hour${hoursLeft > 1 ? "s" : ""}`);
+
+    // If no parts, it means less than an hour
+    if (parts.length === 0) return "Less than 1 Hour";
+
+    // Join parts with commas and "and" for the last item
+    if (parts.length === 1) return parts[0];
+    if (parts.length === 2) return parts.join(" and ");
+
+    const lastPart = parts.pop();
+    return parts.join(", ") + " and " + lastPart;
+  };
+
+  // Format price (VND) - display exact price from database
+  const formatPrice = (price: number): string => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(price); // Use exact price from database
   };
 
   // Add new parking lot
@@ -126,6 +218,20 @@ const AddParkingLotOwner: React.FC<{
       return false;
     }
 
+    // Check validation errors
+    const fullNameError = validateFullName(ownerForm.fullName);
+    const phoneError = validatePhone(ownerForm.phone);
+
+    if (fullNameError) {
+      alert(`Full Name Error: ${fullNameError}`);
+      return false;
+    }
+
+    if (phoneError) {
+      alert(`Phone Number Error: ${phoneError}`);
+      return false;
+    }
+
     if (!ownerForm.clientKey || !ownerForm.apiKey || !ownerForm.checkSumKey) {
       alert("Please fill in all API configuration keys.");
       return false;
@@ -155,6 +261,7 @@ const AddParkingLotOwner: React.FC<{
     }
 
     setIsSubmitting(true);
+    setSubmitError(null); // Clear previous errors
 
     try {
       // Generate parkingLotOwnerId
@@ -193,16 +300,60 @@ const AddParkingLotOwner: React.FC<{
       alert("Owner and parking lots created successfully!");
       if (onSuccess) onSuccess();
       onClose();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error creating owner:", error);
-      alert("Failed to create owner. Please try again.");
+
+      let errorMessage = "Failed to create owner. Please try again.";
+
+      // Extract specific error message from API response
+      if (error.response?.data) {
+        const errorData = error.response.data;
+
+        // Check for validation errors (field-specific errors)
+        if (errorData.errors && typeof errorData.errors === "object") {
+          const fieldErrors = Object.entries(errorData.errors)
+            .map(([field, messages]: [string, any]) => {
+              const messageArray = Array.isArray(messages)
+                ? messages
+                : [messages];
+              return `${field}: ${messageArray.join(", ")}`;
+            })
+            .join("\n");
+          errorMessage = `Validation errors:\n${fieldErrors}`;
+        }
+        // Check for general error message
+        else if (errorData.message) {
+          errorMessage = errorData.message;
+        }
+        // Check for title field (some APIs use title for error description)
+        else if (errorData.title) {
+          errorMessage = errorData.title;
+        }
+        // Check for detail field
+        else if (errorData.detail) {
+          errorMessage = errorData.detail;
+        }
+        // If it's a string response
+        else if (typeof errorData === "string") {
+          errorMessage = errorData;
+        }
+      }
+      // Handle network or other errors
+      else if (error.message) {
+        errorMessage = `Network error: ${error.message}`;
+      }
+
+      setSubmitError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="fixed mt-0 inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto ">
+    <div
+      className="fixed mt-0 inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto"
+      style={{ marginTop: "0px" }}
+    >
       <div className="w-full max-w-4xl mx-4 my-8">
         <Card className="p-6 max-h-[90vh] overflow-y-auto">
           <div className="flex justify-between items-center mb-6">
@@ -221,6 +372,24 @@ const AddParkingLotOwner: React.FC<{
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Error Message Display */}
+            {submitError && (
+              <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md">
+                <div className="flex items-start">
+                  <AlertTriangle
+                    size={16}
+                    className="text-red-600 mr-2 mt-0.5"
+                  />
+                  <div>
+                    <h4 className="font-semibold text-red-800">Error:</h4>
+                    <pre className="text-sm text-red-700 mt-1 whitespace-pre-wrap">
+                      {submitError}
+                    </pre>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Owner Information */}
             <div className="space-y-4">
               <div className="flex items-center text-blue-600 font-semibold border-b pb-2">
@@ -251,13 +420,16 @@ const AddParkingLotOwner: React.FC<{
                   </label>
                   <Input
                     value={ownerForm.fullName}
-                    onChange={(e) =>
-                      setOwnerForm({ ...ownerForm, fullName: e.target.value })
-                    }
+                    onChange={(e) => handleFullNameChange(e.target.value)}
                     placeholder="John Doe"
                     required
                     className="w-full"
+                    isInvalid={!!validationErrors.fullName}
+                    errorMessage={validationErrors.fullName}
                   />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Only letters allowed
+                  </p>
                 </div>
               </div>
 
@@ -267,13 +439,17 @@ const AddParkingLotOwner: React.FC<{
                 </label>
                 <Input
                   value={ownerForm.phone}
-                  onChange={(e) =>
-                    setOwnerForm({ ...ownerForm, phone: e.target.value })
-                  }
-                  placeholder="+1234567890"
+                  onChange={(e) => handlePhoneChange(e.target.value)}
+                  placeholder="1234567890"
                   required
                   className="w-full"
+                  isInvalid={!!validationErrors.phone}
+                  errorMessage={validationErrors.phone}
+                  type="tel"
                 />
+                <p className="text-xs text-gray-500 mt-1">
+                  Only numbers, 10-15 digits
+                </p>
               </div>
             </div>
 
@@ -448,8 +624,8 @@ const AddParkingLotOwner: React.FC<{
                       <option value="">Select a subscription plan</option>
                       {subscriptions.map((sub) => (
                         <option key={sub.id} value={sub.id}>
-                          {sub.name} - ${sub.price} (
-                          {millisecondsTodays(sub.duration)} days)
+                          {sub.name} - {formatPrice(sub.price)} (
+                          {formatDuration(millisecondsTodays(sub.duration))})
                         </option>
                       ))}
                     </select>

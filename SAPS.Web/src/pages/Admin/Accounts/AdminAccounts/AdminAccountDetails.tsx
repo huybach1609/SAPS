@@ -12,11 +12,14 @@ const AdminAccountDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [admin, setAdmin] = useState<AdminUser | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null); // Chỉ dùng cho lỗi load trang
+  const [actionError, setActionError] = useState<string | null>(null); // Dùng cho lỗi các action như reset password
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [statusLoading, setStatusLoading] = useState<boolean>(false);
+  const [resetPasswordLoading, setResetPasswordLoading] =
+    useState<boolean>(false);
 
   // Get current user's role and ID from JWT token to check permissions
   useEffect(() => {
@@ -79,30 +82,45 @@ const AdminAccountDetails: React.FC = () => {
 
     // Check if the admin being viewed is the current user
     if (admin.id !== currentUserId) {
-      setError("You can only reset your own password.");
+      setActionError("You can only reset your own password.");
       return;
     }
 
     try {
-      setLoading(true);
+      setResetPasswordLoading(true);
+      setActionError(null); // Clear any previous action errors
       const response = await adminService.requestPasswordReset();
 
       if (response.success) {
         setSuccessMessage(
           "Password reset request has been sent to your email. Please check your inbox for instructions."
         );
+        setActionError(null); // Clear any previous errors
+
+        // Clear success message after 5 seconds
+        setTimeout(() => {
+          setSuccessMessage(null);
+        }, 5000);
       } else {
-        setError(response.error || "Failed to send password reset request");
+        setActionError(
+          response.error || "Failed to send password reset request"
+        );
+        // Auto clear error after 8 seconds
+        setTimeout(() => {
+          setActionError(null);
+        }, 8000);
       }
     } catch (err: any) {
       console.error("Error sending password reset request:", err);
-      setError("An error occurred while sending the password reset request");
-    } finally {
-      setLoading(false);
-      // Clear success message after 5 seconds
+      setActionError(
+        "An error occurred while sending the password reset request"
+      );
+      // Auto clear error after 8 seconds
       setTimeout(() => {
-        setSuccessMessage(null);
-      }, 5000);
+        setActionError(null);
+      }, 8000);
+    } finally {
+      setResetPasswordLoading(false);
     }
   };
 
@@ -112,6 +130,7 @@ const AdminAccountDetails: React.FC = () => {
 
     try {
       setStatusLoading(true);
+      setActionError(null); // Clear any previous action errors
       const response = await adminService.updateUserStatus(admin.id, newStatus);
 
       if (response.success) {
@@ -126,11 +145,19 @@ const AdminAccountDetails: React.FC = () => {
           setSuccessMessage(null);
         }, 3000);
       } else {
-        setError(response.error || "Failed to update account status");
+        setActionError(response.error || "Failed to update account status");
+        // Auto clear error after 8 seconds
+        setTimeout(() => {
+          setActionError(null);
+        }, 8000);
       }
     } catch (err: any) {
       console.error("Error updating account status:", err);
-      setError("An error occurred while updating the account status");
+      setActionError("An error occurred while updating the account status");
+      // Auto clear error after 8 seconds
+      setTimeout(() => {
+        setActionError(null);
+      }, 8000);
     } finally {
       setStatusLoading(false);
     }
@@ -232,6 +259,44 @@ const AdminAccountDetails: React.FC = () => {
               <h3 className="text-sm font-medium text-green-800">Success</h3>
               <div className="mt-2 text-sm text-green-700">
                 <p>{successMessage}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Action Error message (cho các lỗi reset password, update status) */}
+      {actionError && (
+        <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
+          <div className="flex">
+            <div className="flex-shrink-0">
+              <svg
+                className="h-5 w-5 text-red-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-red-800">Error</h3>
+              <div className="mt-2 text-sm text-red-700">
+                <p>{actionError}</p>
+              </div>
+              <div className="mt-4">
+                <button
+                  type="button"
+                  onClick={() => setActionError(null)}
+                  className="text-sm font-medium text-red-800 hover:text-red-700 underline"
+                >
+                  Dismiss
+                </button>
               </div>
             </div>
           </div>
@@ -344,14 +409,6 @@ const AdminAccountDetails: React.FC = () => {
             </div>
           </div>
           <div>
-            <div className="text-sm text-gray-500">Last Updated</div>
-            <div className="p-2 bg-gray-50 rounded border">
-              {admin.updatedAt
-                ? new Date(admin.updatedAt).toLocaleDateString()
-                : "N/A"}
-            </div>
-          </div>
-          <div>
             <div className="text-sm text-gray-500">Role</div>
             <div className="p-2 bg-gray-50 rounded border">
               {admin.role === "head_admin"
@@ -420,7 +477,7 @@ const AdminAccountDetails: React.FC = () => {
               className="text-white"
               startContent={<Key />}
               onPress={handleResetPassword}
-              isLoading={loading}
+              isLoading={resetPasswordLoading}
             >
               Reset My Password
             </Button>

@@ -1,6 +1,9 @@
 package vn.edu.fpt.sapsmobile.activities.checkout;
 
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -30,9 +33,9 @@ import retrofit2.Response;
 import vn.edu.fpt.sapsmobile.dtos.payment.PaymentApiResponseDTO;
 import vn.edu.fpt.sapsmobile.dtos.payment.PaymentStatusResponseDTO;
 import vn.edu.fpt.sapsmobile.enums.PaymentStatus;
-import vn.edu.fpt.sapsmobile.network.client.ApiTest;
+import vn.edu.fpt.sapsmobile.network.client.ApiClient;
 import vn.edu.fpt.sapsmobile.network.api.TransactionApiService;
-import vn.edu.fpt.sapsmobile.network.api.ParkingSessionApiService;
+import vn.edu.fpt.sapsmobile.network.api.IParkingSessionApiService;
 import vn.edu.fpt.sapsmobile.dtos.payment.PaymentResponseDTO;
 import vn.edu.fpt.sapsmobile.dtos.payment.PaymentDataDTO;
 import vn.edu.fpt.sapsmobile.R;
@@ -44,6 +47,7 @@ public class PaymentActivity extends AppCompatActivity {
     ImageView imgQrCode;
     Button btnIHavePaid, btnBrowser;
     TextView tvAccountNumber, tvAccountName, tvReferenceCode, tvAmount;
+    ImageView btnCopyAccount, btnCopyName, btnCopyRef;
     String vehicleID, sessionID;
     PaymentResponseDTO payment;
 
@@ -72,6 +76,11 @@ public class PaymentActivity extends AppCompatActivity {
         tvReferenceCode = findViewById(R.id.tvReferenceCode);
         tvAmount = findViewById(R.id.tvAmount);
         btnBrowser = findViewById(R.id.btnBrowse);
+        
+        // Initialize copy buttons
+        btnCopyAccount = findViewById(R.id.btnCopyAccount);
+        btnCopyName = findViewById(R.id.btnCopyName);
+        btnCopyRef = findViewById(R.id.btnCopyRef);
     }
 
     private void setupWindowInsets() {
@@ -90,6 +99,42 @@ public class PaymentActivity extends AppCompatActivity {
 
     private void setupButtonListeners() {
         btnIHavePaid.setEnabled(false);
+        
+        // Setup copy button listeners
+        setupCopyButtonListeners();
+    }
+
+    private void setupCopyButtonListeners() {
+        // Copy account number
+        btnCopyAccount.setOnClickListener(v -> {
+            String accountNumber = tvAccountNumber.getText().toString();
+            copyToClipboard("Account Number", accountNumber);
+        });
+        
+        // Copy account name
+        btnCopyName.setOnClickListener(v -> {
+            String accountName = tvAccountName.getText().toString();
+            copyToClipboard("Account Name", accountName);
+        });
+        
+        // Copy reference code
+        btnCopyRef.setOnClickListener(v -> {
+            String referenceCode = tvReferenceCode.getText().toString();
+            copyToClipboard("Reference Code", referenceCode);
+        });
+    }
+
+    private void copyToClipboard(String label, String text) {
+        if (text == null || text.isEmpty()) {
+            Toast.makeText(this, "No text to copy", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText(label, text);
+        clipboard.setPrimaryClip(clip);
+        
+        Toast.makeText(this, label + " copied to clipboard", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -124,7 +169,7 @@ public class PaymentActivity extends AppCompatActivity {
     private void loadRequireData() {
         if (sessionID == null || sessionID.isEmpty()) return;
 
-        ParkingSessionApiService api = ApiTest.getServiceLast(this).create(ParkingSessionApiService.class);
+        IParkingSessionApiService api = ApiClient.getServiceLast(this).create(IParkingSessionApiService.class);
         api.getPaymentInfo(sessionID).enqueue(new Callback<PaymentApiResponseDTO>() {
             @Override
             public void onResponse(Call<PaymentApiResponseDTO> call, Response<PaymentApiResponseDTO> response) {
@@ -212,7 +257,7 @@ public class PaymentActivity extends AppCompatActivity {
         }
     }
     private void fetchCheckStatus(String orderCode){
-        TransactionApiService txApi = ApiTest.getServiceLast(this).create(TransactionApiService.class);
+        TransactionApiService txApi = ApiClient.getServiceLast(this).create(TransactionApiService.class);
         txApi.getTransactionPayOs(orderCode).enqueue(new Callback<PaymentStatusResponseDTO>() {
             @Override
             public void onResponse(Call<PaymentStatusResponseDTO> call, Response<PaymentStatusResponseDTO> response) {

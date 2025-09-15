@@ -21,12 +21,11 @@ import java.util.Iterator;
 import java.util.List;
 
 import vn.edu.fpt.sapsmobile.R;
-import vn.edu.fpt.sapsmobile.activities.auth.LoginActivity;
 import vn.edu.fpt.sapsmobile.adapters.InvitationAdapter;
 import vn.edu.fpt.sapsmobile.dtos.sharevehicle.ShareVehicleResponse;
 import vn.edu.fpt.sapsmobile.enums.ShareVehicleStatus;
 import vn.edu.fpt.sapsmobile.network.api.ShareVehicleApi;
-import vn.edu.fpt.sapsmobile.network.client.ApiTest;
+import vn.edu.fpt.sapsmobile.network.client.ApiClient;
 import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
 import vn.edu.fpt.sapsmobile.utils.TokenManager;
 
@@ -35,6 +34,7 @@ public class InvitationActivity extends AppCompatActivity implements InvitationA
     // service
     private LoadingDialog loadingDialog;
     private TokenManager tokenManager;
+
     // ui component
     private RecyclerView recyclerView;
     private InvitationAdapter adapter;
@@ -80,21 +80,7 @@ public class InvitationActivity extends AppCompatActivity implements InvitationA
 
             toolbar.setNavigationOnClickListener(v -> onBackPressed());
 
-            // Add menu items if needed
-//            toolbar.setOnMenuItemClickListener(item -> {
-//                int id = item.getItemId();
-//                if (id == R.id.action_add) {
-//                    // Handle add vehicle action
-//                    Toast.makeText(this, "Thêm xe mới", Toast.LENGTH_SHORT).show();
-//                    return true;
-//                } else if (id == R.id.action_filter) {
-//                    // Handle filter action
-//                    Toast.makeText(this, "Lọc danh sách", Toast.LENGTH_SHORT).show();
-//                    return true;
-//                }
-//
-//                return false;
-//            });
+
         }
     }
     @Override
@@ -116,7 +102,7 @@ public class InvitationActivity extends AppCompatActivity implements InvitationA
     }
 
     private void loadShareVehicleData(){
-        ShareVehicleApi api = ApiTest.getServiceLast(this).create(ShareVehicleApi.class);
+        ShareVehicleApi api = ApiClient.getServiceLast(this).create(ShareVehicleApi.class);
         var user = tokenManager.getUserData();
 //        String sharedPersonId = "550e8400-e29b-41d4-a716-446655440006";
 
@@ -195,7 +181,7 @@ public class InvitationActivity extends AppCompatActivity implements InvitationA
 
 
     private void rejectShareVehicle(String shareVehicleId) {
-        ShareVehicleApi api = ApiTest.getServiceLast(this).create(ShareVehicleApi.class);
+        ShareVehicleApi api = ApiClient.getServiceLast(this).create(ShareVehicleApi.class);
 
         loadingDialog.show("Reject invitation...", true, this::finish);
 

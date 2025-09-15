@@ -31,6 +31,7 @@ import UserDetail from "./pages/Admin/Accounts/UserAccounts/UserDetail";
 import StaffDetailScreen from "./pages/ParkingLotOwner/StaffManagement/StaffDetail";
 import ParkingLotOwnerList from "./pages/Admin/ParkingLotOwner/ParkingLotOwnerList";
 import ParkingLotOwnerDetails from "./pages/Admin/ParkingLotOwner/ParkingLotOwnerDetails";
+import AdminDashboardPage from "./pages/Admin/AdminDashboardPage";
 import SubscriptionList from "./pages/Admin/Subscriptions/SubscriptionList";
 import RequestDetails from "./pages/Admin/Requests/RequestDetails";
 import UploadFile from "./pages/ParkingLotOwner/UploadFile";
@@ -39,6 +40,7 @@ import IncidentDetail from "./pages/ParkingLotOwner/IncidentReports/IncidentDeta
 import SubscriptionPricingSelect from "./pages/ParkingLotOwner/Subscription/SubscriptionPricingSelect";
 import StaffShiftManagement from "./pages/ParkingLotOwner/StaffShift/StaffShiftManagement";
 import PaymentSubscriptionComponent from "./pages/ParkingLotOwner/Subscription/PaymentSubscriptionComponent";
+import { useTranslation } from "react-i18next";
 // import AdminRequestList from "@/pages/Admin/Requests/AdminRequestList.tsx";
 // import DefaultLayout from "@/layouts/default.tsx";
 
@@ -53,9 +55,10 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   requiredRole,
 }) => {
   const { isAuthenticated, loading, getUserRole } = useAuth();
+  const { t } = useTranslation();
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <div>{t("loading")}</div>;
   }
 
   if (!isAuthenticated) {
@@ -104,9 +107,10 @@ const ActiveRoute: React.FC<ActiveRouteProps> = ({
 
 const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, loading, getUserRole } = useAuth();
+  const { t } = useTranslation();
 
   if (loading) {
-    return <div>Loading...</div>; // Or your loading component
+    return <div>{t("loading")}</div>; // Or your loading component
   }
 
   if (isAuthenticated) {
@@ -114,7 +118,7 @@ const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     // const adminRole = getAdminRole();
 
     if (role === "admin") {
-      return <Navigate to="/admin/requests" replace />;
+      return <Navigate to="/admin/dashboard" replace />;
     } else if (role === "parkinglotowner") {
       return <Navigate to="/owner/parking-info" replace />;
     } else {
@@ -145,7 +149,7 @@ const RoleBasedRedirect: React.FC = () => {
 
   // Kiểm tra role và AdminRole để điều hướng đúng
   if (role === "admin") {
-    return <Navigate to="/admin/requests" replace />;
+    return <Navigate to="/admin/dashboard" replace />;
   } else if (role === "parkinglotowner") {
     return <Navigate to="/owner/parking-info" replace />;
   } else {
@@ -204,6 +208,9 @@ function App() {
             </ProtectedRoute>
           }
         >
+          {/* Admin Dashboard Route */}
+          <Route path="dashboard" element={<AdminDashboardPage />} />
+
           {/* Account Management Routes */}
           <Route path="accounts" element={<AccountListSelector />} />
           <Route path="accounts/users" element={<UserAccountList />} />
@@ -228,7 +235,7 @@ function App() {
             <ProtectedRoute requiredRole="parkinglotowner">
               <OwnerParkingLotProviderWrapper>
                 {/* <DefaultLayout title="SAPLS Parking Lot Management"> */}
-                  <Outlet />
+                <Outlet />
                 {/* </DefaultLayout> */}
               </OwnerParkingLotProviderWrapper>
             </ProtectedRoute>
@@ -237,10 +244,7 @@ function App() {
           <Route path="home" element={<OwnerDashboard />} />
           <Route path="parking-info" element={<ParkingLotInfo />} />
           <Route path="staff" element={<StaffManagement />} />
-          <Route
-            path="staff/:staffId"
-            element={<StaffDetailScreen />}
-          />
+          <Route path="staff/:staffId" element={<StaffDetailScreen />} />
           <Route path="history" element={<ParkingHistory />} />
           <Route path="history/:sessionId" element={<ParkingHistoryDetail />} />
           <Route

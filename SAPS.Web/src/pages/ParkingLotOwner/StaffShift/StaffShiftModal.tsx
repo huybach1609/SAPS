@@ -294,6 +294,7 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
             setKeySearchStaff('');
             setStaffList([]);
             setSearchError('');
+            setSelectedStaffs([]);
 
         } else {
             const newStaffIds = selectedStaffs.map(s => s.staffId);
@@ -314,6 +315,10 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
             // console.log('Updated form data:', updatedFormData);
 
             onSave(updatedFormData as StaffShift);
+            setKeySearchStaff('');
+            setStaffList([]);
+            setSearchError('');
+            setSelectedStaffs([]);
         }
 
     };
@@ -589,8 +594,8 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
                                         Sunday
                                     </Checkbox>
                                 </div>
-                                {errors.dayOfWeeks && (
-                                    <div className="text-danger text-sm mt-1">{errors.dayOfWeeks}</div>
+                                {errors.dateLogic && (
+                                    <div className="text-danger text-sm mt-1">{errors.dateLogic}</div>
                                 )}
                             </div>
                         )}

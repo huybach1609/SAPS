@@ -19,12 +19,12 @@ import vn.edu.fpt.sapsmobile.dtos.auth.AuthResponse;
 import vn.edu.fpt.sapsmobile.dtos.auth.GoogleAuthRequest;
 import vn.edu.fpt.sapsmobile.dtos.auth.GoogleTokenRequest;
 import vn.edu.fpt.sapsmobile.dtos.auth.LoginRequest;
-import vn.edu.fpt.sapsmobile.dtos.auth.LoginResponse;
+import vn.edu.fpt.sapsmobile.dtos.auth.AuthenticateUserResponse;
 import vn.edu.fpt.sapsmobile.dtos.auth.RegisterRequest;
 import vn.edu.fpt.sapsmobile.dtos.auth.RegisterResponse;
 import vn.edu.fpt.sapsmobile.dtos.auth.RefreshTokenRequest;
-import vn.edu.fpt.sapsmobile.network.client.ApiTest;
-import vn.edu.fpt.sapsmobile.network.api.ClientApiService;
+import vn.edu.fpt.sapsmobile.network.client.ApiClient;
+import vn.edu.fpt.sapsmobile.network.api.IClientApiService;
 import vn.edu.fpt.sapsmobile.network.api.AuthApi;
 import vn.edu.fpt.sapsmobile.network.api.UserApiService;
 import vn.edu.fpt.sapsmobile.BuildConfig;
@@ -65,7 +65,7 @@ public class AuthenticationService implements SessionActions {
     private final GoogleSignInClient googleSignInClient;
     private final AuthApi authApi;
     private final UserApiService userApiService;
-    private final ClientApiService clientApiService;
+    private final IClientApiService IClientApiService;
     private final TokenManager tokenManager;
     private AuthCallback authCallback;
 
@@ -82,10 +82,10 @@ public class AuthenticationService implements SessionActions {
         this.tokenManager = new TokenManager(context);
         this.googleSignInClient = initializeGoogleSignInClient();
 
-        Retrofit retrofit = ApiTest.getServiceLast(context);
+        Retrofit retrofit = ApiClient.getServiceLast(context);
         this.authApi = retrofit.create(AuthApi.class);
         this.userApiService = retrofit.create(UserApiService.class);
-        this.clientApiService = retrofit.create(ClientApiService.class);
+        this.IClientApiService = retrofit.create(IClientApiService.class);
     }
 
     // ============================================================================
@@ -134,9 +134,9 @@ public class AuthenticationService implements SessionActions {
         GoogleAuthRequest request = new GoogleAuthRequest(idToken);
         Log.d(TAG, "Authenticating with Google ID token");
 
-        executeApiCall(authApi.authenticateWithGoogle(request), new ApiResponseHandler<LoginResponse>() {
+        executeApiCall(authApi.authenticateWithGoogle(request), new ApiResponseHandler<AuthenticateUserResponse>() {
             @Override
-            public void onSuccess(LoginResponse response) {
+            public void onSuccess(AuthenticateUserResponse response) {
                 if (isValidLoginResponse(response)) {
                     String accessToken = response.getAccessToken();
                     String refreshToken = response.getRefreshToken();
@@ -188,9 +188,9 @@ public class AuthenticationService implements SessionActions {
         LoginRequest request = new LoginRequest(email.trim(), password);
         Log.d(TAG, "Attempting login with email: " + email);
 
-        executeApiCall(authApi.login(request), new ApiResponseHandler<LoginResponse>() {
+        executeApiCall(authApi.login(request), new ApiResponseHandler<AuthenticateUserResponse>() {
             @Override
-            public void onSuccess(LoginResponse response) {
+            public void onSuccess(AuthenticateUserResponse response) {
                 if (isValidLoginResponse(response)) {
                     String accessToken = response.getAccessToken();
                     String refreshToken = response.getRefreshToken();
@@ -243,47 +243,29 @@ public class AuthenticationService implements SessionActions {
         });
     }
 
-    // ============================================================================
-    // PASSWORD RESET FLOW
-    // ============================================================================
-    public void resetPassword(String email, AuthCallback callback) {
-        if (!validateEmail(email)) {
-            callback.onAuthFailure("Valid email is required");
-            return;
-        }
 
-        executeApiCall(authApi.resetPassword(email.trim()), new ApiResponseHandler<Void>() {
-            @Override
-            public void onSuccess(Void response) {
-                callback.onAuthSuccess(null);
-            }
-
-            @Override
-            public void onError(String error) {
-                callback.onAuthFailure("Password reset failed: " + error);
-            }
-        });
-    }
 
     // ============================================================================
     // TOKEN MANAGEMENT
     // ============================================================================
-    public void refreshAccessTokenIfNeeded() {
+    public void refreshAccessToken() {
         String accessToken = tokenManager.getAccessToken();
         String refreshToken = tokenManager.getRefreshToken();
 
         if (refreshToken == null || accessToken == null) {
+            Log.i(TAG, "refreshAccessToken: not found refreshToken" );
             return;
         }
 
         if (!JwtUtils.isExpired(accessToken, LEEWAY_SECONDS)) {
+            Log.i(TAG, "refreshAccessToken: jwt is expired" );
             return; // still valid
         }
 
         RefreshTokenRequest request = new RefreshTokenRequest(refreshToken);
-        executeApiCall(authApi.refreshToken(request), new ApiResponseHandler<LoginResponse>() {
+        executeApiCall(authApi.refreshToken(request), new ApiResponseHandler<AuthenticateUserResponse>() {
             @Override
-            public void onSuccess(LoginResponse response) {
+            public void onSuccess(AuthenticateUserResponse response) {
                 if (response != null && response.getAccessToken() != null) {
                     tokenManager.saveTokens(response.getAccessToken(), response.getRefreshToken());
                 }
@@ -358,7 +340,7 @@ public class AuthenticationService implements SessionActions {
             return;
         }
 
-        Call<ClientProfileResponse> call = clientApiService.getClientProfile(currentUser.getId());
+        Call<ClientProfileResponse> call = IClientApiService.getClientProfile(currentUser.getId());
         executeApiCall(call, new ApiResponseHandler<ClientProfileResponse>() {
             @Override
             public void onSuccess(ClientProfileResponse response) {
@@ -436,10 +418,6 @@ public class AuthenticationService implements SessionActions {
             callback.onAuthFailure("Email and password cannot be empty");
             return false;
         }
-        if (!validateEmail(email)) {
-            callback.onAuthFailure("Please enter a valid email address");
-            return false;
-        }
         return true;
     }
 
@@ -467,7 +445,7 @@ public class AuthenticationService implements SessionActions {
         return str != null && !str.trim().isEmpty();
     }
 
-    private boolean isValidLoginResponse(LoginResponse response) {
+    private boolean isValidLoginResponse(AuthenticateUserResponse response) {
         return response != null && isValidString(response.getAccessToken());
     }
 

@@ -26,8 +26,8 @@ import com.google.android.material.elevation.SurfaceColors;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import vn.edu.fpt.sapsmobile.network.client.ApiTest;
-import vn.edu.fpt.sapsmobile.network.api.ParkingSessionApiService;
+import vn.edu.fpt.sapsmobile.network.client.ApiClient;
+import vn.edu.fpt.sapsmobile.network.api.IParkingSessionApiService;
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.models.ParkingLot;
 import vn.edu.fpt.sapsmobile.models.ParkingSession;
@@ -271,7 +271,7 @@ public class CheckoutActivity extends AppCompatActivity {
             Toast.makeText(this, R.string.activity_check_out_not_available, Toast.LENGTH_SHORT).show();
             return;
         }
-        ParkingSessionApiService api = ApiTest.getServiceLast(this).create(ParkingSessionApiService.class);
+        IParkingSessionApiService api = ApiClient.getServiceLast(this).create(IParkingSessionApiService.class);
         CheckoutRequest request = new CheckoutRequest(parkingSessionToCheckOut.getId(), "Bank");
         api.checkout(request).enqueue(new Callback<CheckoutResponse>() {
             @Override
@@ -282,7 +282,8 @@ public class CheckoutActivity extends AppCompatActivity {
                     String message = body.getMessage();
 
                     if (message != null && message.equals("PARKING_SESSION_CHECKOUT_UPDATED_SUCCESSFULLY")) {
-                        Toast.makeText(CheckoutActivity.this, getString(R.string.toast_checkout_successful), Toast.LENGTH_SHORT).show();
+                        String successMessage = StringUtils.getErrorMessage(CheckoutActivity.this, "PARKING_SESSION_CHECKOUT_UPDATED_SUCCESSFULLY");
+                        Toast.makeText(CheckoutActivity.this, successMessage, Toast.LENGTH_SHORT).show();
                         navigateToPayment();
                         return;
                     }
@@ -294,7 +295,8 @@ public class CheckoutActivity extends AppCompatActivity {
                             String errorJson = response.errorBody().string();
                             // Parse the error JSON manually or use Gson
                             if (errorJson.contains("PARKING_SESSION_ALREADY_CHECKED_OUT")) {
-                                Toast.makeText(CheckoutActivity.this, getString(R.string.toast_session_already_checked_out), Toast.LENGTH_SHORT).show();
+                                String errorMessage = StringUtils.getErrorMessage(CheckoutActivity.this, "PARKING_SESSION_ALREADY_CHECKED_OUT");
+                                Toast.makeText(CheckoutActivity.this, errorMessage, Toast.LENGTH_SHORT).show();
                                 navigateToPayment();
                                 return;
                             }
@@ -317,8 +319,6 @@ public class CheckoutActivity extends AppCompatActivity {
                 Toast.makeText(CheckoutActivity.this, getString(R.string.toast_network_error_checkout), Toast.LENGTH_SHORT).show();
             }
         });
-
-
     }
 
     private void navigateToPayment() {

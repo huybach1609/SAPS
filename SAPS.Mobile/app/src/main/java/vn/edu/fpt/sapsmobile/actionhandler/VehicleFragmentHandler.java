@@ -2,7 +2,6 @@ package vn.edu.fpt.sapsmobile.actionhandler;
 
 import android.content.Context;
 import android.content.Intent;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
@@ -14,7 +13,7 @@ import vn.edu.fpt.sapsmobile.enums.ShareVehicleStatus;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
 import vn.edu.fpt.sapsmobile.listener.VehicleFragmentVehicleDetailListener;
 import vn.edu.fpt.sapsmobile.utils.LoadingDialog;
-import vn.edu.fpt.sapsmobile.network.client.ApiTest;
+import vn.edu.fpt.sapsmobile.network.client.ApiClient;
 import vn.edu.fpt.sapsmobile.network.api.ShareVehicleApi;
 import vn.edu.fpt.sapsmobile.dtos.sharevehicle.SharedVehicleDetails;
 import vn.edu.fpt.sapsmobile.dtos.sharevehicle.RecallResponse;
@@ -90,7 +89,7 @@ public class VehicleFragmentHandler implements VehicleFragmentVehicleDetailListe
     }
 //    private void
     private void recallVehicle(Vehicle vehicle) {
-        ShareVehicleApi api = ApiTest.getServiceLast(context).create(ShareVehicleApi.class);
+        ShareVehicleApi api = ApiClient.getServiceLast(context).create(ShareVehicleApi.class);
         
         loadingDialog.show("Getting vehicle details...", true, () -> {
             Toast.makeText(context, context.getString(R.string.toast_operation_cancelled), Toast.LENGTH_SHORT).show();
@@ -120,7 +119,7 @@ public class VehicleFragmentHandler implements VehicleFragmentVehicleDetailListe
     }
     
     private void recallSharedVehicle(String sharedVehicleId) {
-        ShareVehicleApi api = ApiTest.getServiceLast(context).create(ShareVehicleApi.class);
+        ShareVehicleApi api = ApiClient.getServiceLast(context).create(ShareVehicleApi.class);
         
         loadingDialog.show("Recalling vehicle...", true, () -> {
             Toast.makeText(context, context.getString(R.string.toast_operation_cancelled), Toast.LENGTH_SHORT).show();
@@ -147,7 +146,7 @@ public class VehicleFragmentHandler implements VehicleFragmentVehicleDetailListe
     }
     
     private void rejectVehicle(Vehicle vehicle) {
-        ShareVehicleApi api = ApiTest.getServiceLast(context).create(ShareVehicleApi.class);
+        ShareVehicleApi api = ApiClient.getServiceLast(context).create(ShareVehicleApi.class);
         
         loadingDialog.show("Getting vehicle details...", true, () -> {
             Toast.makeText(context, context.getString(R.string.toast_operation_cancelled), Toast.LENGTH_SHORT).show();
@@ -177,7 +176,7 @@ public class VehicleFragmentHandler implements VehicleFragmentVehicleDetailListe
     }
     
     private void rejectSharedVehicle(String sharedVehicleId) {
-        ShareVehicleApi api = ApiTest.getServiceLast(context).create(ShareVehicleApi.class);
+        ShareVehicleApi api = ApiClient.getServiceLast(context).create(ShareVehicleApi.class);
         
         loadingDialog.show("Rejecting invitation...", true, () -> {
             Toast.makeText(context, context.getString(R.string.toast_operation_cancelled), Toast.LENGTH_SHORT).show();

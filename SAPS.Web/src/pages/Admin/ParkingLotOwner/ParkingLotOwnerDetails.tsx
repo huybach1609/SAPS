@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Card, Button, Pagination } from "@heroui/react";
+import { Card, Button, Pagination, Input, Textarea } from "@heroui/react";
 import {
   ArrowLeft,
   Building2,
@@ -8,6 +8,10 @@ import {
   Save,
   FileText,
   Edit,
+  Plus,
+  X,
+  Check,
+  AlertTriangle,
 } from "lucide-react";
 import { format } from "date-fns";
 import {
@@ -15,6 +19,8 @@ import {
   ParkingLotOwnerDetails as ParkingLotOwnerDetailsType,
   parkingLotOwnerService,
   UpdateApiKeysRequest,
+  CreateParkingLotRequest,
+  Subscription,
 } from "../../../services/parkingLotOwner/parkingLotOwnerService";
 const ParkingLotOwnerDetails: React.FC = () => {
   const navigate = useNavigate();
@@ -37,6 +43,76 @@ const ParkingLotOwnerDetails: React.FC = () => {
     checkSumKey: "",
   });
   const [isSavingApiKeys, setIsSavingApiKeys] = useState(false);
+
+  // Add Parking Lot Modal state
+  const [isAddParkingLotModalOpen, setIsAddParkingLotModalOpen] =
+    useState(false);
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
+  const [newParkingLotForm, setNewParkingLotForm] = useState({
+    name: "",
+    description: "",
+    address: "",
+    totalParkingSlot: 1,
+    subscriptionId: "",
+  });
+  const [isSubmittingParkingLot, setIsSubmittingParkingLot] = useState(false);
+  const [parkingLotSubmitError, setParkingLotSubmitError] = useState<
+    string | null
+  >(null);
+
+  // Helper function to convert milliseconds to days for display
+  const millisecondsTodays = (milliseconds: number): number => {
+    return Math.round(milliseconds / (1000 * 60 * 60 * 24));
+  };
+
+  // Format duration (days to user-friendly format with hours)
+  const formatDuration = (days: number): string => {
+    if (days <= 0) return "0 Days";
+
+    // Convert days to total hours first for more precise calculation
+    const totalHours = days * 24;
+
+    const years = Math.floor(totalHours / (365 * 24));
+    const remainingAfterYears = totalHours % (365 * 24);
+
+    const months = Math.floor(remainingAfterYears / (30 * 24));
+    const remainingAfterMonths = remainingAfterYears % (30 * 24);
+
+    const weeks = Math.floor(remainingAfterMonths / (7 * 24));
+    const remainingAfterWeeks = remainingAfterMonths % (7 * 24);
+
+    const daysLeft = Math.floor(remainingAfterWeeks / 24);
+    const hoursLeft = Math.floor(remainingAfterWeeks % 24);
+
+    const parts = [];
+
+    if (years > 0) parts.push(`${years} Year${years > 1 ? "s" : ""}`);
+    if (months > 0) parts.push(`${months} Month${months > 1 ? "s" : ""}`);
+    if (weeks > 0) parts.push(`${weeks} Week${weeks > 1 ? "s" : ""}`);
+    if (daysLeft > 0) parts.push(`${daysLeft} Day${daysLeft > 1 ? "s" : ""}`);
+    if (hoursLeft > 0)
+      parts.push(`${hoursLeft} Hour${hoursLeft > 1 ? "s" : ""}`);
+
+    // If no parts, it means less than an hour
+    if (parts.length === 0) return "Less than 1 Hour";
+
+    // Join parts with commas and "and" for the last item
+    if (parts.length === 1) return parts[0];
+    if (parts.length === 2) return parts.join(" and ");
+
+    const lastPart = parts.pop();
+    return parts.join(", ") + " and " + lastPart;
+  };
+
+  // Format price (VND) - display exact price from database
+  const formatPrice = (price: number): string => {
+    return new Intl.NumberFormat("vi-VN", {
+      style: "currency",
+      currency: "VND",
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(price); // Use exact price from database
+  };
 
   // Format date string
   const formatDate = (dateString: string) => {
@@ -69,6 +145,9 @@ const ParkingLotOwnerDetails: React.FC = () => {
 
         // Fetch parking lots
         await fetchParkingLots();
+
+        // Fetch subscriptions for add parking lot modal
+        await fetchSubscriptions();
       } catch (error) {
         console.error("Error fetching owner details:", error);
         // Reset to safe defaults on error
@@ -106,7 +185,19 @@ const ParkingLotOwnerDetails: React.FC = () => {
       setTotalParkingLots(0);
       setTotalPages(1);
     }
-  }; // Fetch parking lots when page changes
+  };
+
+  // Function to fetch active subscriptions
+  const fetchSubscriptions = async () => {
+    try {
+      const subs = await parkingLotOwnerService.getActiveSubscriptions();
+      setSubscriptions(subs);
+    } catch (error) {
+      console.error("Error fetching subscriptions:", error);
+    }
+  };
+
+  // Fetch parking lots when page changes
   useEffect(() => {
     fetchParkingLots();
   }, [currentPage]);
@@ -188,6 +279,117 @@ const ParkingLotOwnerDetails: React.FC = () => {
   // Get current API key values for display
   const getCurrentApiKeyValue = (key: keyof typeof apiKeysForm): string => {
     return owner?.[key] || "Not set";
+  };
+
+  // Add Parking Lot Modal handlers
+  const handleOpenAddParkingLotModal = () => {
+    setNewParkingLotForm({
+      name: "",
+      description: "",
+      address: "",
+      totalParkingSlot: 1,
+      subscriptionId: "",
+    });
+    setParkingLotSubmitError(null);
+    setIsAddParkingLotModalOpen(true);
+  };
+
+  const handleCloseAddParkingLotModal = () => {
+    setIsAddParkingLotModalOpen(false);
+    setNewParkingLotForm({
+      name: "",
+      description: "",
+      address: "",
+      totalParkingSlot: 1,
+      subscriptionId: "",
+    });
+    setParkingLotSubmitError(null);
+  };
+
+  const validateParkingLotForm = (): boolean => {
+    if (!newParkingLotForm.name.trim()) {
+      setParkingLotSubmitError("Parking lot name is required");
+      return false;
+    }
+    if (!newParkingLotForm.address.trim()) {
+      setParkingLotSubmitError("Address is required");
+      return false;
+    }
+    if (!newParkingLotForm.subscriptionId) {
+      setParkingLotSubmitError("Please select a subscription plan");
+      return false;
+    }
+    if (newParkingLotForm.totalParkingSlot < 1) {
+      setParkingLotSubmitError("Total parking slots must be at least 1");
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmitNewParkingLot = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!validateParkingLotForm() || !owner) {
+      return;
+    }
+
+    setIsSubmittingParkingLot(true);
+    setParkingLotSubmitError(null);
+
+    try {
+      const parkingLotData: CreateParkingLotRequest = {
+        parkingLotOwnerId: owner.parkingLotOwnerId,
+        subscriptionId: newParkingLotForm.subscriptionId,
+        name: newParkingLotForm.name,
+        description: newParkingLotForm.description,
+        address: newParkingLotForm.address,
+        totalParkingSlot: newParkingLotForm.totalParkingSlot,
+      };
+
+      await parkingLotOwnerService.createParkingLot(parkingLotData);
+
+      // Refresh parking lots list
+      await fetchParkingLots();
+
+      // Close modal and show success
+      handleCloseAddParkingLotModal();
+      alert("Parking lot created successfully!");
+    } catch (error: any) {
+      console.error("Error creating parking lot:", error);
+
+      let errorMessage = "Failed to create parking lot. Please try again.";
+
+      // Extract specific error message from API response
+      if (error.response?.data) {
+        const errorData = error.response.data;
+
+        if (errorData.errors && typeof errorData.errors === "object") {
+          const fieldErrors = Object.entries(errorData.errors)
+            .map(([field, messages]: [string, any]) => {
+              const messageArray = Array.isArray(messages)
+                ? messages
+                : [messages];
+              return `${field}: ${messageArray.join(", ")}`;
+            })
+            .join("\n");
+          errorMessage = `Validation errors:\n${fieldErrors}`;
+        } else if (errorData.message) {
+          errorMessage = errorData.message;
+        } else if (errorData.title) {
+          errorMessage = errorData.title;
+        } else if (errorData.detail) {
+          errorMessage = errorData.detail;
+        } else if (typeof errorData === "string") {
+          errorMessage = errorData;
+        }
+      } else if (error.message) {
+        errorMessage = `Network error: ${error.message}`;
+      }
+
+      setParkingLotSubmitError(errorMessage);
+    } finally {
+      setIsSubmittingParkingLot(false);
+    }
   };
 
   if (loading) {
@@ -441,10 +643,21 @@ const ParkingLotOwnerDetails: React.FC = () => {
 
       {/* Parking Lot List */}
       <Card className="p-6">
-        <h2 className="flex items-center text-lg font-semibold mb-4">
-          <Building2 size={20} className="mr-2 text-primary" />
-          Parking Lot List
-        </h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="flex items-center text-lg font-semibold">
+            <Building2 size={20} className="mr-2 text-primary" />
+            Parking Lot List
+          </h2>
+          <Button
+            color="primary"
+            size="sm"
+            startContent={<Plus size={16} />}
+            onPress={handleOpenAddParkingLotModal}
+            className="bg-blue-800 text-white hover:bg-blue-900"
+          >
+            Add Parking Lot
+          </Button>
+        </div>
         <div className="overflow-x-auto w-full max-w-full">
           {parkingLots && parkingLots.length > 0 ? (
             <>
@@ -601,6 +814,210 @@ const ParkingLotOwnerDetails: React.FC = () => {
           )}
         </div>
       </Card>
+
+      {/* Add Parking Lot Modal */}
+      {isAddParkingLotModalOpen && (
+        <div
+          className="fixed mt-0 inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto"
+          style={{ marginTop: "0px" }}
+        >
+          <div className="w-full max-w-2xl mx-4 my-8">
+            <Card className="p-6 max-h-[90vh] overflow-y-auto">
+              <div className="flex justify-between items-center mb-6">
+                <div className="flex items-center">
+                  <Building2 size={24} className="mr-2 text-blue-600" />
+                  <h2 className="text-xl font-bold">Add New Parking Lot</h2>
+                </div>
+                <Button
+                  isIconOnly
+                  variant="light"
+                  onPress={handleCloseAddParkingLotModal}
+                  className="text-gray-500"
+                >
+                  <X size={24} />
+                </Button>
+              </div>
+
+              <form onSubmit={handleSubmitNewParkingLot} className="space-y-6">
+                {/* Error Message Display */}
+                {parkingLotSubmitError && (
+                  <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-md">
+                    <div className="flex items-start">
+                      <AlertTriangle
+                        size={16}
+                        className="text-red-600 mr-2 mt-0.5"
+                      />
+                      <div>
+                        <h4 className="font-semibold text-red-800">Error:</h4>
+                        <pre className="text-sm text-red-700 mt-1 whitespace-pre-wrap">
+                          {parkingLotSubmitError}
+                        </pre>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Parking Lot Information */}
+                <div className="space-y-4">
+                  <div className="flex items-center text-blue-600 font-semibold border-b pb-2">
+                    <Building2 size={20} className="mr-2" />
+                    <h3 className="text-lg">Parking Lot Information</h3>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-1">
+                        Parking Lot Name <span className="text-red-500">*</span>
+                      </label>
+                      <Input
+                        value={newParkingLotForm.name}
+                        onChange={(e) =>
+                          setNewParkingLotForm({
+                            ...newParkingLotForm,
+                            name: e.target.value,
+                          })
+                        }
+                        placeholder="Downtown Parking"
+                        required
+                        className="w-full"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium mb-1">
+                        Total Parking Slots{" "}
+                        <span className="text-red-500">*</span>
+                      </label>
+                      <Input
+                        value={newParkingLotForm.totalParkingSlot.toString()}
+                        onChange={(e) =>
+                          setNewParkingLotForm({
+                            ...newParkingLotForm,
+                            totalParkingSlot: parseInt(e.target.value) || 1,
+                          })
+                        }
+                        type="number"
+                        min="1"
+                        required
+                        className="w-full"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Address <span className="text-red-500">*</span>
+                    </label>
+                    <Input
+                      value={newParkingLotForm.address}
+                      onChange={(e) =>
+                        setNewParkingLotForm({
+                          ...newParkingLotForm,
+                          address: e.target.value,
+                        })
+                      }
+                      placeholder="123 Main St, City, State, ZIP"
+                      required
+                      className="w-full"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Subscription Plan <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      value={newParkingLotForm.subscriptionId}
+                      onChange={(e) =>
+                        setNewParkingLotForm({
+                          ...newParkingLotForm,
+                          subscriptionId: e.target.value,
+                        })
+                      }
+                      className="w-full p-2 border border-gray-300 rounded-md"
+                      required
+                    >
+                      <option value="">Select a subscription plan</option>
+                      {subscriptions.map((sub) => (
+                        <option key={sub.id} value={sub.id}>
+                          {sub.name} - {formatPrice(sub.price)} (
+                          {formatDuration(millisecondsTodays(sub.duration))})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium mb-1">
+                      Description
+                    </label>
+                    <Textarea
+                      value={newParkingLotForm.description}
+                      onChange={(e) =>
+                        setNewParkingLotForm({
+                          ...newParkingLotForm,
+                          description: e.target.value,
+                        })
+                      }
+                      placeholder="Brief description of the parking facility..."
+                      className="w-full"
+                      minRows={2}
+                    />
+                  </div>
+                </div>
+
+                {/* Important Notice */}
+                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-md">
+                  <div className="flex items-start">
+                    <AlertTriangle
+                      size={16}
+                      className="text-blue-600 mr-2 mt-0.5"
+                    />
+                    <div>
+                      <h4 className="font-semibold text-blue-800">
+                        Important Notice:
+                      </h4>
+                      <ul className="text-sm text-blue-700 mt-1 list-disc list-inside">
+                        <li>
+                          The parking lot will be created with the selected
+                          subscription plan
+                        </li>
+                        <li>
+                          The subscription will be active based on the plan
+                          duration
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex justify-end space-x-3">
+                  <Button
+                    variant="flat"
+                    onPress={handleCloseAddParkingLotModal}
+                    className="rounded-full"
+                    startContent={<X size={16} />}
+                    isDisabled={isSubmittingParkingLot}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    color="primary"
+                    type="submit"
+                    variant="flat"
+                    className="rounded-full"
+                    isLoading={isSubmittingParkingLot}
+                    startContent={<Check size={16} />}
+                  >
+                    Create Parking Lot
+                  </Button>
+                </div>
+              </form>
+            </Card>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
