@@ -20,6 +20,7 @@ import java.util.Locale;
 
 import vn.edu.fpt.sapsmobile.R;
 import vn.edu.fpt.sapsmobile.activities.checkout.CheckoutActivity;
+import vn.edu.fpt.sapsmobile.activities.checkout.PaymentActivity;
 import vn.edu.fpt.sapsmobile.listener.HistoryFragmentVehicleDetailListener;
 import vn.edu.fpt.sapsmobile.models.ParkingLot;
 import vn.edu.fpt.sapsmobile.models.ParkingSession;
@@ -41,6 +42,7 @@ public class ParkingSessionParkingAdapter extends RecyclerView.Adapter<ParkingSe
         this.fragment = fragment;
 
     }
+
     public void updateItems(List<ParkingSession> newList) {
         this.sessions.clear();
         this.sessions.addAll(newList);
@@ -68,6 +70,7 @@ public class ParkingSessionParkingAdapter extends RecyclerView.Adapter<ParkingSe
 
     class ParkingSessionParkingViewHolder extends RecyclerView.ViewHolder {
 
+        private String TAG = "ParkingSessionParkingViewHolder";
         TextView tvParkingLotName, tvLocation, tvVehicle, tvDuration, tvEntryTime, tvAmount, tvStatus;
         Button btnCheckOut;
 
@@ -88,12 +91,13 @@ public class ParkingSessionParkingAdapter extends RecyclerView.Adapter<ParkingSe
         }
 
         void bind(ParkingSession session, HistoryFragmentVehicleDetailListener listener, Context context) {
+            Log.i(TAG, "ParkingSession : " + session.toString());
             this.session = session;
 
             // Set time
             if (session.getExitDateTime() == null) {
                 LocalDateTime now = LocalDateTime.now();
-                tvDuration.setText(DateTimeHelper.calculateDuration(session.getEntryDateTime(),now.toString()));
+                tvDuration.setText(DateTimeHelper.calculateDuration(session.getEntryDateTime(), now.toString()));
             } else {
                 tvDuration.setText(DateTimeHelper.calculateDuration(session.getEntryDateTime(), session.getExitDateTime()));
             }
@@ -113,8 +117,8 @@ public class ParkingSessionParkingAdapter extends RecyclerView.Adapter<ParkingSe
                     ContextCompat.getColor(itemView.getContext(), R.color.md_theme_onTertiaryFixedVariant)
             );
 
-           if (session.getExitDateTime() == null) {
-                statusCheck = "On Going";
+            if (session.getExitDateTime() == null) {
+                statusCheck = session.getStatus();
                 tvStatus.setTextColor(
                         ContextCompat.getColor(itemView.getContext(), R.color.md_theme_tertiaryFixedDim_mediumContrast)
                 );
@@ -134,10 +138,15 @@ public class ParkingSessionParkingAdapter extends RecyclerView.Adapter<ParkingSe
             itemView.setOnClickListener(v -> {
                 handleClick();
             });
-            btnCheckOut.setOnClickListener(v ->handleClick());
+
+            btnCheckOut.setOnClickListener(v -> handleClick());
+            if(session.getStatus().equals("CheckedOut")){
+                btnCheckOut.setText(R.string.checkout_activity_view_checkout);
+                btnCheckOut.setOnClickListener(v -> navigateToPayment());
+            }
         }
 
-        private void handleClick(){
+        private void handleClick() {
             ParkingLot parkingLot = new ParkingLot();
             parkingLot.setName(session.getParkingLotName());
 
@@ -148,6 +157,14 @@ public class ParkingSessionParkingAdapter extends RecyclerView.Adapter<ParkingSe
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
 
+        }
+
+        private void navigateToPayment() {
+            if (session == null) return;
+            Intent intent = new Intent(context, PaymentActivity.class);
+            intent.putExtra("vehicleId", session.getVehicleId());
+            intent.putExtra("sessionId", session.getId());
+            context.startActivity(intent);
         }
 
     }

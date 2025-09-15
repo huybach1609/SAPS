@@ -185,6 +185,7 @@ public class ParkingSessionService {
             ps.setExitDateTime(dto.getExitDateTime());
             ps.setCost(dto.getCost());
             ps.setParkingLotName(dto.getParkingLotName());
+            ps.setStatus(dto.getStatus());
 
             // map vehicle by license plate
             VehicleSummaryDto match = null;
