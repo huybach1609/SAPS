@@ -19,6 +19,7 @@ import retrofit2.Response;
 import vn.edu.fpt.sapsmobile.network.client.ApiClient;
 import vn.edu.fpt.sapsmobile.network.api.IParkingSessionApiService;
 import vn.edu.fpt.sapsmobile.network.api.IVehicleApi;
+import vn.edu.fpt.sapsmobile.network.api.ISharedvehicle;
 import vn.edu.fpt.sapsmobile.models.ParkingSession;
 import vn.edu.fpt.sapsmobile.models.Vehicle;
 import vn.edu.fpt.sapsmobile.dtos.vehicle.VehicleSummaryDto;
@@ -146,22 +147,61 @@ public class ParkingSessionService {
                                      ParkingSessionCallback callback,
                                      DataLoadingCallback loadingCallback) {
         IVehicleApi vehicleApi = ApiClient.getServiceLast(context).create(IVehicleApi.class);
+        ISharedvehicle sharedApi = ApiClient.getServiceLast(context).create(ISharedvehicle.class);
+
+        List<VehicleSummaryDto> allVehicles = new ArrayList<>();
+        AtomicInteger completed = new AtomicInteger(0);
+
+        Runnable finishIfDone = () -> {
+            if (completed.incrementAndGet() == 2) {
+                List<ParkingSession> mapped = mapDtosToSessions(dtoList, allVehicles);
+                callback.onSuccess(mapped);
+                loadingCallback.onDataLoadingFinished();
+            }
+        };
+
         vehicleApi.getMyVehicles(null, null).enqueue(new Callback<List<VehicleSummaryDto>>() {
             @Override
             public void onResponse(Call<List<VehicleSummaryDto>> call, Response<List<VehicleSummaryDto>> response) {
-                List<VehicleSummaryDto> vehicles = response.isSuccessful() && response.body() != null ? response.body() : new ArrayList<>();
-                List<ParkingSession> mapped = mapDtosToSessions(dtoList, vehicles);
-                callback.onSuccess(mapped);
-                loadingCallback.onDataLoadingFinished();
+                if (response.isSuccessful() && response.body() != null) {
+                    allVehicles.addAll(response.body());
+                }
+                finishIfDone.run();
             }
 
             @Override
             public void onFailure(Call<List<VehicleSummaryDto>> call, Throwable t) {
-                List<ParkingSession> mapped = mapDtosToSessions(dtoList, new ArrayList<>());
-                callback.onSuccess(mapped);
-                loadingCallback.onDataLoadingFinished();
+                finishIfDone.run();
             }
         });
+
+        String userId = tokenManager.getUserData().getId();
+        sharedApi.getShareVehicles(userId).enqueue(new Callback<List<VehicleSummaryDto>>() {
+            @Override
+            public void onResponse(Call<List<VehicleSummaryDto>> call, Response<List<VehicleSummaryDto>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    // Merge unique by license plate (case-insensitive)
+                    for (VehicleSummaryDto shared : response.body()) {
+                        boolean exists = allVehicles.stream().anyMatch(v ->
+                                v.getLicensePlate() != null && shared.getLicensePlate() != null &&
+                                        v.getLicensePlate().equalsIgnoreCase(shared.getLicensePlate())
+                        );
+                        if (!exists) {
+                            allVehicles.add(shared);
+                        }
+                    }
+                }
+                finishIfDone.run();
+            }
+
+            @Override
+            public void onFailure(Call<List<VehicleSummaryDto>> call, Throwable t) {
+                finishIfDone.run();
+            }
+        });
+
+
+
     }
     
     private void addUniqueItems(List<OwnedSessionResponse.OwnedParkingSessionDto> target,
@@ -177,6 +217,7 @@ public class ParkingSessionService {
     
     private List<ParkingSession> mapDtosToSessions(List<OwnedSessionResponse.OwnedParkingSessionDto> dtoList, 
                                                    List<VehicleSummaryDto> vehicles) {
+
         List<ParkingSession> result = new ArrayList<>();
         for (OwnedSessionResponse.OwnedParkingSessionDto dto : dtoList) {
             ParkingSession ps = new ParkingSession();
