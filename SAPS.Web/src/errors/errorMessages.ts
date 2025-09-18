@@ -52,6 +52,7 @@ export const errorMessages: Record<string, string> = {
   // Whitelist errors
   WHITELIST_ENTRY_EXISTS: "This entry already exists in the whitelist.",
   WHITELIST_ENTRY_NOT_FOUND: "Whitelist entry not found.",
+  CLIENT_IN_WHITE_LIST_ALREADY: "Client is already in the whitelist.",
   
   // Staff management errors
   STAFF_NOT_FOUND: "Staff member not found.",
