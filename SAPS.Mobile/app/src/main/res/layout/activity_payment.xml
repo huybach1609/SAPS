@@ -5,8 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/md_theme_background"
-    >
+    android:background="@color/md_theme_background">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
@@ -137,8 +136,7 @@
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:padding="10dp"
-                        >
+                        android:padding="10dp">
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -187,9 +185,9 @@
                             android:id="@+id/btnCopyAccount"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
+                            android:alpha="0.5"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:src="@drawable/ic_copy"
-                            android:alpha="0.5"
                             app:tint="@color/md_theme_primary" />
                     </LinearLayout>
 
@@ -197,8 +195,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:gravity="center_vertical"
+                        android:orientation="horizontal"
                         android:padding="10dp">
 
                         <LinearLayout
@@ -221,8 +219,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
                                 android:layout_weight="6"
-                                android:orientation="vertical"
-                                android:gravity="center_vertical">
+                                android:gravity="center_vertical"
+                                android:orientation="vertical">
 
                                 <TextView
                                     android:layout_width="match_parent"
@@ -246,10 +244,10 @@
                             android:id="@+id/btnCopyName"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
+                            android:alpha="0.5"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:clickable="true"
                             android:focusable="true"
-                            android:alpha="0.5"
                             android:src="@drawable/ic_copy"
                             app:tint="@color/md_theme_primary" />
                     </LinearLayout>
@@ -258,8 +256,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:gravity="center_vertical"
+                        android:orientation="horizontal"
                         android:padding="10dp">
 
                         <LinearLayout
@@ -282,8 +280,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="10dp"
                                 android:layout_weight="6"
-                                android:orientation="vertical"
-                                android:gravity="center_vertical">
+                                android:gravity="center_vertical"
+                                android:orientation="vertical">
 
                                 <TextView
                                     android:layout_width="match_parent"
@@ -308,10 +306,10 @@
                             android:id="@+id/btnCopyRef"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
+                            android:alpha="0.5"
                             android:background="?attr/selectableItemBackgroundBorderless"
                             android:clickable="true"
                             android:focusable="true"
-                            android:alpha="0.5"
                             android:src="@drawable/ic_copy"
                             app:tint="@color/md_theme_primary" />
                     </LinearLayout>
@@ -336,23 +334,32 @@
                     android:orientation="vertical"
                     android:padding="16dp">
 
-<!--                    <TextView-->
-<!--                        android:id="@+id/tvQrTitle"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"-->
-<!--                        android:layout_marginBottom="5dp"-->
-<!--                        android:text="Quét QR để thanh toán"-->
-<!--                        android:textColor="@color/md_theme_onSurface"-->
-<!--                        android:textSize="15sp"-->
-<!--                        android:textStyle="bold" />-->
+                    <!--                    <TextView-->
+                    <!--                        android:id="@+id/tvQrTitle"-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"-->
+                    <!--                        android:layout_marginBottom="5dp"-->
+                    <!--                        android:text="Quét QR để thanh toán"-->
+                    <!--                        android:textColor="@color/md_theme_onSurface"-->
+                    <!--                        android:textSize="15sp"-->
+                    <!--                        android:textStyle="bold" />-->
 
                     <ImageView
                         android:id="@+id/imgQrCode"
                         android:layout_width="220dp"
                         android:layout_height="220dp"
+                        android:background="@android:color/white"
                         android:contentDescription="QR Code"
-                        android:scaleType="fitCenter"
-                        android:background="@android:color/white" />
+                        android:scaleType="fitCenter" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnSaveQr"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:text="Save image"
+                        android:textAllCaps="false"
+                        app:cornerRadius="5dp" />
 
                     <TextView
                         android:id="@+id/tvQrHint"
@@ -391,18 +398,41 @@
                     app:iconSize="24dp"
                     app:iconTint="@color/md_theme_background" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnBrowse"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:fontFamily="sans-serif-medium"
-                    android:text="@string/payment_open_in_browser"
-                    android:textAllCaps="false"
-                    android:textColor="@color/md_theme_onSurface"
-                    android:textSize="16sp"
-                    app:cornerRadius="5dp"
-                    app:strokeColor="@color/md_theme_outline" />
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:layout_weight="1"
+                        android:id="@+id/btnBrowse"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/payment_open_in_browser"
+                        android:textAllCaps="false"
+                        android:textColor="@color/md_theme_onSurface"
+                        android:textSize="16sp"
+                        android:layout_marginRight="2dp"
+                        app:cornerRadius="5dp"
+                        app:strokeColor="@color/md_theme_outline" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:layout_marginLeft="2dp"
+                        android:id="@+id/btnCancel"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:fontFamily="sans-serif-medium"
+                        android:text="@string/button_cancel"
+                        android:textAllCaps="false"
+                        android:textColor="@color/md_theme_onSurface"
+                        android:textSize="16sp"
+                        app:cornerRadius="5dp"
+                        android:layout_weight="1"
+                        app:strokeColor="@color/md_theme_outline" />
+                </LinearLayout>
             </LinearLayout>
 
             <!-- Small footer note -->

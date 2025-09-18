@@ -7,7 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -31,6 +33,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import vn.edu.fpt.sapsmobile.dtos.payment.PaymentApiResponseDTO;
+import vn.edu.fpt.sapsmobile.dtos.payment.PaymentCancelRequestDTO;
 import vn.edu.fpt.sapsmobile.dtos.payment.PaymentStatusResponseDTO;
 import vn.edu.fpt.sapsmobile.enums.PaymentStatus;
 import vn.edu.fpt.sapsmobile.network.client.ApiClient;
@@ -45,7 +48,7 @@ public class PaymentActivity extends AppCompatActivity {
     private static String TAG = "PaymentActivity";
 
     ImageView imgQrCode;
-    Button btnIHavePaid, btnBrowser;
+    Button btnIHavePaid, btnBrowser, btnCancel, btnSaveQr;
     TextView tvAccountNumber, tvAccountName, tvReferenceCode, tvAmount;
     ImageView btnCopyAccount, btnCopyName, btnCopyRef;
     String vehicleID, sessionID;
@@ -76,6 +79,9 @@ public class PaymentActivity extends AppCompatActivity {
         tvReferenceCode = findViewById(R.id.tvReferenceCode);
         tvAmount = findViewById(R.id.tvAmount);
         btnBrowser = findViewById(R.id.btnBrowse);
+        btnCancel =findViewById(R.id.btnCancel);
+        btnSaveQr = findViewById(R.id.btnSaveQr);
+        if (btnSaveQr != null) btnSaveQr.setEnabled(false);
         
         // Initialize copy buttons
         btnCopyAccount = findViewById(R.id.btnCopyAccount);
@@ -102,6 +108,12 @@ public class PaymentActivity extends AppCompatActivity {
         
         // Setup copy button listeners
         setupCopyButtonListeners();
+
+        // Cancel payment
+        btnCancel.setOnClickListener(v -> performCancelPayment());
+
+        // Save QR image
+        btnSaveQr.setOnClickListener(v -> saveQrToGallery());
     }
 
     private void setupCopyButtonListeners() {
@@ -211,7 +223,8 @@ public class PaymentActivity extends AppCompatActivity {
         if (payment.getData().getQrCode() != null && !payment.getData().getQrCode().isEmpty()) {
             renderQrFromPayload(payment.getData().getQrCode());
         }
-        setupCheckStatus(payment.getData().getOrderCode() + "");
+//        setupCheckStatus(payment.getData().getOrderCode() + "");
+        setupCheckStatus(sessionID);
 
         if (payment.getData().getCheckoutUrl() != null) {
             Log.i(TAG, "updatePaymentData: " + payment.getData().getCheckoutUrl());
@@ -227,8 +240,6 @@ public class PaymentActivity extends AppCompatActivity {
 
 
     //endregion
-
-
     private void renderQrFromPayload(String payload) {
         if (payload == null || payload.isEmpty()) {
             Log.e(TAG, "QR payload is null or empty");
@@ -250,10 +261,61 @@ public class PaymentActivity extends AppCompatActivity {
             runOnUiThread(() -> {
                 imgQrCode.setImageBitmap(bitmap);
                 imgQrCode.setVisibility(View.VISIBLE);
+                if (btnSaveQr != null) btnSaveQr.setEnabled(true);
             });
         } catch (WriterException e) {
             Log.e(TAG, "Error generating QR code: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    private void saveQrToGallery() {
+        if (imgQrCode.getDrawable() == null) {
+            Toast.makeText(this, "No QR image to save", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Bitmap bitmap;
+        if (imgQrCode.getDrawable() instanceof android.graphics.drawable.BitmapDrawable) {
+            bitmap = ((android.graphics.drawable.BitmapDrawable) imgQrCode.getDrawable()).getBitmap();
+        } else {
+            bitmap = Bitmap.createBitmap(imgQrCode.getWidth(), imgQrCode.getHeight(), Bitmap.Config.ARGB_8888);
+            android.graphics.Canvas canvas = new android.graphics.Canvas(bitmap);
+            imgQrCode.getDrawable().setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            imgQrCode.getDrawable().draw(canvas);
+        }
+
+        String fileName = "QR_" + System.currentTimeMillis() + ".png";
+        try {
+            Uri uri;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                android.content.ContentValues values = new android.content.ContentValues();
+                values.put(MediaStore.Images.Media.DISPLAY_NAME, fileName);
+                values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
+                values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/SAPS");
+                values.put(MediaStore.Images.Media.IS_PENDING, 1);
+
+                uri = getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+                if (uri == null) throw new IllegalStateException("Failed to create new MediaStore record");
+
+                try (java.io.OutputStream out = getContentResolver().openOutputStream(uri)) {
+                    if (out == null) throw new IllegalStateException("Failed to open output stream");
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+                }
+
+                values.clear();
+                values.put(MediaStore.Images.Media.IS_PENDING, 0);
+                getContentResolver().update(uri, values, null, null);
+            } else {
+                String savedImageURL = MediaStore.Images.Media.insertImage(
+                        getContentResolver(), bitmap, fileName, "Payment QR Code");
+                uri = Uri.parse(savedImageURL);
+            }
+
+            Toast.makeText(this, "Saved to gallery", Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Log.e(TAG, "saveQrToGallery: ", e);
+            Toast.makeText(this, "Save failed: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
     private void fetchCheckStatus(String orderCode){
@@ -347,5 +409,30 @@ public class PaymentActivity extends AppCompatActivity {
                 break;
         }
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
+    private void performCancelPayment() {
+        if (sessionID == null || sessionID.isEmpty()) {
+            Toast.makeText(this, "Session ID is missing", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        TransactionApiService txApi = ApiClient.getServiceLast(this).create(TransactionApiService.class);
+        PaymentCancelRequestDTO body = new PaymentCancelRequestDTO("User cancelled from app");
+        txApi.cancelPayment(sessionID, body).enqueue(new Callback<PaymentStatusResponseDTO>() {
+            @Override
+            public void onResponse(Call<PaymentStatusResponseDTO> call, Response<PaymentStatusResponseDTO> response) {
+                if (response.isSuccessful() && response.body() != null && response.body().getData() != null) {
+                    navigateToResultActivity(PaymentStatus.CANCELLED);
+                } else {
+                    Toast.makeText(PaymentActivity.this, "Cancel failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<PaymentStatusResponseDTO> call, Throwable t) {
+                Toast.makeText(PaymentActivity.this, "Cancel error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

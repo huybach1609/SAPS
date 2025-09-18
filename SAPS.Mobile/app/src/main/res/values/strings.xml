@@ -653,5 +653,6 @@
     <string name="toast_vehicle_information_missing">Vehicle information is missing</string>
     <string name="toast_error_loading_checkout_data">Error loading checkout data</string>
     <string name="toast_invalid_vehicle_information">Invalid vehicle information</string>
+    <string name="checkout_activity_view_checkout">View you check out info</string>
 
 </resources>

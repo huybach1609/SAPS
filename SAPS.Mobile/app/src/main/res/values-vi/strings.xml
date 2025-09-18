@@ -652,5 +652,6 @@
     <string name="toast_vehicle_information_missing">Thiếu thông tin xe</string>
     <string name="toast_error_loading_checkout_data">Lỗi tải dữ liệu checkout</string>
     <string name="toast_invalid_vehicle_information">Thông tin xe không hợp lệ</string>
+    <string name="checkout_activity_view_checkout">Xem thông tin lượt check out</string>
 
 </resources>

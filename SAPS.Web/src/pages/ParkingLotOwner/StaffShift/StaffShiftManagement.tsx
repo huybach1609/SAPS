@@ -170,6 +170,7 @@ const StaffShiftManagement: React.FC = () => {
     const handleUpdateShift = async (shiftData: StaffShift | CreateStaffShift) => {
 
         try {
+            console.log(shiftData);
             // Validate the shift data
             const errors = StaffShiftValidator.validate(shiftData);
             if (errors.length > 0) {

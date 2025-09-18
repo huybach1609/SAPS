@@ -2,7 +2,7 @@ import axios from 'axios';
 import { apiUrl } from '@/config/base';
 import type { Whitelist, PaginatedWhitelistResponse, WhitelistStatus } from '@/types/Whitelist';
 import { User } from '@/types/User';
-
+import { getErrorMessage } from '@/errors/errorMessages';
 // Helper function to get auth headers
 const getAuthHeaders = () => ({
     'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
@@ -66,8 +66,9 @@ export const addToWhitelist = async (
         console.log('Whitelist response:', response.data);
         return response.data;
     } catch (error) {
-        console.error('Error adding to whitelist:', error);
-        throw error;
+        console.error('Error adding to whitelist:', error.response.data.message);
+        const errorMessage = getErrorMessage(error.response.data.message, 'Client');
+        throw errorMessage;
     }
 };
 

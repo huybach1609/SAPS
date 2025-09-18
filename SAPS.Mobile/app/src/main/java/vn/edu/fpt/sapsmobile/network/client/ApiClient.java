@@ -14,7 +14,7 @@ import vn.edu.fpt.sapsmobile.network.interceptor.TokenInterceptor;
 import vn.edu.fpt.sapsmobile.network.ssl.SSLHelper;
 
 public class ApiClient {
-    private static final String BASE_URL_LAST = BuildConfig.API_BASE_URL;
+    private static final String BASE_URL_LAST = BuildConfig.BASE_URL_PROD;
     private static Retrofit mockApiLast;
 
 

@@ -130,12 +130,12 @@ const StaffShiftWeeklyView: React.FC<StaffShiftWeeklyViewProps> = ({
                 {/* Time Slots Configuration */}
                 {(() => {
                     const timeSlots = [
-                        { label: '6:00 AM - 10:00 AM', start: 360, end: 600 },    // 6:00-10:00
-                        { label: '10:00 AM - 2:00 PM', start: 600, end: 840 },   // 10:00-14:00
-                        { label: '2:00 PM - 6:00 PM', start: 840, end: 1080 },   // 14:00-18:00
-                        { label: '6:00 PM - 10:00 PM', start: 1080, end: 1320 }, // 18:00-22:00
-                        { label: '10:00 PM - 2:00 AM', start: 1320, end: 119 }, // 22:00-02:00 (next day)
-                        { label: '2:00 AM - 6:00 AM', start: 120, end: 360 }     // 02:00-06:00
+                        { label: '12:00 AM - 4:00 AM', start: 0, end: 240 },     // 00:00-04:00
+                        { label: '4:00 AM - 8:00 AM', start: 240, end: 480 },    // 04:00-08:00
+                        { label: '8:00 AM - 12:00 PM', start: 480, end: 720 },   // 08:00-12:00
+                        { label: '12:00 PM - 4:00 PM', start: 720, end: 960 },   // 12:00-16:00
+                        { label: '4:00 PM - 8:00 PM', start: 960, end: 1200 },   // 16:00-20:00
+                        { label: '8:00 PM - 12:00 AM', start: 1200, end: 1439 }  // 20:00-24:00 (end exclusive)
                     ];
 
                     return (

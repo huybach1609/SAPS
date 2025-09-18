@@ -3,10 +3,17 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@heroui/button";
 import { AlertTriangle, ArrowLeft } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useAuth } from "@/contexts/AuthContext";
+import { useEffect } from "react";
 
 export default function UnauthorizedPage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const { logout } = useAuth();
+  useEffect(() => {
+    logout();
+  }, []);
+  
 
   return (
     <div className="flex min-h-screen bg-gray-100 items-center justify-center p-4">
