@@ -144,7 +144,7 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
 
             fetchStaffDetails();
 
-
+            console.log("Shift init:", shift);
             // staff id 
             setFormData({
                 id: shift.id,
@@ -462,12 +462,12 @@ const StaffShiftModal: React.FC<StaffShiftModalProps> = ({
                                 placeholder="Select a time range"
                             >
                                 <SelectItem key="0-0" aria-label="0-0" hidden>select a time range</SelectItem>
-                                <SelectItem key="360-599" aria-label="360-600">(6:00 AM - 10:00 AM)</SelectItem>
-                                <SelectItem key="600-839" aria-label="600-840">Late Morning (10:00 AM - 2:00 PM)</SelectItem>
-                                <SelectItem key="840-1079" aria-label="840-1080">Early Afternoon (2:00 PM - 6:00 PM)</SelectItem>
-                                <SelectItem key="1080-1319" aria-label="1080-1320">Late Afternoon (6:00 PM - 10:00 PM)</SelectItem>
-                                <SelectItem key="1320-119" aria-label="1320-120">Early Night (10:00 PM - 2:00 AM)</SelectItem>
-                                <SelectItem key="120-359" aria-label="120-360">Late Night (2:00 AM - 6:00 AM)</SelectItem>
+                                <SelectItem key="0-239" aria-label="0-240">12:00 AM - 4:00 AM</SelectItem>
+                                <SelectItem key="240-479" aria-label="240-480">4:00 AM - 8:00 AM</SelectItem>
+                                <SelectItem key="480-719" aria-label="480-720">8:00 AM - 12:00 PM</SelectItem>
+                                <SelectItem key="720-959" aria-label="720-960">12:00 PM - 4:00 PM</SelectItem>
+                                <SelectItem key="960-1199" aria-label="960-1200">4:00 PM - 8:00 PM</SelectItem>
+                                <SelectItem key="1200-1439" aria-label="1200-1439">8:00 PM - 12:00 AM</SelectItem>
                                 {/* <SelectItem key="custom">Custom Time Range</SelectItem> */}
                             </Select>
                         </div>

@@ -191,7 +191,6 @@ public class HomeFragment extends Fragment implements
     @Override
     public void onError(String errorMessage) {
         if (!isAdded() || getContext() == null) return;
-        
         Toast.makeText(getContext(), errorMessage, Toast.LENGTH_SHORT).show();
     }
 

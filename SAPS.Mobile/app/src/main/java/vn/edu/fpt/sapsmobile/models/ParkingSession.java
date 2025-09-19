@@ -1,5 +1,7 @@
 package vn.edu.fpt.sapsmobile.models;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 
 public class ParkingSession implements Serializable {
@@ -21,6 +23,8 @@ public class ParkingSession implements Serializable {
     private String transactionId;         // nullable
     private String paymentMethod;         // not null
     private double cost;                  // not null
+
+    private String status;
 
     private Vehicle vehicle;
     // 🔸 Constructor đầy đủ
@@ -51,7 +55,7 @@ public class ParkingSession implements Serializable {
                           String exitBackCaptureUrl,
                           String transactionId,
                           String paymentMethod,
-                          double cost) {
+                          double cost, String status) {
         this.id = id;
         this.vehicleId = vehicleId;
         this.parkingLotId = parkingLotId;
@@ -65,8 +69,9 @@ public class ParkingSession implements Serializable {
         this.transactionId = transactionId;
         this.paymentMethod = paymentMethod;
         this.cost = cost;
+        this.status=status;
     }
-    // 🔸 Constructor rỗng (bắt buộc nếu bạn dùng Firebase hoặc Gson)
+    //  Constructor rỗng (bắt buộc nếu bạn dùng Firebase hoặc Gson)
     public ParkingSession() {}
     // Getters & Setters
     public String getId() { return id; }
@@ -126,12 +131,21 @@ public class ParkingSession implements Serializable {
         this.parkingLotName = parkingLotName;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "ParkingSession{" +
                 "id='" + id + '\'' +
                 ", vehicleId='" + vehicleId + '\'' +
                 ", parkingLotId='" + parkingLotId + '\'' +
+                ", parkingLotName='" + parkingLotName + '\'' +
                 ", entryDateTime='" + entryDateTime + '\'' +
                 ", exitDateTime='" + exitDateTime + '\'' +
                 ", checkOutTime='" + checkOutTime + '\'' +
@@ -142,6 +156,8 @@ public class ParkingSession implements Serializable {
                 ", transactionId='" + transactionId + '\'' +
                 ", paymentMethod='" + paymentMethod + '\'' +
                 ", cost=" + cost +
+                ", status='" + status + '\'' +
+                ", vehicle=" + vehicle +
                 '}';
     }
 }

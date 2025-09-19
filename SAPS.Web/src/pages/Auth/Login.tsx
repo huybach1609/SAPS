@@ -6,6 +6,7 @@ import { Camera, ChartColumnBig, Lock, Zap } from "lucide-react";
 import { Input } from "@heroui/input";
 import { Checkbox } from "@heroui/react";
 import logoImage from "../../assets/Logo/logo.svg";
+import { getErrorMessage } from "@/errors/errorMessages";
 
 export default function LoginPage() {
   const { login, loading, getUserRole } = useAuth();
@@ -45,12 +46,13 @@ export default function LoginPage() {
       }
     } catch (err) {
       console.log(err);
-      const message =
-        err instanceof Error
-          ? err.message
-          : typeof err === "object" && err && "message" in (err as any)
-            ? String((err as any).message)
-            : "Invalid email or password";
+      const message = getErrorMessage(err.message);
+      // const message =
+      //   err instanceof Error
+      //     ? err.message
+      //     : typeof err === "object" && err && "message" in (err as any)
+      //       ? String((err as any).message)
+      //       : "Invalid email or password";
       setError(message);
     } finally {
       setSubmitting(false);

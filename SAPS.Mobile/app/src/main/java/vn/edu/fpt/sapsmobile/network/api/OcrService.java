@@ -28,18 +28,6 @@ public interface OcrService {
             @Part MultipartBody.Part FrontImage,
             @Part MultipartBody.Part BackImage
     );
-
-    @POST("api/ocr/citizen-card/base64")
-    @Headers("Content-Type: application/json")
-    Call<IdCardResponse> getInfoIdCardBase64(@Body IdCardBase64Request request);
-
-    @Multipart
-    @POST("api/Ocr/getInfoVehicleCard")
-    Call<VehicleRegistrationInfo> getInfoVehicle(
-            @Part MultipartBody.Part front,
-            @Part MultipartBody.Part back
-    );
-
     @Multipart
     @POST("api/vehicle/register")
     Call<MessageServerResponse> registerVehicle(
@@ -70,21 +58,4 @@ public interface OcrService {
             @Part("Phone") RequestBody phone,
             @Part("Id") RequestBody id
     );
-
-    @Multipart
-    @POST("api/client/verify-lvl-2")
-    Call<VerificationResponse> verifyClientLevel2(
-            @Part MultipartBody.Part FrontCitizenCardImage,
-            @Part MultipartBody.Part BackCitizenCardImage,
-            @Part("CitizenId") RequestBody citizenId,
-            @Part("DateOfBirth") RequestBody dateOfBirth,
-            @Part("Sex") RequestBody sex,
-            @Part("Nationality") RequestBody nationality,
-            @Part("PlaceOfOrigin") RequestBody placeOfOrigin,
-            @Part("PlaceOfResidence") RequestBody placeOfResidence,
-            @Part("Id") RequestBody id
-    );
-
-
-
 }

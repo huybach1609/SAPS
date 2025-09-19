@@ -53,7 +53,7 @@ export function useWhitelistManagement(parkingLotId?: string) {
       await loadWhitelist();
       return null;
     } catch (error: any) {
-      return error?.message || "Failed to add to whitelist. Please try again.";
+      return error || "Failed to add to whitelist. Please try again.";
     }
   };
 
