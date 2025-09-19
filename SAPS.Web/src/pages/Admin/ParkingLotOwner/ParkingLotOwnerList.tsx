@@ -14,7 +14,7 @@ import { format } from "date-fns";
 const statusOptions = [
   { label: "All Status", value: "All" },
   { label: "Active", value: "Active" },
-  { label: "InActive", value: "InActive" },
+  { label: "Inactive", value: "Inactive" },
 ];
 
 export default function AdminParkingLotOwnerList() {
@@ -79,7 +79,7 @@ export default function AdminParkingLotOwnerList() {
         (owner) => owner.status === "Active"
       ).length;
       const inactiveCount = allOwners.filter(
-        (owner) => owner.status === "InActive"
+        (owner) => owner.status === "Inactive"
       ).length;
 
       setActiveOwners(activeCount);
@@ -163,7 +163,7 @@ export default function AdminParkingLotOwnerList() {
         <Card className="p-4 bg-[#00B4D8] text-white">
           <div className="text-center">
             <div className="text-4xl font-bold mb-1">{inactiveOwners}</div>
-            <div className="text-sm">InActive Owners</div>
+            <div className="text-sm">Inactive Owners</div>
           </div>
         </Card>
       </div>
@@ -450,7 +450,7 @@ export default function AdminParkingLotOwnerList() {
             <p>
               <span className="font-semibold">Permission Note:</span> Active
               owners can manage their parking lots and process parking sessions.
-              InActive owners cannot access the system.
+              Inactive owners cannot access the system.
             </p>
           </div>
         </div>
@@ -534,7 +534,7 @@ export default function AdminParkingLotOwnerList() {
         <p className="font-semibold">Management Note:</p>
         <p>
           Active owners can manage their parking lots and process parking
-          sessions independently. InActive owners cannot access the system or
+          sessions independently. Inactive owners cannot access the system or
           manage their facilities.
         </p>
       </div>
