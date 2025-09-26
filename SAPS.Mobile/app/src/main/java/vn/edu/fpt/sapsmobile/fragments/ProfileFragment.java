@@ -21,6 +21,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import androidx.appcompat.app.AlertDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -145,15 +148,36 @@ public class ProfileFragment extends Fragment {
         verifyText.setVisibility(isVerified ? View.GONE : View.VISIBLE);
     }
 
+    private final String TAG ="ProfileFragment";
     private boolean isUserVerified() {
-        if (user.getClientProfile() == null) {
-            return false;
+        Log.i(TAG, "isUserVerified: " + user.getClientProfile().getCitizenId());
+        if (user.getClientProfile() != null) {
+            if(user.getClientProfile().getCitizenId().contains("Unverified_")){
+                return false;
+            }
+            return true;
         }
+        return false;
+    }
 
-//        String frontUrl = user.getClientProfile().getIdCardFrontUrl();
-//        String backUrl = user.getClientProfile().getIdCardBackUrl();
-        return true;
+    private void showVerificationRequiredDialog() {
+        AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(getString(R.string.title_user_verification))
+                .setMessage(getString(R.string.profile_fragment_please_verify_account_messsage))
+                .setPositiveButton(getString(R.string.dialog_ok), (dialogInterface, which) -> {
+                    dialogInterface.dismiss();
+                })
+                .create();
+        
+        dialog.show();
+    }
 
+    // Public method to check if user is verified (can be called from MainActivity)
+    public boolean isUserVerifiedForNavigation() {
+        if (user != null && user.getClientProfile() != null) {
+            return !user.getClientProfile().getCitizenId().contains("Unverified_");
+        }
+        return false;
     }
 
     private boolean isValidUrl(String url) {

@@ -70,6 +70,7 @@
                 android:orientation="vertical">
 
                 <Button
+                    android:visibility="gone"
                     android:id="@+id/btn_take_photo_vehicle"
                     style="@style/Widget.Material3.Button.Icon"
                     android:layout_width="match_parent"
@@ -286,13 +287,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingVertical="12dp">
+                android:paddingVertical="12dp"
+                >
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:paddingStart="16dp"
+                    android:paddingEnd="0dp"
                     android:text="@string/add_vehicle_color"
                     android:textColor="@color/md_theme_onSecondaryContainer"
                     android:textSize="16sp" />
@@ -306,17 +309,11 @@
                     android:background="@android:color/transparent"
                     android:enabled="false"
                     android:gravity="end"
+                    android:paddingStart="0dp"
                     android:paddingEnd="16dp"
                     android:textColor="@color/md_theme_onSurface"
                     android:textSize="16sp" />
             </LinearLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/md_theme_outlineVariant" />
-
-
 
             <View
                 android:layout_width="match_parent"

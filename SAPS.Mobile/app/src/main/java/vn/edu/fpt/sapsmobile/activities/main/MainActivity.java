@@ -11,6 +11,10 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import androidx.appcompat.app.AlertDialog;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
@@ -30,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements AuthenticationSer
 
     private BottomNavigationView bottomNavigation;
     private AuthenticationService authService;
+    private ProfileFragment profileFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,8 +131,10 @@ public class MainActivity extends AppCompatActivity implements AuthenticationSer
             if (selectedFragment != null) {
                 loadFragment(selectedFragment);
                 return true;
+            } else {
+                // If fragment is null (blocked by verification), keep current selection
+                return false;
             }
-            return false;
         });
 
         bottomNavigation.setOnItemReselectedListener(item -> {
@@ -143,11 +150,21 @@ public class MainActivity extends AppCompatActivity implements AuthenticationSer
         if (itemId == R.id.nav_home) {
             return new HomeFragment();
         } else if (itemId == R.id.nav_vehicle) {
+            if (!isUserVerified()) {
+                showVerificationRequiredDialog();
+                return null; // Block navigation
+            }
             return new VehicleFragment();
         } else if (itemId == R.id.nav_history) {
+            if (!isUserVerified()) {
+                showVerificationRequiredDialog();
+                return null; // Block navigation
+            }
             return new HistoryFragment();
         } else if (itemId == R.id.nav_profile) {
-            return new ProfileFragment();
+            ProfileFragment fragment = new ProfileFragment();
+            profileFragment = fragment; // Store reference for verification checking
+            return fragment;
         }
         return null;
     }
@@ -163,6 +180,26 @@ public class MainActivity extends AppCompatActivity implements AuthenticationSer
         } else if (itemId == R.id.nav_profile) {
             // Refresh profile data
         }
+    }
+
+    private boolean isUserVerified() {
+        User user = tokenManager.getUserData();
+        if (user != null && user.getClientProfile() != null) {
+            return !user.getClientProfile().getCitizenId().contains("Unverified_");
+        }
+        return false;
+    }
+
+    private void showVerificationRequiredDialog() {
+        AlertDialog dialog = new MaterialAlertDialogBuilder(this)
+                .setTitle(getString(R.string.title_user_verification))
+                .setMessage(getString(R.string.profile_fragment_please_verify_account_messsage))
+                .setPositiveButton(getString(R.string.dialog_ok), (dialogInterface, which) -> {
+                    dialogInterface.dismiss();
+                })
+                .create();
+        
+        dialog.show();
     }
 
 

@@ -139,16 +139,19 @@ public class EditProfileActivity extends AppCompatActivity {
         phoneInput.setText(getOrEmpty(currentUser.getPhone()));
 
             ClientProfile cp = currentUser.getClientProfile();
-            idNoInput.setText(getOrEmpty(cp.getCitizenId()));
+            idNoInput.setText(checkIdNumber(cp.getCitizenId()));
             sexInput.setText(getOrEmpty(cp.getSexDisplay())); // assumes your model returns "Nam"/"Nữ"
             nationalityInput.setText(getOrEmpty(cp.getNationality()));
             dobInput.setText(getOrEmpty(cp.getDateOfBirth()));
             placeOriginInput.setText(getOrEmpty(cp.getPlaceOfOrigin()));
             placeResidenceInput.setText(getOrEmpty(cp.getPlaceOfResidence()));
             issuePlaceInput.setText("Not available from ID card");
-
-
-
+    }
+    private String checkIdNumber(String input){
+       if(input.contains("Unverified_")) {
+           return "";
+       }
+       return input;
     }
 
     private final String TAG = "EditProfileActivity";
