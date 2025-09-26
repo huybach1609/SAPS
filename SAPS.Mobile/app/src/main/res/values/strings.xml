@@ -630,6 +630,7 @@
     <string name="dialog_confirm_share_message">Are you sure you want to share this vehicle?</string>
     <string name="dialog_yes">Yes</string>
     <string name="dialog_no">No</string>
+    <string name="dialog_ok">OK</string>
 
     <!-- Status Messages -->
     <string name="status_available">Available</string>

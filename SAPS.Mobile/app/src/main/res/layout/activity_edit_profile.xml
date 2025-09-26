@@ -98,6 +98,7 @@
                 <!--                android:text="🖼️ Back Side"-->
 
                 <Button
+                    android:visibility="gone"
                     android:id="@+id/btn_take_photo"
                     style="@style/Widget.Material3.Button.Icon"
                     android:layout_width="match_parent"

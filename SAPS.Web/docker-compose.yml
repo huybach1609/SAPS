@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: saps-web:latest
+    ports:
+      - "5173:5173"
+    environment:
+      # Kept for documentation; Vite uses build-time vars via ARGs above
+      VITE_API_URL: http://192.168.1.220:7211
+      VITE_OWNER_ROLE: parkinglotowner
+      VITE_ADMIN_ROLE: admin
+    restart: unless-stopped
+

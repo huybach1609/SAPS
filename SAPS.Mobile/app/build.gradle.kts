@@ -16,7 +16,7 @@ android {
                 "GOOGLE_CLIENT_ID",
                 "\"275429573503-526ri9oq1obai6d1qmj4qd07njuhahtk.apps.googleusercontent.com\""
             )
-            buildConfigField("String", "API_BASE_URL", "\"https://192.168.11.103:7040/\"")
+            buildConfigField("String", "API_BASE_URL", "\"https://192.168.1.23:7040/\"")
             buildConfigField("boolean", "ENABLE_LOGGING", "true")
 
         }
@@ -45,7 +45,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "BASE_URL_DEV", "\"https://192.168.11.103:7040/\"")
+        buildConfigField("String", "BASE_URL_DEV", "\"https://192.168.1.23:7040/\"")
         buildConfigField("String", "BASE_URL_STAGING", "\"http://172.188.240.201/\"")
         buildConfigField(
             "String",

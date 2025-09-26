@@ -629,6 +629,7 @@
     <string name="dialog_confirm_share_message">Bạn có chắc chắn muốn chia sẻ xe này?</string>
     <string name="dialog_yes">Có</string>
     <string name="dialog_no">Không</string>
+    <string name="dialog_ok">OK</string>
 
     <!-- Status Messages -->
     <string name="status_available">Có sẵn</string>

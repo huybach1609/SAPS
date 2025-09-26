@@ -192,6 +192,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     remember: boolean = false
   ) => {
     console.log("login",remember);
+    console.log("apiUrl", apiUrl);
     try {
       const url = `${apiUrl}/api/auth/login`;
 
@@ -203,6 +204,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         body: JSON.stringify({ email, password }),
       });
 
+      console.log("response", response);
       if (!response.ok) {
         let message = "Login failed";
         try {

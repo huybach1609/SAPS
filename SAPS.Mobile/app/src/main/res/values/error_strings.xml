@@ -14,4 +14,5 @@
     <string name="PARKING_FEE_SCHEDULE_NOT_FOUND">Parking fee schedule not found</string>
     <string name="PARKING_SESSION_ALREADY_CHECKED_OUT">Parking session has already been checked out</string>
     <string name="PARKING_SESSION_CHECKOUT_UPDATED_SUCCESSFULLY">Parking session checked out successfully</string>
+    <string name="CLIENT_PROFILE_CREATED_SUCCESSFULLY">Registration successful, verification mail sent to registered email</string>
 </resources>
