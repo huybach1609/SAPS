@@ -11,15 +11,4 @@ export default defineConfig({
     setupFiles: ['./src/tests/setupTests.ts'],
     globals: true,
   },
-  base: "/",
-  preview: {
-    port: 5173,
-    strictPort: true,
-  },
-  server: {
-    port: 5173,
-    strictPort: true,
-    host: true,
-    origin: "http://0.0.0.0:5173",
-  },
 });
