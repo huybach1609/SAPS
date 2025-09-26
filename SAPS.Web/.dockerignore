@@ -1,0 +1,35 @@
+# Dependencies and build output
+node_modules
+dist
+
+# VCS
+.git
+.gitignore
+
+# IDE/editor
+.vscode
+.idea
+
+# Env and caches
+.env
+.env.*
+.eslintcache
+
+# Logs
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Package manager locks (only keep the one you use in context)
+yarn.lock
+pnpm-lock.yaml
+
+# Misc
+Dockerfile
+docker-compose*.yml
+coverage
+**/__tests__
+**/tests
+**/*.spec.*
+**/*.test.*
+
