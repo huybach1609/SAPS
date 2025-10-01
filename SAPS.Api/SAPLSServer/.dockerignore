@@ -1,0 +1,14 @@
+﻿**/bin/
+**/obj/
+**/.vs/
+**/.github/
+**/.idea/
+**/*.user
+**/*.suo
+**/*.swp
+**/*.log
+.git
+.gitignore
+.env
+appsettings.Development.json
+appsettings.json

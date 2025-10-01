@@ -1,0 +1,175 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reset Password - Parking Management System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #CAF0F8 0%, #90E0EF 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-container {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(3, 4, 94, 0.1);
+            max-width: 500px;
+            width: 100%;
+            border: 1px solid #CAF0F8;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+            .header h2 {
+                color: #03045E;
+                margin-bottom: 10px;
+                font-size: 28px;
+            }
+
+            .header p {
+                color: #0077B6;
+                font-size: 16px;
+                margin: 0;
+            }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 8px;
+                color: #03045E;
+                font-weight: 600;
+                font-size: 16px;
+            }
+
+            .form-group input {
+                width: 100%;
+                padding: 15px;
+                border: 2px solid #ADE8F4;
+                border-radius: 10px;
+                font-size: 16px;
+                box-sizing: border-box;
+                outline: none;
+                transition: border-color 0.3s ease;
+            }
+
+                .form-group input:focus {
+                    border-color: #0077B6;
+                }
+
+                .form-group input.error {
+                    border-color: #dc3545;
+                }
+
+        .error-message {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .password-requirements {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border: 1px solid #e9ecef;
+        }
+
+            .password-requirements h4 {
+                color: #03045E;
+                margin-bottom: 15px;
+                font-size: 16px;
+            }
+
+            .password-requirements ul {
+                margin: 0;
+                padding-left: 20px;
+                font-size: 14px;
+            }
+
+            .password-requirements li {
+                margin-bottom: 5px;
+                color: #6c757d;
+                transition: color 0.3s ease;
+            }
+
+                .password-requirements li.valid {
+                    color: #28a745;
+                }
+
+        .submit-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #0077B6 0%, #023E8A 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .submit-btn:hover:not(:disabled) {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(3, 4, 94, 0.3);
+            }
+
+            .submit-btn:disabled {
+                background: #6c757d;
+                cursor: not-allowed;
+                transform: none;
+            }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+            .alert.success {
+                background: #d4edda;
+                color: #155724;
+                border: 1px solid #c3e6cb;
+            }
+
+            .alert.error {
+                background: #f8d7da;
+                color: #721c24;
+                border: 1px solid #f5c6cb;
+            }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <div class="header">
+            <h2>⏰ Session Expired</h2>
+            <p>Your password reset session has expired</p>
+        </div>
+
+        <div id="alertMessage" class="alert error" style="display: block;">
+            <strong>⚠️ Session Expired:</strong> Your password reset link has expired for security reasons. Password reset links are only valid for a limited time to protect your account.
+        </div>
+
+        <div class="retry-instruction">
+            <strong>🔄 What should you do?</strong><br>
+            Please request a new password reset link from the login page to continue with resetting your password.
+        </div>
+    </div>
+</body>
+</html>
