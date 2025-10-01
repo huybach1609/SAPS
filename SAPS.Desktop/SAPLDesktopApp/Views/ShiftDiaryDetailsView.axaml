@@ -1,0 +1,133 @@
+<rxui:ReactiveUserControl xmlns="https://github.com/avaloniaui"
+                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                         xmlns:rxui="http://reactiveui.net"
+                         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                         xmlns:vm="clr-namespace:SAPLDesktopApp.ViewModels"
+                         xmlns:resources="using:SAPLDesktopApp.Resources"
+                         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                         x:DataType="vm:ShiftDiaryDetailsViewModel"
+                         x:Class="SAPLDesktopApp.Views.ShiftDiaryDetailsView">
+
+	<ScrollViewer>
+		<Grid Margin="{StaticResource PaddingContainer}">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+
+			 <!--Header Section--> 
+			<Grid Grid.Row="0" Margin="0,0,0,20">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+				<Button Grid.Column="0"
+                        Classes="back-button"
+                        Command="{Binding BackCommand}"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Left">
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<TextBlock Text="{x:Static resources:TextResource.BtnBack}" VerticalAlignment="Center"/>
+					</StackPanel>
+				</Button>
+				<TextBlock Grid.Column="1"
+                           Text="{x:Static resources:TextResource.ShiftDiaryDetailsTitle}"
+                           FontSize="{StaticResource FontSizeXXLarge}"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource TextPrimaryBrush}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+			</Grid>
+
+			 <!--Diary Header Banner--> 
+			<Border Grid.Row="1"
+                    Background="{StaticResource PrimaryDarkBrush}"
+                    CornerRadius="{StaticResource CornerRadiusMedium}"
+                    Height="80"
+                    Margin="0,0,0,20">
+				<StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+					<TextBlock Text="{Binding ShiftDiary.Header}"
+                               FontSize="20"
+                               FontWeight="Bold"
+                               Foreground="{StaticResource TextLightBrush}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"/>
+				</StackPanel>
+			</Border>
+
+			 <!--Main Content--> 
+			<StackPanel Grid.Row="2" Spacing="{StaticResource SpacingXXLarge}">
+
+				 <!--Diary Information Section--> 
+				<Border Background="{StaticResource NeutralBackgroundBrush}"
+                        CornerRadius="{StaticResource CornerRadiusLarge}"
+                        Padding="{StaticResource PaddingXXLarge}"
+                        BoxShadow="0 2 8 0 #20000000">
+					<StackPanel Spacing="{StaticResource SpacingXLarge}">
+						<TextBlock Text="{x:Static resources:TextResource.DiaryInformationTitle}"
+                                   FontSize="{StaticResource FontSizeXLarge}"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource PrimaryDarkBrush}"/>
+
+						<Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto" ColumnSpacing="{StaticResource SpacingXXLarge}" RowSpacing="{StaticResource SpacingXLarge}">
+							 <!--Author--> 
+							<StackPanel Grid.Row="0" Grid.Column="0">
+								<TextBlock Text="{x:Static resources:TextResource.AuthorLabel}" FontWeight="SemiBold"/>
+								<Border Background="{StaticResource NeutralLightBrush}"
+                                        BorderBrush="{StaticResource NeutralBorderBrush}"
+                                        BorderThickness="{StaticResource BorderThicknessThin}"
+                                        CornerRadius="{StaticResource CornerRadiusSmall}"
+                                        Padding="{StaticResource PaddingMedium}">
+									<TextBlock Text="{Binding ShiftDiary.SenderName}"/>
+								</Border>
+							</StackPanel>
+							 <!--Created Date--> 
+							<StackPanel Grid.Row="0" Grid.Column="1">
+								<TextBlock Text="{x:Static resources:TextResource.CreatedDateLabel}" FontWeight="SemiBold"/>
+								<Border Background="{StaticResource NeutralLightBrush}"
+                                        BorderBrush="{StaticResource NeutralBorderBrush}"
+                                        BorderThickness="{StaticResource BorderThicknessThin}"
+                                        CornerRadius="{StaticResource CornerRadiusSmall}"
+                                        Padding="{StaticResource PaddingMedium}">
+									<TextBlock Text="{Binding FormattedCreatedAt}"/>
+								</Border>
+							</StackPanel>
+						</Grid>
+					</StackPanel>
+				</Border>
+
+				 <!--Diary Content Section--> 
+				<Border Background="{StaticResource NeutralBackgroundBrush}"
+                        CornerRadius="{StaticResource CornerRadiusLarge}"
+                        Padding="{StaticResource PaddingXXLarge}"
+                        BoxShadow="0 2 8 0 #20000000">
+					<StackPanel Spacing="{StaticResource SpacingXLarge}">
+						<TextBlock Text="{x:Static resources:TextResource.ContentTitle}"
+                                   FontSize="{StaticResource FontSizeXLarge}"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource PrimaryDarkBrush}"/>
+
+						<Border Background="White"
+                                BorderBrush="{StaticResource NeutralBorderBrush}"
+                                BorderThickness="{StaticResource BorderThicknessThin}"
+                                CornerRadius="{StaticResource CornerRadiusSmall}"
+                                Padding="{StaticResource PaddingLarge}"
+                                MinHeight="200">
+							<ScrollViewer VerticalScrollBarVisibility="Auto">
+								<TextBlock Text="{Binding ShiftDiary.Body}"
+                                           TextWrapping="Wrap"
+                                           LineHeight="20"
+                                           FontSize="{StaticResource FontSizeRegular}"/>
+							</ScrollViewer>
+						</Border>
+					</StackPanel>
+				</Border>
+			</StackPanel>
+		</Grid>
+	</ScrollViewer>
+</rxui:ReactiveUserControl>

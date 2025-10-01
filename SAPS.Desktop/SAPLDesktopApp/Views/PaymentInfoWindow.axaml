@@ -1,0 +1,247 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:SAPLDesktopApp.ViewModels"
+        xmlns:resources="using:SAPLDesktopApp.Resources"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="600"
+        x:Class="SAPLDesktopApp.Views.PaymentInfoWindow"
+        x:DataType="vm:PaymentInfoViewModel"
+        Title="{x:Static resources:TextResource.PaymentInfoWindowTitle}"
+        Width="500"
+        Height="650"
+        MinWidth="400"
+        MinHeight="500"
+        WindowStartupLocation="CenterOwner"
+        Icon="/Assets/avalonia-logo.ico">
+
+	<Grid Background="{StaticResource NeutralBackgroundBrush}">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+
+		<!-- Header -->
+		<Border Grid.Row="0"
+                Background="{StaticResource PrimaryDarkBrush}"
+                Padding="20,16">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+
+				<TextBlock Grid.Column="0"
+                           Text="💳"
+                           FontSize="24"
+                           Foreground="{StaticResource TextLightBrush}"
+                           VerticalAlignment="Center"
+                           Margin="0,0,12,0"/>
+
+				<TextBlock Grid.Column="1"
+                           Text="{x:Static resources:TextResource.PaymentInfoTitle}"
+                           FontSize="18"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource TextLightBrush}"
+                           VerticalAlignment="Center"/>
+			</Grid>
+		</Border>
+
+		<!-- Content -->
+		<ScrollViewer Grid.Row="1" Padding="0" VerticalScrollBarVisibility="Auto">
+			<StackPanel Spacing="20" Margin="20">
+
+				<!-- QR Code Section -->
+				<Border Background="White"
+                        BorderBrush="{StaticResource NeutralBorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="20">
+					<StackPanel Spacing="16" HorizontalAlignment="Center">
+						<!-- QR Code Display -->
+						<Border Background="White"
+                                BorderBrush="{StaticResource NeutralBorderBrush}"
+                                BorderThickness="2"
+                                Padding="10"
+                                CornerRadius="8"
+                                HorizontalAlignment="Center">
+							<Panel Width="200" Height="200">
+								<!-- QR Code Image (if available) -->
+								<Image Source="{Binding QrCodeImage}"
+                                       Width="200"
+                                       Height="200"
+                                       Stretch="Uniform"
+                                       IsVisible="{Binding QrCodeImage, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+
+								<!-- Placeholder when QR code is not available -->
+								<StackPanel IsVisible="{Binding QrCodeImage, Converter={x:Static ObjectConverters.IsNull}}"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center">
+									<TextBlock Text="📱"
+                                               FontSize="48"
+                                               HorizontalAlignment="Center"
+                                               Foreground="{StaticResource TextMutedBrush}"/>
+									<TextBlock Text="{x:Static resources:TextResource.PaymentQRCodeUnavailable}"
+                                               FontSize="12"
+                                               HorizontalAlignment="Center"
+                                               Foreground="{StaticResource TextMutedBrush}"
+                                               TextWrapping="Wrap"/>
+								</StackPanel>
+							</Panel>
+						</Border>
+					</StackPanel>
+				</Border>
+
+				<!-- Bank Information -->
+				<Border Background="White"
+                        BorderBrush="{StaticResource NeutralBorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="20">
+					<StackPanel Spacing="16">
+						<StackPanel Orientation="Horizontal" Spacing="8">
+							<Ellipse Width="8" Height="8" Fill="{StaticResource PrimaryMediumBrush}"/>
+							<TextBlock Text="{x:Static resources:TextResource.PaymentBankLabel}"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextSecondaryBrush}"/>
+						</StackPanel>
+
+						<TextBlock Text="{Binding BankName}"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   TextWrapping="Wrap"/>
+					</StackPanel>
+				</Border>
+
+				<!-- Account Information -->
+				<Border Background="White"
+                        BorderBrush="{StaticResource NeutralBorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="20">
+					<StackPanel Spacing="16">
+						<StackPanel Orientation="Horizontal" Spacing="8">
+							<Ellipse Width="8" Height="8" Fill="{StaticResource PrimaryMediumBrush}"/>
+							<TextBlock Text="{x:Static resources:TextResource.PaymentAccountHolderLabel}"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextSecondaryBrush}"/>
+						</StackPanel>
+
+						<TextBlock Text="{Binding AccountHolder}"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryBrush}"/>
+					</StackPanel>
+				</Border>
+
+				<!-- Account Number -->
+				<Border Background="White"
+                        BorderBrush="{StaticResource NeutralBorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="20">
+					<StackPanel Spacing="16">
+						<StackPanel Orientation="Horizontal" Spacing="8">
+							<Ellipse Width="8" Height="8" Fill="{StaticResource PrimaryMediumBrush}"/>
+							<TextBlock Text="{x:Static resources:TextResource.PaymentAccountNumberLabel}"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextSecondaryBrush}"/>
+						</StackPanel>
+
+						<TextBlock Text="{Binding AccountNumber}"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryBrush}"/>
+					</StackPanel>
+				</Border>
+
+				<!-- Amount -->
+				<Border Background="White"
+                        BorderBrush="{StaticResource NeutralBorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="20">
+					<StackPanel Spacing="16">
+						<StackPanel Orientation="Horizontal" Spacing="8">
+							<Ellipse Width="8" Height="8" Fill="{StaticResource PrimaryMediumBrush}"/>
+							<TextBlock Text="{x:Static resources:TextResource.PaymentAmountLabel}"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextSecondaryBrush}"/>
+						</StackPanel>
+
+						<TextBlock Text="{Binding Amount}"
+                                   FontSize="18"
+                                   FontWeight="Bold"
+                                   Foreground="{StaticResource AccentSuccessBrush}"/>
+					</StackPanel>
+				</Border>
+
+				<!-- Description -->
+				<Border Background="White"
+                        BorderBrush="{StaticResource NeutralBorderBrush}"
+                        BorderThickness="1"
+                        CornerRadius="8"
+                        Padding="20">
+					<StackPanel Spacing="16">
+						<StackPanel Orientation="Horizontal" Spacing="8">
+							<Ellipse Width="8" Height="8" Fill="{StaticResource PrimaryMediumBrush}"/>
+							<TextBlock Text="{x:Static resources:TextResource.PaymentDescriptionLabel}"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextSecondaryBrush}"/>
+						</StackPanel>
+
+						<TextBlock Text="{Binding Description}"
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   TextWrapping="Wrap"/>
+					</StackPanel>
+				</Border>
+
+			</StackPanel>
+		</ScrollViewer>
+
+		<!-- Footer -->
+		<Border Grid.Row="2"
+                Background="{StaticResource NeutralLightBrush}"
+                BorderBrush="{StaticResource NeutralBorderBrush}"
+                BorderThickness="0,1,0,0"
+                Padding="20,16">
+			<StackPanel Spacing="12">
+				<TextBlock Text="{x:Static resources:TextResource.PaymentInstructionsTitle}"
+                           FontSize="14"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource TextSecondaryBrush}"/>
+
+				<TextBlock FontSize="12"
+                           Foreground="{StaticResource TextMutedBrush}"
+                           TextWrapping="Wrap">
+					<Run Text="{x:Static resources:TextResource.PaymentInstruction1}"/>
+					<LineBreak/>
+					<Run Text="{x:Static resources:TextResource.PaymentInstruction2}"/>
+					<LineBreak/>
+					<Run Text="{x:Static resources:TextResource.PaymentInstruction3}"/>
+				</TextBlock>
+
+				<Button Content="{x:Static resources:TextResource.PaymentCloseButton}"
+                        Background="{StaticResource NeutralGrayBrush}"
+                        Foreground="{StaticResource TextLightBrush}"
+                        Padding="20,12"
+                        CornerRadius="6"
+                        FontWeight="SemiBold"
+                        FontSize="14"
+                        HorizontalAlignment="Center"
+                        MinWidth="120"
+                        Command="{Binding CloseCommand}"/>
+			</StackPanel>
+		</Border>
+	</Grid>
+</Window>

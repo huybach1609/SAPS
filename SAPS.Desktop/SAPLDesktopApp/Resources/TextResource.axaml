@@ -1,0 +1,29 @@
+﻿<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+	<!-- Pagination Labels -->
+	<system:String x:Key="PaginationFirstPage">⟨⟨</system:String>
+	<system:String x:Key="PaginationPreviousPage">⟨</system:String>
+	<system:String x:Key="PaginationNextPage">⟩</system:String>
+	<system:String x:Key="PaginationLastPage">⟩⟩</system:String>
+
+	<!-- Icons -->
+	<system:String x:Key="IconHamburger">☰</system:String>
+	<system:String x:Key="IconUser">👤</system:String>
+	<system:String x:Key="IconCar">🚗</system:String>
+	<system:String x:Key="IconCamera">📹</system:String>
+	<system:String x:Key="IconIncidence">⚠️</system:String>
+	<system:String x:Key="IconBook">📋</system:String>
+	<system:String x:Key="IconSettings">⚙️</system:String>
+	<system:String x:Key="IconRefresh">🔄</system:String>
+	<system:String x:Key="IconCapture">📸</system:String>
+	<system:String x:Key="IconFullView">📺</system:String>
+	<system:String x:Key="IconCheckout">🏁</system:String>
+	<system:String x:Key="IconClose">✕</system:String>
+	<system:String x:Key="IconClear">🗑️</system:String>
+	<system:String x:Key="IconStatusNote">📝</system:String>
+	<system:String x:Key="IconAttachment">📎</system:String>
+	<system:String x:Key="IconSubmit">📤</system:String>
+	<system:String x:Key="IconLoading">⏳</system:String>
+</ResourceDictionary>

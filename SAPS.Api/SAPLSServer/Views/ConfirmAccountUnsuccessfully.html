@@ -1,0 +1,208 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Reset Failed - Parking Management System</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #CAF0F8 0%, #90E0EF 100%);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(3, 4, 94, 0.15);
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            border: 2px solid #dc3545;
+        }
+
+        .error-icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+            display: block;
+            animation: shake 1s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+
+            10%, 30%, 50%, 70%, 90% {
+                transform: translateX(-5px);
+            }
+
+            20%, 40%, 60%, 80% {
+                transform: translateX(5px);
+            }
+        }
+
+        .title {
+            color: #dc3545;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            color: #6c757d;
+            font-size: 18px;
+            margin-bottom: 30px;
+            line-height: 1.5;
+        }
+
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid #f5c6cb;
+            margin-bottom: 30px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .retry-instruction {
+            background: #fff3cd;
+            color: #856404;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #ffeaa7;
+            font-size: 14px;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .common-issues {
+            background: #f8f9fa;
+            color: #495057;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #dee2e6;
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+            .common-issues h4 {
+                color: #03045E;
+                margin-top: 0;
+                margin-bottom: 15px;
+                text-align: center;
+            }
+
+            .common-issues ul {
+                margin: 0;
+                padding-left: 20px;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+
+            .common-issues li {
+                margin-bottom: 8px;
+            }
+
+        .footer {
+            color: #6c757d;
+            font-size: 12px;
+            margin-top: 20px;
+            line-height: 1.4;
+        }
+
+        .error-cross {
+            display: inline-block;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            line-height: 60px;
+            font-size: 30px;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.1);
+                opacity: 0.7;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .system-info {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="error-icon">❌</div>
+        <div class="error-cross">✕</div>
+
+        <h1 class="title">Account Confirmed Failed</h1>
+        <p class="subtitle">We couldn't complete your account's confirmation</p>
+
+        <div class="error-message">
+            <strong>Sorry!</strong> There was an issue processing your account's confirmation. This could be due to an expired link, invalid verification code, or a technical problem.
+        </div>
+
+        <div class="retry-instruction">
+            <strong>🔄 What should you do?</strong><br>
+            Please try registering a new account.
+        </div>
+
+        <div class="common-issues">
+            <h4>🛠️ Common Issues & Solutions</h4>
+            <ul>
+                <li><strong>Expired Link:</strong> Reset links are valid for 1 hour only</li>
+                <li><strong>Already Used:</strong> Each reset link can only be used once</li>
+                <li><strong>Invalid Code:</strong> The verification code may have been entered incorrectly</li>
+                <li><strong>Account Issues:</strong> Your account may be temporarily locked</li>
+                <li><strong>Network Problems:</strong> Check your internet connection and try again</li>
+            </ul>
+        </div>
+
+        <div class="footer">
+            Smart Parking Management System<br>
+            If you have any issues, please contact our support team.
+        </div>
+    </div>
+
+    <script>
+        // Add current timestamp
+        document.getElementById('timestamp').textContent = new Date().toLocaleString();
+
+        // Optional: Auto-close tab after 30 seconds
+        setTimeout(function() {
+            if (confirm("Would you like to close this tab? You can request a new password reset from the login page.")) {
+                window.close();
+            }
+        }, 30000);
+    </script>
+</body>
+</html>

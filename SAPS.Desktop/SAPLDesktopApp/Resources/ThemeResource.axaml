@@ -1,0 +1,132 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+	<!-- Color Resources -->
+	<!-- Primary Colors -->
+	<Color x:Key="PrimaryDark">#023E8A</Color>
+	<Color x:Key="PrimaryMedium">#0077B6</Color>
+	<Color x:Key="PrimaryLight">#48CAE4</Color>
+	<Color x:Key="PrimaryLighter">#90E0EF</Color>
+	<Color x:Key="PrimaryLightest">#CAF0F8</Color>
+
+	<!-- Accent Colors -->
+	<Color x:Key="AccentSuccess">#27ae60</Color>
+	<Color x:Key="AccentDanger">#e74c3c</Color>
+	<Color x:Key="AccentWarning">#f39c12</Color>
+	<Color x:Key="AccentInfo">#3498db</Color>
+
+	<!-- Additional Accent Colors for Status Indicators -->
+	<Color x:Key="Success">#27ae60</Color>
+	<Color x:Key="Danger">#e74c3c</Color>
+	<Color x:Key="DangerDark">#c0392b</Color>
+	<Color x:Key="Warning">#f39c12</Color>
+	<Color x:Key="Info">#3498db</Color>
+	<Color x:Key="InfoLight">#CAF0F8</Color>
+	<Color x:Key="InfoDark">#03045E</Color>
+
+	<!-- Notification-specific Colors -->
+	<Color x:Key="NotificationCheckIn">#4CAF50</Color>
+	<Color x:Key="NotificationCheckOut">#F44336</Color>
+	<Color x:Key="NotificationInfo">#2196F3</Color>
+	<Color x:Key="NotificationWarning">#FF9800</Color>
+	<Color x:Key="NotificationError">#F44336</Color>
+	<Color x:Key="NotificationBackground">#FFFFFF</Color>
+	<Color x:Key="NotificationProgressBackground">#E0E0E0</Color>
+	<Color x:Key="NotificationShadow">#40000000</Color>
+
+	<!-- Date/Time Specific Colors -->
+	<Color x:Key="DateTimePrimary">#495057</Color>
+	<Color x:Key="DateTimeSecondary">#6c757d</Color>
+	<Color x:Key="DateTimeAccent">#0077B6</Color>
+
+	<!-- Neutral Colors -->
+	<Color x:Key="NeutralDark">#1a1a1a</Color>
+	<Color x:Key="NeutralMedium">#2c3e50</Color>
+	<Color x:Key="NeutralGray">#6c757d</Color>
+	<Color x:Key="NeutralLight">#f8f9fa</Color>
+	<Color x:Key="NeutralBorder">#dee2e6</Color>
+	<Color x:Key="NeutralBackground">#ffffff</Color>
+
+	<!-- Camera-specific Colors -->
+	<Color x:Key="CameraFrameBackground">#000000</Color>
+	<Color x:Key="CameraFrameBorder">#808080</Color>
+	<Color x:Key="CameraFooterBackground">#333333</Color>
+	<Color x:Key="CameraLabelBackground">#AA000000</Color>
+
+	<!-- Text Colors -->
+	<Color x:Key="TextPrimary">#03045E</Color>
+	<Color x:Key="TextSecondary">#495057</Color>
+	<Color x:Key="TextMuted">#6c757d</Color>
+	<Color x:Key="TextLight">#ffffff</Color>
+	<Color x:Key="TextAccent">#90E0EF</Color>
+
+	<!-- Special Colors -->
+	<Color x:Key="Transparent">Transparent</Color>
+	<Color x:Key="SemiTransparentDark">#aa000000</Color>
+
+	<!-- Brush Resources -->
+	<SolidColorBrush x:Key="PrimaryDarkBrush" Color="{StaticResource PrimaryDark}"/>
+	<SolidColorBrush x:Key="PrimaryMediumBrush" Color="{StaticResource PrimaryMedium}"/>
+	<SolidColorBrush x:Key="PrimaryLightBrush" Color="{StaticResource PrimaryLight}"/>
+	<SolidColorBrush x:Key="PrimaryLighterBrush" Color="{StaticResource PrimaryLighter}"/>
+	<SolidColorBrush x:Key="PrimaryLightestBrush" Color="{StaticResource PrimaryLightest}"/>
+
+	<SolidColorBrush x:Key="AccentSuccessBrush" Color="{StaticResource AccentSuccess}"/>
+	<SolidColorBrush x:Key="AccentDangerBrush" Color="{StaticResource AccentDanger}"/>
+	<SolidColorBrush x:Key="AccentWarningBrush" Color="{StaticResource AccentWarning}"/>
+	<SolidColorBrush x:Key="AccentInfoBrush" Color="{StaticResource AccentInfo}"/>
+
+	<!-- Status Brushes (Aliases for easier usage) -->
+	<SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource Success}"/>
+	<SolidColorBrush x:Key="DangerBrush" Color="{StaticResource Danger}"/>
+	<SolidColorBrush x:Key="DangerDarkBrush" Color="{StaticResource DangerDark}"/>
+	<SolidColorBrush x:Key="WarningBrush" Color="{StaticResource Warning}"/>
+	<SolidColorBrush x:Key="InfoBrush" Color="{StaticResource Info}"/>
+	<SolidColorBrush x:Key="InfoLightBrush" Color="{StaticResource InfoLight}"/>
+	<SolidColorBrush x:Key="InfoDarkBrush" Color="{StaticResource InfoDark}"/>
+
+	<!-- Notification Brushes -->
+	<SolidColorBrush x:Key="NotificationCheckInBrush" Color="{StaticResource NotificationCheckIn}"/>
+	<SolidColorBrush x:Key="NotificationCheckOutBrush" Color="{StaticResource NotificationCheckOut}"/>
+	<SolidColorBrush x:Key="NotificationInfoBrush" Color="{StaticResource NotificationInfo}"/>
+	<SolidColorBrush x:Key="NotificationWarningBrush" Color="{StaticResource NotificationWarning}"/>
+	<SolidColorBrush x:Key="NotificationErrorBrush" Color="{StaticResource NotificationError}"/>
+	<SolidColorBrush x:Key="NotificationBackgroundBrush" Color="{StaticResource NotificationBackground}"/>
+	<SolidColorBrush x:Key="NotificationProgressBackgroundBrush" Color="{StaticResource NotificationProgressBackground}"/>
+
+	<!-- Date/Time Brushes -->
+	<SolidColorBrush x:Key="DateTimePrimaryBrush" Color="{StaticResource DateTimePrimary}"/>
+	<SolidColorBrush x:Key="DateTimeSecondaryBrush" Color="{StaticResource DateTimeSecondary}"/>
+	<SolidColorBrush x:Key="DateTimeAccentBrush" Color="{StaticResource DateTimeAccent}"/>
+
+	<SolidColorBrush x:Key="NeutralDarkBrush" Color="{StaticResource NeutralDark}"/>
+	<SolidColorBrush x:Key="NeutralMediumBrush" Color="{StaticResource NeutralMedium}"/>
+	<SolidColorBrush x:Key="NeutralGrayBrush" Color="{StaticResource NeutralGray}"/>
+	<SolidColorBrush x:Key="NeutralLightBrush" Color="{StaticResource NeutralLight}"/>
+	<SolidColorBrush x:Key="NeutralBorderBrush" Color="{StaticResource NeutralBorder}"/>
+	<SolidColorBrush x:Key="NeutralBackgroundBrush" Color="{StaticResource NeutralBackground}"/>
+
+	<!-- Camera-specific Brushes -->
+	<SolidColorBrush x:Key="CameraFrameBackgroundBrush" Color="{StaticResource CameraFrameBackground}"/>
+	<SolidColorBrush x:Key="CameraFrameBorderBrush" Color="{StaticResource CameraFrameBorder}"/>
+	<SolidColorBrush x:Key="CameraFooterBackgroundBrush" Color="{StaticResource CameraFooterBackground}"/>
+	<SolidColorBrush x:Key="CameraLabelBackgroundBrush" Color="{StaticResource CameraLabelBackground}"/>
+
+	<SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource TextPrimary}"/>
+	<SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource TextSecondary}"/>
+	<SolidColorBrush x:Key="TextMutedBrush" Color="{StaticResource TextMuted}"/>
+	<SolidColorBrush x:Key="TextLightBrush" Color="{StaticResource TextLight}"/>
+	<SolidColorBrush x:Key="TextAccentBrush" Color="{StaticResource TextAccent}"/>
+
+	<!-- Special Brushes -->
+	<SolidColorBrush x:Key="TransparentBrush" Color="{StaticResource Transparent}"/>
+	<SolidColorBrush x:Key="SemiTransparentDarkBrush" Color="{StaticResource SemiTransparentDark}"/>
+
+	<!-- Gradient Brushes -->
+	<LinearGradientBrush x:Key="PrimaryGradientBrush" StartPoint="0,0" EndPoint="1,1">
+		<GradientStop Color="{StaticResource PrimaryDark}" Offset="0"/>
+		<GradientStop Color="{StaticResource PrimaryMedium}" Offset="1"/>
+	</LinearGradientBrush>
+
+</ResourceDictionary>

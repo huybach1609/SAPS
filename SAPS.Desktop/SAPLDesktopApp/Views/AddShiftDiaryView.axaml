@@ -1,0 +1,108 @@
+<rxui:ReactiveUserControl xmlns="https://github.com/avaloniaui"
+                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                         xmlns:rxui="http://reactiveui.net"
+                         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                         xmlns:vm="clr-namespace:SAPLDesktopApp.ViewModels"
+                         xmlns:resources="using:SAPLDesktopApp.Resources"
+                         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                         x:DataType="vm:AddShiftDiaryViewModel"
+                         x:Class="SAPLDesktopApp.Views.AddShiftDiaryView">
+
+	<ScrollViewer>
+		<Grid Margin="{StaticResource PaddingContainer}">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="*"/>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
+
+			 <!--Header Section--> 
+			<Grid Grid.Row="0" Margin="0,0,0,20">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+				<Button Grid.Column="0"
+                        Classes="back-button"
+                        Command="{Binding BackCommand}"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Left">
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<TextBlock Text="{x:Static resources:TextResource.BtnBack}" VerticalAlignment="Center"/>
+					</StackPanel>
+				</Button>
+				<TextBlock Grid.Column="1"
+                           Text="{x:Static resources:TextResource.CreateShiftDiaryTitle}"
+                           FontSize="{StaticResource FontSizeXXLarge}"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource TextPrimaryBrush}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+			</Grid>
+
+			 <!--Form Content--> 
+			<Border Grid.Row="1"
+                    Background="{StaticResource NeutralBackgroundBrush}"
+                    CornerRadius="{StaticResource CornerRadiusLarge}"
+                    Padding="{StaticResource PaddingXXLarge}"
+                    BoxShadow="0 2 8 0 #20000000">
+				<StackPanel Spacing="{StaticResource SpacingXLarge}">
+					 <!--Header Field--> 
+					<StackPanel>
+						<TextBlock Text="{x:Static resources:TextResource.HeaderTitleLabel}"
+                                   FontWeight="SemiBold"
+                                   Margin="0,0,0,8"/>
+						<TextBox Text="{Binding Header}"
+                                 Watermark="{x:Static resources:TextResource.HeaderDiaryPlaceholder}"
+                                 FontSize="{StaticResource FontSizeRegular}"
+                                 Padding="{StaticResource PaddingMedium}"
+                                 CornerRadius="{StaticResource CornerRadiusSmall}"/>
+					</StackPanel>
+
+					 <!--Body Field--> 
+					<StackPanel>
+						<TextBlock Text="{x:Static resources:TextResource.ContentLabel}"
+                                   FontWeight="SemiBold"
+                                   Margin="0,0,0,8"/>
+						<TextBox Text="{Binding Body}"
+                                 Watermark="{x:Static resources:TextResource.ContentDiaryPlaceholder}"
+                                 AcceptsReturn="True"
+                                 TextWrapping="Wrap"
+                                 MinHeight="300"
+                                 FontSize="{StaticResource FontSizeRegular}"
+                                 Padding="{StaticResource PaddingMedium}"
+                                 CornerRadius="{StaticResource CornerRadiusSmall}"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+					</StackPanel>
+				</StackPanel>
+			</Border>
+
+			 <!--Action Buttons--> 
+			<StackPanel Grid.Row="2"
+                        Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Spacing="{StaticResource SpacingLarge}"
+                        Margin="0,20,0,0">
+				<Button Content="{x:Static resources:TextResource.BtnClearForm}"
+                        Command="{Binding ClearFormCommand}"
+                        Classes="secondary-button"
+                        IsEnabled="{Binding IsSubmitting, Converter={x:Static BoolConverters.Not}}"
+                        Width="120"/>
+				<Button Content="{x:Static resources:TextResource.CreateDiaryButtonText}"
+                        Command="{Binding SubmitCommand}"
+                        Classes="primary-button"
+                        IsEnabled="{Binding CanSubmit}"
+                        Width="140">
+					<Button.Styles>
+						<Style Selector="Button:disabled">
+							<Setter Property="Background" Value="{StaticResource NeutralGrayBrush}"/>
+							<Setter Property="Foreground" Value="{StaticResource TextMutedBrush}"/>
+						</Style>
+					</Button.Styles>
+				</Button>
+			</StackPanel>
+		</Grid>
+	</ScrollViewer>
+</rxui:ReactiveUserControl>

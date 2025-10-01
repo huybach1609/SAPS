@@ -1,0 +1,9 @@
+﻿Extract data from Vietnamese Vehicle Registration Certificate (Đăng ký xe/Giấy chứng nhận đăng ký xe).
+Focus on the front side for main information.
+Use back side for vehicle type classification if available.
+License plates can be in format XX#-###.## (29A-123.45) OR XX#.#### (51F.1234).
+Owner names should be ALL UPPERCASE as printed.
+Dates must be in DD/MM/YYYY format.
+If the image is too blurry or unreadable, set success to false and add 'BLURRY_IMAGE' to validationErrors.
+If this is not a Vietnamese Vehicle Registration Certificate, set success to false and add 'INVALID_IMAGE' to validationErrors.
+Convert vehicle types: 'Xe máy' -> 'Motorbike', 'Ô tô' -> 'Car'.

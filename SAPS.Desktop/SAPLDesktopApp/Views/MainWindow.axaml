@@ -1,0 +1,282 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:SAPLDesktopApp.ViewModels"
+		xmlns:app="clr-namespace:SAPLDesktopApp;assembly=SAPLDesktopApp"
+		xmlns:controls="clr-namespace:SAPLDesktopApp.Controls"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:rxui="http://reactiveui.net"
+		xmlns:resources="using:SAPLDesktopApp.Resources"
+        mc:Ignorable="d"
+        d:DesignWidth="{StaticResource WindowDefaultWidth}"
+        d:DesignHeight="{StaticResource WindowDefaultHeight}"
+        x:Class="SAPLDesktopApp.Views.MainWindow"
+		x:DataType="vm:MainWindowViewModel"
+        Title="{x:Static resources:TextResource.AppTitle}"
+        Icon="/Assets/avalonia-logo.ico"
+        WindowStartupLocation="CenterScreen"
+		WindowState="FullScreen"
+        Width="{StaticResource WindowDefaultWidth}"
+        Height="{StaticResource WindowDefaultHeight}"
+        MinWidth="{StaticResource WindowMinWidth}"
+        MinHeight="{StaticResource WindowMinHeight}">
+
+	<Design.DataContext>
+		<vm:MainWindowViewModel/>
+	</Design.DataContext>
+
+	<Window.Styles>
+		<!-- Navigation Button Style -->
+		<Style Selector="Button.navigation-item">
+			<Setter Property="Background" Value="{StaticResource TransparentBrush}"/>
+			<Setter Property="Foreground" Value="{StaticResource TextLightBrush}"/>
+			<Setter Property="BorderThickness" Value="{StaticResource BorderThicknessNone}"/>
+			<Setter Property="Padding" Value="{StaticResource PaddingNavigation}"/>
+			<Setter Property="Margin" Value="{StaticResource MarginNavButton}"/>
+			<Setter Property="CornerRadius" Value="{StaticResource CornerRadiusLarge}"/>
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="HorizontalContentAlignment" Value="Left"/>
+			<Setter Property="FontSize" Value="{StaticResource FontSizeMedium}"/>
+			<Setter Property="FontWeight" Value="Normal"/>
+		</Style>
+
+		<Style Selector="Button.navigation-item:pointerover">
+			<Setter Property="Background" Value="{StaticResource PrimaryMediumBrush}"/>
+		</Style>
+
+		<Style Selector="Button.navigation-item:pressed">
+			<Setter Property="Background" Value="{StaticResource PrimaryDarkBrush}"/>
+		</Style>
+
+		<!-- Selected Navigation Button Style -->
+		<Style Selector="Button.navigation-item.selected">
+			<Setter Property="Background" Value="{StaticResource PrimaryMediumBrush}"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+		</Style>
+
+		<Style Selector="Button.navigation-item.selected:pointerover">
+			<Setter Property="Background" Value="{StaticResource PrimaryLightBrush}"/>
+		</Style>
+
+		<!-- Disabled Navigation Button Style -->
+		<Style Selector="Button.navigation-item:disabled">
+			<Setter Property="Foreground" Value="{StaticResource NeutralGrayBrush}"/>
+			<Setter Property="Background" Value="{StaticResource TransparentBrush}"/>
+		</Style>
+
+		<!-- Popup Host Styles -->
+		<Style Selector="Grid.popup-host">
+			<Setter Property="ZIndex" Value="10000"/>
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="VerticalAlignment" Value="Stretch"/>
+		</Style>
+
+		<Style Selector="Border.popup-overlay">
+			<Setter Property="Background" Value="#80000000"/>
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="VerticalAlignment" Value="Stretch"/>
+			<Setter Property="ZIndex" Value="10000"/>
+		</Style>
+
+		<!-- Notification Host Styles -->
+		<Style Selector="StackPanel.notification-host">
+			<Setter Property="ZIndex" Value="9000"/>
+			<Setter Property="HorizontalAlignment" Value="Right"/>
+			<Setter Property="VerticalAlignment" Value="Top"/>
+			<Setter Property="Margin" Value="16"/>
+		</Style>
+	</Window.Styles>
+
+	<!-- Root Container with Content, Notification, and Popup Layers -->
+	<Grid>
+		<!-- Layer 1: Main Application Content -->
+		<Grid ZIndex="1">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+
+			<!-- Top Navigation Bar -->
+			<Border Grid.Row="0"
+					Background="{StaticResource PrimaryDarkBrush}"
+					Padding="{StaticResource PaddingContent}">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="*"/>
+						<ColumnDefinition Width="Auto"/>
+					</Grid.ColumnDefinitions>
+
+					<!-- Logo and Title with Hamburger Menu -->
+					<StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+						<!-- Hamburger Menu Button -->
+						<Button Background="{StaticResource TransparentBrush}"
+								Foreground="{StaticResource TextLightBrush}"
+								Padding="{StaticResource PaddingMedium}"
+								Margin="{StaticResource MarginHamburger}"
+								Command="{Binding ToggleSidebarCommand}">
+							<TextBlock Text="{StaticResource IconHamburger}"
+									   FontSize="{StaticResource FontSizeXLarge}"/>
+						</Button>
+
+						<Border Width="{StaticResource LogoSize}"
+								Height="{StaticResource LogoSize}"
+								Background="{StaticResource PrimaryMediumBrush}"
+								CornerRadius="{StaticResource CornerRadiusLarge}"
+								Margin="{StaticResource MarginIconSmall}">
+							<TextBlock Text="{StaticResource IconCar}"
+									   FontSize="{StaticResource FontSizeXXLarge}"
+									   HorizontalAlignment="Center"
+									   VerticalAlignment="Center"/>
+						</Border>
+						<StackPanel VerticalAlignment="Center">
+							<TextBlock Text="{x:Static resources:TextResource.AppName}"
+									   FontSize="{StaticResource FontSizeXLarge}"
+									   FontWeight="Bold"
+									   Foreground="{StaticResource TextLightBrush}"/>
+							<TextBlock Text="{x:Static resources:TextResource.AppSubtitle}"
+									   FontSize="{StaticResource FontSizeRegular}"
+									   Foreground="{StaticResource TextAccentBrush}"/>
+						</StackPanel>
+					</StackPanel>
+
+					<!-- User Info -->
+					<StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+						<Border Width="{StaticResource UserAvatarSize}"
+								Height="{StaticResource UserAvatarSize}"
+								Background="{StaticResource PrimaryMediumBrush}"
+								CornerRadius="16"
+								Margin="{StaticResource MarginIconSmall}">
+							<TextBlock Text="{StaticResource IconUser}"
+									   FontSize="{StaticResource IconSizeLarge}"
+									   HorizontalAlignment="Center"
+									   VerticalAlignment="Center"/>
+						</Border>
+						<StackPanel VerticalAlignment="Center" Margin="{StaticResource MarginUser}">
+							<TextBlock Text="{Binding UserName}"
+									   FontSize="{StaticResource FontSizeMedium}"
+									   FontWeight="SemiBold"
+									   Foreground="{StaticResource TextLightBrush}"/>
+							<TextBlock Text="{Binding UserRole}"
+									   FontSize="{StaticResource FontSizeSmall}"
+									   Foreground="{StaticResource TextAccentBrush}"/>
+						</StackPanel>
+						<Button Content="{x:Static resources:TextResource.BtnLogout}"
+								Background="{StaticResource AccentDangerBrush}"
+								Foreground="{StaticResource TextLightBrush}"
+								Padding="{StaticResource PaddingButton}"
+								CornerRadius="{StaticResource CornerRadiusMedium}"
+								Command="{Binding LogoutCommand}"/>
+						<Button Content="{x:Static resources:TextResource.BtnExit}"
+								x:Name="ExitButton"
+								Background="{StaticResource AccentDangerBrush}"
+								Foreground="{StaticResource TextLightBrush}"
+								Padding="{StaticResource PaddingButton}"
+								CornerRadius="{StaticResource CornerRadiusMedium}"/>
+					</StackPanel>
+				</Grid>
+			</Border>
+
+			<!-- Main Content Area -->
+			<Grid Grid.Row="1">
+				<Grid.ColumnDefinitions>
+					<!-- Sidebar column with dynamic width based on IsSidebarOpen -->
+					<ColumnDefinition Width="{Binding SidebarWidth}"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+
+				<!-- Left Sidebar Navigation -->
+				<Border Grid.Column="0"
+						Background="{StaticResource PrimaryDarkBrush}"
+						Padding="{StaticResource PaddingContainer}"
+						IsVisible="{Binding IsSidebarOpen}">
+					<StackPanel>
+						<!-- Welcome Section -->
+						<Border Background="{StaticResource PrimaryMediumBrush}"
+								CornerRadius="{StaticResource CornerRadiusXLarge}"
+								Padding="{StaticResource PaddingXLarge}"
+								Margin="{StaticResource MarginXXLarge}">
+							<StackPanel>
+								<TextBlock Text="{Binding WelcomeMessage}"
+										   FontSize="{StaticResource FontSizeLarge}"
+										   FontWeight="Bold"
+										   Foreground="{StaticResource TextLightBrush}"
+										   TextAlignment="Center"/>
+								<TextBlock Text="{x:Static resources:TextResource.AppPortalName}"
+										   FontSize="{StaticResource FontSizeRegular}"
+										   Foreground="{StaticResource TextAccentBrush}"
+										   TextAlignment="Center"
+										   Margin="0,5,0,0"/>
+							</StackPanel>
+						</Border>
+
+						<!-- Dynamic Navigation Menu -->
+						<ItemsControl ItemsSource="{Binding NavigationItems}">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate x:DataType="controls:NavigationItem">
+									<Button Classes.navigation-item="True"
+											Classes.selected="{Binding IsSelected}"
+											IsEnabled="{Binding IsEnabled}"
+											IsVisible="{Binding IsVisible}"
+											Command="{Binding NavigateCommand}"
+											CommandParameter="{Binding}">
+										<StackPanel Orientation="Horizontal">
+											<TextBlock Text="{Binding Icon}"
+													   FontSize="{StaticResource IconSizeLarge}"
+													   Margin="{StaticResource MarginIcon}"
+													   VerticalAlignment="Center"/>
+											<StackPanel VerticalAlignment="Center">
+												<TextBlock Text="{Binding Title}"
+														   FontSize="{StaticResource FontSizeMedium}"
+														   FontWeight="SemiBold"/>
+												<TextBlock Text="{Binding Description}"
+														   FontSize="{StaticResource FontSizeSmall}"
+														   Foreground="{StaticResource TextAccentBrush}"
+														   IsVisible="{Binding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+											</StackPanel>
+										</StackPanel>
+									</Button>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</StackPanel>
+				</Border>
+
+				<!-- Main Content Area with RoutedViewHost -->
+				<Border Grid.Column="1"
+						Background="{StaticResource PrimaryLightestBrush}"
+						Padding="{StaticResource PaddingContainer}">
+					<rxui:RoutedViewHost
+								Name="RoutedViewHost"
+								PageTransition="{x:Null}">
+						<rxui:RoutedViewHost.DefaultContent>
+
+						</rxui:RoutedViewHost.DefaultContent>
+						<rxui:RoutedViewHost.ViewLocator>
+							<app:ViewLocator></app:ViewLocator>
+						</rxui:RoutedViewHost.ViewLocator>
+					</rxui:RoutedViewHost>
+				</Border>
+			</Grid>
+		</Grid>
+
+		<!-- Layer 2: Notification Host - Fixed position at top-right -->
+		<StackPanel Name="NotificationHost" 
+					Classes="notification-host"
+					ZIndex="9000"
+					HorizontalAlignment="Right"
+					VerticalAlignment="Top"
+					Margin="16">
+			<!-- Notification popups will be added here dynamically -->
+		</StackPanel>
+
+		<!-- Layer 3: Popup Host - At Root Level (highest priority) -->
+		<Grid Name="PopupHost" 
+			  Classes="popup-host"
+			  ZIndex="10000"
+			  IsVisible="False">
+			<!-- Popup content will be added here dynamically -->
+		</Grid>
+	</Grid>
+</Window>
+

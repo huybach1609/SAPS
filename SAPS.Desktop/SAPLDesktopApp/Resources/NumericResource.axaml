@@ -1,0 +1,167 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:system="clr-namespace:System;assembly=mscorlib">
+
+	<!-- Font Sizes -->
+	<system:Double x:Key="FontSizeSmall">10</system:Double>
+	<system:Double x:Key="FontSizeRegular">12</system:Double>
+	<system:Double x:Key="FontSizeMedium">14</system:Double>
+	<system:Double x:Key="FontSizeLarge">16</system:Double>
+	<system:Double x:Key="FontSizeXLarge">18</system:Double>
+	<system:Double x:Key="FontSizeXXLarge">24</system:Double>
+
+	<!-- Icon Sizes -->
+	<system:Double x:Key="IconSizeSmall">12</system:Double>
+	<system:Double x:Key="IconSizeMedium">16</system:Double>
+	<system:Double x:Key="IconSizeLarge">20</system:Double>
+	<system:Double x:Key="IconSizeXLarge">24</system:Double>
+	<system:Double x:Key="IconSizeXXLarge">32</system:Double>
+
+	<!-- Notification-specific Sizes -->
+	<system:Double x:Key="NotificationWidth">320</system:Double>
+	<system:Double x:Key="NotificationIconSize">32</system:Double>
+	<system:Double x:Key="NotificationProgressHeight">3</system:Double>
+
+	<!-- Spacing -->
+	<system:Double x:Key="SpacingXSmall">2</system:Double>
+	<system:Double x:Key="SpacingSmall">4</system:Double>
+	<system:Double x:Key="SpacingMedium">8</system:Double>
+	<system:Double x:Key="SpacingLarge">12</system:Double>
+	<system:Double x:Key="SpacingXLarge">16</system:Double>
+	<system:Double x:Key="SpacingXXLarge">20</system:Double>
+	<system:Double x:Key="SpacingXXXLarge">24</system:Double>
+
+	<!-- Camera-specific Spacing -->
+	<system:Double x:Key="CameraButtonSpacing">10</system:Double>
+
+	<!-- Padding -->
+	<Thickness x:Key="PaddingSmall">4</Thickness>
+	<Thickness x:Key="PaddingMedium">8</Thickness>
+	<Thickness x:Key="PaddingLarge">12</Thickness>
+	<Thickness x:Key="PaddingXLarge">15</Thickness>
+	<Thickness x:Key="PaddingXXLarge">20</Thickness>
+
+	<!-- Specific Paddings -->
+	<Thickness x:Key="PaddingButton">12,6</Thickness>
+	<Thickness x:Key="PaddingButtonLarge">15,12</Thickness>
+	<Thickness x:Key="PaddingNavigation">15,12</Thickness>
+	<Thickness x:Key="PaddingContainer">20</Thickness>
+	<Thickness x:Key="PaddingContent">15,10</Thickness>
+
+	<!-- Camera-specific Paddings -->
+	<Thickness x:Key="CameraLabelPadding">10,5</Thickness>
+	<Thickness x:Key="CameraFooterPadding">10</Thickness>
+	<Thickness x:Key="CameraButtonPadding">15,8</Thickness>
+
+	<!-- Notification-specific Paddings -->
+	<Thickness x:Key="NotificationPadding">16</Thickness>
+	<Thickness x:Key="NotificationMargin">16,8</Thickness>
+	<Thickness x:Key="NotificationIconMargin">0,0,12,0</Thickness>
+	<Thickness x:Key="NotificationProgressMargin">0,8,0,0</Thickness>
+
+	<!-- Margins -->
+	<Thickness x:Key="MarginXSmall">2</Thickness>
+	<Thickness x:Key="MarginSmall">4</Thickness>
+	<Thickness x:Key="MarginMedium">8</Thickness>
+	<Thickness x:Key="MarginLarge">12</Thickness>
+	<Thickness x:Key="MarginXLarge">15</Thickness>
+	<Thickness x:Key="MarginXXLarge">25</Thickness>
+
+	<!-- Specific Margins -->
+	<Thickness x:Key="MarginNavButton">0,0,0,8</Thickness>
+	<Thickness x:Key="MarginIcon">0,0,12,0</Thickness>
+	<Thickness x:Key="MarginIconSmall">0,0,10,0</Thickness>
+	<Thickness x:Key="MarginUser">0,0,15,0</Thickness>
+	<Thickness x:Key="MarginHamburger">0,0,15,0</Thickness>
+	<Thickness x:Key="MarginCameraFrame">2</Thickness>
+	<Thickness x:Key="MarginLabelBottom">0,0,0,5</Thickness>
+
+	<!-- Camera-specific Margins -->
+	<Thickness x:Key="CameraFrameMargin">5</Thickness>
+	<Thickness x:Key="CameraButtonMargin">5</Thickness>
+
+	<!-- Corner Radius -->
+	<CornerRadius x:Key="CornerRadiusXSmall">1</CornerRadius>
+	<CornerRadius x:Key="CornerRadiusSmall">3</CornerRadius>
+	<CornerRadius x:Key="CornerRadiusMedium">6</CornerRadius>
+	<CornerRadius x:Key="CornerRadiusLarge">8</CornerRadius>
+	<CornerRadius x:Key="CornerRadiusXLarge">10</CornerRadius>
+
+	<!-- Notification-specific Corner Radius -->
+	<CornerRadius x:Key="NotificationCornerRadius">8</CornerRadius>
+	<CornerRadius x:Key="NotificationIconCornerRadius">16</CornerRadius>
+
+	<!-- Avatar-specific Corner Radius -->
+	<CornerRadius x:Key="AvatarSquareCornerRadius">6</CornerRadius>
+
+	<!-- Border Thickness -->
+	<Thickness x:Key="BorderThicknessNone">0</Thickness>
+	<Thickness x:Key="BorderThicknessThin">1</Thickness>
+	<Thickness x:Key="BorderThicknessMedium">2</Thickness>
+	<Thickness x:Key="BorderThicknessTopOnly">0,1,0,0</Thickness>
+	<Thickness x:Key="BorderThicknessLeftOnly">1,0,0,0</Thickness>
+	<Thickness x:Key="BorderThicknessBottomOnly">0,0,0,1</Thickness>
+
+	<!-- Camera-specific Border Thickness -->
+	<Thickness x:Key="CameraFrameBorderThickness">2</Thickness>
+	<Thickness x:Key="CameraFooterBorderThickness">0,1,0,0</Thickness>
+
+	<!-- Notification-specific Border Thickness -->
+	<Thickness x:Key="NotificationBorderThickness">0,0,4,0</Thickness>
+
+	<!-- Dimensions - Reduced Sidebar Width -->
+	<system:Double x:Key="SidebarWidth">350</system:Double>
+	<system:Double x:Key="SidebarCompactWidth">200</system:Double>
+	<system:Double x:Key="LogoSize">40</system:Double>
+	<system:Double x:Key="UserAvatarSize">32</system:Double>
+	<system:Double x:Key="ButtonMinWidth">80</system:Double>
+	<system:Double x:Key="ButtonMaxWidth">150</system:Double>
+	<system:Double x:Key="ImagePreviewHeight">40</system:Double>
+	<system:Double x:Key="CameraOverlayHeight">80</system:Double>
+
+	<!-- Avatar Sizes -->
+	<system:Double x:Key="AvatarSizeSmall">32</system:Double>
+	<system:Double x:Key="AvatarSizeMedium">48</system:Double>
+	<system:Double x:Key="AvatarSizeLarge">80</system:Double>
+	<system:Double x:Key="AvatarSizeXLarge">96</system:Double>
+
+	<!-- Avatar Margins -->
+	<Thickness x:Key="AvatarMarginBottom">0,0,0,12</Thickness>
+
+	<!-- Captured Image Sizes -->
+	<system:Double x:Key="CapturedImageHeight">140</system:Double>
+	<system:Double x:Key="CapturedImageContainerMinHeight">180</system:Double>
+
+	<!-- Camera Specific Dimensions -->
+	<system:Double x:Key="CameraFrameMinHeight">200</system:Double>
+	<system:Double x:Key="CameraFrameMinWidth">250</system:Double>
+	<system:Double x:Key="CameraButtonHeight">40</system:Double>
+	<system:Double x:Key="CameraFooterMaxHeight">60</system:Double>
+
+	<!-- Window Dimensions -->
+	<system:Double x:Key="WindowMinWidth">1000</system:Double>
+	<system:Double x:Key="WindowMinHeight">600</system:Double>
+	<system:Double x:Key="WindowDefaultWidth">1200</system:Double>
+	<system:Double x:Key="WindowDefaultHeight">800</system:Double>
+
+	<!-- Camera Settings -->
+	<system:Int32 x:Key="DefaultBrightness">75</system:Int32>
+	<system:Int32 x:Key="DefaultContrast">50</system:Int32>
+	<system:Int32 x:Key="MinBrightness">0</system:Int32>
+	<system:Int32 x:Key="MaxBrightness">100</system:Int32>
+	<system:Int32 x:Key="MinContrast">0</system:Int32>
+	<system:Int32 x:Key="MaxContrast">100</system:Int32>
+
+	<!-- Animation Durations (in milliseconds) -->
+	<system:Double x:Key="AnimationDurationFast">150</system:Double>
+	<system:Double x:Key="AnimationDurationMedium">300</system:Double>
+	<system:Double x:Key="AnimationDurationSlow">500</system:Double>
+
+	<!-- Z-Index Values -->
+	<system:Int32 x:Key="ZIndexBackground">0</system:Int32>
+	<system:Int32 x:Key="ZIndexContent">1</system:Int32>
+	<system:Int32 x:Key="ZIndexOverlay">10</system:Int32>
+	<system:Int32 x:Key="ZIndexModal">100</system:Int32>
+	<system:Int32 x:Key="ZIndexTooltip">1000</system:Int32>
+
+</ResourceDictionary>

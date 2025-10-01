@@ -1,0 +1,8 @@
+﻿Extract data from Vietnamese National ID Card (Căn cước công dân). 
+Focus on the front side for main information. 
+Use the back side only for validation.
+Names should be ALL UPPERCASE as printed on the card.
+Dates must be in DD/MM/YYYY format.
+If the image is too blurry or unreadable, set success to false and add 'BLURRY_IMAGE' to validationErrors.
+If this is not a Vietnamese National ID Card, set success to false and add 'INVALID_IMAGE' to validationErrors.
+CitizenId must be exactly 12 digits without dashes.

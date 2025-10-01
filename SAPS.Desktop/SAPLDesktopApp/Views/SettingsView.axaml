@@ -1,0 +1,240 @@
+<rxui:ReactiveUserControl xmlns="https://github.com/avaloniaui"
+                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                         xmlns:rxui="http://reactiveui.net"
+                         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                         xmlns:vm="clr-namespace:SAPLDesktopApp.ViewModels"
+                         xmlns:models="clr-namespace:SAPLDesktopApp.Models"
+                         xmlns:resources="using:SAPLDesktopApp.Resources"
+                         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                         x:DataType="vm:SettingsViewModel"
+                         x:Class="SAPLDesktopApp.Views.SettingsView">
+
+	<ScrollViewer>
+		<Grid Margin="{StaticResource PaddingContainer}">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+
+			 <!--Header Section--> 
+			<Grid Grid.Row="0" Margin="0,0,0,20">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+				<Button Grid.Column="0"
+                        Classes="back-button"
+                        Command="{Binding BackCommand}"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Left">
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<TextBlock Text="{x:Static resources:TextResource.BtnBack}" VerticalAlignment="Center"/>
+					</StackPanel>
+				</Button>
+				<TextBlock Grid.Column="1"
+                           Text="{x:Static resources:TextResource.SettingsTitle}"
+                           FontSize="{StaticResource FontSizeXXLarge}"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource TextPrimaryBrush}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+			</Grid>
+
+			 <!--Main Content--> 
+			<StackPanel Grid.Row="1" Spacing="{StaticResource SpacingXXLarge}">
+
+				 <!--Password Change Section--> 
+				<Border Background="{StaticResource NeutralBackgroundBrush}"
+                        CornerRadius="{StaticResource CornerRadiusLarge}"
+                        Padding="{StaticResource PaddingXXLarge}"
+                        BoxShadow="0 2 8 0 #20000000">
+					<StackPanel Spacing="{StaticResource SpacingXLarge}">
+						<TextBlock Text="{x:Static resources:TextResource.ChangePasswordTitle}"
+                                   FontSize="{StaticResource FontSizeXLarge}"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource PrimaryDarkBrush}"/>
+
+						<Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto"
+                              ColumnSpacing="{StaticResource SpacingXLarge}"
+                              RowSpacing="{StaticResource SpacingLarge}">
+
+							 <!--Current Password--> 
+							<StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+								<TextBlock Text="{x:Static resources:TextResource.CurrentPasswordLabel}" FontWeight="SemiBold" Margin="0,0,0,8"/>
+								<TextBox Text="{Binding CurrentPassword}"
+                                         PasswordChar="•"
+                                         Watermark="{x:Static resources:TextResource.EnterCurrentPasswordPlaceholder}"
+                                         FontSize="{StaticResource FontSizeRegular}"
+                                         Padding="{StaticResource PaddingMedium}"
+                                         CornerRadius="{StaticResource CornerRadiusSmall}"/>
+							</StackPanel>
+
+							 <!--New Password--> 
+							<StackPanel Grid.Row="1" Grid.Column="0">
+								<TextBlock Text="{x:Static resources:TextResource.NewPasswordLabel}" FontWeight="SemiBold" Margin="0,0,0,8"/>
+								<TextBox Text="{Binding NewPassword}"
+                                         PasswordChar="•"
+                                         Watermark="{x:Static resources:TextResource.EnterNewPasswordPlaceholder}"
+                                         FontSize="{StaticResource FontSizeRegular}"
+                                         Padding="{StaticResource PaddingMedium}"
+                                         CornerRadius="{StaticResource CornerRadiusSmall}"/>
+							</StackPanel>
+
+							 <!--Confirm Password--> 
+							<StackPanel Grid.Row="1" Grid.Column="1">
+								<TextBlock Text="{x:Static resources:TextResource.ConfirmPasswordLabel}" FontWeight="SemiBold" Margin="0,0,0,8"/>
+								<TextBox Text="{Binding ConfirmPassword}"
+                                         PasswordChar="•"
+                                         Watermark="{x:Static resources:TextResource.ConfirmNewPasswordPlaceholder}"
+                                         FontSize="{StaticResource FontSizeRegular}"
+                                         Padding="{StaticResource PaddingMedium}"
+                                         CornerRadius="{StaticResource CornerRadiusSmall}"/>
+							</StackPanel>
+
+							 <!--Action Buttons--> 
+							<StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                                        Orientation="Horizontal"
+                                        HorizontalAlignment="Right"
+                                        Spacing="{StaticResource SpacingLarge}"
+                                        Margin="0,10,0,0">
+								<Button Content="{x:Static resources:TextResource.BtnClear}"
+                                        Command="{Binding ResetPasswordFormCommand}"
+                                        Classes="secondary-button"
+                                        Width="100"/>
+								<Button Content="{x:Static resources:TextResource.ChangePasswordButtonText}"
+                                        Command="{Binding ChangePasswordCommand}"
+                                        Classes="primary-button"
+                                        IsEnabled="{Binding CanChangePassword}"
+                                        Width="140"/>
+							</StackPanel>
+						</Grid>
+					</StackPanel>
+				</Border>
+
+				 <!--Language Settings Section--> 
+				<Border Background="{StaticResource NeutralBackgroundBrush}"
+                        CornerRadius="{StaticResource CornerRadiusLarge}"
+                        Padding="{StaticResource PaddingXXLarge}"
+                        BoxShadow="0 2 8 0 #20000000">
+					<StackPanel Spacing="{StaticResource SpacingXLarge}">
+						<TextBlock Text="{x:Static resources:TextResource.LanguageSettingsTitle}"
+                                   FontSize="{StaticResource FontSizeXLarge}"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource PrimaryDarkBrush}"/>
+
+						<TextBlock Text="{x:Static resources:TextResource.LanguageSelectionDescription}"
+                                   FontSize="{StaticResource FontSizeRegular}"
+                                   Foreground="{StaticResource TextMutedBrush}"
+                                   Margin="0,0,0,10"/>
+
+						<ItemsControl ItemsSource="{Binding AvailableLanguages}">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate x:DataType="vm:LanguageOptionViewModel">
+									<Border Background="{Binding SelectionBackgroundColor}"
+                                            BorderBrush="{Binding SelectionBorderColor}"
+                                            BorderThickness="{StaticResource BorderThicknessThin}"
+                                            CornerRadius="{StaticResource CornerRadiusSmall}"
+                                            Margin="0,0,0,8"
+                                            Padding="{StaticResource PaddingMedium}">
+										<Button Background="Transparent"
+                                                BorderThickness="0"
+                                                Padding="0"
+                                                HorizontalContentAlignment="Stretch"
+                                                Command="{Binding $parent[ItemsControl].((vm:SettingsViewModel)DataContext).ChangeLanguageCommand}"
+                                                CommandParameter="{Binding}">
+											<Grid>
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="Auto"/>
+													<ColumnDefinition Width="*"/>
+													<ColumnDefinition Width="Auto"/>
+												</Grid.ColumnDefinitions>
+
+												<Border Grid.Column="0"
+                                                        Width="20"
+                                                        Height="20"
+                                                        CornerRadius="10"
+                                                        BorderBrush="{StaticResource PrimaryMediumBrush}"
+                                                        BorderThickness="2"
+                                                        Background="{Binding SelectionBorderColor}"
+                                                        Margin="0,0,12,0"/>
+
+												<StackPanel Grid.Column="1" VerticalAlignment="Center">
+													<TextBlock Text="{Binding Language.Name}"
+                                                               FontWeight="SemiBold"
+                                                               FontSize="{StaticResource FontSizeRegular}"/>
+													<TextBlock Text="{Binding Language.NativeName}"
+                                                               FontSize="{StaticResource FontSizeSmall}"
+                                                               Foreground="{StaticResource TextMutedBrush}"/>
+												</StackPanel>
+
+												<TextBlock Grid.Column="2"
+                                                           Text="✓"
+                                                           Foreground="{StaticResource SuccessBrush}"
+                                                           FontWeight="Bold"
+                                                           VerticalAlignment="Center"
+                                                           IsVisible="{Binding CheckmarkVisibility}"/>
+											</Grid>
+										</Button>
+									</Border>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</StackPanel>
+				</Border>
+
+				 <!--General Settings Section--> 
+				<!--<Border Background="{StaticResource NeutralBackgroundBrush}"
+                        CornerRadius="{StaticResource CornerRadiusLarge}"
+                        Padding="{StaticResource PaddingXXLarge}"
+                        BoxShadow="0 2 8 0 #20000000">
+					<StackPanel Spacing="{StaticResource SpacingXLarge}">
+						<TextBlock Text="⚙️ General Settings"
+                                   FontSize="{StaticResource FontSizeXLarge}"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource PrimaryDarkBrush}"/>
+
+						<Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto"
+                              ColumnSpacing="{StaticResource SpacingXXLarge}"
+                              RowSpacing="{StaticResource SpacingXLarge}">
+
+							 --><!--Notifications--><!-- 
+							<StackPanel Grid.Row="0" Grid.Column="0">
+								<CheckBox IsChecked="{Binding NotificationsEnabled}"
+                                          Content="Enable Notifications"
+                                          FontWeight="SemiBold"/>
+								<TextBlock Text="Receive alerts for detected vehicles and system events"
+                                           FontSize="{StaticResource FontSizeSmall}"
+                                           Foreground="{StaticResource TextMutedBrush}"
+                                           Margin="24,4,0,0"/>
+							</StackPanel>
+
+							 --><!--Auto Save--><!-- 
+							<StackPanel Grid.Row="0" Grid.Column="1">
+								<CheckBox IsChecked="{Binding AutoSaveEnabled}"
+                                          Content="Auto Save Data"
+                                          FontWeight="SemiBold"/>
+								<TextBlock Text="Automatically save camera data and settings"
+                                           FontSize="{StaticResource FontSizeSmall}"
+                                           Foreground="{StaticResource TextMutedBrush}"
+                                           Margin="24,4,0,0"/>
+							</StackPanel>
+
+							 --><!--Save Button--><!-- 
+							<StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                        Orientation="Horizontal"
+                                        HorizontalAlignment="Right"
+                                        Margin="0,10,0,0">
+								<Button Content="Save Settings"
+                                        Command="{Binding SaveSettingsCommand}"
+                                        Classes="primary-button"
+                                        Width="140"/>
+							</StackPanel>
+						</Grid>
+					</StackPanel>
+				</Border>-->
+			</StackPanel>
+		</Grid>
+	</ScrollViewer>
+</rxui:ReactiveUserControl>

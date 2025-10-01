@@ -1,0 +1,276 @@
+﻿<rxui:ReactiveUserControl xmlns="https://github.com/avaloniaui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:rxui="http://reactiveui.net"
+                          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                          xmlns:vm="clr-namespace:SAPLDesktopApp.ViewModels"
+                          xmlns:resources="using:SAPLDesktopApp.Resources"
+                          mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                          x:DataType="vm:AddIncidenceReportViewModel"
+                          x:Class="SAPLDesktopApp.Views.AddIncidenceReportView">
+
+	<ScrollViewer>
+		<Grid Margin="{StaticResource PaddingContainer}">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="*"/>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
+
+			<!--Header Section-->
+			<Grid Grid.Row="0" Margin="0,0,0,20">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+				<Button Grid.Column="0"
+                        Classes="back-button"
+                        Command="{Binding BackCommand}"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Left">
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<TextBlock Text="{x:Static resources:TextResource.BtnBack}" VerticalAlignment="Center"/>
+					</StackPanel>
+				</Button>
+				<TextBlock Grid.Column="1"
+                           Text="{x:Static resources:TextResource.AddIncidentReportTitle}"
+                           FontSize="{StaticResource FontSizeXXLarge}"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource TextPrimaryBrush}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+				<Button Grid.Column="2"
+                        Classes="secondary-button"
+                        Command="{Binding ClearFormCommand}"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Right">
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<TextBlock Text="{StaticResource IconClear}" VerticalAlignment="Center"/>
+						<TextBlock Text="{x:Static resources:TextResource.BtnClearForm}" VerticalAlignment="Center"/>
+					</StackPanel>
+				</Button>
+			</Grid>
+
+			<!--Form Status Indicator-->
+			<Border Grid.Row="1"
+                    Background="{StaticResource AccentInfoBrush}"
+                    CornerRadius="{StaticResource CornerRadiusMedium}"
+                    Height="80"
+                    Margin="0,0,0,20">
+				<StackPanel Orientation="Horizontal"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Spacing="12">
+					<TextBlock Text="{StaticResource IconStatusNote}"
+                               FontSize="24"
+                               VerticalAlignment="Center"/>
+					<TextBlock Text="{x:Static resources:TextResource.AddIncidentReportStatusMessage}"
+                               FontSize="{StaticResource FontSizeMedium}"
+                               FontWeight="SemiBold"
+                               Foreground="{StaticResource TextLightBrush}"
+                               VerticalAlignment="Center"/>
+				</StackPanel>
+			</Border>
+
+			<!--Main Form Content-->
+			<StackPanel Grid.Row="2" Spacing="{StaticResource SpacingXXLarge}">
+
+				<!--Basic Information Section-->
+				<Border Background="{StaticResource NeutralBackgroundBrush}"
+                        CornerRadius="{StaticResource CornerRadiusLarge}"
+                        Padding="{StaticResource PaddingXXLarge}"
+                        BoxShadow="0 2 8 0 #20000000">
+					<StackPanel Spacing="{StaticResource SpacingXLarge}">
+						<TextBlock Text="{x:Static resources:TextResource.BasicInformationTitle}"
+                                   FontSize="{StaticResource FontSizeXLarge}"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource PrimaryDarkBrush}"/>
+						<Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="{StaticResource SpacingXXLarge}" RowSpacing="{StaticResource SpacingXLarge}">
+							<!--Header-->
+							<StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+								<TextBlock Text="{x:Static resources:TextResource.LabelIncidentHeader} *"
+                                           FontWeight="SemiBold"/>
+								<TextBox Text="{Binding Header}"
+                                         Watermark="{x:Static resources:TextResource.IncidentHeaderWatermark}"
+                                         Background="{StaticResource NeutralLightBrush}"
+                                         BorderBrush="{StaticResource NeutralBorderBrush}"
+                                         BorderThickness="{StaticResource BorderThicknessThin}"
+                                         CornerRadius="{StaticResource CornerRadiusSmall}"
+                                         Padding="{StaticResource PaddingMedium}"
+                                         FontSize="{StaticResource FontSizeRegular}"/>
+							</StackPanel>
+							<!--Priority and Reporter-->
+							<StackPanel Grid.Row="1" Grid.Column="0">
+								<TextBlock Text="{x:Static resources:TextResource.PriorityLevelLabel} *"
+                                           FontWeight="SemiBold"/>
+								<ComboBox ItemsSource="{Binding PriorityOptions}"
+                                          SelectedItem="{Binding Priority}"
+                                          Background="{StaticResource NeutralLightBrush}"
+                                          BorderBrush="{StaticResource NeutralBorderBrush}"
+                                          BorderThickness="{StaticResource BorderThicknessThin}"
+                                          CornerRadius="{StaticResource CornerRadiusSmall}"
+                                          Padding="{StaticResource PaddingMedium}"/>
+							</StackPanel>
+							<StackPanel Grid.Row="1" Grid.Column="1">
+								<TextBlock Text="{x:Static resources:TextResource.NameLabel}"
+                                           FontWeight="SemiBold"/>
+								<TextBox Text="{Binding ReporterName}"
+                                         Watermark="{x:Static resources:TextResource.ReporterNameWatermark}"
+                                         Background="{StaticResource NeutralLightBrush}"
+                                         BorderBrush="{StaticResource NeutralBorderBrush}"
+                                         BorderThickness="{StaticResource BorderThicknessThin}"
+                                         CornerRadius="{StaticResource CornerRadiusSmall}"
+                                         Padding="{StaticResource PaddingMedium}"/>
+							</StackPanel>
+							<!--Description-->
+							<StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2">
+								<TextBlock Text="{x:Static resources:TextResource.LabelIncidentDescription} *"
+                                           FontWeight="SemiBold"/>
+								<TextBox Text="{Binding Description}"
+                                         Watermark="{x:Static resources:TextResource.IncidentDescriptionWatermark}"
+                                         AcceptsReturn="True"
+                                         TextWrapping="Wrap"
+                                         Background="{StaticResource NeutralLightBrush}"
+                                         BorderBrush="{StaticResource NeutralBorderBrush}"
+                                         BorderThickness="{StaticResource BorderThicknessThin}"
+                                         CornerRadius="{StaticResource CornerRadiusSmall}"
+                                         Padding="{StaticResource PaddingMedium}"
+                                         MinHeight="120"
+                                         VerticalContentAlignment="Top"/>
+							</StackPanel>
+						</Grid>
+					</StackPanel>
+				</Border>
+
+				<!--Attachments Section-->
+				<Border Background="{StaticResource NeutralBackgroundBrush}"
+                        CornerRadius="{StaticResource CornerRadiusLarge}"
+                        Padding="{StaticResource PaddingXXLarge}"
+                        BoxShadow="0 2 8 0 #20000000">
+					<StackPanel Spacing="{StaticResource SpacingXLarge}">
+						<Grid ColumnDefinitions="*,Auto">
+							<TextBlock Grid.Column="0"
+                                       Text="{x:Static resources:TextResource.AttachmentsLabel}"
+                                       FontSize="{StaticResource FontSizeXLarge}"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource PrimaryDarkBrush}"/>
+							<Button Grid.Column="1"
+                                    Classes="secondary-button"
+                                    Command="{Binding AttachFileCommand}">
+								<StackPanel Orientation="Horizontal" Spacing="8">
+									<TextBlock Text="{StaticResource IconAttachment}" VerticalAlignment="Center"/>
+									<TextBlock Text="{x:Static resources:TextResource.BtnAttachFile}" VerticalAlignment="Center"/>
+								</StackPanel>
+							</Button>
+						</Grid>
+						<Border Background="{StaticResource NeutralLightBrush}"
+                                BorderBrush="{StaticResource NeutralBorderBrush}"
+                                BorderThickness="{StaticResource BorderThicknessThin}"
+                                CornerRadius="{StaticResource CornerRadiusSmall}"
+                                Padding="{StaticResource PaddingMedium}"
+                                MinHeight="100">
+							<StackPanel>
+								<!--Show attachments when available-->
+								<ItemsControl ItemsSource="{Binding AttachedEvidences}" IsVisible="{Binding HasAttachments}">
+									<ItemsControl.ItemTemplate>
+										<DataTemplate>
+											<Border Background="White"
+                                                    BorderBrush="{StaticResource NeutralBorderBrush}"
+                                                    BorderThickness="{StaticResource BorderThicknessThin}"
+                                                    CornerRadius="{StaticResource CornerRadiusSmall}"
+                                                    Margin="0,0,0,8"
+                                                    Padding="{StaticResource PaddingMedium}">
+												<Grid ColumnDefinitions="*,Auto">
+													<StackPanel Grid.Column="0" VerticalAlignment="Center">
+														<TextBlock Text="{Binding OriginalFileName}" FontWeight="SemiBold"/>
+														<TextBlock Text="{Binding FileExtension}" FontSize="12" Foreground="{StaticResource TextMutedBrush}"/>
+														<TextBlock Text="{Binding FileSizeText}" FontSize="12" Foreground="{StaticResource TextMutedBrush}"/>
+														<TextBlock Text="{Binding UploadedAt, StringFormat='{x:Static resources:TextResource.UploadedLabel}'}" FontSize="12" Foreground="{StaticResource TextMutedBrush}"/>
+													</StackPanel>
+													<Button Grid.Column="1"
+                                                            Content="{x:Static resources:TextResource.RemoveButtonText}"
+                                                            Background="{StaticResource AccentErrorBrush}"
+                                                            Foreground="White"
+                                                            Padding="8,4"
+                                                            CornerRadius="{StaticResource CornerRadiusSmall}"
+                                                            FontSize="{StaticResource FontSizeSmall}"
+                                                            VerticalAlignment="Center"
+                                                            Command="{Binding $parent[ItemsControl].((vm:AddIncidenceReportViewModel)DataContext).RemoveAttachmentCommand}"
+                                                            CommandParameter="{Binding .}"/>
+												</Grid>
+											</Border>
+										</DataTemplate>
+									</ItemsControl.ItemTemplate>
+								</ItemsControl>
+								<!--Show no attachments message when none available-->
+								<Border Background="White"
+                                        BorderBrush="{StaticResource NeutralBorderBrush}"
+                                        BorderThickness="{StaticResource BorderThicknessThin}"
+                                        CornerRadius="{StaticResource CornerRadiusSmall}"
+                                        Padding="{StaticResource PaddingXXLarge}"
+                                        IsVisible="{Binding HasAttachments, Converter={x:Static BoolConverters.Not}}">
+									<StackPanel HorizontalAlignment="Center" Spacing="8">
+										<TextBlock Text="{StaticResource IconAttachment}"
+                                                   FontSize="32"
+                                                   Foreground="{StaticResource TextMutedBrush}"
+                                                   HorizontalAlignment="Center"/>
+										<TextBlock Text="{Binding AttachmentCountText}"
+                                                   FontStyle="Italic"
+                                                   HorizontalAlignment="Center"
+                                                   Foreground="{StaticResource TextMutedBrush}"/>
+									</StackPanel>
+								</Border>
+							</StackPanel>
+						</Border>
+					</StackPanel>
+				</Border>
+			</StackPanel>
+
+			<!--Submit Section-->
+			<Border Grid.Row="3"
+                    Background="{StaticResource NeutralBackgroundBrush}"
+                    CornerRadius="{StaticResource CornerRadiusLarge}"
+                    Padding="{StaticResource PaddingXXLarge}"
+                    Margin="0,20,0,0"
+                    BoxShadow="0 2 8 0 #20000000">
+				<Grid ColumnDefinitions="*,Auto,Auto">
+					<!--Form validation info-->
+					<StackPanel Grid.Column="0" VerticalAlignment="Center">
+						<TextBlock Text="{x:Static resources:TextResource.RequiredFieldsNote}"
+                                   FontSize="{StaticResource FontSizeSmall}"
+                                   Foreground="{StaticResource TextMutedBrush}"/>
+						<TextBlock Text="{Binding AttachmentCountText}"
+                                   FontSize="{StaticResource FontSizeSmall}"
+                                   Foreground="{StaticResource TextSecondaryBrush}"/>
+					</StackPanel>
+
+					<!--Action buttons-->
+					<Button Grid.Column="1"
+                            Classes="secondary-button"
+                            Command="{Binding BackCommand}"
+                            Margin="0,0,12,0">
+						<TextBlock Text="{x:Static resources:TextResource.BtnCancel}"/>
+					</Button>
+
+					<Button Grid.Column="2"
+                            Classes="submit-button"
+                            Command="{Binding SubmitCommand}"
+                            IsEnabled="{Binding CanSubmit}">
+						<StackPanel Orientation="Horizontal" Spacing="8">
+							<TextBlock Text="{StaticResource IconSubmit}"
+                                       VerticalAlignment="Center"
+                                       IsVisible="{Binding !IsSubmitting}"/>
+							<TextBlock Text="{StaticResource IconLoading}"
+                                       VerticalAlignment="Center"
+                                       IsVisible="{Binding IsSubmitting}"/>
+							<TextBlock Text="{x:Static resources:TextResource.BtnSubmitReport}"
+                                       VerticalAlignment="Center"/>
+						</StackPanel>
+					</Button>
+				</Grid>
+			</Border>
+		</Grid>
+	</ScrollViewer>
+</rxui:ReactiveUserControl>

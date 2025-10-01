@@ -1,0 +1,231 @@
+<rxui:ReactiveUserControl xmlns="https://github.com/avaloniaui"
+                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                         xmlns:rxui="http://reactiveui.net"
+                         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                         xmlns:vm="clr-namespace:SAPLDesktopApp.ViewModels"
+                         xmlns:models="clr-namespace:SAPLDesktopApp.Models"
+						  xmlns:resources="using:SAPLDesktopApp.Resources"
+                         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                         x:DataType="vm:IncidenceReportDetailsViewModel"
+                         x:Class="SAPLDesktopApp.Views.IncidenceReportDetailsView">
+
+	<ScrollViewer>
+		<Grid Margin="{StaticResource PaddingContainer}">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+
+			<!--Header Section-->
+			<Grid Grid.Row="0" Margin="0,0,0,20">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="*"/>
+				</Grid.ColumnDefinitions>
+				<Button Grid.Column="0"
+                        Classes="back-button"
+                        Command="{Binding BackCommand}"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Left">
+					<StackPanel Orientation="Horizontal" Spacing="8">
+						<TextBlock Text="{x:Static resources:TextResource.BtnBack}" VerticalAlignment="Center"/>
+					</StackPanel>
+				</Button>
+				<TextBlock Grid.Column="1"
+                           Text="{x:Static resources:TextResource.IncidentReportDetailsTitle}"
+                           FontSize="{StaticResource FontSizeXXLarge}"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource TextPrimaryBrush}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+			</Grid>
+
+			<!--Incident ID Banner-->
+			<Border Grid.Row="1"
+                    Background="{StaticResource PrimaryDarkBrush}"
+                    CornerRadius="{StaticResource CornerRadiusMedium}"
+                    Height="80"
+                    Margin="0,0,0,20">
+				<StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+					<TextBlock Text="{Binding Incident.Header}"
+                               FontSize="20"
+                               FontWeight="Bold"
+                               Foreground="{StaticResource TextLightBrush}"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"/>
+				</StackPanel>
+			</Border>
+
+			<!--Main Content-->
+			<StackPanel Grid.Row="2" Spacing="{StaticResource SpacingXXLarge}">
+
+				<!--Report Information Section-->
+				<Border Background="{StaticResource NeutralBackgroundBrush}"
+                        CornerRadius="{StaticResource CornerRadiusLarge}"
+                        Padding="{StaticResource PaddingXXLarge}"
+                        BoxShadow="0 2 8 0 #20000000">
+					<StackPanel Spacing="{StaticResource SpacingXLarge}">
+						<TextBlock Text="{x:Static resources:TextResource.IncidentInformationTitle}"
+                                   FontSize="{StaticResource FontSizeXLarge}"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource PrimaryDarkBrush}"/>
+
+						<Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="{StaticResource SpacingXXLarge}" RowSpacing="{StaticResource SpacingXLarge}">
+							<!--Reporter and Reported Date-->
+							<StackPanel Grid.Row="0" Grid.Column="0">
+								<TextBlock Text="{x:Static resources:TextResource.AuthorLabel}" FontWeight="SemiBold"/>
+								<Border Background="{StaticResource NeutralLightBrush}"
+                                        BorderBrush="{StaticResource NeutralBorderBrush}"
+                                        BorderThickness="{StaticResource BorderThicknessThin}"
+                                        CornerRadius="{StaticResource CornerRadiusSmall}"
+                                        Padding="{StaticResource PaddingMedium}">
+									<TextBlock Text="{Binding Incident.ReporterName}"/>
+								</Border>
+							</StackPanel>
+							<StackPanel Grid.Row="0" Grid.Column="1">
+								<TextBlock Text="{x:Static resources:TextResource.LabelReportedDate}" FontWeight="SemiBold"/>
+								<Border Background="{StaticResource NeutralLightBrush}"
+                                        BorderBrush="{StaticResource NeutralBorderBrush}"
+                                        BorderThickness="{StaticResource BorderThicknessThin}"
+                                        CornerRadius="{StaticResource CornerRadiusSmall}"
+                                        Padding="{StaticResource PaddingMedium}">
+									<TextBlock Text="{Binding Incident.FormattedReportedDate}"/>
+								</Border>
+							</StackPanel>
+							<!--Header-->
+							<StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+								<TextBlock Text="{x:Static resources:TextResource.LabelIncidentHeader}" FontWeight="SemiBold"/>
+								<Border Background="{StaticResource NeutralLightBrush}"
+                                        BorderBrush="{StaticResource NeutralBorderBrush}"
+                                        BorderThickness="{StaticResource BorderThicknessThin}"
+                                        CornerRadius="{StaticResource CornerRadiusSmall}"
+                                        Padding="{StaticResource PaddingMedium}">
+									<TextBlock Text="{Binding Incident.Header}" TextWrapping="Wrap"/>
+								</Border>
+							</StackPanel>
+							<!--Description-->
+							<StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2">
+								<TextBlock Text="{x:Static resources:TextResource.LabelIncidentDescription}" FontWeight="SemiBold"/>
+								<Border Background="{StaticResource NeutralLightBrush}"
+                                        BorderBrush="{StaticResource NeutralBorderBrush}"
+                                        BorderThickness="{StaticResource BorderThicknessThin}"
+                                        CornerRadius="{StaticResource CornerRadiusSmall}"
+                                        Padding="{StaticResource PaddingMedium}">
+									<ScrollViewer VerticalScrollBarVisibility="Auto">
+										<TextBlock Text="{Binding Incident.Description}" TextWrapping="Wrap"/>
+									</ScrollViewer>
+								</Border>
+							</StackPanel>
+							<!--Priority and Status-->
+							<StackPanel Grid.Row="3" Grid.Column="0">
+								<TextBlock Text="{x:Static resources:TextResource.PriorityLevelLabel}" FontWeight="SemiBold"/>
+								<Border Background="{StaticResource NeutralLightBrush}"
+                                        BorderBrush="{StaticResource NeutralBorderBrush}"
+                                        BorderThickness="{StaticResource BorderThicknessThin}"
+                                        CornerRadius="{StaticResource CornerRadiusSmall}"
+                                        Padding="{StaticResource PaddingMedium}">
+									<TextBlock Text="{Binding LocalizedPriority}" />
+								</Border>
+							</StackPanel>
+							<StackPanel Grid.Row="3" Grid.Column="1">
+								<TextBlock Text="{x:Static resources:TextResource.LabelStatus}" FontWeight="SemiBold"/>
+								<Border Background="{StaticResource NeutralLightBrush}"
+                                        BorderBrush="{StaticResource NeutralBorderBrush}"
+                                        BorderThickness="{StaticResource BorderThicknessThin}"
+                                        CornerRadius="{StaticResource CornerRadiusSmall}"
+                                        Padding="{StaticResource PaddingMedium}">
+									<TextBlock Text="{Binding LocalizedStatus}" />
+								</Border>
+							</StackPanel>
+						</Grid>
+					</StackPanel>
+				</Border>
+
+				<!--Evidence Section-->
+				<Border Background="{StaticResource NeutralBackgroundBrush}"
+                        CornerRadius="{StaticResource CornerRadiusLarge}"
+                        Padding="{StaticResource PaddingXXLarge}"
+                        BoxShadow="0 2 8 0 #20000000">
+					<StackPanel Spacing="{StaticResource SpacingXLarge}">
+						<TextBlock Text="{x:Static resources:TextResource.AttachedEvidenceLabel}"
+                                   FontSize="{StaticResource FontSizeXLarge}"
+                                   FontWeight="SemiBold"
+                                   Foreground="{StaticResource PrimaryDarkBrush}"/>
+						<TextBlock Text="{Binding EvidenceCountText}"
+                                   FontSize="{StaticResource FontSizeRegular}"
+                                   Foreground="{StaticResource TextMutedBrush}"
+                                   Margin="0,0,0,8"/>
+						<ItemsControl ItemsSource="{Binding EvidenceFiles}" IsVisible="{Binding HasEvidences}">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate x:DataType="models:EvidenceFileInfo">
+									<Border Background="White"
+                                            BorderBrush="{StaticResource NeutralBorderBrush}"
+                                            BorderThickness="{StaticResource BorderThicknessThin}"
+                                            CornerRadius="{StaticResource CornerRadiusSmall}"
+                                            Margin="0,0,0,8"
+                                            Padding="{StaticResource PaddingMedium}">
+										<Grid ColumnDefinitions="*,Auto,Auto">
+											<StackPanel Grid.Column="0" VerticalAlignment="Center">
+												<TextBlock Text="{Binding Evidence.OriginalFileName}" FontWeight="SemiBold"/>
+												<TextBlock Text="{Binding Evidence.FileExtension}" FontSize="12" Foreground="{StaticResource TextMutedBrush}"/>
+												<TextBlock Text="{Binding FormattedFileSize}" FontSize="12" Foreground="{StaticResource TextMutedBrush}"/>
+												<TextBlock Text="{Binding FormattedUploadDate, StringFormat='Uploaded: {0}'}" FontSize="12" Foreground="{StaticResource TextMutedBrush}"/>
+												<TextBlock Text="{Binding DownloadStatusText}"
+                                                           FontSize="12"
+                                                           Foreground="{Binding DownloadStatusColor}"/>
+											</StackPanel>
+
+											<!-- Download/Open Button -->
+											<Button Grid.Column="1"
+                                                    Content="{Binding DisplayButtonText}"
+                                                    Command="{Binding $parent[ItemsControl].((vm:IncidenceReportDetailsViewModel)DataContext).DownloadOrOpenEvidenceCommand}"
+                                                    CommandParameter="{Binding .}"
+                                                    Background="{Binding ButtonBackgroundColor}"
+                                                    Foreground="White"
+                                                    Padding="12,6"
+                                                    Margin="8,0"
+                                                    CornerRadius="{StaticResource CornerRadiusSmall}"
+                                                    FontSize="{StaticResource FontSizeSmall}"
+                                                    VerticalAlignment="Center"
+                                                    IsEnabled="{Binding CanInteract}"/>
+
+											<!-- Legacy Open Button (for direct URL access) -->
+											<Button Grid.Column="2"
+                                                    Content="{x:Static resources:TextResource.BtnOpenURL}"
+                                                    Command="{Binding $parent[ItemsControl].((vm:IncidenceReportDetailsViewModel)DataContext).OpenEvidenceCommand}"
+                                                    CommandParameter="{Binding Evidence}"
+                                                    Background="{StaticResource NeutralBorderBrush}"
+                                                    Foreground="{StaticResource TextPrimaryBrush}"
+                                                    Padding="8,6"
+                                                    CornerRadius="{StaticResource CornerRadiusSmall}"
+                                                    FontSize="{StaticResource FontSizeSmall}"
+                                                    VerticalAlignment="Center"/>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+						<Border Background="White"
+                                BorderBrush="{StaticResource NeutralBorderBrush}"
+                                BorderThickness="{StaticResource BorderThicknessThin}"
+                                CornerRadius="{StaticResource CornerRadiusSmall}"
+                                Padding="{StaticResource PaddingXXLarge}"
+                                IsVisible="{Binding HasEvidences, Converter={x:Static BoolConverters.Not}}">
+							<StackPanel HorizontalAlignment="Center">
+								<TextBlock Text="{x:Static resources:TextResource.NoEvidenceAttachedMessage}"
+                                           FontStyle="Italic"
+                                           HorizontalAlignment="Center"
+                                           Foreground="{StaticResource TextMutedBrush}"/>
+							</StackPanel>
+						</Border>
+					</StackPanel>
+				</Border>
+			</StackPanel>
+		</Grid>
+	</ScrollViewer>
+</rxui:ReactiveUserControl>

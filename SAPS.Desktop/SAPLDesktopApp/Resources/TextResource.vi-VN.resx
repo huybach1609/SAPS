@@ -1,0 +1,1510 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="metadata">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0"/>
+							</xsd:sequence>
+							<xsd:attribute name="name" use="required" type="xsd:string"/>
+							<xsd:attribute name="type" type="xsd:string"/>
+							<xsd:attribute name="mimetype" type="xsd:string"/>
+							<xsd:attribute ref="xml:space"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="assembly">
+						<xsd:complexType>
+							<xsd:attribute name="alias" type="xsd:string"/>
+							<xsd:attribute name="name" type="xsd:string"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+							<xsd:attribute ref="xml:space"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required"/>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="AppTitle" xml:space="preserve">
+		<value>SAPLS - Cổng Nhân Viên</value>
+	</data>
+	<data name="AppName" xml:space="preserve">
+		<value>SAPLS</value>
+	</data>
+	<data name="AppSubtitle" xml:space="preserve">
+		<value>Ứng Dụng Desktop Nhân Viên</value>
+	</data>
+	<data name="AppPortalName" xml:space="preserve">
+		<value>Cổng Nhân Viên SAPLS</value>
+	</data>
+	<data name="AppDescription" xml:space="preserve">
+		<value>Hệ Thống Bãi Đỗ Xe Bán Tự Động</value>
+	</data>
+	<data name="AppPortalDescription" xml:space="preserve">
+		<value>Cổng Desktop Nhân Viên</value>
+	</data>
+	<data name="NavCameraTitle" xml:space="preserve">
+		<value>Giám Sát Camera</value>
+	</data>
+	<data name="NavParkingSessionsTitle" xml:space="preserve">
+		<value>Phiên Đậu Xe</value>
+	</data>
+	<data name="NavShiftDiariesTitle" xml:space="preserve">
+		<value>Nhật Ký Ca Làm</value>
+	</data>
+	<data name="NavIncidenceReportsTitle" xml:space="preserve">
+		<value>Báo Cáo Sự Cố</value>
+	</data>
+	<data name="BtnBack" xml:space="preserve">
+		<value>← Quay Lại</value>
+	</data>
+	<data name="BtnCancel" xml:space="preserve">
+		<value>Hủy Bỏ</value>
+	</data>
+	<data name="BtnClear" xml:space="preserve">
+		<value>Xóa</value>
+	</data>
+	<data name="BtnClearForm" xml:space="preserve">
+		<value>Xóa Biểu Mẫu</value>
+	</data>
+	<data name="BtnProcess" xml:space="preserve">
+		<value>Xử Lý</value>
+	</data>
+	<data name="BtnCapture" xml:space="preserve">
+		<value>Chụp</value>
+	</data>
+	<data name="BtnCaptureAll" xml:space="preserve">
+		<value>Chụp Tất Cả</value>
+	</data>
+	<data name="BtnRefreshAll" xml:space="preserve">
+		<value>Làm Mới Tất Cả</value>
+	</data>
+	<data name="BtnFullView" xml:space="preserve">
+		<value>Xem Toàn Màn Hình</value>
+	</data>
+	<data name="BtnViewFullImage" xml:space="preserve">
+		<value>Xem Ảnh Đầy Đủ</value>
+	</data>
+	<data name="BtnAttachFile" xml:space="preserve">
+		<value>Đính Kèm Tệp</value>
+	</data>
+	<data name="BtnSubmitReport" xml:space="preserve">
+		<value>Gửi Báo Cáo</value>
+	</data>
+	<data name="BtnCheckOut" xml:space="preserve">
+		<value>Check Out Xe</value>
+	</data>
+	<data name="BtnCheckInManually" xml:space="preserve">
+		<value>Check-in Thủ Công</value>
+	</data>
+	<data name="BtnCheckOutManually" xml:space="preserve">
+		<value>Check-out Thủ Công</value>
+	</data>
+	<data name="BtnLogout" xml:space="preserve">
+		<value>Đăng Xuất</value>
+	</data>
+	<data name="BtnExit" xml:space="preserve">
+		<value>Thoát</value>
+	</data>
+	<data name="BtnSettings" xml:space="preserve">
+		<value>Cài Đặt</value>
+	</data>
+	<data name="BtnYes" xml:space="preserve">
+		<value>Có</value>
+	</data>
+	<data name="BtnNo" xml:space="preserve">
+		<value>Không</value>
+	</data>
+	<data name="BtnOK" xml:space="preserve">
+		<value>OK</value>
+	</data>
+	<data name="BtnRestart" xml:space="preserve">
+		<value>Khởi động lại</value>
+	</data>
+	<data name="ConfirmButtonText" xml:space="preserve">
+		<value>Xác Nhận</value>
+	</data>
+	<data name="LoginWindowTitle" xml:space="preserve">
+		<value>SAPLS - Đăng Nhập Nhân Viên</value>
+	</data>
+	<data name="LoginHeaderText" xml:space="preserve">
+		<value>Đăng Nhập Nhân Viên</value>
+	</data>
+	<data name="LoginSubHeaderText" xml:space="preserve">
+		<value>Nhập thông tin đăng nhập để truy cập hệ thống</value>
+	</data>
+	<data name="LoginButton" xml:space="preserve">
+		<value>Đăng Nhập</value>
+	</data>
+	<data name="EmailLabel" xml:space="preserve">
+		<value>Email</value>
+	</data>
+	<data name="LabelPassword" xml:space="preserve">
+		<value>Mật Khẩu</value>
+	</data>
+	<data name="PasswordPlaceHolder" xml:space="preserve">
+		<value>Nhập mật khẩu của bạn</value>
+	</data>
+	<data name="EnterEmailPlaceholder" xml:space="preserve">
+		<value>Nhập địa chỉ email của bạn</value>
+	</data>
+	<data name="ForgotPasswordText" xml:space="preserve">
+		<value>Quên Mật Khẩu?</value>
+	</data>
+	<data name="RememberMeText" xml:space="preserve">
+		<value>Ghi nhớ đăng nhập</value>
+	</data>
+	<data name="SettingsTitle" xml:space="preserve">
+		<value>⚙️ Cài Đặt</value>
+	</data>
+	<data name="SettingsGeneralTitle" xml:space="preserve">
+		<value>Cài Đặt Chung</value>
+	</data>
+	<data name="SettingsCameraTitle" xml:space="preserve">
+		<value>Cài Đặt Camera</value>
+	</data>
+	<data name="SettingsLanguageTitle" xml:space="preserve">
+		<value>Ngôn Ngữ</value>
+	</data>
+	<data name="SettingsSaveButton" xml:space="preserve">
+		<value>Lưu Cài Đặt</value>
+	</data>
+	<data name="SettingsCancelButton" xml:space="preserve">
+		<value>Hủy</value>
+	</data>
+	<data name="ChangePasswordTitle" xml:space="preserve">
+		<value>🔒 Đổi Mật Khẩu</value>
+	</data>
+	<data name="CurrentPasswordLabel" xml:space="preserve">
+		<value>Mật Khẩu Hiện Tại *</value>
+	</data>
+	<data name="NewPasswordLabel" xml:space="preserve">
+		<value>Mật Khẩu Mới *</value>
+	</data>
+	<data name="ConfirmPasswordLabel" xml:space="preserve">
+		<value>Xác Nhận Mật Khẩu *</value>
+	</data>
+	<data name="EnterCurrentPasswordPlaceholder" xml:space="preserve">
+		<value>Nhập mật khẩu hiện tại</value>
+	</data>
+	<data name="EnterNewPasswordPlaceholder" xml:space="preserve">
+		<value>Nhập mật khẩu mới</value>
+	</data>
+	<data name="ConfirmNewPasswordPlaceholder" xml:space="preserve">
+		<value>Xác nhận mật khẩu mới</value>
+	</data>
+	<data name="ChangePasswordButtonText" xml:space="preserve">
+		<value>Đổi Mật Khẩu</value>
+	</data>
+	<data name="LanguageSettingsTitle" xml:space="preserve">
+		<value>🌍 Cài Đặt Ngôn Ngữ</value>
+	</data>
+	<data name="LanguageSelectionDescription" xml:space="preserve">
+		<value>Chọn ngôn ngữ ưa thích cho giao diện ứng dụng</value>
+	</data>
+	<data name="LanguageEnglish" xml:space="preserve">
+		<value>Tiếng Anh</value>
+	</data>
+	<data name="LanguageVietnamese" xml:space="preserve">
+		<value>Tiếng Việt</value>
+	</data>
+	<data name="LanguageChangeTitle" xml:space="preserve">
+		<value>Thay đổi ngôn ngữ</value>
+	</data>
+	<data name="LanguageChangeConfirmMessage" xml:space="preserve">
+		<value>Thay đổi ngôn ngữ sang {0} yêu cầu khởi động lại ứng dụng.
+
+Bạn có muốn tiếp tục không?</value>
+	</data>
+	<data name="CameraEntranceFront" xml:space="preserve">
+		<value>CAMERA VÀO PHÍA TRƯỚC</value>
+	</data>
+	<data name="CameraExitFront" xml:space="preserve">
+		<value>CAMERA RA PHÍA TRƯỚC</value>
+	</data>
+	<data name="CameraEntranceBack" xml:space="preserve">
+		<value>CAMERA VÀO PHÍA SAU</value>
+	</data>
+	<data name="CameraExitBack" xml:space="preserve">
+		<value>CAMERA RA PHÍA SAU</value>
+	</data>
+	<data name="AvailableCamerasTitle" xml:space="preserve">
+		<value>Camera Khả Dụng</value>
+	</data>
+	<data name="CameraAssignmentsTitle" xml:space="preserve">
+		<value>Phân Công Camera</value>
+	</data>
+	<data name="FrontEntranceLabel" xml:space="preserve">
+		<value>Lối Vào Phía Trước:</value>
+	</data>
+	<data name="BackEntranceLabel" xml:space="preserve">
+		<value>Lối Vào Phía Sau:</value>
+	</data>
+	<data name="FrontExitLabel" xml:space="preserve">
+		<value>Lối Ra Phía Trước:</value>
+	</data>
+	<data name="BackExitLabel" xml:space="preserve">
+		<value>Lối Ra Phía Sau:</value>
+	</data>
+	<data name="SelectCameraPlaceholder" xml:space="preserve">
+		<value>Chọn camera...</value>
+	</data>
+	<data name="AvailableStatusText" xml:space="preserve">
+		<value>Khả Dụng</value>
+	</data>
+	<data name="UnavailableStatusText" xml:space="preserve">
+		<value>Không Khả Dụng</value>
+	</data>
+	<data name="NoPreviewText" xml:space="preserve">
+		<value>Không Có Xem Trước</value>
+	</data>
+	<data name="LiveIndicatorText" xml:space="preserve">
+		<value>● TRỰC TIẾP</value>
+	</data>
+	<data name="CapturedImagesTitle" xml:space="preserve">
+		<value>📸 Ảnh Đã Chụp</value>
+	</data>
+	<data name="EntranceCamerasText" xml:space="preserve">
+		<value>Camera Lối Vào</value>
+	</data>
+	<data name="ExitCamerasText" xml:space="preserve">
+		<value>Camera Lối Ra</value>
+	</data>
+	<data name="NoEntranceImagesCaptured" xml:space="preserve">
+		<value>Chưa chụp ảnh lối vào nào</value>
+	</data>
+	<data name="NoExitImagesCaptured" xml:space="preserve">
+		<value>Chưa chụp ảnh lối ra nào</value>
+	</data>
+	<data name="LabelPlateNumber" xml:space="preserve">
+		<value>Biển Số</value>
+	</data>
+	<data name="LabelDriverName" xml:space="preserve">
+		<value>Tên Tài Xế</value>
+	</data>
+	<data name="LabelPhoneNumber" xml:space="preserve">
+		<value>Số Điện Thoại</value>
+	</data>
+	<data name="LabelOwnerPhoneNumber" xml:space="preserve">
+		<value>Số Điện Thoại</value>
+	</data>
+	<data name="LabelEntryTime" xml:space="preserve">
+		<value>Giờ Vào</value>
+	</data>
+	<data name="LabelExitTime" xml:space="preserve">
+		<value>Giờ Ra</value>
+	</data>
+	<data name="LabelDuration" xml:space="preserve">
+		<value>Thời Gian</value>
+	</data>
+	<data name="LabelStatus" xml:space="preserve">
+		<value>Trạng Thái</value>
+	</data>
+	<data name="LabelFee" xml:space="preserve">
+		<value>Phí</value>
+	</data>
+	<data name="LabelVehicleType" xml:space="preserve">
+		<value>Loại Xe</value>
+	</data>
+	<data name="LabelImages" xml:space="preserve">
+		<value>Hình Ảnh</value>
+	</data>
+	<data name="LabelVehicleImages" xml:space="preserve">
+		<value>Hình Ảnh Xe</value>
+	</data>
+	<data name="LabelEntranceCameras" xml:space="preserve">
+		<value>Camera Lối Vào</value>
+	</data>
+	<data name="LabelExitCameras" xml:space="preserve">
+		<value>Camera Lối Ra</value>
+	</data>
+	<data name="LabelFrontCamera" xml:space="preserve">
+		<value>Camera Phía Trước</value>
+	</data>
+	<data name="LabelBackCamera" xml:space="preserve">
+		<value>Camera Phía Sau</value>
+	</data>
+	<data name="LabelOwnerFullName" xml:space="preserve">
+		<value>Họ Tên Đầy Đủ</value>
+	</data>
+	<data name="LabelVehicleColor" xml:space="preserve">
+		<value>Màu Sắc</value>
+	</data>
+	<data name="LabelVehicleBrand" xml:space="preserve">
+		<value>Thương Hiệu</value>
+	</data>
+	<data name="LabelVehicleModel" xml:space="preserve">
+		<value>Mã Model</value>
+	</data>
+	<data name="NameLabel" xml:space="preserve">
+		<value>Tên</value>
+	</data>
+	<data name="AuthorLabel" xml:space="preserve">
+		<value>Tác Giả</value>
+	</data>
+	<data name="CreatedDateLabel" xml:space="preserve">
+		<value>Ngày Tạo</value>
+	</data>
+	<data name="OwnerInformationTitle" xml:space="preserve">
+		<value>Thông Tin Chủ Xe</value>
+	</data>
+	<data name="VehicleInformationTitle" xml:space="preserve">
+		<value>Thông Tin Xe</value>
+	</data>
+	<data name="ParkingInformationTitle" xml:space="preserve">
+		<value>Thông Tin Đỗ Xe</value>
+	</data>
+	<data name="SessionInformationTitle" xml:space="preserve">
+		<value>Thông Tin Phiên</value>
+	</data>
+	<data name="IncidentInformationTitle" xml:space="preserve">
+		<value>Thông Tin Sự Cố</value>
+	</data>
+	<data name="BasicInformationTitle" xml:space="preserve">
+		<value>Thông Tin Cơ Bản</value>
+	</data>
+	<data name="AdditionalInformationTitle" xml:space="preserve">
+		<value>Thông Tin Bổ Sung</value>
+	</data>
+	<data name="DiaryInformationTitle" xml:space="preserve">
+		<value>Thông Tin Nhật Ký</value>
+	</data>
+	<data name="ContentTitle" xml:space="preserve">
+		<value>Nội Dung</value>
+	</data>
+	<data name="ActionsTitle" xml:space="preserve">
+		<value>🎯 Thao Tác</value>
+	</data>
+	<data name="VehicleDetailsTitle" xml:space="preserve">
+		<value>🚗 Chi Tiết Xe</value>
+	</data>
+	<data name="LicensePlateNumberTitle" xml:space="preserve">
+		<value>🔢 Số Biển Xe</value>
+	</data>
+	<data name="VehicleTypeTitle" xml:space="preserve">
+		<value>🚙 Loại Xe</value>
+	</data>
+	<data name="HistoryDetailsTitle" xml:space="preserve">
+		<value>Chi Tiết Lịch Sử Đỗ Xe</value>
+	</data>
+	<data name="IncidentReportDetailsTitle" xml:space="preserve">
+		<value>Chi Tiết Báo Cáo Sự Cố</value>
+	</data>
+	<data name="AddIncidentReportTitle" xml:space="preserve">
+		<value>Thêm Báo Cáo Sự Cố</value>
+	</data>
+	<data name="CreateShiftDiaryTitle" xml:space="preserve">
+		<value>Tạo Nhật Ký Ca Làm</value>
+	</data>
+	<data name="ShiftDiaryDetailsTitle" xml:space="preserve">
+		<value>Chi Tiết Nhật Ký Ca Làm</value>
+	</data>
+	<data name="ParkingSessionsPageTitle" xml:space="preserve">
+		<value>🚗 Phiên Đỗ Xe</value>
+	</data>
+	<data name="VehiclesPageDescription" xml:space="preserve">
+		<value>Giám sát và quản lý các xe hiện đang trong bãi đỗ</value>
+	</data>
+	<data name="HistoryPageDescription" xml:space="preserve">
+		<value>Xem lịch sử đầy đủ về việc vào ra của các xe</value>
+	</data>
+	<data name="IncidentReportsPageDescription" xml:space="preserve">
+		<value>Các báo cáo sự cố đã gửi và trạng thái hiện tại của chúng</value>
+	</data>
+	<data name="ParkingSessionsPageDescription" xml:space="preserve">
+		<value>Giám sát xe hiện tại và xem lịch sử đỗ xe</value>
+	</data>
+	<data name="ShiftDiariesPageDescription" xml:space="preserve">
+		<value>Xem và quản lý các mục nhật ký ca làm</value>
+	</data>
+	<data name="IncidentReportsTitle" xml:space="preserve">
+		<value>⚠️ Báo Cáo Sự Cố</value>
+	</data>
+	<data name="LabelIncidentId" xml:space="preserve">
+		<value>Mã Sự Cố</value>
+	</data>
+	<data name="LabelIncidentHeader" xml:space="preserve">
+		<value>Tiêu Đề</value>
+	</data>
+	<data name="LabelIncidentDescription" xml:space="preserve">
+		<value>Mô Tả</value>
+	</data>
+	<data name="LabelIncidentPriority" xml:space="preserve">
+		<value>Độ Ưu Tiên</value>
+	</data>
+	<data name="LabelReportedDate" xml:space="preserve">
+		<value>Ngày Báo Cáo</value>
+	</data>
+	<data name="PriorityLevelLabel" xml:space="preserve">
+		<value>Mức Độ Ưu Tiên</value>
+	</data>
+	<data name="AttachmentsLabel" xml:space="preserve">
+		<value>Tệp Đính Kèm</value>
+	</data>
+	<data name="AttachedEvidenceLabel" xml:space="preserve">
+		<value>Bằng Chứng Đính Kèm</value>
+	</data>
+	<data name="NoEvidenceAttachedMessage" xml:space="preserve">
+		<value>Không có tệp bằng chứng đính kèm</value>
+	</data>
+	<data name="IncidentNotesLabel" xml:space="preserve">
+		<value>Ghi Chú</value>
+	</data>
+	<data name="AddIncidentReportStatusMessage" xml:space="preserve">
+		<value>Hoàn thành biểu mẫu dưới đây để gửi báo cáo sự cố mới</value>
+	</data>
+	<data name="RequiredFieldsNote" xml:space="preserve">
+		<value>* Trường bắt buộc</value>
+	</data>
+	<data name="HeaderTitleLabel" xml:space="preserve">
+		<value>Tiêu Đề/Đầu Đề *</value>
+	</data>
+	<data name="ContentLabel" xml:space="preserve">
+		<value>Nội Dung *</value>
+	</data>
+	<data name="CreateDiaryButtonText" xml:space="preserve">
+		<value>Tạo Nhật Ký</value>
+	</data>
+	<data name="CreateNewDiaryButtonText" xml:space="preserve">
+		<value>📝 Tạo Nhật Ký Mới</value>
+	</data>
+	<data name="ShiftDiariesPageTitle" xml:space="preserve">
+		<value>📋 Nhật Ký Ca Làm</value>
+	</data>
+	<data name="CreatedDateHeaderText" xml:space="preserve">
+		<value>Ngày Tạo</value>
+	</data>
+	<data name="TimeHeaderText" xml:space="preserve">
+		<value>Thời Gian</value>
+	</data>
+	<data name="HeaderColumnText" xml:space="preserve">
+		<value>Tiêu Đề</value>
+	</data>
+	<data name="AuthorHeaderText" xml:space="preserve">
+		<value>Tác Giả</value>
+	</data>
+	<data name="PayStatusLabel" xml:space="preserve">
+		<value>Trạng thái thanh toán</value>
+	</data>
+	<data name="CheckInTimeLabel" xml:space="preserve">
+		<value>Check-in:</value>
+	</data>
+	<data name="CheckOutTimeLabel" xml:space="preserve">
+		<value>Check-out:</value>
+	</data>
+	<data name="DurationLabel" xml:space="preserve">
+		<value>Thời gian:</value>
+	</data>
+	<data name="FeeLabel" xml:space="preserve">
+		<value>Phí:</value>
+	</data>
+	<data name="StatusResolved" xml:space="preserve">
+		<value>Đã Giải Quyết</value>
+	</data>
+	<data name="StatusUnderInvestigation" xml:space="preserve">
+		<value>Đang Điều Tra</value>
+	</data>
+	<data name="StatusParking" xml:space="preserve">
+		<value>Đang Đỗ</value>
+	</data>
+	<data name="StatusCheckedOut" xml:space="preserve">
+		<value>Đã Check-out</value>
+	</data>
+	<data name="StatusConnected" xml:space="preserve">
+		<value>Đã Kết Nối</value>
+	</data>
+	<data name="StatusDisconnected" xml:space="preserve">
+		<value>Mất Kết Nối</value>
+	</data>
+	<data name="StatusLoading" xml:space="preserve">
+		<value>Đang Tải...</value>
+	</data>
+	<data name="StatusProcessing" xml:space="preserve">
+		<value>Đang Xử Lý...</value>
+	</data>
+	<data name="StatusSuccess" xml:space="preserve">
+		<value>Thành Công</value>
+	</data>
+	<data name="StatusError" xml:space="preserve">
+		<value>Lỗi</value>
+	</data>
+	<data name="StatusOpen" xml:space="preserve">
+		<value>Mở</value>
+	</data>
+	<data name="StatusInProgress" xml:space="preserve">
+		<value>Đang Thực Hiện</value>
+	</data>
+	<data name="StatusClosed" xml:space="preserve">
+		<value>Đã Đóng</value>
+	</data>
+	<data name="StatusCompleted" xml:space="preserve">
+		<value>Hoàn Thành</value>
+	</data>
+	<data name="StatusCurrentlyParked" xml:space="preserve">
+		<value>Hiện Đang Đỗ</value>
+	</data>
+	<data name="PriorityLow" xml:space="preserve">
+		<value>Thấp</value>
+	</data>
+	<data name="PriorityMedium" xml:space="preserve">
+		<value>Trung Bình</value>
+	</data>
+	<data name="PriorityHigh" xml:space="preserve">
+		<value>Cao</value>
+	</data>
+	<data name="PriorityCritical" xml:space="preserve">
+		<value>Khẩn Cấp</value>
+	</data>
+	<data name="ProcessManualCheckin" xml:space="preserve">
+		<value>Check-in Thủ Công</value>
+	</data>
+	<data name="ProcessManualCheckout" xml:space="preserve">
+		<value>Check-out Thủ Công</value>
+	</data>
+	<data name="CaptureButtonText" xml:space="preserve">
+		<value>📸 Chụp</value>
+	</data>
+	<data name="PlaceholderPlateNumber" xml:space="preserve">
+		<value>ABC-123</value>
+	</data>
+	<data name="PlaceholderPlateNumberLong" xml:space="preserve">
+		<value>Nhập biển số xe</value>
+	</data>
+	<data name="EnterLicensePlatePlaceholder" xml:space="preserve">
+		<value>Nhập biển số xe...</value>
+	</data>
+	<data name="HeaderDiaryPlaceholder" xml:space="preserve">
+		<value>Nhập tiêu đề hoặc đầu đề nhật ký...</value>
+	</data>
+	<data name="ContentDiaryPlaceholder" xml:space="preserve">
+		<value>Nhập nội dung nhật ký...</value>
+	</data>
+	<data name="IncidentHeaderWatermark" xml:space="preserve">
+		<value>Nhập tiêu đề ngắn gọn cho sự cố</value>
+	</data>
+	<data name="ReporterNameWatermark" xml:space="preserve">
+		<value>Nhập tên người báo cáo</value>
+	</data>
+	<data name="IncidentDescriptionWatermark" xml:space="preserve">
+		<value>Cung cấp mô tả chi tiết về sự cố</value>
+	</data>
+	<data name="IncidentNotesWatermark" xml:space="preserve">
+		<value>Thêm ghi chú hoặc bình luận bổ sung</value>
+	</data>
+	<data name="IncidentReportsSearchPlaceholder" xml:space="preserve">
+		<value>Tìm theo mã, loại, mô tả hoặc trạng thái...</value>
+	</data>
+	<data name="ParkingSessionsSearchPlaceholder" xml:space="preserve">
+		<value>Tìm theo biển số, tên tài xế hoặc điện thoại...</value>
+	</data>
+	<data name="SearchShiftDiariesPlaceholder" xml:space="preserve">
+		<value>Tìm nhật ký ca làm...</value>
+	</data>
+	<data name="FilterStatusLabel" xml:space="preserve">
+		<value>Trạng thái:</value>
+	</data>
+	<data name="FilterAllOption" xml:space="preserve">
+		<value>Tất Cả</value>
+	</data>
+	<data name="FilterActiveOption" xml:space="preserve">
+		<value>Đang Hoạt Động</value>
+	</data>
+	<data name="FilterCompletedOption" xml:space="preserve">
+		<value>Hoàn Thành</value>
+	</data>
+	<data name="FrontCameraLabel" xml:space="preserve">
+		<value>Phía Trước</value>
+	</data>
+	<data name="BackCameraLabel" xml:space="preserve">
+		<value>Phía Sau</value>
+	</data>
+	<data name="ViewButtonText" xml:space="preserve">
+		<value>Xem</value>
+	</data>
+	<data name="OpenButtonText" xml:space="preserve">
+		<value>Mở</value>
+	</data>
+	<data name="RemoveButtonText" xml:space="preserve">
+		<value>Xóa</value>
+	</data>
+	<data name="CancelButtonText" xml:space="preserve">
+		<value>❌ Hủy</value>
+	</data>
+	<data name="PaginationPageInfo" xml:space="preserve">
+		<value>Trang {0} trong {1}</value>
+	</data>
+	<data name="PaginationSinglePage" xml:space="preserve">
+		<value>Trang 1</value>
+	</data>
+	<data name="PaginationShowingItems" xml:space="preserve">
+		<value>Hiển thị {0}-{1} trong {2} mục</value>
+	</data>
+	<data name="PaginationNoItems" xml:space="preserve">
+		<value>Không có mục nào để hiển thị</value>
+	</data>
+	<data name="LoadingDefault" xml:space="preserve">
+		<value>Đang tải...</value>
+	</data>
+	<data name="LoadingCameras" xml:space="preserve">
+		<value>Đang Tải Camera</value>
+	</data>
+	<data name="LoadingCamerasDescription" xml:space="preserve">
+		<value>Vui lòng đợi trong khi chúng tôi phát hiện và khởi tạo camera của bạn...</value>
+	</data>
+	<data name="LoadingDetectingCameras" xml:space="preserve">
+		<value>Đang phát hiện camera...</value>
+	</data>
+	<data name="LoadingScanningDevices" xml:space="preserve">
+		<value>Đang quét thiết bị camera khả dụng</value>
+	</data>
+	<data name="LoadingInitializingCamera" xml:space="preserve">
+		<value>Đang khởi tạo {0}...</value>
+	</data>
+	<data name="LoadingSavingSettings" xml:space="preserve">
+		<value>Đang lưu cài đặt...</value>
+	</data>
+	<data name="LoadingProcessingFiles" xml:space="preserve">
+		<value>Đang xử lý tệp...</value>
+	</data>
+	<data name="LoadingProcessingFile" xml:space="preserve">
+		<value>Đang xử lý {0}</value>
+	</data>
+	<data name="LoadingPleaseWait" xml:space="preserve">
+		<value>Vui lòng đợi...</value>
+	</data>
+	<data name="LoadingPerformingOperation" xml:space="preserve">
+		<value>Đang thực hiện thao tác</value>
+	</data>
+	<data name="LoadingConnecting" xml:space="preserve">
+		<value>Đang kết nối...</value>
+	</data>
+	<data name="LoadingDisconnecting" xml:space="preserve">
+		<value>Đang ngắt kết nối...</value>
+	</data>
+	<data name="LoadingRefreshing" xml:space="preserve">
+		<value>Đang làm mới...</value>
+	</data>
+	<data name="LoadingCapturing" xml:space="preserve">
+		<value>Đang chụp...</value>
+	</data>
+	<data name="LoadingStarting" xml:space="preserve">
+		<value>Đang bắt đầu...</value>
+	</data>
+	<data name="LoadingStopping" xml:space="preserve">
+		<value>Đang dừng...</value>
+	</data>
+	<data name="LoadingConfiguring" xml:space="preserve">
+		<value>Đang cấu hình...</value>
+	</data>
+	<data name="LoadingValidating" xml:space="preserve">
+		<value>Đang xác thực...</value>
+	</data>
+	<data name="LoadingSearching" xml:space="preserve">
+		<value>Đang tìm kiếm...</value>
+	</data>
+	<data name="LoadingFetching" xml:space="preserve">
+		<value>Đang lấy dữ liệu...</value>
+	</data>
+	<data name="LoadingUpdating" xml:space="preserve">
+		<value>Đang cập nhật...</value>
+	</data>
+	<data name="LoadingDeleting" xml:space="preserve">
+		<value>Đang xóa...</value>
+	</data>
+	<data name="LoadingUploading" xml:space="preserve">
+		<value>Đang tải lên...</value>
+	</data>
+	<data name="LoadingDownloading" xml:space="preserve">
+		<value>Đang tải xuống...</value>
+	</data>
+	<data name="NotificationTitleVehicleCheckIn" xml:space="preserve">
+		<value>Xe Đã Check In</value>
+	</data>
+	<data name="NotificationTitleVehicleCheckOut" xml:space="preserve">
+		<value>Xe Đã Check Out</value>
+	</data>
+	<data name="NotificationTitleError" xml:space="preserve">
+		<value>Lỗi</value>
+	</data>
+	<data name="NotificationTitleWarning" xml:space="preserve">
+		<value>Cảnh Báo</value>
+	</data>
+	<data name="NotificationTitleInfo" xml:space="preserve">
+		<value>Thông Tin</value>
+	</data>
+	<data name="NotificationTitleSuccess" xml:space="preserve">
+		<value>Thành Công</value>
+	</data>
+	<data name="NotificationTitleAlreadyCheckedIn" xml:space="preserve">
+		<value>Đã Check In</value>
+	</data>
+	<data name="NotificationTitleNotCheckedIn" xml:space="preserve">
+		<value>Chưa Check In</value>
+	</data>
+	<data name="NotificationTitleCheckInFailed" xml:space="preserve">
+		<value>Check-in Thất Bại</value>
+	</data>
+	<data name="NotificationTitleCheckOutFailed" xml:space="preserve">
+		<value>Check-out Thất Bại</value>
+	</data>
+	<data name="NotificationTitleActiveSessions" xml:space="preserve">
+		<value>Phiên Đang Hoạt Động</value>
+	</data>
+	<data name="NotificationTitleNoActiveSessions" xml:space="preserve">
+		<value>Không Có Phiên Nào</value>
+	</data>
+	<data name="NotificationTitleAvailableForCheckOut" xml:space="preserve">
+		<value>Sẵn Sàng Check-out</value>
+	</data>
+	<data name="NotificationTitleProcessingError" xml:space="preserve">
+		<value>Lỗi Xử Lý</value>
+	</data>
+	<data name="NotificationMessageVehicleCheckInSuccess" xml:space="preserve">
+		<value>Check in thành công</value>
+	</data>
+	<data name="NotificationMessageVehicleCheckOutSuccess" xml:space="preserve">
+		<value>Check out thành công</value>
+	</data>
+	<data name="NotificationMessageLicensePlatePrefix" xml:space="preserve">
+		<value>Biển số:</value>
+	</data>
+	<data name="NotificationMessageFeePrefix" xml:space="preserve">
+		<value>Phí:</value>
+	</data>
+	<data name="NotificationMessageCurrentlyCheckedInVehicles" xml:space="preserve">
+		<value>Xe hiện đang check-in:</value>
+	</data>
+	<data name="NotificationMessageVehiclesAvailableForCheckOut" xml:space="preserve">
+		<value>Xe có thể check-out:</value>
+	</data>
+	<data name="NotificationMessageNoVehiclesToCheckOut" xml:space="preserve">
+		<value>Hiện không có xe nào đang check-in để check-out.</value>
+	</data>
+	<data name="NotificationMessageVehicleAlreadyCheckedIn" xml:space="preserve">
+		<value>đã check in từ</value>
+	</data>
+	<data name="NotificationMessageVehicleNotCheckedIn" xml:space="preserve">
+		<value>hiện không check-in và không thể check-out</value>
+	</data>
+	<data name="NotificationMessageFailedToCheckActiveSessions" xml:space="preserve">
+		<value>Không thể kiểm tra phiên hoạt động:</value>
+	</data>
+	<data name="NotificationMessageFailedToValidateVehicleStatus" xml:space="preserve">
+		<value>Không thể xác thực trạng thái xe:</value>
+	</data>
+	<data name="NotificationMessageFailedToConfirmAction" xml:space="preserve">
+		<value>Không thể xác nhận thao tác:</value>
+	</data>
+	<data name="NotificationDefaultCheckInMessage" xml:space="preserve">
+		<value>Xử lý check-in thành công</value>
+	</data>
+	<data name="NotificationDefaultCheckOutMessage" xml:space="preserve">
+		<value>Xử lý check-out thành công</value>
+	</data>
+	<data name="TooltipSettings" xml:space="preserve">
+		<value>Cài Đặt Camera</value>
+	</data>
+	<data name="TooltipRefreshAll" xml:space="preserve">
+		<value>Làm Mới Tất Cả</value>
+	</data>
+	<data name="TooltipCaptureAll" xml:space="preserve">
+		<value>Chụp Tất Cả</value>
+	</data>
+	<data name="TooltipFullView" xml:space="preserve">
+		<value>Xem Toàn Màn Hình</value>
+	</data>
+	<data name="IncidentDescriptionTooltip" xml:space="preserve">
+		<value>Nhấp để xem mô tả sự cố đầy đủ</value>
+	</data>
+	<data name="WelcomeUser" xml:space="preserve">
+		<value>Xin chào {0}</value>
+	</data>
+	<data name="ErrorGeneric" xml:space="preserve">
+		<value>Đã xảy ra lỗi</value>
+	</data>
+	<data name="ErrorConnection" xml:space="preserve">
+		<value>Kết nối thất bại</value>
+	</data>
+	<data name="ErrorInvalidInput" xml:space="preserve">
+		<value>Dữ liệu đầu vào không hợp lệ</value>
+	</data>
+	<data name="ErrorPlateNumberRequired" xml:space="preserve">
+		<value>Yêu cầu nhập biển số xe</value>
+	</data>
+	<data name="ValidationStaffIdRequired" xml:space="preserve">
+		<value>Yêu cầu nhập mã nhân viên</value>
+	</data>
+	<data name="ValidationPasswordRequired" xml:space="preserve">
+		<value>Yêu cầu nhập mật khẩu</value>
+	</data>
+	<data name="ValidationStaffIdTooShort" xml:space="preserve">
+		<value>Mã nhân viên phải có ít nhất 3 ký tự</value>
+	</data>
+	<data name="ValidationPasswordTooShort" xml:space="preserve">
+		<value>Mật khẩu phải có ít nhất 4 ký tự</value>
+	</data>
+	<data name="SelectVehicleTypeDescription" xml:space="preserve">
+		<value>Chọn loại xe cho xe chưa đăng ký này</value>
+	</data>
+	<data name="SizeLabel" xml:space="preserve">
+		<value>Kích thước: {0:N0} bytes</value>
+	</data>
+	<data name="UploadedLabel" xml:space="preserve">
+		<value>Đã tải lên: {0:g}</value>
+	</data>
+	<data name="OneAttachmentsMessage" xml:space="preserve">
+		<value>1 tệp đính kèm</value>
+	</data>
+	<data name="MultipleAttachmentsMessage" xml:space="preserve">
+		<value>{0} tệp đính kèm</value>
+	</data>
+	<data name="BtnClearFilter" xml:space="preserve">
+		<value>Xóa Bộ Lọc</value>
+	</data>
+	<data name="AddIncidentReportButtonText" xml:space="preserve">
+		<value>➕ Thêm Báo Cáo Sự Cố</value>
+	</data>
+	<data name="NoAttachmentsMessage" xml:space="preserve">
+		<value>Không có tệp đính kèm</value>
+	</data>
+	<data name="UnknownUserName" xml:space="preserve">
+		<value>Người Dùng Không Xác Định</value>
+	</data>
+	<data name="IncidenceReportServiceNotRegistered" xml:space="preserve">
+		<value>Dịch vụ báo cáo sự cố chưa được đăng ký</value>
+	</data>
+	<data name="NotificationIncidentReportCreatedTitle" xml:space="preserve">
+		<value>Báo Cáo Sự Cố Đã Tạo</value>
+	</data>
+	<data name="NotificationIncidentReportCreatedMessage" xml:space="preserve">
+		<value>Báo cáo sự cố '{0}' đã được tạo thành công.</value>
+	</data>
+	<data name="NotificationIncidentCreationFailedTitle" xml:space="preserve">
+		<value>Tạo Thất Bại</value>
+	</data>
+	<data name="NotificationIncidentCreationFailedMessage" xml:space="preserve">
+		<value>Không thể tạo báo cáo sự cố: {0}</value>
+	</data>
+	<data name="ShiftDiaryServiceNotRegistered" xml:space="preserve">
+		<value>Dịch vụ nhật ký ca làm chưa được đăng ký</value>
+	</data>
+	<data name="NotificationMissingInformationTitle" xml:space="preserve">
+		<value>Thiếu Thông Tin</value>
+	</data>
+	<data name="NotificationMissingParkingLotMessage" xml:space="preserve">
+		<value>Không thể xác định bãi đỗ xe. Vui lòng đảm bảo bạn đã đăng nhập đúng cách.</value>
+	</data>
+	<data name="NotificationShiftDiaryCreatedTitle" xml:space="preserve">
+		<value>Nhật Ký Ca Làm Đã Tạo</value>
+	</data>
+	<data name="NotificationShiftDiaryCreatedMessage" xml:space="preserve">
+		<value>Nhật ký ca làm '{0}' đã được tạo thành công.</value>
+	</data>
+	<data name="NotificationShiftDiaryCreationFailedTitle" xml:space="preserve">
+		<value>Tạo Thất Bại</value>
+	</data>
+	<data name="NotificationShiftDiaryCreationFailedMessage" xml:space="preserve">
+		<value>Không thể tạo nhật ký ca làm: {0}</value>
+	</data>
+	<data name="LabelLastDetectedTime" xml:space="preserve">
+		<value>Phát hiện lần cuối: {0}</value>
+	</data>
+	<data name="UnknownOwnerName" xml:space="preserve">
+		<value>Chủ Xe Không Xác Định</value>
+	</data>
+	<data name="NotProvidedText" xml:space="preserve">
+		<value>Không cung cấp</value>
+	</data>
+	<data name="UnknownVehicleText" xml:space="preserve">
+		<value>Xe Không Xác Định</value>
+	</data>
+	<data name="ProcessCheckinButton" xml:space="preserve">
+		<value>🚗 Check In</value>
+	</data>
+	<data name="ProcessCheckoutButton" xml:space="preserve">
+		<value>🚪 Check Out</value>
+	</data>
+	<data name="ConfirmCheckInButtonText" xml:space="preserve">
+		<value>✅ Xác Nhận Check In</value>
+	</data>
+	<data name="ConfirmCheckOutButtonText" xml:space="preserve">
+		<value>✅ Xác Nhận Check Out</value>
+	</data>
+	<data name="NotificationCameraErrorTitle" xml:space="preserve">
+		<value>Lỗi Camera</value>
+	</data>
+	<data name="NotificationCameraSubscriptionFailedMessage" xml:space="preserve">
+		<value>Không thể đăng ký sự kiện camera: {0}</value>
+	</data>
+	<data name="DetectionInfoFormat" xml:space="preserve">
+		<value>[{0}] Camera {1}: {2} ({3})</value>
+	</data>
+	<data name="NotificationCheckInPlateDetectedTitle" xml:space="preserve">
+		<value>Phát Hiện Biển Số Check-In</value>
+	</data>
+	<data name="NotificationCheckOutPlateDetectedTitle" xml:space="preserve">
+		<value>Phát Hiện Biển Số Check-Out</value>
+	</data>
+	<data name="NotificationAutoFilledMessage" xml:space="preserve">
+		<value>Tự động điền: {0}</value>
+	</data>
+	<data name="NotificationEntranceDetectedMessage" xml:space="preserve">
+		<value>Phát hiện lối vào: {0}</value>
+	</data>
+	<data name="NotificationExitDetectedMessage" xml:space="preserve">
+		<value>Phát hiện lối ra: {0}</value>
+	</data>
+	<data name="NotificationFailedToOpenCheckInSidebarMessage" xml:space="preserve">
+		<value>Không thể mở thanh bên check-in: {0}</value>
+	</data>
+	<data name="NotificationFailedToOpenCheckOutSidebarMessage" xml:space="preserve">
+		<value>Không thể mở thanh bên check-out: {0}</value>
+	</data>
+	<data name="CapturedTimestampFormat" xml:space="preserve">
+		<value>Đã chụp: {0}</value>
+	</data>
+	<data name="NotificationProcessingErrorTitle" xml:space="preserve">
+		<value>Lỗi Xử Lý</value>
+	</data>
+	<data name="NotificationProcessingVehicleInfoFailedMessage" xml:space="preserve">
+		<value>Không thể xử lý thông tin xe: {0}</value>
+	</data>
+	<data name="NotificationVehicleNotFoundTitle" xml:space="preserve">
+		<value>Không Tìm Thấy Xe</value>
+	</data>
+	<data name="NotificationVehicleNotFoundMessage" xml:space="preserve">
+		<value>Không tìm thấy xe với biển số {0}. Vui lòng chọn loại xe để check-in.</value>
+	</data>
+	<data name="UnknownText" xml:space="preserve">
+		<value>Không xác định</value>
+	</data>
+	<data name="StatusReadyForCheckIn" xml:space="preserve">
+		<value>Sẵn Sàng Check-In</value>
+	</data>
+	<data name="ContactAvailableText" xml:space="preserve">
+		<value>Có thông tin liên lạc</value>
+	</data>
+	<data name="NotificationReadyForCheckInTitle" xml:space="preserve">
+		<value>Sẵn Sàng Check-In</value>
+	</data>
+	<data name="NotificationReadyForCheckInMessage" xml:space="preserve">
+		<value>Xe {0} đã sẵn sàng để check in. Vui lòng xem xét chi tiết và xác nhận.</value>
+	</data>
+	<data name="NotificationNoActiveSessionTitle" xml:space="preserve">
+		<value>Không Có Phiên Hoạt Động</value>
+	</data>
+	<data name="NotificationNoActiveSessionMessage" xml:space="preserve">
+		<value>Không tìm thấy phiên đỗ xe đang hoạt động cho xe {0}. Xe có thể chưa được check in.</value>
+	</data>
+	<data name="StatusReadyForCheckOut" xml:space="preserve">
+		<value>Sẵn Sàng Check-Out</value>
+	</data>
+	<data name="VehicleText" xml:space="preserve">
+		<value>Xe</value>
+	</data>
+	<data name="NotificationReadyForCheckOutTitle" xml:space="preserve">
+		<value>Sẵn Sàng Check-Out</value>
+	</data>
+	<data name="NotificationReadyForCheckOutMessage" xml:space="preserve">
+		<value>{0} ({1}) đã sẵn sàng để check out. Thời gian đỗ: {2}, Phí: {3}</value>
+	</data>
+	<data name="NotificationProcessingCheckOutFailedMessage" xml:space="preserve">
+		<value>Không thể xử lý check-out cho xe {0}. Vui lòng thử lại hoặc liên hệ hỗ trợ.</value>
+	</data>
+	<data name="NotificationAuthenticationErrorTitle" xml:space="preserve">
+		<value>Lỗi Xác Thực</value>
+	</data>
+	<data name="NotificationAuthenticationErrorMessage" xml:space="preserve">
+		<value>Thông tin xác thực người dùng không khả dụng. Vui lòng đăng nhập lại.</value>
+	</data>
+	<data name="NotificationSuccessfullyCheckedInMessage" xml:space="preserve">
+		<value>Check in thành công!</value>
+	</data>
+	<data name="NotificationSuccessfullyCheckedOutWithFeeMessage" xml:space="preserve">
+		<value>Check out thành công! Phí: {0}</value>
+	</data>
+	<data name="NotificationFailedToConfirmActionMessage" xml:space="preserve">
+		<value>Không thể xác nhận thao tác: {0}</value>
+	</data>
+	<data name="NotificationRefreshErrorTitle" xml:space="preserve">
+		<value>Lỗi Làm Mới</value>
+	</data>
+	<data name="NotificationRefreshIncidentDetailsFailedMessage" xml:space="preserve">
+		<value>Không thể làm mới chi tiết sự cố: {0}</value>
+	</data>
+	<data name="NotificationStatusUpdatedTitle" xml:space="preserve">
+		<value>Đã Cập Nhật Trạng Thái</value>
+	</data>
+	<data name="NotificationStatusUpdatedMessage" xml:space="preserve">
+		<value>Trạng thái sự cố đã được cập nhật thành '{0}' thành công.</value>
+	</data>
+	<data name="NotificationUpdateErrorTitle" xml:space="preserve">
+		<value>Lỗi Cập Nhật</value>
+	</data>
+	<data name="NotificationUpdateIncidentStatusFailedMessage" xml:space="preserve">
+		<value>Không thể cập nhật trạng thái sự cố: {0}</value>
+	</data>
+	<data name="NotificationFileErrorTitle" xml:space="preserve">
+		<value>Lỗi Tệp</value>
+	</data>
+	<data name="NotificationUnableToOpenEvidenceFileMessage" xml:space="preserve">
+		<value>Không thể mở tệp bằng chứng.</value>
+	</data>
+	<data name="OneEvidenceFileMessage" xml:space="preserve">
+		<value>1 tệp bằng chứng</value>
+	</data>
+	<data name="MultipleEvidenceFilesMessage" xml:space="preserve">
+		<value>{0} tệp bằng chứng</value>
+	</data>
+	<data name="NotificationLoadingErrorTitle" xml:space="preserve">
+		<value>Lỗi Tải Dữ Liệu</value>
+	</data>
+	<data name="NotificationFailedToLoadIncidentReportsMessage" xml:space="preserve">
+		<value>Không thể tải báo cáo sự cố. Vui lòng thử làm mới.</value>
+	</data>
+	<data name="NotificationFailedToRefreshIncidentReportsMessage" xml:space="preserve">
+		<value>Không thể làm mới báo cáo sự cố. Vui lòng thử lại.</value>
+	</data>
+	<data name="NotificationNotFoundTitle" xml:space="preserve">
+		<value>Không Tìm Thấy</value>
+	</data>
+	<data name="NotificationIncidentReportDetailsCouldNotBeLoadedMessage" xml:space="preserve">
+		<value>Không thể tải chi tiết báo cáo sự cố.</value>
+	</data>
+	<data name="NotificationFailedToLoadIncidentReportDetailsMessage" xml:space="preserve">
+		<value>Không thể tải chi tiết báo cáo sự cố: {0}</value>
+	</data>
+	<data name="SearchResultSummaryMessage" xml:space="preserve">
+		<value>Tìm thấy {0} trong {1} báo cáo sự cố</value>
+	</data>
+	<data name="MyIncidentReportsSummaryMessage" xml:space="preserve">
+		<value>Báo Cáo Sự Cố Của Tôi: {0}</value>
+	</data>
+	<data name="LoginSuccessMessage" xml:space="preserve">
+		<value>Đăng nhập thành công!</value>
+	</data>
+	<data name="LoginErrorInvalidCredentials" xml:space="preserve">
+		<value>Email hoặc mật khẩu không hợp lệ</value>
+	</data>
+	<data name="LoginErrorServiceUnavailable" xml:space="preserve">
+		<value>Dịch vụ xác thực không khả dụng</value>
+	</data>
+	<data name="LoginErrorServerError" xml:space="preserve">
+		<value>Đã xảy ra lỗi máy chủ. Vui lòng thử lại sau.</value>
+	</data>
+	<data name="LoginErrorNetworkError" xml:space="preserve">
+		<value>Lỗi mạng: {0}</value>
+	</data>
+	<data name="LoginErrorLoginFailed" xml:space="preserve">
+		<value>Đăng nhập thất bại: {0}</value>
+	</data>
+	<data name="LoginErrorUnexpected" xml:space="preserve">
+		<value>Đã xảy ra lỗi không mong muốn: {0}</value>
+	</data>
+	<data name="ForgotPasswordMessage" xml:space="preserve">
+		<value>Vui lòng liên hệ quản trị viên để đặt lại mật khẩu.</value>
+	</data>
+	<data name="ValidationEmailRequired" xml:space="preserve">
+		<value>Yêu cầu nhập email</value>
+	</data>
+	<data name="ValidationEmailInvalid" xml:space="preserve">
+		<value>Vui lòng nhập địa chỉ email hợp lệ</value>
+	</data>
+	<data name="LoginErrorAuthenticationFailed" xml:space="preserve">
+		<value>Xác thực thất bại - thông tin người dùng không khả dụng</value>
+	</data>
+	<data name="LoginErrorFailedToOpenApplication" xml:space="preserve">
+		<value>Không thể mở ứng dụng: {0}</value>
+	</data>
+	<data name="WelcomeUserMessage" xml:space="preserve">
+		<value>{0}, {1}!</value>
+	</data>
+	<data name="GreetingGoodMorning" xml:space="preserve">
+		<value>Chào buổi sáng</value>
+	</data>
+	<data name="GreetingGoodAfternoon" xml:space="preserve">
+		<value>Chào buổi chiều</value>
+	</data>
+	<data name="GreetingGoodEvening" xml:space="preserve">
+		<value>Chào buổi tối</value>
+	</data>
+	<data name="ErrorLicensePlateNotReadable" xml:space="preserve">
+		<value>Đã phát hiện biển số xe nhưng không thể đọc rõ số</value>
+	</data>
+	<data name="ErrorFailedToCheckInVehicle" xml:space="preserve">
+		<value>Không thể check in xe {0}</value>
+	</data>
+	<data name="ErrorVehicleNotCurrentlyCheckedIn" xml:space="preserve">
+		<value>Xe {0} hiện không được check in</value>
+	</data>
+	<data name="ErrorFailedToCheckOutVehicle" xml:space="preserve">
+		<value>Không thể check out xe {0}</value>
+	</data>
+	<data name="AutomaticCheckInSuccessMessage" xml:space="preserve">
+		<value>Xe đã được check in tự động từ camera {0}</value>
+	</data>
+	<data name="AutomaticCheckOutSuccessMessage" xml:space="preserve">
+		<value>Xe đã được check out tự động từ camera {0}. Phí: {1}</value>
+	</data>
+	<data name="ManualProcessingRequiredTitle" xml:space="preserve">
+		<value>Cần Xử Lý Thủ Công</value>
+	</data>
+	<data name="ErrorUnknownPage" xml:space="preserve">
+		<value>Trang không xác định: {0}</value>
+	</data>
+	<data name="CameraSettingsAppliedTitle" xml:space="preserve">
+		<value>Đã Áp Dụng Cài Đặt Camera</value>
+	</data>
+	<data name="CameraSettingsAppliedMessage" xml:space="preserve">
+		<value>Phân công camera đã được cập nhật và áp dụng thành công.</value>
+	</data>
+	<data name="CameraSettingsErrorTitle" xml:space="preserve">
+		<value>Lỗi Cài Đặt Camera</value>
+	</data>
+	<data name="CameraSettingsErrorMessage" xml:space="preserve">
+		<value>Không thể áp dụng cài đặt camera. Vui lòng thử lại hoặc khởi động lại ứng dụng.</value>
+	</data>
+	<data name="NotificationFailedToLoadParkingSessionsMessage" xml:space="preserve">
+		<value>Không thể tải phiên đỗ xe. Vui lòng thử làm mới.</value>
+	</data>
+	<data name="NotificationFailedToRefreshParkingSessionsMessage" xml:space="preserve">
+		<value>Không thể làm mới phiên đỗ xe. Vui lòng thử lại.</value>
+	</data>
+	<data name="NotificationSessionNotFoundTitle" xml:space="preserve">
+		<value>Không Tìm Thấy Phiên</value>
+	</data>
+	<data name="NotificationCouldNotLoadSessionDetailsMessage" xml:space="preserve">
+		<value>Không thể tải chi tiết cho phiên đỗ xe {0}</value>
+	</data>
+	<data name="NotificationFailedToLoadSessionDetailsMessage" xml:space="preserve">
+		<value>Không thể tải chi tiết phiên: {0}</value>
+	</data>
+	<data name="ParkingSessionSearchResultSummaryMessage" xml:space="preserve">
+		<value>Tìm thấy {0} trong {1} phiên đỗ ({2} đã hoàn thành, {3} đang đỗ)</value>
+	</data>
+	<data name="ParkingSessionTotalSummaryMessage" xml:space="preserve">
+		<value>Tổng số phiên đỗ: {0} ({1} hoàn thành, {2} đang đỗ)</value>
+	</data>
+	<data name="NotificationFailedToLoadShiftDiariesMessage" xml:space="preserve">
+		<value>Lỗi khi tải nhật ký ca làm. Xin hãy thử lại</value>
+	</data>
+	<data name="NotificationFailedToRefreshShiftDiariesMessage" xml:space="preserve">
+		<value>Lỗi khi tải lại nhật ký ca làm. Xin hãy thử lại.</value>
+	</data>
+	<data name="NotificationShiftDiaryDetailsCouldNotBeLoadedMessage" xml:space="preserve">
+		<value>Không thể tải được chi tiết nhật ký ca làm.</value>
+	</data>
+	<data name="NotificationFailedToLoadShiftDiaryDetailsMessage" xml:space="preserve">
+		<value>Lỗi khỉ tải chi tiết nhật ký ca làm: {0}</value>
+	</data>
+	<data name="ShiftDiarySearchResultSummaryMessage" xml:space="preserve">
+		<value>Tìm thấy {0} trong {1} nhật ký ca làm</value>
+	</data>
+	<data name="ShiftDiaryTotalSummaryMessage" xml:space="preserve">
+		<value>Nhật ký ca làm: {0}</value>
+	</data>
+	<data name="NoHeaderProvidedText" xml:space="preserve">
+		<value>Không có tiêu đề</value>
+	</data>
+	<data name="UnknownSenderText" xml:space="preserve">
+		<value>Người gửi không xác định</value>
+	</data>
+	<data name="NoContentProvidedText" xml:space="preserve">
+		<value>Không có nội dung</value>
+	</data>
+	<assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089"/>
+	<data name="DateFormatShort" type="System.Resources.ResXNullRef, System.Windows.Forms">
+		<value/>
+	</data>
+	<data name="TimeFormatShort" type="System.Resources.ResXNullRef, System.Windows.Forms">
+		<value/>
+	</data>
+	<data name="LanguageEnglishNative" xml:space="preserve">
+		<value>English</value>
+	</data>
+	<data name="LanguageVietnameseNative" xml:space="preserve">
+		<value>Tiếng Việt</value>
+	</data>
+	<data name="CameraFeedFrontEntranceGate" xml:space="preserve">
+		<value>Cổng Vào Phía Trước</value>
+	</data>
+	<data name="CameraFeedBackEntranceGate" xml:space="preserve">
+		<value>Cổng Vào Phía Sau</value>
+	</data>
+	<data name="CameraFeedFrontExitGate" xml:space="preserve">
+		<value>Cổng Ra Phía Trước</value>
+	</data>
+	<data name="CameraFeedBackExitGate" xml:space="preserve">
+		<value>Cổng Ra Phía Sau</value>
+	</data>
+	<data name="ParkingStatusParking" xml:space="preserve">
+		<value>Đang Đỗ</value>
+	</data>
+	<data name="ParkingStatusCheckedOut" xml:space="preserve">
+		<value>Đã Check Out</value>
+	</data>
+	<data name="ParkingStatusFinished" xml:space="preserve">
+		<value>Hoàn Thành</value>
+	</data>
+	<data name="PaymentStatusPaid" xml:space="preserve">
+		<value>Đã Thanh Toán</value>
+	</data>
+	<data name="PaymentStatusNotPaid" xml:space="preserve">
+		<value>Chưa Thanh Toán</value>
+	</data>
+	<data name="PaymentStatusPending" xml:space="preserve">
+		<value>Đang Chờ</value>
+	</data>
+	<data name="DataTableClearFilter" xml:space="preserve">
+		<value>Xóa Bộ Lọc</value>
+	</data>
+	<data name="DataTableSearchPlaceholder" xml:space="preserve">
+		<value>Tìm kiếm...</value>
+	</data>
+	<data name="DataTableAllFilter" xml:space="preserve">
+		<value>Tất Cả</value>
+	</data>
+	<data name="PaginationFirstPage" xml:space="preserve">
+		<value>« Đầu</value>
+	</data>
+	<data name="PaginationPreviousPage" xml:space="preserve">
+		<value>‹ Trước</value>
+	</data>
+	<data name="PaginationNextPage" xml:space="preserve">
+		<value>Tiếp ›</value>
+	</data>
+	<data name="PaginationLastPage" xml:space="preserve">
+		<value>Cuối »</value>
+	</data>
+	<data name="RoleStaff" xml:space="preserve">
+		<value>Nhân Viên</value>
+	</data>
+	<data name="BtnDownload" xml:space="preserve">
+		<value>Tải xuống</value>
+	</data>
+	<data name="BtnOpen" xml:space="preserve">
+		<value>Mở</value>
+	</data>
+	<data name="BtnDownloading" xml:space="preserve">
+		<value>Đang tải...</value>
+	</data>
+	<data name="StatusDownloaded" xml:space="preserve">
+		<value>Đã tải xuống</value>
+	</data>
+	<data name="StatusNotDownloaded" xml:space="preserve">
+		<value>Chưa tải xuống</value>
+	</data>
+	<data name="NotificationDownloadCompleteTitle" xml:space="preserve">
+		<value>Hoàn thành tải xuống</value>
+	</data>
+	<data name="NotificationDownloadFailedTitle" xml:space="preserve">
+		<value>Tải xuống thất bại</value>
+	</data>
+	<data name="NotificationFileOperationFailedTitle" xml:space="preserve">
+		<value>Thao tác tệp thất bại</value>
+	</data>
+	<data name="NotificationDownloadCompleteMessage" xml:space="preserve">
+		<value>Tệp '{0}' đã được tải xuống thành công.</value>
+	</data>
+	<data name="NotificationDownloadFailedMessage" xml:space="preserve">
+		<value>Không thể tải xuống '{0}': {1}</value>
+	</data>
+	<data name="NotificationFileOperationFailedMessage" xml:space="preserve">
+		<value>Không thể mở hoặc tải xuống tệp: {0}</value>
+	</data>
+	<data name="BtnOpenURL" xml:space="preserve">
+		<value>Mở URL</value>
+	</data>
+	<data name="NotificationLicensePlateDetectionTitle" xml:space="preserve">
+		<value>Phát Hiện Biển Số Xe</value>
+	</data>
+	<data name="NotificationLicensePlateUnreadableMessage" xml:space="preserve">
+		<value>Camera {0}: Đã phát hiện biển số xe nhưng không thể đọc rõ văn bản. Có thể cần xử lý thủ công.</value>
+	</data>
+	<data name="ContentText" xml:space="preserve">
+		<value>Nội dung</value>
+	</data>
+	<data name="TooltipManuallyCheckIn" xml:space="preserve">
+		<value>Check in thủ công</value>
+	</data>
+	<data name="TooltipManuallyCheckOut" xml:space="preserve">
+		<value>Check out thủ công</value>
+	</data>
+	<data name="ForgotPasswordWindowTitle" xml:space="preserve">
+		<value>Đặt Lại Mật Khẩu</value>
+	</data>
+	<data name="ForgotPasswordTitle" xml:space="preserve">
+		<value>Quên Mật Khẩu?</value>
+	</data>
+	<data name="ForgotPasswordDescription" xml:space="preserve">
+		<value>Nhập địa chỉ email đã đăng ký và chúng tôi sẽ gửi hướng dẫn đặt lại mật khẩu cho bạn.</value>
+	</data>
+	<data name="ForgotPasswordSendRequestButton" xml:space="preserve">
+		<value>Gửi Yêu Cầu Đặt Lại</value>
+	</data>
+	<data name="ForgotPasswordBackToLoginButton" xml:space="preserve">
+		<value>Quay Lại Đăng Nhập</value>
+	</data>
+	<data name="ForgotPasswordSendingRequest" xml:space="preserve">
+		<value>Đang gửi yêu cầu đặt lại...</value>
+	</data>
+	<data name="ForgotPasswordRequestSentMessage" xml:space="preserve">
+		<value>Hướng dẫn đặt lại mật khẩu đã được gửi đến địa chỉ email của bạn.</value>
+	</data>
+	<data name="ForgotPasswordRequestFailedMessage" xml:space="preserve">
+		<value>Không thể gửi yêu cầu đặt lại: {0}</value>
+	</data>
+	<data name="BtnRefreshSession" xml:space="preserve">
+		<value>Làm Mới Phiên</value>
+	</data>
+	<data name="NotificationSessionRefreshedMessage" xml:space="preserve">
+		<value>Chi tiết phiên đã được làm mới thành công.</value>
+	</data>
+	<data name="NotificationRefreshSessionFailedMessage" xml:space="preserve">
+		<value>Không thể làm mới chi tiết phiên: {0}</value>
+	</data>
+	<!-- Add these new entries before </root> -->
+	<data name="PaymentInfoWindowTitle" xml:space="preserve">
+		<value>Thông tin thanh toán</value>
+	</data>
+	<data name="PaymentInfoTitle" xml:space="preserve">
+		<value>Thông tin thanh toán</value>
+	</data>
+	<data name="PaymentQRCodeUnavailable" xml:space="preserve">
+		<value>QR Code không khả dụng</value>
+	</data>
+	<data name="PaymentBankLabel" xml:space="preserve">
+		<value>Ngân hàng</value>
+	</data>
+	<data name="PaymentAccountHolderLabel" xml:space="preserve">
+		<value>Chủ tài khoản:</value>
+	</data>
+	<data name="PaymentAccountNumberLabel" xml:space="preserve">
+		<value>Số tài khoản:</value>
+	</data>
+	<data name="PaymentAmountLabel" xml:space="preserve">
+		<value>Số tiền:</value>
+	</data>
+	<data name="PaymentDescriptionLabel" xml:space="preserve">
+		<value>Nội dung:</value>
+	</data>
+	<data name="PaymentCopyButton" xml:space="preserve">
+		<value>Sao chép</value>
+	</data>
+	<data name="PaymentCloseButton" xml:space="preserve">
+		<value>Đóng</value>
+	</data>
+	<data name="PaymentInstructionsTitle" xml:space="preserve">
+		<value>💡 Hướng dẫn thanh toán</value>
+	</data>
+	<data name="PaymentInstruction1" xml:space="preserve">
+		<value>1. Mở ứng dụng ngân hàng hoặc ví điện tử</value>
+	</data>
+	<data name="PaymentInstruction2" xml:space="preserve">
+		<value>2. Quét mã QR hoặc nhập thông tin chuyển khoản</value>
+	</data>
+	<data name="PaymentInstruction3" xml:space="preserve">
+		<value>3. Kiểm tra thông tin và xác nhận thanh toán</value>
+	</data>
+	<data name="PaymentInfoButtonText" xml:space="preserve">
+		<value>Xem thông tin thanh toán</value>
+	</data>
+	<data name="CloseSidebarTooltip" xml:space="preserve">
+		<value>Đóng thanh bên</value>
+	</data>
+	<data name="CloseTooltip" xml:space="preserve">
+		<value>Đóng</value>
+	</data>
+</root>

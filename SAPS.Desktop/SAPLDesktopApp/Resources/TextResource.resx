@@ -1,0 +1,1511 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+	<!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+	<xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+		<xsd:import namespace="http://www.w3.org/XML/1998/namespace"/>
+		<xsd:element name="root" msdata:IsDataSet="true">
+			<xsd:complexType>
+				<xsd:choice maxOccurs="unbounded">
+					<xsd:element name="metadata">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0"/>
+							</xsd:sequence>
+							<xsd:attribute name="name" use="required" type="xsd:string"/>
+							<xsd:attribute name="type" type="xsd:string"/>
+							<xsd:attribute name="mimetype" type="xsd:string"/>
+							<xsd:attribute ref="xml:space"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="assembly">
+						<xsd:complexType>
+							<xsd:attribute name="alias" type="xsd:string"/>
+							<xsd:attribute name="name" type="xsd:string"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="data">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+								<xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2"/>
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1"/>
+							<xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3"/>
+							<xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4"/>
+							<xsd:attribute ref="xml:space"/>
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="resheader">
+						<xsd:complexType>
+							<xsd:sequence>
+								<xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1"/>
+							</xsd:sequence>
+							<xsd:attribute name="name" type="xsd:string" use="required"/>
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+			</xsd:complexType>
+		</xsd:element>
+	</xsd:schema>
+	<resheader name="resmimetype">
+		<value>text/microsoft-resx</value>
+	</resheader>
+	<resheader name="version">
+		<value>2.0</value>
+	</resheader>
+	<resheader name="reader">
+		<value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<resheader name="writer">
+		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+	</resheader>
+	<data name="AppTitle" xml:space="preserve">
+		<value>SAPLS - Staff Portal</value>
+	</data>
+	<data name="AppName" xml:space="preserve">
+		<value>SAPLS</value>
+	</data>
+	<data name="AppSubtitle" xml:space="preserve">
+		<value>Staff Desktop</value>
+	</data>
+	<data name="AppPortalName" xml:space="preserve">
+		<value>SAPLS Staff Portal</value>
+	</data>
+	<data name="AppDescription" xml:space="preserve">
+		<value>Semi-Automatic Parking Lot System</value>
+	</data>
+	<data name="AppPortalDescription" xml:space="preserve">
+		<value>Staff Desktop Portal</value>
+	</data>
+	<data name="NavCameraTitle" xml:space="preserve">
+		<value>Camera Monitoring</value>
+	</data>
+	<data name="NavParkingSessionsTitle" xml:space="preserve">
+		<value>Parking Sessions</value>
+	</data>
+	<data name="NavShiftDiariesTitle" xml:space="preserve">
+		<value>Shift Diaries</value>
+	</data>
+	<data name="NavIncidenceReportsTitle" xml:space="preserve">
+		<value>Incidence Reports</value>
+	</data>
+	<data name="BtnBack" xml:space="preserve">
+		<value>← Back</value>
+	</data>
+	<data name="BtnCancel" xml:space="preserve">
+		<value>Cancel</value>
+	</data>
+	<data name="BtnClear" xml:space="preserve">
+		<value>Clear</value>
+	</data>
+	<data name="BtnClearForm" xml:space="preserve">
+		<value>Clear Form</value>
+	</data>
+	<data name="BtnProcess" xml:space="preserve">
+		<value>Process</value>
+	</data>
+	<data name="BtnCapture" xml:space="preserve">
+		<value>Capture</value>
+	</data>
+	<data name="BtnCaptureAll" xml:space="preserve">
+		<value>Capture All</value>
+	</data>
+	<data name="BtnRefreshAll" xml:space="preserve">
+		<value>Refresh All</value>
+	</data>
+	<data name="BtnFullView" xml:space="preserve">
+		<value>Full View</value>
+	</data>
+	<data name="BtnViewFullImage" xml:space="preserve">
+		<value>View Full Image</value>
+	</data>
+	<data name="BtnAttachFile" xml:space="preserve">
+		<value>Attach File</value>
+	</data>
+	<data name="BtnSubmitReport" xml:space="preserve">
+		<value>Submit Report</value>
+	</data>
+	<data name="BtnCheckOut" xml:space="preserve">
+		<value>Check Out Vehicle</value>
+	</data>
+	<data name="BtnCheckInManually" xml:space="preserve">
+		<value>Check-in manually</value>
+	</data>
+	<data name="BtnCheckOutManually" xml:space="preserve">
+		<value>Check-out manually</value>
+	</data>
+	<data name="BtnLogout" xml:space="preserve">
+		<value>Logout</value>
+	</data>
+	<data name="BtnExit" xml:space="preserve">
+		<value>Exit</value>
+	</data>
+	<data name="BtnSettings" xml:space="preserve">
+		<value>Settings</value>
+	</data>
+	<data name="BtnYes" xml:space="preserve">
+		<value>Yes</value>
+	</data>
+	<data name="BtnNo" xml:space="preserve">
+		<value>No</value>
+	</data>
+	<data name="BtnOK" xml:space="preserve">
+		<value>OK</value>
+	</data>
+	<data name="BtnRestart" xml:space="preserve">
+		<value>Restart</value>
+	</data>
+	<data name="ConfirmButtonText" xml:space="preserve">
+		<value>Confirm</value>
+	</data>
+	<data name="LoginWindowTitle" xml:space="preserve">
+		<value>SAPLS - Staff Login</value>
+	</data>
+	<data name="LoginHeaderText" xml:space="preserve">
+		<value>Staff Login</value>
+	</data>
+	<data name="LoginSubHeaderText" xml:space="preserve">
+		<value>Enter your credentials to access the system</value>
+	</data>
+	<data name="LoginButton" xml:space="preserve">
+		<value>Log In</value>
+	</data>
+	<data name="EmailLabel" xml:space="preserve">
+		<value>Email</value>
+	</data>
+	<data name="LabelPassword" xml:space="preserve">
+		<value>Password</value>
+	</data>
+	<data name="PasswordPlaceHolder" xml:space="preserve">
+		<value>Enter your password</value>
+	</data>
+	<data name="EnterEmailPlaceholder" xml:space="preserve">
+		<value>Enter your email address</value>
+	</data>
+	<data name="ForgotPasswordText" xml:space="preserve">
+		<value>Forgot Password?</value>
+	</data>
+	<data name="RememberMeText" xml:space="preserve">
+		<value>Remember me</value>
+	</data>
+	<data name="SettingsTitle" xml:space="preserve">
+		<value>⚙️ Settings</value>
+	</data>
+	<data name="SettingsGeneralTitle" xml:space="preserve">
+		<value>General Settings</value>
+	</data>
+	<data name="SettingsCameraTitle" xml:space="preserve">
+		<value>Camera Settings</value>
+	</data>
+	<data name="SettingsLanguageTitle" xml:space="preserve">
+		<value>Language</value>
+	</data>
+	<data name="SettingsSaveButton" xml:space="preserve">
+		<value>Save Settings</value>
+	</data>
+	<data name="SettingsCancelButton" xml:space="preserve">
+		<value>Cancel</value>
+	</data>
+	<data name="ChangePasswordTitle" xml:space="preserve">
+		<value>🔒 Change Password</value>
+	</data>
+	<data name="CurrentPasswordLabel" xml:space="preserve">
+		<value>Current Password *</value>
+	</data>
+	<data name="NewPasswordLabel" xml:space="preserve">
+		<value>New Password *</value>
+	</data>
+	<data name="ConfirmPasswordLabel" xml:space="preserve">
+		<value>Confirm Password *</value>
+	</data>
+	<data name="EnterCurrentPasswordPlaceholder" xml:space="preserve">
+		<value>Enter current password</value>
+	</data>
+	<data name="EnterNewPasswordPlaceholder" xml:space="preserve">
+		<value>Enter new password</value>
+	</data>
+	<data name="ConfirmNewPasswordPlaceholder" xml:space="preserve">
+		<value>Confirm new password</value>
+	</data>
+	<data name="ChangePasswordButtonText" xml:space="preserve">
+		<value>Change Password</value>
+	</data>
+	<data name="LanguageSettingsTitle" xml:space="preserve">
+		<value>🌍 Language Settings</value>
+	</data>
+	<data name="LanguageSelectionDescription" xml:space="preserve">
+		<value>Select your preferred language for the application interface</value>
+	</data>
+	<data name="LanguageEnglish" xml:space="preserve">
+		<value>English</value>
+	</data>
+	<data name="LanguageVietnamese" xml:space="preserve">
+		<value>Vietnamese</value>
+	</data>
+	<data name="LanguageChangeTitle" xml:space="preserve">
+		<value>Change Language</value>
+	</data>
+	<data name="LanguageChangeConfirmMessage" xml:space="preserve">
+		<value>Changing the language to {0} requires the application to restart.
+
+Do you want to continue?</value>
+	</data>
+	<data name="CameraEntranceFront" xml:space="preserve">
+		<value>ENTRANCE FRONT</value>
+	</data>
+	<data name="CameraExitFront" xml:space="preserve">
+		<value>EXIT FRONT</value>
+	</data>
+	<data name="CameraEntranceBack" xml:space="preserve">
+		<value>ENTRANCE BACK</value>
+	</data>
+	<data name="CameraExitBack" xml:space="preserve">
+		<value>EXIT BACK</value>
+	</data>
+	<data name="AvailableCamerasTitle" xml:space="preserve">
+		<value>Available Cameras</value>
+	</data>
+	<data name="CameraAssignmentsTitle" xml:space="preserve">
+		<value>Camera Assignments</value>
+	</data>
+	<data name="FrontEntranceLabel" xml:space="preserve">
+		<value>Front Entrance:</value>
+	</data>
+	<data name="BackEntranceLabel" xml:space="preserve">
+		<value>Back Entrance:</value>
+	</data>
+	<data name="FrontExitLabel" xml:space="preserve">
+		<value>Front Exit:</value>
+	</data>
+	<data name="BackExitLabel" xml:space="preserve">
+		<value>Back Exit:</value>
+	</data>
+	<data name="SelectCameraPlaceholder" xml:space="preserve">
+		<value>Select camera...</value>
+	</data>
+	<data name="AvailableStatusText" xml:space="preserve">
+		<value>Available</value>
+	</data>
+	<data name="UnavailableStatusText" xml:space="preserve">
+		<value>Unavailable</value>
+	</data>
+	<data name="NoPreviewText" xml:space="preserve">
+		<value>No Preview</value>
+	</data>
+	<data name="LiveIndicatorText" xml:space="preserve">
+		<value>● LIVE</value>
+	</data>
+	<data name="CapturedImagesTitle" xml:space="preserve">
+		<value>📸 Captured Images</value>
+	</data>
+	<data name="EntranceCamerasText" xml:space="preserve">
+		<value>Entrance Cameras</value>
+	</data>
+	<data name="ExitCamerasText" xml:space="preserve">
+		<value>Exit Cameras</value>
+	</data>
+	<data name="NoEntranceImagesCaptured" xml:space="preserve">
+		<value>No entrance images captured</value>
+	</data>
+	<data name="NoExitImagesCaptured" xml:space="preserve">
+		<value>No exit images captured</value>
+	</data>
+	<data name="LabelPlateNumber" xml:space="preserve">
+		<value>PlateNo</value>
+	</data>
+	<data name="LabelDriverName" xml:space="preserve">
+		<value>Driver Name</value>
+	</data>
+	<data name="LabelPhoneNumber" xml:space="preserve">
+		<value>PhoneNo</value>
+	</data>
+	<data name="LabelOwnerPhoneNumber" xml:space="preserve">
+		<value>Phone Number</value>
+	</data>
+	<data name="LabelEntryTime" xml:space="preserve">
+		<value>Entry Time</value>
+	</data>
+	<data name="LabelExitTime" xml:space="preserve">
+		<value>Exit Time</value>
+	</data>
+	<data name="LabelDuration" xml:space="preserve">
+		<value>Duration</value>
+	</data>
+	<data name="LabelStatus" xml:space="preserve">
+		<value>Status</value>
+	</data>
+	<data name="LabelFee" xml:space="preserve">
+		<value>Fee</value>
+	</data>
+	<data name="LabelVehicleType" xml:space="preserve">
+		<value>Vehicle Type</value>
+	</data>
+	<data name="LabelImages" xml:space="preserve">
+		<value>Images</value>
+	</data>
+	<data name="LabelVehicleImages" xml:space="preserve">
+		<value>Vehicle Images</value>
+	</data>
+	<data name="LabelEntranceCameras" xml:space="preserve">
+		<value>Entrance Cameras</value>
+	</data>
+	<data name="LabelExitCameras" xml:space="preserve">
+		<value>Exit Cameras</value>
+	</data>
+	<data name="LabelFrontCamera" xml:space="preserve">
+		<value>Front Camera</value>
+	</data>
+	<data name="LabelBackCamera" xml:space="preserve">
+		<value>Back Camera</value>
+	</data>
+	<data name="LabelOwnerFullName" xml:space="preserve">
+		<value>Full Name</value>
+	</data>
+	<data name="LabelVehicleColor" xml:space="preserve">
+		<value>Color</value>
+	</data>
+	<data name="LabelVehicleBrand" xml:space="preserve">
+		<value>Brand</value>
+	</data>
+	<data name="LabelVehicleModel" xml:space="preserve">
+		<value>Model Code</value>
+	</data>
+	<data name="NameLabel" xml:space="preserve">
+		<value>Name</value>
+	</data>
+	<data name="AuthorLabel" xml:space="preserve">
+		<value>Author</value>
+	</data>
+	<data name="CreatedDateLabel" xml:space="preserve">
+		<value>Created Date</value>
+	</data>
+	<data name="OwnerInformationTitle" xml:space="preserve">
+		<value>Owner Information</value>
+	</data>
+	<data name="VehicleInformationTitle" xml:space="preserve">
+		<value>Vehicle Information</value>
+	</data>
+	<data name="ParkingInformationTitle" xml:space="preserve">
+		<value>Parking Information</value>
+	</data>
+	<data name="SessionInformationTitle" xml:space="preserve">
+		<value>Session Information</value>
+	</data>
+	<data name="IncidentInformationTitle" xml:space="preserve">
+		<value>Incident Information</value>
+	</data>
+	<data name="BasicInformationTitle" xml:space="preserve">
+		<value>Basic Information</value>
+	</data>
+	<data name="AdditionalInformationTitle" xml:space="preserve">
+		<value>Additional Information</value>
+	</data>
+	<data name="DiaryInformationTitle" xml:space="preserve">
+		<value>Diary Information</value>
+	</data>
+	<data name="ContentTitle" xml:space="preserve">
+		<value>Content</value>
+	</data>
+	<data name="ActionsTitle" xml:space="preserve">
+		<value>🎯 Actions</value>
+	</data>
+	<data name="VehicleDetailsTitle" xml:space="preserve">
+		<value>🚗 Vehicle Details</value>
+	</data>
+	<data name="LicensePlateNumberTitle" xml:space="preserve">
+		<value>🔢 License Plate Number</value>
+	</data>
+	<data name="VehicleTypeTitle" xml:space="preserve">
+		<value>🚙 Vehicle Type</value>
+	</data>
+	<data name="HistoryDetailsTitle" xml:space="preserve">
+		<value>Parking History Details</value>
+	</data>
+	<data name="IncidentReportDetailsTitle" xml:space="preserve">
+		<value>Incident Report Details</value>
+	</data>
+	<data name="AddIncidentReportTitle" xml:space="preserve">
+		<value>Add Incident Report</value>
+	</data>
+	<data name="CreateShiftDiaryTitle" xml:space="preserve">
+		<value>Create Shift Diary</value>
+	</data>
+	<data name="ShiftDiaryDetailsTitle" xml:space="preserve">
+		<value>Shift Diary Details</value>
+	</data>
+	<data name="ParkingSessionsPageTitle" xml:space="preserve">
+		<value>🚗 Parking Sessions</value>
+	</data>
+	<data name="VehiclesPageDescription" xml:space="preserve">
+		<value>Monitor and manage vehicles currently in the parking area</value>
+	</data>
+	<data name="HistoryPageDescription" xml:space="preserve">
+		<value>View complete history of vehicle entries and exits</value>
+	</data>
+	<data name="IncidentReportsPageDescription" xml:space="preserve">
+		<value>Your submitted incident reports and their current status</value>
+	</data>
+	<data name="ParkingSessionsPageDescription" xml:space="preserve">
+		<value>Monitor current vehicles and view parking history</value>
+	</data>
+	<data name="ShiftDiariesPageDescription" xml:space="preserve">
+		<value>View and manage shift diary entries</value>
+	</data>
+	<data name="IncidentReportsTitle" xml:space="preserve">
+		<value>⚠️ Incident Reports</value>
+	</data>
+	<data name="LabelIncidentId" xml:space="preserve">
+		<value>Incident ID</value>
+	</data>
+	<data name="LabelIncidentHeader" xml:space="preserve">
+		<value>Header</value>
+	</data>
+	<data name="LabelIncidentDescription" xml:space="preserve">
+		<value>Description</value>
+	</data>
+	<data name="LabelIncidentPriority" xml:space="preserve">
+		<value>Priority</value>
+	</data>
+	<data name="LabelReportedDate" xml:space="preserve">
+		<value>Reported Date</value>
+	</data>
+	<data name="PriorityLevelLabel" xml:space="preserve">
+		<value>Priority Level</value>
+	</data>
+	<data name="AttachmentsLabel" xml:space="preserve">
+		<value>Attachments</value>
+	</data>
+	<data name="AttachedEvidenceLabel" xml:space="preserve">
+		<value>Attached Evidence</value>
+	</data>
+	<data name="NoEvidenceAttachedMessage" xml:space="preserve">
+		<value>No evidence files attached</value>
+	</data>
+	<data name="IncidentNotesLabel" xml:space="preserve">
+		<value>Notes</value>
+	</data>
+	<data name="AddIncidentReportStatusMessage" xml:space="preserve">
+		<value>Complete the form below to submit a new incident report</value>
+	</data>
+	<data name="RequiredFieldsNote" xml:space="preserve">
+		<value>* Required fields</value>
+	</data>
+	<data name="HeaderTitleLabel" xml:space="preserve">
+		<value>Header/Title *</value>
+	</data>
+	<data name="ContentLabel" xml:space="preserve">
+		<value>Content *</value>
+	</data>
+	<data name="CreateDiaryButtonText" xml:space="preserve">
+		<value>Create Diary</value>
+	</data>
+	<data name="CreateNewDiaryButtonText" xml:space="preserve">
+		<value>📝 Create New Diary</value>
+	</data>
+	<data name="ShiftDiariesPageTitle" xml:space="preserve">
+		<value>📋 Shift Diaries</value>
+	</data>
+	<data name="CreatedDateHeaderText" xml:space="preserve">
+		<value>Created Date</value>
+	</data>
+	<data name="TimeHeaderText" xml:space="preserve">
+		<value>Time</value>
+	</data>
+	<data name="HeaderColumnText" xml:space="preserve">
+		<value>Header</value>
+	</data>
+	<data name="AuthorHeaderText" xml:space="preserve">
+		<value>Author</value>
+	</data>
+	<data name="PayStatusLabel" xml:space="preserve">
+		<value>Pay status</value>
+	</data>
+	<data name="CheckInTimeLabel" xml:space="preserve">
+		<value>Check-in:</value>
+	</data>
+	<data name="CheckOutTimeLabel" xml:space="preserve">
+		<value>Check-out:</value>
+	</data>
+	<data name="DurationLabel" xml:space="preserve">
+		<value>Duration:</value>
+	</data>
+	<data name="FeeLabel" xml:space="preserve">
+		<value>Fee:</value>
+	</data>
+	<data name="StatusResolved" xml:space="preserve">
+		<value>Resolved</value>
+	</data>
+	<data name="StatusUnderInvestigation" xml:space="preserve">
+		<value>Under Investigation</value>
+	</data>
+	<data name="StatusParking" xml:space="preserve">
+		<value>Parking</value>
+	</data>
+	<data name="StatusCheckedOut" xml:space="preserve">
+		<value>Checked-out</value>
+	</data>
+	<data name="StatusConnected" xml:space="preserve">
+		<value>Connected</value>
+	</data>
+	<data name="StatusDisconnected" xml:space="preserve">
+		<value>Disconnected</value>
+	</data>
+	<data name="StatusLoading" xml:space="preserve">
+		<value>Loading...</value>
+	</data>
+	<data name="StatusProcessing" xml:space="preserve">
+		<value>Processing...</value>
+	</data>
+	<data name="StatusSuccess" xml:space="preserve">
+		<value>Success</value>
+	</data>
+	<data name="StatusError" xml:space="preserve">
+		<value>Error</value>
+	</data>
+	<data name="StatusOpen" xml:space="preserve">
+		<value>Open</value>
+	</data>
+	<data name="StatusInProgress" xml:space="preserve">
+		<value>In Progress</value>
+	</data>
+	<data name="StatusClosed" xml:space="preserve">
+		<value>Closed</value>
+	</data>
+	<data name="StatusCompleted" xml:space="preserve">
+		<value>Completed</value>
+	</data>
+	<data name="StatusCurrentlyParked" xml:space="preserve">
+		<value>Currently Parked</value>
+	</data>
+	<data name="PriorityLow" xml:space="preserve">
+		<value>Low</value>
+	</data>
+	<data name="PriorityMedium" xml:space="preserve">
+		<value>Medium</value>
+	</data>
+	<data name="PriorityHigh" xml:space="preserve">
+		<value>High</value>
+	</data>
+	<data name="PriorityCritical" xml:space="preserve">
+		<value>Critical</value>
+	</data>
+	<data name="ProcessManualCheckin" xml:space="preserve">
+		<value>Manual Check-in</value>
+	</data>
+	<data name="ProcessManualCheckout" xml:space="preserve">
+		<value>Manual Check-out</value>
+	</data>
+	<data name="CaptureButtonText" xml:space="preserve">
+		<value>📸 Capture</value>
+	</data>
+	<data name="PlaceholderPlateNumber" xml:space="preserve">
+		<value>ABC-123</value>
+	</data>
+	<data name="PlaceholderPlateNumberLong" xml:space="preserve">
+		<value>Enter plate number</value>
+	</data>
+	<data name="EnterLicensePlatePlaceholder" xml:space="preserve">
+		<value>Enter license plate...</value>
+	</data>
+	<data name="HeaderDiaryPlaceholder" xml:space="preserve">
+		<value>Enter diary header or title...</value>
+	</data>
+	<data name="ContentDiaryPlaceholder" xml:space="preserve">
+		<value>Enter diary content...</value>
+	</data>
+	<data name="IncidentHeaderWatermark" xml:space="preserve">
+		<value>Enter a brief title for the incident</value>
+	</data>
+	<data name="ReporterNameWatermark" xml:space="preserve">
+		<value>Enter reporter name</value>
+	</data>
+	<data name="IncidentDescriptionWatermark" xml:space="preserve">
+		<value>Provide a detailed description of the incident</value>
+	</data>
+	<data name="IncidentNotesWatermark" xml:space="preserve">
+		<value>Add any additional notes or comments</value>
+	</data>
+	<data name="IncidentReportsSearchPlaceholder" xml:space="preserve">
+		<value>Search by ID, type, description, or status...</value>
+	</data>
+	<data name="ParkingSessionsSearchPlaceholder" xml:space="preserve">
+		<value>Search by license plate, driver name, or phone...</value>
+	</data>
+	<data name="SearchShiftDiariesPlaceholder" xml:space="preserve">
+		<value>Search shift diaries...</value>
+	</data>
+	<data name="FilterStatusLabel" xml:space="preserve">
+		<value>Status:</value>
+	</data>
+	<data name="FilterAllOption" xml:space="preserve">
+		<value>All</value>
+	</data>
+	<data name="FilterActiveOption" xml:space="preserve">
+		<value>Active</value>
+	</data>
+	<data name="FilterCompletedOption" xml:space="preserve">
+		<value>Completed</value>
+	</data>
+	<data name="FrontCameraLabel" xml:space="preserve">
+		<value>Front</value>
+	</data>
+	<data name="BackCameraLabel" xml:space="preserve">
+		<value>Back</value>
+	</data>
+	<data name="ViewButtonText" xml:space="preserve">
+		<value>View</value>
+	</data>
+	<data name="OpenButtonText" xml:space="preserve">
+		<value>Open</value>
+	</data>
+	<data name="RemoveButtonText" xml:space="preserve">
+		<value>Remove</value>
+	</data>
+	<data name="CancelButtonText" xml:space="preserve">
+		<value>❌ Cancel</value>
+	</data>
+	<data name="PaginationPageInfo" xml:space="preserve">
+		<value>Page {0} of {1}</value>
+	</data>
+	<data name="PaginationSinglePage" xml:space="preserve">
+		<value>Page 1</value>
+	</data>
+	<data name="PaginationShowingItems" xml:space="preserve">
+		<value>Showing {0}-{1} of {2} items</value>
+	</data>
+	<data name="PaginationNoItems" xml:space="preserve">
+		<value>No items to display</value>
+	</data>
+	<data name="LoadingDefault" xml:space="preserve">
+		<value>Loading...</value>
+	</data>
+	<data name="LoadingCameras" xml:space="preserve">
+		<value>Loading Cameras</value>
+	</data>
+	<data name="LoadingCamerasDescription" xml:space="preserve">
+		<value>Please wait while we detect and initialize your cameras...</value>
+	</data>
+	<data name="LoadingDetectingCameras" xml:space="preserve">
+		<value>Detecting cameras...</value>
+	</data>
+	<data name="LoadingScanningDevices" xml:space="preserve">
+		<value>Scanning for available camera devices</value>
+	</data>
+	<data name="LoadingInitializingCamera" xml:space="preserve">
+		<value>Initializing {0}...</value>
+	</data>
+	<data name="LoadingSavingSettings" xml:space="preserve">
+		<value>Saving settings...</value>
+	</data>
+	<data name="LoadingProcessingFiles" xml:space="preserve">
+		<value>Processing files...</value>
+	</data>
+	<data name="LoadingProcessingFile" xml:space="preserve">
+		<value>Processing {0}</value>
+	</data>
+	<data name="LoadingPleaseWait" xml:space="preserve">
+		<value>Please wait...</value>
+	</data>
+	<data name="LoadingPerformingOperation" xml:space="preserve">
+		<value>Performing operation</value>
+	</data>
+	<data name="LoadingConnecting" xml:space="preserve">
+		<value>Connecting...</value>
+	</data>
+	<data name="LoadingDisconnecting" xml:space="preserve">
+		<value>Disconnecting...</value>
+	</data>
+	<data name="LoadingRefreshing" xml:space="preserve">
+		<value>Refreshing...</value>
+	</data>
+	<data name="LoadingCapturing" xml:space="preserve">
+		<value>Capturing...</value>
+	</data>
+	<data name="LoadingStarting" xml:space="preserve">
+		<value>Starting...</value>
+	</data>
+	<data name="LoadingStopping" xml:space="preserve">
+		<value>Stopping...</value>
+	</data>
+	<data name="LoadingConfiguring" xml:space="preserve">
+		<value>Configuring...</value>
+	</data>
+	<data name="LoadingValidating" xml:space="preserve">
+		<value>Validating...</value>
+	</data>
+	<data name="LoadingSearching" xml:space="preserve">
+		<value>Searching...</value>
+	</data>
+	<data name="LoadingFetching" xml:space="preserve">
+		<value>Fetching data...</value>
+	</data>
+	<data name="LoadingUpdating" xml:space="preserve">
+		<value>Updating...</value>
+	</data>
+	<data name="LoadingDeleting" xml:space="preserve">
+		<value>Deleting...</value>
+	</data>
+	<data name="LoadingUploading" xml:space="preserve">
+		<value>Uploading...</value>
+	</data>
+	<data name="LoadingDownloading" xml:space="preserve">
+		<value>Downloading...</value>
+	</data>
+	<data name="NotificationTitleVehicleCheckIn" xml:space="preserve">
+		<value>Vehicle Checked In</value>
+	</data>
+	<data name="NotificationTitleVehicleCheckOut" xml:space="preserve">
+		<value>Vehicle Checked Out</value>
+	</data>
+	<data name="NotificationTitleError" xml:space="preserve">
+		<value>Error</value>
+	</data>
+	<data name="NotificationTitleWarning" xml:space="preserve">
+		<value>Warning</value>
+	</data>
+	<data name="NotificationTitleInfo" xml:space="preserve">
+		<value>Information</value>
+	</data>
+	<data name="NotificationTitleSuccess" xml:space="preserve">
+		<value>Success</value>
+	</data>
+	<data name="NotificationTitleAlreadyCheckedIn" xml:space="preserve">
+		<value>Already Checked In</value>
+	</data>
+	<data name="NotificationTitleNotCheckedIn" xml:space="preserve">
+		<value>Not Checked In</value>
+	</data>
+	<data name="NotificationTitleCheckInFailed" xml:space="preserve">
+		<value>Check-in Failed</value>
+	</data>
+	<data name="NotificationTitleCheckOutFailed" xml:space="preserve">
+		<value>Check-out Failed</value>
+	</data>
+	<data name="NotificationTitleActiveSessions" xml:space="preserve">
+		<value>Active Sessions</value>
+	</data>
+	<data name="NotificationTitleNoActiveSessions" xml:space="preserve">
+		<value>No Active Sessions</value>
+	</data>
+	<data name="NotificationTitleAvailableForCheckOut" xml:space="preserve">
+		<value>Available for Check-out</value>
+	</data>
+	<data name="NotificationTitleProcessingError" xml:space="preserve">
+		<value>Processing Error</value>
+	</data>
+	<data name="NotificationMessageVehicleCheckInSuccess" xml:space="preserve">
+		<value>Successfully checked in</value>
+	</data>
+	<data name="NotificationMessageVehicleCheckOutSuccess" xml:space="preserve">
+		<value>Successfully checked out</value>
+	</data>
+	<data name="NotificationMessageLicensePlatePrefix" xml:space="preserve">
+		<value>License plate:</value>
+	</data>
+	<data name="NotificationMessageFeePrefix" xml:space="preserve">
+		<value>Fee:</value>
+	</data>
+	<data name="NotificationMessageCurrentlyCheckedInVehicles" xml:space="preserve">
+		<value>Currently checked-in vehicles:</value>
+	</data>
+	<data name="NotificationMessageVehiclesAvailableForCheckOut" xml:space="preserve">
+		<value>Vehicles available for check-out:</value>
+	</data>
+	<data name="NotificationMessageNoVehiclesToCheckOut" xml:space="preserve">
+		<value>There are no vehicles currently checked in to check out.</value>
+	</data>
+	<data name="NotificationMessageVehicleAlreadyCheckedIn" xml:space="preserve">
+		<value>is already checked in since</value>
+	</data>
+	<data name="NotificationMessageVehicleNotCheckedIn" xml:space="preserve">
+		<value>is not currently checked in and cannot be checked out</value>
+	</data>
+	<data name="NotificationMessageFailedToCheckActiveSessions" xml:space="preserve">
+		<value>Failed to check active sessions:</value>
+	</data>
+	<data name="NotificationMessageFailedToValidateVehicleStatus" xml:space="preserve">
+		<value>Failed to validate vehicle status:</value>
+	</data>
+	<data name="NotificationMessageFailedToConfirmAction" xml:space="preserve">
+		<value>Failed to confirm action:</value>
+	</data>
+	<data name="NotificationDefaultCheckInMessage" xml:space="preserve">
+		<value>Successfully processed check-in</value>
+	</data>
+	<data name="NotificationDefaultCheckOutMessage" xml:space="preserve">
+		<value>Successfully processed check-out</value>
+	</data>
+	<data name="TooltipSettings" xml:space="preserve">
+		<value>Camera Settings</value>
+	</data>
+	<data name="TooltipRefreshAll" xml:space="preserve">
+		<value>Refresh All</value>
+	</data>
+	<data name="TooltipCaptureAll" xml:space="preserve">
+		<value>Capture All</value>
+	</data>
+	<data name="TooltipFullView" xml:space="preserve">
+		<value>Full View</value>
+	</data>
+	<data name="IncidentDescriptionTooltip" xml:space="preserve">
+		<value>Click to view full incident description</value>
+	</data>
+	<data name="WelcomeUser" xml:space="preserve">
+		<value>Hello {0}</value>
+	</data>
+	<data name="ErrorGeneric" xml:space="preserve">
+		<value>An error occurred</value>
+	</data>
+	<data name="ErrorConnection" xml:space="preserve">
+		<value>Connection failed</value>
+	</data>
+	<data name="ErrorInvalidInput" xml:space="preserve">
+		<value>Invalid input</value>
+	</data>
+	<data name="ErrorPlateNumberRequired" xml:space="preserve">
+		<value>Plate number is required</value>
+	</data>
+	<data name="ValidationStaffIdRequired" xml:space="preserve">
+		<value>Staff ID is required</value>
+	</data>
+	<data name="ValidationPasswordRequired" xml:space="preserve">
+		<value>Password is required</value>
+	</data>
+	<data name="ValidationStaffIdTooShort" xml:space="preserve">
+		<value>Staff ID must be at least 3 characters</value>
+	</data>
+	<data name="ValidationPasswordTooShort" xml:space="preserve">
+		<value>Password must be at least 4 characters</value>
+	</data>
+	<data name="SelectVehicleTypeDescription" xml:space="preserve">
+		<value>Select vehicle type for this unregistered vehicle</value>
+	</data>
+	<data name="SizeLabel" xml:space="preserve">
+		<value>Size: {0:N0} bytes</value>
+	</data>
+	<data name="UploadedLabel" xml:space="preserve">
+		<value>Uploaded: {0:g}</value>
+	</data>
+	<data name="OneAttachmentsMessage" xml:space="preserve">
+		<value>1 attachment</value>
+	</data>
+	<data name="MultipleAttachmentsMessage" xml:space="preserve">
+		<value>{0} attachments</value>
+	</data>
+	<data name="BtnClearFilter" xml:space="preserve">
+		<value>Clear Filter</value>
+	</data>
+	<data name="AddIncidentReportButtonText" xml:space="preserve">
+		<value>➕ Add Incident Report</value>
+	</data>
+	<data name="NoAttachmentsMessage" xml:space="preserve">
+		<value>No attachments</value>
+	</data>
+	<data name="UnknownUserName" xml:space="preserve">
+		<value>Unknown User</value>
+	</data>
+	<data name="IncidenceReportServiceNotRegistered" xml:space="preserve">
+		<value>IncidenceReportService is not registered</value>
+	</data>
+	<data name="NotificationIncidentReportCreatedTitle" xml:space="preserve">
+		<value>Incident Report Created</value>
+	</data>
+	<data name="NotificationIncidentReportCreatedMessage" xml:space="preserve">
+		<value>Incident report '{0}' has been created successfully.</value>
+	</data>
+	<data name="NotificationIncidentCreationFailedTitle" xml:space="preserve">
+		<value>Creation Failed</value>
+	</data>
+	<data name="NotificationIncidentCreationFailedMessage" xml:space="preserve">
+		<value>Failed to create incident report: {0}</value>
+	</data>
+	<data name="ShiftDiaryServiceNotRegistered" xml:space="preserve">
+		<value>ShiftDiaryService is not registered</value>
+	</data>
+	<data name="NotificationMissingInformationTitle" xml:space="preserve">
+		<value>Missing Information</value>
+	</data>
+	<data name="NotificationMissingParkingLotMessage" xml:space="preserve">
+		<value>Unable to determine parking lot. Please ensure you are properly logged in.</value>
+	</data>
+	<data name="NotificationShiftDiaryCreatedTitle" xml:space="preserve">
+		<value>Shift Diary Created</value>
+	</data>
+	<data name="NotificationShiftDiaryCreatedMessage" xml:space="preserve">
+		<value>Shift diary '{0}' has been created successfully.</value>
+	</data>
+	<data name="NotificationShiftDiaryCreationFailedTitle" xml:space="preserve">
+		<value>Creation Failed</value>
+	</data>
+	<data name="NotificationShiftDiaryCreationFailedMessage" xml:space="preserve">
+		<value>Failed to create shift diary: {0}</value>
+	</data>
+	<data name="LabelLastDetectedTime" xml:space="preserve">
+		<value>Last detected: {0}</value>
+	</data>
+	<data name="UnknownOwnerName" xml:space="preserve">
+		<value>Unknown Owner</value>
+	</data>
+	<data name="NotProvidedText" xml:space="preserve">
+		<value>Not provided</value>
+	</data>
+	<data name="UnknownVehicleText" xml:space="preserve">
+		<value>Unknown Vehicle</value>
+	</data>
+	<data name="ProcessCheckinButton" xml:space="preserve">
+		<value>🚗 Check In</value>
+	</data>
+	<data name="ProcessCheckoutButton" xml:space="preserve">
+		<value>🚪 Check Out</value>
+	</data>
+	<data name="ConfirmCheckInButtonText" xml:space="preserve">
+		<value>✅ Confirm Check In</value>
+	</data>
+	<data name="ConfirmCheckOutButtonText" xml:space="preserve">
+		<value>✅ Confirm Check Out</value>
+	</data>
+	<data name="NotificationCameraErrorTitle" xml:space="preserve">
+		<value>Camera Error</value>
+	</data>
+	<data name="NotificationCameraSubscriptionFailedMessage" xml:space="preserve">
+		<value>Failed to subscribe to camera events: {0}</value>
+	</data>
+	<data name="DetectionInfoFormat" xml:space="preserve">
+		<value>[{0}] Camera {1}: {2} ({3})</value>
+	</data>
+	<data name="NotificationCheckInPlateDetectedTitle" xml:space="preserve">
+		<value>Check-In Plate Detected</value>
+	</data>
+	<data name="NotificationCheckOutPlateDetectedTitle" xml:space="preserve">
+		<value>Check-Out Plate Detected</value>
+	</data>
+	<data name="NotificationAutoFilledMessage" xml:space="preserve">
+		<value>Auto-filled: {0}</value>
+	</data>
+	<data name="NotificationEntranceDetectedMessage" xml:space="preserve">
+		<value>Entrance detected: {0}</value>
+	</data>
+	<data name="NotificationExitDetectedMessage" xml:space="preserve">
+		<value>Exit detected: {0}</value>
+	</data>
+	<data name="NotificationFailedToOpenCheckInSidebarMessage" xml:space="preserve">
+		<value>Failed to open check-in sidebar: {0}</value>
+	</data>
+	<data name="NotificationFailedToOpenCheckOutSidebarMessage" xml:space="preserve">
+		<value>Failed to open check-out sidebar: {0}</value>
+	</data>
+	<data name="CapturedTimestampFormat" xml:space="preserve">
+		<value>Captured: {0}</value>
+	</data>
+	<data name="NotificationProcessingErrorTitle" xml:space="preserve">
+		<value>Processing Error</value>
+	</data>
+	<data name="NotificationProcessingVehicleInfoFailedMessage" xml:space="preserve">
+		<value>Failed to process vehicle information: {0}</value>
+	</data>
+	<data name="NotificationVehicleNotFoundTitle" xml:space="preserve">
+		<value>Vehicle Not Found</value>
+	</data>
+	<data name="NotificationVehicleNotFoundMessage" xml:space="preserve">
+		<value>No vehicle found with license plate {0}. Please select a vehicle type for check-in.</value>
+	</data>
+	<data name="UnknownText" xml:space="preserve">
+		<value>Unknown</value>
+	</data>
+	<data name="StatusReadyForCheckIn" xml:space="preserve">
+		<value>Ready for Check-In</value>
+	</data>
+	<data name="ContactAvailableText" xml:space="preserve">
+		<value>Contact available</value>
+	</data>
+	<data name="NotificationReadyForCheckInTitle" xml:space="preserve">
+		<value>Ready for Check-In</value>
+	</data>
+	<data name="NotificationReadyForCheckInMessage" xml:space="preserve">
+		<value>Vehicle {0} is ready to be checked in. Please review the details and confirm.</value>
+	</data>
+	<data name="NotificationNoActiveSessionTitle" xml:space="preserve">
+		<value>No Active Session</value>
+	</data>
+	<data name="NotificationNoActiveSessionMessage" xml:space="preserve">
+		<value>No active parking session found for vehicle {0}. The vehicle may not be currently checked in.</value>
+	</data>
+	<data name="StatusReadyForCheckOut" xml:space="preserve">
+		<value>Ready for Check-Out</value>
+	</data>
+	<data name="VehicleText" xml:space="preserve">
+		<value>Vehicle</value>
+	</data>
+	<data name="NotificationReadyForCheckOutTitle" xml:space="preserve">
+		<value>Ready for Check-Out</value>
+	</data>
+	<data name="NotificationReadyForCheckOutMessage" xml:space="preserve">
+		<value>{0} ({1}) is ready to be checked out. Parking duration: {2}, Fee: {3}</value>
+	</data>
+	<data name="NotificationProcessingCheckOutFailedMessage" xml:space="preserve">
+		<value>Failed to process check-out for vehicle {0}. Please try again or contact support.</value>
+	</data>
+	<data name="NotificationAuthenticationErrorTitle" xml:space="preserve">
+		<value>Authentication Error</value>
+	</data>
+	<data name="NotificationAuthenticationErrorMessage" xml:space="preserve">
+		<value>User authentication information not available. Please login again.</value>
+	</data>
+	<data name="NotificationSuccessfullyCheckedInMessage" xml:space="preserve">
+		<value>Successfully checked in!</value>
+	</data>
+	<data name="NotificationSuccessfullyCheckedOutWithFeeMessage" xml:space="preserve">
+		<value>Successfully checked out! Fee: {0}</value>
+	</data>
+	<data name="NotificationFailedToConfirmActionMessage" xml:space="preserve">
+		<value>Failed to confirm action: {0}</value>
+	</data>
+	<data name="NotificationRefreshErrorTitle" xml:space="preserve">
+		<value>Refresh Error</value>
+	</data>
+	<data name="NotificationRefreshIncidentDetailsFailedMessage" xml:space="preserve">
+		<value>Failed to refresh incident details: {0}</value>
+	</data>
+	<data name="NotificationStatusUpdatedTitle" xml:space="preserve">
+		<value>Status Updated</value>
+	</data>
+	<data name="NotificationStatusUpdatedMessage" xml:space="preserve">
+		<value>Incident status updated to '{0}' successfully.</value>
+	</data>
+	<data name="NotificationUpdateErrorTitle" xml:space="preserve">
+		<value>Update Error</value>
+	</data>
+	<data name="NotificationUpdateIncidentStatusFailedMessage" xml:space="preserve">
+		<value>Failed to update incident status: {0}</value>
+	</data>
+	<data name="NotificationFileErrorTitle" xml:space="preserve">
+		<value>File Error</value>
+	</data>
+	<data name="NotificationUnableToOpenEvidenceFileMessage" xml:space="preserve">
+		<value>Unable to open the evidence file.</value>
+	</data>
+	<data name="OneEvidenceFileMessage" xml:space="preserve">
+		<value>1 evidence file</value>
+	</data>
+	<data name="MultipleEvidenceFilesMessage" xml:space="preserve">
+		<value>{0} evidence files</value>
+	</data>
+	<data name="NotificationLoadingErrorTitle" xml:space="preserve">
+		<value>Loading Error</value>
+	</data>
+	<data name="NotificationFailedToLoadIncidentReportsMessage" xml:space="preserve">
+		<value>Failed to load incident reports. Please try refreshing.</value>
+	</data>
+	<data name="NotificationFailedToRefreshIncidentReportsMessage" xml:space="preserve">
+		<value>Failed to refresh incident reports. Please try again.</value>
+	</data>
+	<data name="NotificationNotFoundTitle" xml:space="preserve">
+		<value>Not Found</value>
+	</data>
+	<data name="NotificationIncidentReportDetailsCouldNotBeLoadedMessage" xml:space="preserve">
+		<value>Incident report details could not be loaded.</value>
+	</data>
+	<data name="NotificationFailedToLoadIncidentReportDetailsMessage" xml:space="preserve">
+		<value>Failed to load incident report details: {0}</value>
+	</data>
+	<data name="SearchResultSummaryMessage" xml:space="preserve">
+		<value>Found {0} of {1} incident reports</value>
+	</data>
+	<data name="MyIncidentReportsSummaryMessage" xml:space="preserve">
+		<value>My Incident Reports: {0}</value>
+	</data>
+	<data name="LoginSuccessMessage" xml:space="preserve">
+		<value>Login successful!</value>
+	</data>
+	<data name="LoginErrorInvalidCredentials" xml:space="preserve">
+		<value>Invalid email or password</value>
+	</data>
+	<data name="LoginErrorServiceUnavailable" xml:space="preserve">
+		<value>Authentication service unavailable</value>
+	</data>
+	<data name="LoginErrorServerError" xml:space="preserve">
+		<value>Server error occurred. Please try again later.</value>
+	</data>
+	<data name="LoginErrorNetworkError" xml:space="preserve">
+		<value>Network error: {0}</value>
+	</data>
+	<data name="LoginErrorLoginFailed" xml:space="preserve">
+		<value>Login failed: {0}</value>
+	</data>
+	<data name="LoginErrorUnexpected" xml:space="preserve">
+		<value>An unexpected error occurred: {0}</value>
+	</data>
+	<data name="ForgotPasswordMessage" xml:space="preserve">
+		<value>Please contact your administrator to reset your password.</value>
+	</data>
+	<data name="ValidationEmailRequired" xml:space="preserve">
+		<value>Email is required</value>
+	</data>
+	<data name="ValidationEmailInvalid" xml:space="preserve">
+		<value>Please enter a valid email address</value>
+	</data>
+	<data name="LoginErrorAuthenticationFailed" xml:space="preserve">
+		<value>Authentication failed - user information not available</value>
+	</data>
+	<data name="LoginErrorFailedToOpenApplication" xml:space="preserve">
+		<value>Failed to open application: {0}</value>
+	</data>
+	<data name="WelcomeUserMessage" xml:space="preserve">
+		<value>{0}, {1}!</value>
+	</data>
+	<data name="GreetingGoodMorning" xml:space="preserve">
+		<value>Good morning</value>
+	</data>
+	<data name="GreetingGoodAfternoon" xml:space="preserve">
+		<value>Good afternoon</value>
+	</data>
+	<data name="GreetingGoodEvening" xml:space="preserve">
+		<value>Good evening</value>
+	</data>
+	<data name="ErrorLicensePlateNotReadable" xml:space="preserve">
+		<value>License plate detected but could not read the number clearly</value>
+	</data>
+	<data name="ErrorFailedToCheckInVehicle" xml:space="preserve">
+		<value>Failed to check in vehicle {0}</value>
+	</data>
+	<data name="ErrorVehicleNotCurrentlyCheckedIn" xml:space="preserve">
+		<value>Vehicle {0} is not currently checked in</value>
+	</data>
+	<data name="ErrorFailedToCheckOutVehicle" xml:space="preserve">
+		<value>Failed to check out vehicle {0}</value>
+	</data>
+	<data name="AutomaticCheckInSuccessMessage" xml:space="preserve">
+		<value>Vehicle automatically checked in from camera {0}</value>
+	</data>
+	<data name="AutomaticCheckOutSuccessMessage" xml:space="preserve">
+		<value>Vehicle automatically checked out from camera {0}. Fee: {1}</value>
+	</data>
+	<data name="ManualProcessingRequiredTitle" xml:space="preserve">
+		<value>Manual Processing Required</value>
+	</data>
+	<data name="ErrorUnknownPage" xml:space="preserve">
+		<value>Unknown page: {0}</value>
+	</data>
+	<data name="CameraSettingsAppliedTitle" xml:space="preserve">
+		<value>Camera Settings Applied</value>
+	</data>
+	<data name="CameraSettingsAppliedMessage" xml:space="preserve">
+		<value>Camera assignments have been updated and applied successfully.</value>
+	</data>
+	<data name="CameraSettingsErrorTitle" xml:space="preserve">
+		<value>Camera Settings Error</value>
+	</data>
+	<data name="CameraSettingsErrorMessage" xml:space="preserve">
+		<value>Failed to apply camera settings. Please try again or restart the application.</value>
+	</data>
+	<data name="NotificationFailedToLoadParkingSessionsMessage" xml:space="preserve">
+		<value>Failed to load parking sessions. Please try refreshing.</value>
+	</data>
+	<data name="NotificationFailedToRefreshParkingSessionsMessage" xml:space="preserve">
+		<value>Failed to refresh parking sessions. Please try again.</value>
+	</data>
+	<data name="NotificationSessionNotFoundTitle" xml:space="preserve">
+		<value>Session Not Found</value>
+	</data>
+	<data name="NotificationCouldNotLoadSessionDetailsMessage" xml:space="preserve">
+		<value>Could not load details for parking session {0}</value>
+	</data>
+	<data name="NotificationFailedToLoadSessionDetailsMessage" xml:space="preserve">
+		<value>Failed to load session details: {0}</value>
+	</data>
+	<data name="ParkingSessionSearchResultSummaryMessage" xml:space="preserve">
+		<value>Found {0} of {1} sessions ({2} finished, {3} parking)</value>
+	</data>
+	<data name="ParkingSessionTotalSummaryMessage" xml:space="preserve">
+		<value>Total Sessions: {0} ({1} finished, {2} parking)</value>
+	</data>
+	<data name="NotificationFailedToLoadShiftDiariesMessage" xml:space="preserve">
+		<value>Failed to load shift diaries. Please try refreshing.</value>
+	</data>
+	<data name="NotificationFailedToRefreshShiftDiariesMessage" xml:space="preserve">
+		<value>Failed to refresh shift diaries. Please try again.</value>
+	</data>
+	<data name="NotificationShiftDiaryDetailsCouldNotBeLoadedMessage" xml:space="preserve">
+		<value>Shift diary details could not be loaded.</value>
+	</data>
+	<data name="NotificationFailedToLoadShiftDiaryDetailsMessage" xml:space="preserve">
+		<value>Failed to load shift diary details: {0}</value>
+	</data>
+	<data name="ShiftDiarySearchResultSummaryMessage" xml:space="preserve">
+		<value>Found {0} of {1} shift diaries</value>
+	</data>
+	<data name="ShiftDiaryTotalSummaryMessage" xml:space="preserve">
+		<value>Shift Diaries: {0}</value>
+	</data>
+	<data name="NoHeaderProvidedText" xml:space="preserve">
+		<value>No header provided</value>
+	</data>
+	<data name="UnknownSenderText" xml:space="preserve">
+		<value>Unknown sender</value>
+	</data>
+	<data name="NoContentProvidedText" xml:space="preserve">
+		<value>No content provided</value>
+	</data>
+	<data name="DateTimeFormatLong" xml:space="preserve">
+		<value>MMMM dd, yyyy 'at' HH:mm</value>
+	</data>
+	<data name="DateFormatShort" xml:space="preserve">
+		<value>MMM dd, yyyy</value>
+	</data>
+	<data name="TimeFormatShort" xml:space="preserve">
+		<value>HH:mm</value>
+	</data>
+	<data name="LanguageEnglishNative" xml:space="preserve">
+		<value>English</value>
+	</data>
+	<data name="LanguageVietnameseNative" xml:space="preserve">
+		<value>Tiếng Việt</value>
+	</data>
+	<data name="CameraFeedFrontEntranceGate" xml:space="preserve">
+		<value>Front Entrance Gate</value>
+	</data>
+	<data name="CameraFeedBackEntranceGate" xml:space="preserve">
+		<value>Back Entrance Gate</value>
+	</data>
+	<data name="CameraFeedFrontExitGate" xml:space="preserve">
+		<value>Front Exit Gate</value>
+	</data>
+	<data name="CameraFeedBackExitGate" xml:space="preserve">
+		<value>Back Exit Gate</value>
+	</data>
+	<data name="ParkingStatusParking" xml:space="preserve">
+		<value>Parking</value>
+	</data>
+	<data name="ParkingStatusCheckedOut" xml:space="preserve">
+		<value>Checked Out</value>
+	</data>
+	<data name="ParkingStatusFinished" xml:space="preserve">
+		<value>Finished</value>
+	</data>
+	<data name="PaymentStatusPaid" xml:space="preserve">
+		<value>Paid</value>
+	</data>
+	<data name="PaymentStatusNotPaid" xml:space="preserve">
+		<value>Not Paid</value>
+	</data>
+	<data name="PaymentStatusPending" xml:space="preserve">
+		<value>Pending</value>
+	</data>
+	<data name="DataTableClearFilter" xml:space="preserve">
+		<value>Clear Filter</value>
+	</data>
+	<data name="DataTableSearchPlaceholder" xml:space="preserve">
+		<value>Search...</value>
+	</data>
+	<data name="DataTableAllFilter" xml:space="preserve">
+		<value>All</value>
+	</data>
+	<data name="PaginationFirstPage" xml:space="preserve">
+		<value>« First</value>
+	</data>
+	<data name="PaginationPreviousPage" xml:space="preserve">
+		<value>‹ Previous</value>
+	</data>
+	<data name="PaginationNextPage" xml:space="preserve">
+		<value>Next ›</value>
+	</data>
+	<data name="PaginationLastPage" xml:space="preserve">
+		<value>Last »</value>
+	</data>
+	<data name="RoleStaff" xml:space="preserve">
+		<value>Staff</value>
+	</data>
+	<data name="BtnDownload" xml:space="preserve">
+		<value>Download</value>
+	</data>
+	<data name="BtnOpen" xml:space="preserve">
+		<value>Open</value>
+	</data>
+	<data name="BtnDownloading" xml:space="preserve">
+		<value>Downloading...</value>
+	</data>
+	<data name="StatusDownloaded" xml:space="preserve">
+		<value>Downloaded</value>
+	</data>
+	<data name="StatusNotDownloaded" xml:space="preserve">
+		<value>Not Downloaded</value>
+	</data>
+	<data name="NotificationDownloadCompleteTitle" xml:space="preserve">
+		<value>Download Complete</value>
+	</data>
+	<data name="NotificationDownloadFailedTitle" xml:space="preserve">
+		<value>Download Failed</value>
+	</data>
+	<data name="NotificationFileOperationFailedTitle" xml:space="preserve">
+		<value>File Operation Failed</value>
+	</data>
+	<data name="NotificationDownloadCompleteMessage" xml:space="preserve">
+		<value>File '{0}' has been downloaded successfully.</value>
+	</data>
+	<data name="NotificationDownloadFailedMessage" xml:space="preserve">
+		<value>Failed to download '{0}': {1}</value>
+	</data>
+	<data name="NotificationFileOperationFailedMessage" xml:space="preserve">
+		<value>Failed to open or download file: {0}</value>
+	</data>
+	<data name="BtnOpenURL" xml:space="preserve">
+		<value>Open URL</value>
+	</data>
+	<data name="NotificationLicensePlateDetectionTitle" xml:space="preserve">
+		<value>License Plate Detection</value>
+	</data>
+	<data name="NotificationLicensePlateUnreadableMessage" xml:space="preserve">
+		<value>Camera {0}: License plate detected but text could not be read clearly. Manual processing may be required.</value>
+	</data>
+	<data name="ContentText" xml:space="preserve">
+		<value>Content</value>
+	</data>
+	<data name="TooltipManuallyCheckIn" xml:space="preserve">
+		<value>Manually Check in</value>
+	</data>
+	<data name="TooltipManuallyCheckOut" xml:space="preserve">
+		<value>Manually Check out</value>
+	</data>
+	<data name="ForgotPasswordWindowTitle" xml:space="preserve">
+		<value>Reset Password</value>
+	</data>
+	<data name="ForgotPasswordTitle" xml:space="preserve">
+		<value>Forgot Password?</value>
+	</data>
+	<data name="ForgotPasswordDescription" xml:space="preserve">
+		<value>Enter your registered email address and we'll send you instructions to reset your password.</value>
+	</data>
+	<data name="ForgotPasswordSendRequestButton" xml:space="preserve">
+		<value>Send Reset Request</value>
+	</data>
+	<data name="ForgotPasswordBackToLoginButton" xml:space="preserve">
+		<value>Back to Login</value>
+	</data>
+	<data name="ForgotPasswordSendingRequest" xml:space="preserve">
+		<value>Sending reset request...</value>
+	</data>
+	<data name="ForgotPasswordRequestSentMessage" xml:space="preserve">
+		<value>Password reset instructions have been sent to your email address.</value>
+	</data>
+	<data name="ForgotPasswordRequestFailedMessage" xml:space="preserve">
+		<value>Failed to send reset request: {0}</value>
+	</data>
+	<data name="BtnRefreshSession" xml:space="preserve">
+		<value>Refresh Session</value>
+	</data>
+	<data name="NotificationSessionRefreshedMessage" xml:space="preserve">
+		<value>Session details have been refreshed successfully.</value>
+	</data>
+	<data name="NotificationRefreshSessionFailedMessage" xml:space="preserve">
+		<value>Failed to refresh session details: {0}</value>
+	</data>
+	<data name="PaymentInfoWindowTitle" xml:space="preserve">
+		<value>Payment Information</value>
+	</data>
+	<data name="PaymentInfoTitle" xml:space="preserve">
+		<value>Payment Information</value>
+	</data>
+	<data name="PaymentQRCodeUnavailable" xml:space="preserve">
+		<value>QR Code not available</value>
+	</data>
+	<data name="PaymentBankLabel" xml:space="preserve">
+		<value>Bank</value>
+	</data>
+	<data name="PaymentAccountHolderLabel" xml:space="preserve">
+		<value>Account Holder:</value>
+	</data>
+	<data name="PaymentAccountNumberLabel" xml:space="preserve">
+		<value>Account Number:</value>
+	</data>
+	<data name="PaymentAmountLabel" xml:space="preserve">
+		<value>Amount:</value>
+	</data>
+	<data name="PaymentDescriptionLabel" xml:space="preserve">
+		<value>Description:</value>
+	</data>
+	<data name="PaymentCopyButton" xml:space="preserve">
+		<value>Copy</value>
+	</data>
+	<data name="PaymentCloseButton" xml:space="preserve">
+		<value>Close</value>
+	</data>
+	<data name="PaymentInstructionsTitle" xml:space="preserve">
+		<value>💡 Payment Instructions</value>
+	</data>
+	<data name="PaymentInstruction1" xml:space="preserve">
+		<value>1. Open your banking app or e-wallet</value>
+	</data>
+	<data name="PaymentInstruction2" xml:space="preserve">
+		<value>2. Scan QR code or enter transfer information</value>
+	</data>
+	<data name="PaymentInstruction3" xml:space="preserve">
+		<value>3. Check information and confirm payment</value>
+	</data>
+	<data name="PaymentInfoButtonText" xml:space="preserve">
+		<value>View Payment Information</value>
+	</data>
+	<data name="CloseSidebarTooltip" xml:space="preserve">
+		<value>Close Sidebar</value>
+	</data>
+	<data name="CloseTooltip" xml:space="preserve">
+		<value>Close</value>
+	</data>
+</root>
