@@ -1,0 +1,95 @@
+<rxui:ReactiveUserControl xmlns="https://github.com/avaloniaui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:rxui="http://reactiveui.net"
+                          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                          xmlns:vm="clr-namespace:SAPLDesktopApp.ViewModels"
+                          mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="200"
+                          x:Class="SAPLDesktopApp.Views.LoadingView"
+                          x:DataType="vm:LoadingViewModel">
+
+	<Border Background="{StaticResource NeutralBackgroundBrush}"
+            BorderBrush="{StaticResource NeutralBorderBrush}"
+            BorderThickness="{StaticResource BorderThicknessThin}"
+            CornerRadius="{StaticResource CornerRadiusMedium}"
+            Padding="{StaticResource PaddingLarge}"
+            MinWidth="300"
+            MinHeight="150"
+            BoxShadow="0 4 16 0 #40000000"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
+
+		<StackPanel Orientation="Vertical"
+                    HorizontalAlignment="Center"
+                    Spacing="16">
+
+			<!-- Loading Message -->
+			<TextBlock Text="{Binding Message}"
+                       FontSize="{StaticResource FontSizeMedium}"
+                       FontWeight="SemiBold"
+                       Foreground="{StaticResource TextPrimaryBrush}"
+                       TextAlignment="Center"
+                       HorizontalAlignment="Center"/>
+
+			<!-- Loading Description -->
+			<TextBlock Text="{Binding Description}"
+                       FontSize="{StaticResource FontSizeRegular}"
+                       Foreground="{StaticResource TextMutedBrush}"
+                       TextAlignment="Center"
+                       HorizontalAlignment="Center"
+                       TextWrapping="Wrap"
+                       MaxWidth="250"
+                       IsVisible="{Binding HasDescription}"/>
+
+			<!-- Progress Indicator Container -->
+			<Grid HorizontalAlignment="Center">
+
+				<!-- Indeterminate Spinner -->
+				<Border Width="32"
+                        Height="32"
+                        BorderBrush="{StaticResource AccentSuccessBrush}"
+                        BorderThickness="3"
+                        CornerRadius="16"
+                        IsVisible="{Binding IsIndeterminate}"
+                        Name="SpinnerBorder">
+					<Border Width="6"
+                            Height="6"
+                            Background="{StaticResource AccentSuccessBrush}"
+                            CornerRadius="3"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Top"
+                            Margin="0,-3,0,0"
+                            Name="SpinnerDot">
+						<Border.RenderTransform>
+							<RotateTransform/>
+						</Border.RenderTransform>
+					</Border>
+				</Border>
+
+				<!-- Determinate Progress Bar -->
+				<StackPanel Orientation="Vertical"
+                            HorizontalAlignment="Center"
+                            Spacing="8"
+                            IsVisible="{Binding !IsIndeterminate}">
+					<ProgressBar Value="{Binding Progress}"
+                                 Minimum="0"
+                                 Maximum="100"
+                                 Width="200"
+                                 Height="6"
+                                 Background="{StaticResource NeutralLightBrush}"
+                                 Foreground="{StaticResource AccentSuccessBrush}"
+                                 CornerRadius="3"/>
+
+					<!-- Progress Text -->
+					<TextBlock Text="{Binding ProgressText}"
+                               FontSize="{StaticResource FontSizeSmall}"
+                               Foreground="{StaticResource TextPrimaryBrush}"
+                               TextAlignment="Center"
+                               HorizontalAlignment="Center"
+                               FontWeight="Medium"
+                               IsVisible="{Binding ShowProgressText}"/>
+				</StackPanel>
+			</Grid>
+		</StackPanel>
+	</Border>
+</rxui:ReactiveUserControl>

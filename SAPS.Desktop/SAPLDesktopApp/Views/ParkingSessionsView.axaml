@@ -1,0 +1,171 @@
+<rxui:ReactiveUserControl xmlns="https://github.com/avaloniaui"
+						  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+						  xmlns:rxui="http://reactiveui.net"
+						  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+						  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                          xmlns:vm="using:SAPLDesktopApp.ViewModels"
+                          xmlns:models="using:SAPLDesktopApp.Models"
+						  xmlns:resources="using:SAPLDesktopApp.Resources"
+						  xmlns:controls="using:SAPLDesktopApp.Controls"
+						  mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+						  x:DataType="vm:ParkingSessionsViewModel"
+						  x:Class="SAPLDesktopApp.Views.ParkingSessionsView">
+
+	<rxui:ReactiveUserControl.Styles>
+		 <!--Header Style--> 
+		<Style Selector="Border.table-header">
+			<Setter Property="Background" Value="{StaticResource PrimaryDarkBrush}"/>
+			<Setter Property="Padding" Value="{StaticResource PaddingLarge}"/>
+		</Style>
+
+		 <!--Header Text Style--> 
+		<Style Selector="TextBlock.header-text">
+			<Setter Property="Foreground" Value="{StaticResource TextLightBrush}"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="FontSize" Value="{StaticResource FontSizeMedium}"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
+
+		 <!--Row Style--> 
+		<Style Selector="Border.table-row">
+			<Setter Property="Background" Value="{StaticResource NeutralBackgroundBrush}"/>
+			<Setter Property="Padding" Value="{StaticResource PaddingLarge}"/>
+			<Setter Property="BorderBrush" Value="{StaticResource NeutralBorderBrush}"/>
+			<Setter Property="BorderThickness" Value="{StaticResource BorderThicknessBottomOnly}"/>
+		</Style>
+
+		 <!--Alternating Row Style--> 
+		<Style Selector="Border.table-row:nth-child(even)">
+			<Setter Property="Background" Value="{StaticResource NeutralLightBrush}"/>
+		</Style>
+
+		 <!--Row Hover Style--> 
+		<Style Selector="Border.table-row:pointerover">
+			<Setter Property="Background" Value="{StaticResource PrimaryLightestBrush}"/>
+		</Style>
+
+		 <!--Cell Text Style--> 
+		<Style Selector="TextBlock.cell-text">
+			<Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+			<Setter Property="FontSize" Value="{StaticResource FontSizeMedium}"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+		</Style>
+
+		 <!--License Plate Style--> 
+		<Style Selector="TextBlock.license-plate">
+			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="Foreground" Value="{StaticResource PrimaryDarkBrush}"/>
+		</Style>
+
+		 <!--Duration Style--> 
+		<Style Selector="TextBlock.duration">
+			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="Foreground" Value="{StaticResource PrimaryMediumBrush}"/>
+		</Style>
+
+		 <!--Status Completed Style--> 
+		<Style Selector="TextBlock.status-completed">
+			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="Foreground" Value="{StaticResource AccentSuccessBrush}"/>
+		</Style>
+
+		 <!--Status Currently Parked/Active Style--> 
+		<Style Selector="TextBlock.status-active">
+			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="Foreground" Value="{StaticResource AccentWarningBrush}"/>
+		</Style>
+
+		 <!--Fee Style--> 
+		<Style Selector="TextBlock.fee">
+			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="Foreground" Value="{StaticResource AccentInfoBrush}"/>
+		</Style>
+
+		 <!--Empty Exit Time Style--> 
+		<Style Selector="TextBlock.exit-empty">
+			<Setter Property="FontStyle" Value="Italic"/>
+			<Setter Property="Foreground" Value="{StaticResource TextMutedBrush}"/>
+		</Style>
+
+		 <!--Primary Button Style--> 
+		<Style Selector="Button.primary-button">
+			<Setter Property="Background" Value="{StaticResource PrimaryMediumBrush}"/>
+			<Setter Property="Foreground" Value="{StaticResource TextLightBrush}"/>
+			<Setter Property="BorderThickness" Value="{StaticResource BorderThicknessNone}"/>
+			<Setter Property="CornerRadius" Value="{StaticResource CornerRadiusMedium}"/>
+			<Setter Property="Padding" Value="{StaticResource PaddingButtonLarge}"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+		</Style>
+
+		<Style Selector="Button.primary-button:pointerover">
+			<Setter Property="Background" Value="{StaticResource PrimaryLightBrush}"/>
+		</Style>
+
+		 <!--Secondary Button Style--> 
+		<Style Selector="Button.secondary-button">
+			<Setter Property="Background" Value="{StaticResource NeutralLightBrush}"/>
+			<Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+			<Setter Property="BorderThickness" Value="{StaticResource BorderThicknessThin}"/>
+			<Setter Property="BorderBrush" Value="{StaticResource NeutralGrayBrush}"/>
+			<Setter Property="CornerRadius" Value="{StaticResource CornerRadiusMedium}"/>
+			<Setter Property="Padding" Value="{StaticResource PaddingButtonLarge}"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+		</Style>
+
+		<Style Selector="Button.secondary-button:pointerover">
+			<Setter Property="Background" Value="{StaticResource NeutralGrayBrush}"/>
+			<Setter Property="Foreground" Value="{StaticResource TextLightBrush}"/>
+		</Style>
+	</rxui:ReactiveUserControl.Styles>
+
+	 <!--Unified Parking Sessions Table with Filter--> 
+	<controls:DataTableControl HeaderText="{x:Static resources:TextResource.ParkingSessionsPageTitle}"
+							   DescriptionText="{x:Static resources:TextResource.ParkingSessionsPageDescription}"
+							   SearchWatermark="{x:Static resources:TextResource.ParkingSessionsSearchPlaceholder}"
+							   SearchText="{Binding SearchText}"
+							   ItemsSource="{Binding FilteredData}"
+							   ResultSummary="{Binding ResultSummary}"
+							   RowClickCommand="{Binding ViewDetailsCommand}"
+							   MaxHeight="500"
+							   PageSize="5"
+							   ShowPagination="True"
+							   ShowFilter="True"
+							   FilterLabel="{x:Static resources:TextResource.FilterStatusLabel}"
+							   FilterOptions="{Binding FilterOptions}"
+							   SelectedFilter="{Binding SelectedFilter}"
+							   FilterChangedCommand="{Binding FilterChangedCommand}"
+							   FilterPropertyName="LocalizedStatus">
+		<controls:DataTableControl.Columns>
+			<!-- License Plate Number - Made wider as primary identifier -->
+			<controls:DataTableColumn Header="{x:Static resources:TextResource.LabelPlateNumber}"
+									  Binding="LicensePlate"
+									  Width="1.8*"
+									  CellStyle="cell-text license-plate"/>
+			
+			<!-- Entry Time - Good size for datetime display -->
+			<controls:DataTableColumn Header="{x:Static resources:TextResource.LabelEntryTime}"
+									  Binding="EntryTime"
+									  Width="2*"
+									  CellStyle="cell-text"/>
+			
+			<!-- Exit Time - Same size as Entry Time for consistency -->
+			<controls:DataTableColumn Header="{x:Static resources:TextResource.LabelExitTime}"
+									  Binding="ExitTime"
+									  Width="2*"
+									  CellStyle="cell-text exit-empty"/>
+			
+			<!-- Status - Now using localized status -->
+			<controls:DataTableColumn Header="{x:Static resources:TextResource.LabelStatus}"
+									  Binding="LocalizedStatus"
+									  Width="1.5*"
+									  CellStyle="cell-text status-active"/>
+			
+			<!-- Payment Status - Now using localized payment status -->
+			<controls:DataTableColumn Header="{x:Static resources:TextResource.PayStatusLabel}"
+									  Binding="LocalizedPaymentStatus"
+									  Width="1.2*"
+									  CellStyle="cell-text"/>
+		</controls:DataTableControl.Columns>
+	</controls:DataTableControl>
+</rxui:ReactiveUserControl>

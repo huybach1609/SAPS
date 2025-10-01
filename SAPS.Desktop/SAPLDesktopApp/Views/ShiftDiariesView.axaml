@@ -1,0 +1,118 @@
+<rxui:ReactiveUserControl xmlns="https://github.com/avaloniaui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:rxui="http://reactiveui.net"
+                          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                          xmlns:vm="using:SAPLDesktopApp.ViewModels"
+                          xmlns:resources="using:SAPLDesktopApp.Resources"
+                          xmlns:controls="using:SAPLDesktopApp.Controls"
+                          mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                          x:DataType="vm:ShiftDiariesViewModel"
+                          x:Class="SAPLDesktopApp.Views.ShiftDiariesView">
+
+	<rxui:ReactiveUserControl.Styles>
+		<!--Header Style-->
+		<Style Selector="Border.table-header">
+			<Setter Property="Background" Value="{StaticResource PrimaryDarkBrush}"/>
+			<Setter Property="Padding" Value="{StaticResource PaddingLarge}"/>
+		</Style>
+
+		<!--Header Text Style-->
+		<Style Selector="TextBlock.header-text">
+			<Setter Property="Foreground" Value="{StaticResource TextLightBrush}"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="FontSize" Value="{StaticResource FontSizeMedium}"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+		</Style>
+
+		<!--Row Style-->
+		<Style Selector="Border.table-row">
+			<Setter Property="Background" Value="{StaticResource NeutralBackgroundBrush}"/>
+			<Setter Property="Padding" Value="{StaticResource PaddingLarge}"/>
+			<Setter Property="BorderBrush" Value="{StaticResource NeutralBorderBrush}"/>
+			<Setter Property="BorderThickness" Value="{StaticResource BorderThicknessBottomOnly}"/>
+		</Style>
+
+		<!--Alternating Row Style-->
+		<Style Selector="Border.table-row:nth-child(even)">
+			<Setter Property="Background" Value="{StaticResource NeutralLightBrush}"/>
+		</Style>
+
+		<!--Row Hover Style-->
+		<Style Selector="Border.table-row:pointerover">
+			<Setter Property="Background" Value="{StaticResource PrimaryLightestBrush}"/>
+		</Style>
+
+		<!--Cell Text Style-->
+		<Style Selector="TextBlock.cell-text">
+			<Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+			<Setter Property="FontSize" Value="{StaticResource FontSizeMedium}"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+		</Style>
+
+		<!--Diary Header Style-->
+		<Style Selector="TextBlock.diary-header">
+			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="Foreground" Value="{StaticResource PrimaryDarkBrush}"/>
+		</Style>
+
+		<!--Sender Name Style-->
+		<Style Selector="TextBlock.sender-name">
+			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="Foreground" Value="{StaticResource PrimaryMediumBrush}"/>
+		</Style>
+
+		<!--Date/Time Style-->
+		<Style Selector="TextBlock.diary-date">
+			<Setter Property="Foreground" Value="{StaticResource DateTimePrimaryBrush}"/>
+			<Setter Property="FontSize" Value="{StaticResource FontSizeMedium}"/>
+			<Setter Property="FontWeight" Value="Regular"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+		</Style>
+
+		<!--Primary Button Style-->
+		<Style Selector="Button.primary-button">
+			<Setter Property="Background" Value="{StaticResource PrimaryMediumBrush}"/>
+			<Setter Property="Foreground" Value="{StaticResource TextLightBrush}"/>
+			<Setter Property="BorderThickness" Value="{StaticResource BorderThicknessNone}"/>
+			<Setter Property="CornerRadius" Value="{StaticResource CornerRadiusMedium}"/>
+			<Setter Property="Padding" Value="{StaticResource PaddingButtonLarge}"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+		</Style>
+
+		<Style Selector="Button.primary-button:pointerover">
+			<Setter Property="Background" Value="{StaticResource PrimaryLightBrush}"/>
+		</Style>
+	</rxui:ReactiveUserControl.Styles>
+
+	<controls:DataTableControl HeaderText="{x:Static resources:TextResource.ShiftDiariesPageTitle}"
+                               DescriptionText="{x:Static resources:TextResource.ShiftDiariesPageDescription}"
+                               SearchWatermark="{x:Static resources:TextResource.SearchShiftDiariesPlaceholder}"
+                               RowClickCommand="{Binding ViewDetailsCommand}"
+                               SearchText="{Binding SearchText}"
+                               ItemsSource="{Binding ShiftDiaryData}"
+                               ResultSummary="{Binding ResultSummary}"
+                               MaxHeight="400"
+                               PageSize="10"
+                               ShowPagination="True"
+                               ShowPrimaryAction="True"
+                               PrimaryActionText="{x:Static resources:TextResource.CreateNewDiaryButtonText}"
+                               PrimaryActionCommand="{Binding CreateNewShiftDiaryCommand}">
+		<controls:DataTableControl.Columns>
+			<controls:DataTableColumn Header="{x:Static resources:TextResource.CreatedDateHeaderText}"
+                                      Binding="FormattedCreatedAt"
+                                      Width="2*"
+                                      CellStyle="cell-text diary-date"/>
+			<controls:DataTableColumn Header="{x:Static resources:TextResource.HeaderColumnText}"
+                                      Binding="Header"
+                                      Width="3*"
+                                      CellStyle="cell-text diary-header"/>
+			<controls:DataTableColumn Header="{x:Static resources:TextResource.AuthorHeaderText}"
+                                      Binding="SenderName"
+                                      Width="2*"
+                                      CellStyle="cell-text sender-name"/>
+		</controls:DataTableControl.Columns>
+	</controls:DataTableControl>
+</rxui:ReactiveUserControl>

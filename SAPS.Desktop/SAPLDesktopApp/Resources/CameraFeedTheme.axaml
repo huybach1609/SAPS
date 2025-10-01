@@ -1,0 +1,155 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:SAPLDesktopApp.Controls"
+					xmlns:resources="using:SAPLDesktopApp.Resources">
+
+	<!-- Simple ControlTheme for CameraFeedControl -->
+	<ControlTheme x:Key="{x:Type controls:CameraFeedControl}" TargetType="controls:CameraFeedControl">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="*"/>
+						<RowDefinition Height="Auto"/>
+					</Grid.RowDefinitions>
+
+					<!-- 4 Camera Grid -->
+					<Grid Grid.Row="0">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="*"/>
+							<RowDefinition Height="*"/>
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
+
+						<!-- Front Entrance Gate -->
+						<Border Grid.Row="0" Grid.Column="0"
+								Background="{StaticResource CameraFrameBackgroundBrush}"
+								BorderBrush="{StaticResource CameraFrameBorderBrush}"
+								BorderThickness="{StaticResource CameraFrameBorderThickness}"
+								Margin="{StaticResource CameraFrameMargin}">
+							<Grid>
+								<!-- 16:9 Aspect Ratio Container -->
+								<Viewbox Stretch="Uniform">
+									<Grid Width="160" Height="90">
+										<Image Source="{TemplateBinding FrontEntranceImage}"
+											   Stretch="UniformToFill"/>
+									</Grid>
+								</Viewbox>
+								<TextBlock Text="{x:Static resources:TextResource.CameraFeedFrontEntranceGate}"
+										   Foreground="{StaticResource TextLightBrush}"
+										   Background="{StaticResource CameraLabelBackgroundBrush}"
+										   Padding="{StaticResource CameraLabelPadding}"
+										   HorizontalAlignment="Left"
+										   VerticalAlignment="Bottom"
+										   FontWeight="Bold"/>
+							</Grid>
+						</Border>
+
+						<!-- Back Entrance Gate -->
+						<Border Grid.Row="0" Grid.Column="1"
+								Background="{StaticResource CameraFrameBackgroundBrush}"
+								BorderBrush="{StaticResource CameraFrameBorderBrush}"
+								BorderThickness="{StaticResource CameraFrameBorderThickness}"
+								Margin="{StaticResource CameraFrameMargin}">
+							<Grid>
+								<!-- 16:9 Aspect Ratio Container -->
+								<Viewbox Stretch="Uniform">
+									<Grid Width="160" Height="90">
+										<Image Source="{TemplateBinding BackEntranceImage}"
+											   Stretch="UniformToFill"/>
+									</Grid>
+								</Viewbox>
+								<TextBlock Text="{x:Static resources:TextResource.CameraFeedBackEntranceGate}"
+										   Foreground="{StaticResource TextLightBrush}"
+										   Background="{StaticResource CameraLabelBackgroundBrush}"
+										   Padding="{StaticResource CameraLabelPadding}"
+										   HorizontalAlignment="Left"
+										   VerticalAlignment="Bottom"
+										   FontWeight="Bold"/>
+							</Grid>
+						</Border>
+
+						<!-- Front Exit Gate -->
+						<Border Grid.Row="1" Grid.Column="0"
+								Background="{StaticResource CameraFrameBackgroundBrush}"
+								BorderBrush="{StaticResource CameraFrameBorderBrush}"
+								BorderThickness="{StaticResource CameraFrameBorderThickness}"
+								Margin="{StaticResource CameraFrameMargin}">
+							<Grid>
+								<!-- 16:9 Aspect Ratio Container -->
+								<Viewbox Stretch="Uniform">
+									<Grid Width="160" Height="90">
+										<Image Source="{TemplateBinding FrontExitImage}"
+											   Stretch="UniformToFill"/>
+									</Grid>
+								</Viewbox>
+								<TextBlock Text="{x:Static resources:TextResource.CameraFeedFrontExitGate}"
+										   Foreground="{StaticResource TextLightBrush}"
+										   Background="{StaticResource CameraLabelBackgroundBrush}"
+										   Padding="{StaticResource CameraLabelPadding}"
+										   HorizontalAlignment="Left"
+										   VerticalAlignment="Bottom"
+										   FontWeight="Bold"/>
+							</Grid>
+						</Border>
+
+						<!-- Back Exit Gate -->
+						<Border Grid.Row="1" Grid.Column="1"
+								Background="{StaticResource CameraFrameBackgroundBrush}"
+								BorderBrush="{StaticResource CameraFrameBorderBrush}"
+								BorderThickness="{StaticResource CameraFrameBorderThickness}"
+								Margin="{StaticResource CameraFrameMargin}">
+							<Grid>
+								<!-- 16:9 Aspect Ratio Container -->
+								<Viewbox Stretch="Uniform">
+									<Grid Width="160" Height="90">
+										<Image Source="{TemplateBinding BackExitImage}"
+											   Stretch="UniformToFill"/>
+									</Grid>
+								</Viewbox>
+								<TextBlock Text="{x:Static resources:TextResource.CameraFeedBackExitGate}"
+										   Foreground="{StaticResource TextLightBrush}"
+										   Background="{StaticResource CameraLabelBackgroundBrush}"
+										   Padding="{StaticResource CameraLabelPadding}"
+										   HorizontalAlignment="Left"
+										   VerticalAlignment="Bottom"
+										   FontWeight="Bold"/>
+							</Grid>
+						</Border>
+					</Grid>
+
+					<!-- Footer Buttons -->
+					<Border Grid.Row="1"
+							Background="{StaticResource CameraFooterBackgroundBrush}"
+							Padding="{StaticResource CameraFooterPadding}"
+							BorderBrush="{StaticResource CameraFrameBorderBrush}"
+							BorderThickness="{StaticResource CameraFooterBorderThickness}">
+						<ItemsControl ItemsSource="{TemplateBinding FooterButtons}" HorizontalAlignment="Right">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<StackPanel Orientation="Horizontal" Spacing="{StaticResource CameraButtonSpacing}"/>
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+							<ItemsControl.ItemTemplate>
+								<DataTemplate x:DataType="controls:CameraButton">
+									<Button Content="{Binding Content}"
+                                            Background="{Binding Background}"
+                                            Foreground="{Binding Foreground}"
+											ToolTip.Tip="{Binding Tooltip}"
+                                            Command="{Binding Command}"
+                                            Padding="{StaticResource CameraButtonPadding}"
+                                            Margin="{StaticResource CameraButtonMargin}"/>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</Border>
+				</Grid>
+			</ControlTemplate>
+		</Setter>
+	</ControlTheme>
+
+</ResourceDictionary>
+

@@ -1,0 +1,288 @@
+<!-- LoginWindow.axaml -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:SAPLDesktopApp.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:rxui="http://reactiveui.net"
+		xmlns:resources="using:SAPLDesktopApp.Resources"
+        mc:Ignorable="d"
+        x:Class="SAPLDesktopApp.Views.LoginWindow"
+        x:DataType="vm:LoginViewModel"
+        Title="{x:Static resources:TextResource.LoginWindowTitle}"
+        Icon="/Assets/avalonia-logo.ico"
+        WindowStartupLocation="CenterScreen"
+        Width="800"
+        Height="600"
+        MinWidth="800"
+        MinHeight="600"
+        CanResize="False"
+        Background="{StaticResource PrimaryLightestBrush}">
+
+	<Design.DataContext>
+		<vm:LoginViewModel/>
+	</Design.DataContext>
+
+	<Window.Styles>
+		<!--Login Form Styles-->
+		<Style Selector="TextBox.login-input">
+			<Setter Property="FontSize" Value="{StaticResource FontSizeMedium}"/>
+			<Setter Property="Padding" Value="{StaticResource PaddingLarge}"/>
+			<Setter Property="CornerRadius" Value="{StaticResource CornerRadiusLarge}"/>
+			<Setter Property="BorderThickness" Value="{StaticResource BorderThicknessThin}"/>
+			<Setter Property="BorderBrush" Value="{StaticResource NeutralBorderBrush}"/>
+			<Setter Property="Background" Value="{StaticResource NeutralBackgroundBrush}"/>
+			<Setter Property="Margin" Value="{StaticResource MarginSmall}"/>
+			<Setter Property="Width" Value="350"/>
+			<Setter Property="HorizontalAlignment" Value="Left"/>
+		</Style>
+
+		<Style Selector="TextBox.login-input:focus">
+			<Setter Property="BorderBrush" Value="{StaticResource PrimaryMediumBrush}"/>
+			<Setter Property="BorderThickness" Value="{StaticResource BorderThicknessMedium}"/>
+		</Style>
+
+		<Style Selector="Button.login-button">
+			<Setter Property="FontSize" Value="{StaticResource FontSizeMedium}"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="Padding" Value="{StaticResource PaddingButtonLarge}"/>
+			<Setter Property="CornerRadius" Value="{StaticResource CornerRadiusLarge}"/>
+			<Setter Property="BorderThickness" Value="{StaticResource BorderThicknessNone}"/>
+			<Setter Property="Background" Value="{StaticResource PrimaryMediumBrush}"/>
+			<Setter Property="Foreground" Value="{StaticResource TextLightBrush}"/>
+			<Setter Property="HorizontalAlignment" Value="Stretch"/>
+			<Setter Property="Margin" Value="{StaticResource MarginMedium}"/>
+			<Setter Property="Width" Value="350"/>
+		</Style>
+
+		<Style Selector="Button.login-button:pointerover">
+			<Setter Property="Background" Value="{StaticResource PrimaryDarkBrush}"/>
+		</Style>
+
+		<Style Selector="Button.login-button:pressed">
+			<Setter Property="Background" Value="#021938"/>
+		</Style>
+
+		<Style Selector="Button.login-button:disabled">
+			<Setter Property="Background" Value="{StaticResource NeutralGrayBrush}"/>
+			<Setter Property="Foreground" Value="{StaticResource TextMutedBrush}"/>
+		</Style>
+
+		<Style Selector="TextBlock.login-label">
+			<Setter Property="FontSize" Value="{StaticResource FontSizeRegular}"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+			<Setter Property="Margin" Value="{StaticResource MarginLabelBottom}"/>
+			<Setter Property="Width" Value="350"/>
+			<Setter Property="HorizontalAlignment" Value="Left"/>
+		</Style>
+
+		<Style Selector="TextBlock.error-message">
+			<Setter Property="FontSize" Value="{StaticResource FontSizeSmall}"/>
+			<Setter Property="Foreground" Value="{StaticResource AccentDangerBrush}"/>
+			<Setter Property="Margin" Value="0,4,0,8"/>
+			<Setter Property="TextWrapping" Value="Wrap"/>
+			<Setter Property="Width" Value="350"/>
+			<Setter Property="HorizontalAlignment" Value="Left"/>
+		</Style>
+
+		<Style Selector="Border.loading-overlay">
+			<Setter Property="Background" Value="#80FFFFFF"/>
+			<Setter Property="IsVisible" Value="False"/>
+			<Setter Property="ZIndex" Value="1000"/>
+		</Style>
+
+		<!-- Static width style for StackPanels containing form elements -->
+		<Style Selector="StackPanel.form-field">
+			<Setter Property="Width" Value="350"/>
+			<Setter Property="HorizontalAlignment" Value="Left"/>
+		</Style>
+
+		<!-- Static width style for CheckBox -->
+		<Style Selector="CheckBox.form-checkbox">
+			<Setter Property="Width" Value="350"/>
+			<Setter Property="HorizontalAlignment" Value="Left"/>
+		</Style>
+	</Window.Styles>
+
+	<!--Main Container-->
+	<Grid>
+		<!--Background Gradient-->
+		<Grid.Background>
+			<LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+				<GradientStop Color="{StaticResource PrimaryLightest}" Offset="0"/>
+				<GradientStop Color="{StaticResource PrimaryLighter}" Offset="1"/>
+			</LinearGradientBrush>
+		</Grid.Background>
+
+		<!--Main Content-->
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="2*"/>
+				<ColumnDefinition Width="3*"/>
+			</Grid.ColumnDefinitions>
+
+			<!--Left Side - Branding-->
+			<Grid Grid.Column="0">
+				<StackPanel VerticalAlignment="Center"
+                            HorizontalAlignment="Center">
+
+					<!--Large Logo-->
+					<Border Width="140"
+                            Height="140"
+                            CornerRadius="28"
+                            Margin="0,0,0,32">
+						<Border.Background>
+							<LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+								<GradientStop Color="{StaticResource PrimaryMedium}" Offset="0"/>
+								<GradientStop Color="{StaticResource PrimaryDark}" Offset="1"/>
+							</LinearGradientBrush>
+						</Border.Background>
+						<TextBlock Text="{StaticResource IconCar}"
+                                   FontSize="84"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"/>
+					</Border>
+
+					<!--App Title-->
+					<TextBlock Text="{x:Static resources:TextResource.AppName}"
+                               FontSize="{StaticResource FontSizeXXLarge}"
+                               FontWeight="Bold"
+                               Foreground="{StaticResource PrimaryDarkBrush}"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,12"/>
+
+					<!--App Description-->
+					<TextBlock Text="{x:Static resources:TextResource.AppDescription}"
+                               FontSize="{StaticResource FontSizeLarge}"
+                               Foreground="{StaticResource TextSecondaryBrush}"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"
+                               Margin="0,0,0,8"/>
+
+					<TextBlock Text="{x:Static resources:TextResource.AppPortalDescription}"
+                               FontSize="{StaticResource FontSizeRegular}"
+                               Foreground="{StaticResource TextMutedBrush}"
+                               HorizontalAlignment="Center"
+                               TextAlignment="Center"/>
+				</StackPanel>
+			</Grid>
+
+			<!--Right Side - Login Form-->
+			<Grid Grid.Column="1"
+                  Margin="{StaticResource MarginXLarge}">
+				<Border Background="{StaticResource NeutralBackgroundBrush}"
+                        CornerRadius="{StaticResource CornerRadiusXLarge}"
+                        Padding="{StaticResource PaddingXXLarge}">
+
+					<StackPanel VerticalAlignment="Center"
+                                MaxWidth="450"
+                                HorizontalAlignment="Center">
+						<!--Login Header-->
+						<TextBlock Text="{x:Static resources:TextResource.LoginHeaderText}"
+                                   FontSize="{StaticResource FontSizeXLarge}"
+                                   FontWeight="Bold"
+                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,0,0,8"/>
+
+						<TextBlock Text="{x:Static resources:TextResource.LoginSubHeaderText}"
+                                   FontSize="{StaticResource FontSizeRegular}"
+                                   Foreground="{StaticResource TextMutedBrush}"
+                                   HorizontalAlignment="Center"
+                                   TextAlignment="Center"
+                                   Margin="0,0,0,40"/>
+
+						<!--Email Input-->
+						<StackPanel Margin="0,0,0,20" Classes="form-field">
+							<TextBlock Text="{x:Static resources:TextResource.EmailLabel}"
+                                       Classes="login-label"/>
+							<TextBox Text="{Binding Email}"
+                                     Classes="login-input"
+                                     Watermark="{x:Static resources:TextResource.EnterEmailPlaceholder}"/>
+							<TextBlock Text="{Binding EmailError}"
+                                       Classes="error-message"
+                                       IsVisible="{Binding HasEmailError}"/>
+						</StackPanel>
+
+						<!--Password Input-->
+						<StackPanel Margin="0,0,0,28" Classes="form-field">
+							<TextBlock Text="{x:Static resources:TextResource.LabelPassword}"
+                                       Classes="login-label"/>
+							<TextBox Text="{Binding Password}"
+                                     Classes="login-input"
+                                     PasswordChar="●"
+                                     Watermark="{x:Static resources:TextResource.PasswordPlaceHolder}"/>
+							<TextBlock Text="{Binding PasswordError}"
+                                       Classes="error-message"
+                                       IsVisible="{Binding HasPasswordError}"/>
+						</StackPanel>
+
+						<!--Login Button-->
+						<Button Content="{x:Static resources:TextResource.LoginButton}"
+                                Classes="login-button"
+                                Command="{Binding LoginCommand}"
+                                IsEnabled="{Binding CanLogin}"
+								HorizontalContentAlignment="Center"/>
+
+						<!--Error Message-->
+						<Border Background="{StaticResource AccentDangerBrush}"
+                                CornerRadius="{StaticResource CornerRadiusMedium}"
+                                Padding="{StaticResource PaddingMedium}"
+                                Margin="0,20,0,0"
+                                IsVisible="{Binding HasLoginError}"
+								Width="350"
+								HorizontalAlignment="Left">
+							<StackPanel Orientation="Horizontal">
+								<TextBlock Text="{StaticResource IconIncident}"
+                                           FontSize="{StaticResource IconSizeMedium}"
+                                           Foreground="{StaticResource TextLightBrush}"
+                                           VerticalAlignment="Center"
+                                           Margin="0,0,8,0"/>
+								<TextBlock Text="{Binding LoginError}"
+                                           FontSize="{StaticResource FontSizeRegular}"
+                                           Foreground="{StaticResource TextLightBrush}"
+                                           TextWrapping="Wrap"
+                                           VerticalAlignment="Center"/>
+							</StackPanel>
+						</Border>
+
+						<!--Additional Links-->
+						<StackPanel Margin="0,28,0,0" Classes="form-field">
+							<Button Content="{x:Static resources:TextResource.ForgotPasswordText}"
+                                    Background="{StaticResource TransparentBrush}"
+                                    Foreground="{StaticResource PrimaryMediumBrush}"
+                                    BorderThickness="{StaticResource BorderThicknessNone}"
+                                    FontSize="{StaticResource FontSizeRegular}"
+                                    HorizontalAlignment="Center"
+                                    Command="{Binding ForgotPasswordCommand}"/>
+						</StackPanel>
+					</StackPanel>
+				</Border>
+			</Grid>
+		</Grid>
+
+		<!--Loading Overlay-->
+		<Border Classes="loading-overlay"
+                IsVisible="{Binding IsLoading}">
+			<StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center">
+				<Border Width="64"
+                        Height="64"
+                        CornerRadius="32"
+                        Background="{StaticResource PrimaryMediumBrush}"
+                        Margin="0,0,0,16">
+					<TextBlock Text="⏳"
+                               FontSize="32"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"/>
+				</Border>
+				<TextBlock Text="{Binding LoadingMessage}"
+                           FontSize="{StaticResource FontSizeMedium}"
+                           FontWeight="SemiBold"
+                           Foreground="{StaticResource TextPrimaryBrush}"
+                           HorizontalAlignment="Center"/>
+			</StackPanel>
+		</Border>
+	</Grid>
+</Window>

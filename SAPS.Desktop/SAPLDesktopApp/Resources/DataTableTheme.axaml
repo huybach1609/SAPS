@@ -1,0 +1,335 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:SAPLDesktopApp.Controls"
+                    xmlns:resources="clr-namespace:SAPLDesktopApp.Resources">
+
+	<!-- DataTableControl ControlTheme -->
+	<ControlTheme x:Key="{x:Type controls:DataTableControl}" TargetType="controls:DataTableControl">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Grid Background="{StaticResource PrimaryLightestBrush}">
+					<!-- Main Content Area -->
+					<Border Background="{StaticResource NeutralBackgroundBrush}"
+                            CornerRadius="{StaticResource CornerRadiusLarge}"
+                            Padding="{StaticResource PaddingContainer}"
+                            Margin="{StaticResource PaddingContainer}">
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<!-- Header and Search -->
+								<RowDefinition Height="*"/>
+								<!-- Table Content -->
+								<RowDefinition Height="Auto"/>
+								<!-- Pagination and Summary -->
+							</Grid.RowDefinitions>
+
+							<!-- Header and Search Section -->
+							<StackPanel Grid.Row="0" Spacing="{StaticResource SpacingLarge}">
+								<!-- Header Section -->
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*"/>
+										<ColumnDefinition Width="Auto"/>
+									</Grid.ColumnDefinitions>
+
+									<!-- Header Text Section -->
+									<StackPanel Grid.Column="0" Spacing="{StaticResource SpacingSmall}">
+										<TextBlock Text="{TemplateBinding HeaderText}"
+                                                   FontSize="{StaticResource FontSizeXLarge}"
+                                                   FontWeight="Bold"
+                                                   Foreground="{StaticResource TextPrimaryBrush}"/>
+										<TextBlock Text="{TemplateBinding DescriptionText}"
+                                                   FontSize="{StaticResource FontSizeMedium}"
+                                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                                   IsVisible="{Binding DescriptionText, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+									</StackPanel>
+
+									<!-- Action Buttons Section -->
+									<StackPanel Grid.Column="1"
+                                                Orientation="Horizontal"
+                                                Spacing="{StaticResource SpacingMedium}"
+                                                VerticalAlignment="Center">
+
+										<!-- Primary Action Button -->
+										<Button Name="PART_PrimaryActionButton"
+                                                Content="{TemplateBinding PrimaryActionText}"
+                                                Classes="primary-action-button"
+                                                IsVisible="{TemplateBinding ShowPrimaryAction}"/>
+									</StackPanel>
+								</Grid>
+
+								<!-- Search and Filter Section -->
+								<Grid>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
+									</Grid.RowDefinitions>
+
+									<!-- Search Section -->
+									<TextBox Grid.Row="0"
+											 Text="{TemplateBinding SearchText}"
+											 VerticalContentAlignment="Center"
+											 Watermark="{TemplateBinding SearchWatermark}"
+											 Padding="{StaticResource PaddingMedium}"
+											 CornerRadius="{StaticResource CornerRadiusSmall}"
+											 BorderBrush="{StaticResource NeutralGrayBrush}"
+											 BorderThickness="{StaticResource BorderThicknessThin}"
+											 Background="{StaticResource NeutralBackgroundBrush}"
+											 FontSize="{StaticResource FontSizeMedium}"
+											 MinHeight="40"
+											 HorizontalAlignment="Stretch"
+											 Classes="data-table-search"/>
+
+									<!-- Filter Section -->
+									<Grid Grid.Row="1"
+										  Margin="0,12,0,0"
+										  IsVisible="{TemplateBinding ShowFilter}">
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="Auto"/>
+											<ColumnDefinition Width="200"/>
+											<ColumnDefinition Width="*"/>
+										</Grid.ColumnDefinitions>
+
+										<!-- Filter Label -->
+										<TextBlock Grid.Column="0"
+												   Text="{TemplateBinding FilterLabel}"
+												   FontSize="{StaticResource FontSizeMedium}"
+												   FontWeight="SemiBold"
+												   Foreground="{StaticResource TextPrimaryBrush}"
+												   VerticalAlignment="Center"
+												   Margin="0,0,12,0"/>
+
+										<!-- Filter ComboBox -->
+										<ComboBox Grid.Column="1"
+												  Name="PART_StatusFilterCombo"
+												  SelectedItem="{TemplateBinding SelectedFilter}"
+												  Padding="{StaticResource PaddingMedium}"
+												  CornerRadius="{StaticResource CornerRadiusSmall}"
+												  BorderBrush="{StaticResource NeutralGrayBrush}"
+												  BorderThickness="{StaticResource BorderThicknessThin}"
+												  Background="{StaticResource NeutralBackgroundBrush}"
+												  FontSize="{StaticResource FontSizeMedium}"
+												  MinHeight="40"/>
+
+										<!-- Clear Filter Button -->
+										<Button Grid.Column="2"
+												Content="{x:Static resources:TextResource.DataTableClearFilter}"
+												Background="{StaticResource NeutralGrayBrush}"
+												Foreground="{StaticResource TextLightBrush}"
+												BorderThickness="{StaticResource BorderThicknessNone}"
+												CornerRadius="{StaticResource CornerRadiusSmall}"
+												Padding="12,8"
+												FontSize="{StaticResource FontSizeSmall}"
+												HorizontalAlignment="Left"
+												Margin="12,0,0,0"
+												Name="PART_ClearFilterButton"
+												IsVisible="{TemplateBinding ShowFilter}"/>
+									</Grid>
+								</Grid>
+							</StackPanel>
+
+							<!-- Data Table Container -->
+							<Border Grid.Row="1"
+                                    BorderBrush="{StaticResource NeutralBorderBrush}"
+                                    BorderThickness="{StaticResource BorderThicknessThin}"
+                                    CornerRadius="{StaticResource CornerRadiusSmall}"
+                                    ClipToBounds="True"
+                                    Margin="0,16,0,16">
+								<Grid>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="*"/>
+									</Grid.RowDefinitions>
+
+									<!-- Table Header -->
+									<Border Grid.Row="0"
+                                            Background="{StaticResource PrimaryDarkBrush}"
+                                            Padding="{StaticResource PaddingLarge}">
+										<Grid Name="PART_HeaderGrid">
+											<!-- Header columns will be generated dynamically -->
+										</Grid>
+									</Border>
+
+									<!-- Table Data with ScrollViewer -->
+									<ScrollViewer Grid.Row="1"
+                                                  MaxHeight="{TemplateBinding MaxHeight}"
+                                                  VerticalScrollBarVisibility="Auto"
+                                                  HorizontalScrollBarVisibility="Disabled">
+										<ItemsControl Name="PART_ItemsControl">
+											<!-- Data rows will be generated dynamically -->
+										</ItemsControl>
+									</ScrollViewer>
+								</Grid>
+							</Border>
+
+							<!-- Fixed Bottom Section: Pagination and Summary -->
+							<StackPanel Grid.Row="2" Spacing="8">
+								<!-- Pagination Section -->
+								<Grid IsVisible="{TemplateBinding ShowPagination}">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*"/>
+										<ColumnDefinition Width="Auto"/>
+									</Grid.ColumnDefinitions>
+
+									<!-- Pagination Info -->
+									<TextBlock Grid.Column="0"
+                                               Text="{TemplateBinding PaginationInfo}"
+                                               FontSize="{StaticResource FontSizeMedium}"
+                                               Foreground="{StaticResource TextSecondaryBrush}"
+                                               VerticalAlignment="Center"/>
+
+									<!-- Pagination Controls -->
+									<StackPanel Grid.Column="1"
+                                                Orientation="Horizontal"
+                                                Spacing="{StaticResource SpacingSmall}">
+
+										<!-- Navigation Buttons - Only visible when ShowNavigationButtons is true -->
+										<Button Content="{x:Static resources:TextResource.PaginationFirstPage}"
+                                                Background="{StaticResource NeutralLightBrush}"
+                                                Foreground="{StaticResource TextPrimaryBrush}"
+                                                BorderBrush="{StaticResource NeutralGrayBrush}"
+                                                BorderThickness="{StaticResource BorderThicknessThin}"
+                                                CornerRadius="{StaticResource CornerRadiusSmall}"
+                                                Padding="12,6"
+                                                FontSize="{StaticResource FontSizeSmall}"
+                                                Name="PART_FirstPageButton"
+                                                IsVisible="{TemplateBinding ShowNavigationButtons}"/>
+
+										<Button Content="{x:Static resources:TextResource.PaginationPreviousPage}"
+                                                Background="{StaticResource NeutralLightBrush}"
+                                                Foreground="{StaticResource TextPrimaryBrush}"
+                                                BorderBrush="{StaticResource NeutralGrayBrush}"
+                                                BorderThickness="{StaticResource BorderThicknessThin}"
+                                                CornerRadius="{StaticResource CornerRadiusSmall}"
+                                                Padding="12,6"
+                                                FontSize="{StaticResource FontSizeSmall}"
+                                                Name="PART_PreviousPageButton"
+                                                IsVisible="{TemplateBinding ShowNavigationButtons}"/>
+
+										<!-- Page Info - Shows the dynamically generated pagination text -->
+										<TextBlock VerticalAlignment="Center"
+                                                   Margin="12,0"
+                                                   Text="{TemplateBinding PaginationText}"
+                                                   FontSize="{StaticResource FontSizeMedium}"
+                                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                                   FontWeight="SemiBold"/>
+
+										<Button Content="{x:Static resources:TextResource.PaginationNextPage}"
+                                                Background="{StaticResource NeutralLightBrush}"
+                                                Foreground="{StaticResource TextPrimaryBrush}"
+                                                BorderBrush="{StaticResource NeutralGrayBrush}"
+                                                BorderThickness="{StaticResource BorderThicknessThin}"
+                                                CornerRadius="{StaticResource CornerRadiusSmall}"
+                                                Padding="12,6"
+                                                FontSize="{StaticResource FontSizeSmall}"
+                                                Name="PART_NextPageButton"
+                                                IsVisible="{TemplateBinding ShowNavigationButtons}"/>
+
+										<Button Content="{x:Static resources:TextResource.PaginationLastPage}"
+                                                Background="{StaticResource NeutralLightBrush}"
+                                                Foreground="{StaticResource TextPrimaryBrush}"
+                                                BorderBrush="{StaticResource NeutralGrayBrush}"
+                                                BorderThickness="{StaticResource BorderThicknessThin}"
+                                                CornerRadius="{StaticResource CornerRadiusSmall}"
+                                                Padding="12,6"
+                                                FontSize="{StaticResource FontSizeSmall}"
+                                                Name="PART_LastPageButton"
+                                                IsVisible="{TemplateBinding ShowNavigationButtons}"/>
+									</StackPanel>
+								</Grid>
+
+								<!-- Table Summary -->
+								<TextBlock Text="{TemplateBinding ResultSummary}"
+                                           FontSize="{StaticResource FontSizeMedium}"
+                                           Foreground="{StaticResource TextSecondaryBrush}"
+                                           HorizontalAlignment="Left"
+                                           IsVisible="{Binding ResultSummary, RelativeSource={RelativeSource TemplatedParent}, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+							</StackPanel>
+						</Grid>
+					</Border>
+				</Grid>
+			</ControlTemplate>
+		</Setter>
+
+		<!-- Primary Action Button Style -->
+		<Style Selector="^Button.primary-action-button">
+			<Setter Property="Background" Value="{StaticResource AccentSuccessBrush}"/>
+			<Setter Property="Foreground" Value="{StaticResource TextLightBrush}"/>
+			<Setter Property="BorderThickness" Value="{StaticResource BorderThicknessNone}"/>
+			<Setter Property="CornerRadius" Value="{StaticResource CornerRadiusMedium}"/>
+			<Setter Property="Padding" Value="16,10"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="FontSize" Value="{StaticResource FontSizeMedium}"/>
+			<Setter Property="MinWidth" Value="140"/>
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+		</Style>
+
+		<Style Selector="^Button.primary-action-button:pointerover">
+			<Setter Property="Background" Value="{StaticResource PrimaryMediumBrush}"/>
+		</Style>
+
+		<Style Selector="^Button.primary-action-button:pressed">
+			<Setter Property="Background" Value="{StaticResource PrimaryDarkBrush}"/>
+		</Style>
+
+		<!-- Custom TextBox Style for Search Box -->
+		<Style Selector="^TextBox.data-table-search">
+			<Setter Property="Background" Value="{StaticResource NeutralBackgroundBrush}"/>
+			<Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+			<Setter Property="BorderBrush" Value="{StaticResource NeutralGrayBrush}"/>
+			<Setter Property="BorderThickness" Value="{StaticResource BorderThicknessThin}"/>
+		</Style>
+
+		<!-- TextBox Focus State -->
+		<Style Selector="^TextBox.data-table-search:focus">
+			<Setter Property="BorderBrush" Value="{StaticResource PrimaryMediumBrush}"/>
+			<Setter Property="BorderThickness" Value="2"/>
+			<Setter Property="Background" Value="{StaticResource NeutralBackgroundBrush}"/>
+		</Style>
+
+		<!-- TextBox Hover State -->
+		<Style Selector="^TextBox.data-table-search:pointerover">
+			<Setter Property="BorderBrush" Value="{StaticResource PrimaryLightBrush}"/>
+		</Style>
+
+		<!-- Watermark Style for TextBox -->
+		<Style Selector="^TextBox.data-table-search /template/ TextBlock#PART_Watermark">
+			<Setter Property="Foreground" Value="{StaticResource TextMutedBrush}"/>
+			<Setter Property="FontStyle" Value="Italic"/>
+		</Style>
+
+		<!-- Filter ComboBox Style -->
+		<Style Selector="^ComboBox#PART_StatusFilterCombo">
+			<Setter Property="Background" Value="{StaticResource NeutralBackgroundBrush}"/>
+			<Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+			<Setter Property="BorderBrush" Value="{StaticResource NeutralGrayBrush}"/>
+			<Setter Property="BorderThickness" Value="{StaticResource BorderThicknessThin}"/>
+		</Style>
+
+		<Style Selector="^ComboBox#PART_StatusFilterCombo:focus">
+			<Setter Property="BorderBrush" Value="{StaticResource PrimaryMediumBrush}"/>
+			<Setter Property="BorderThickness" Value="2"/>
+		</Style>
+
+		<Style Selector="^ComboBox#PART_StatusFilterCombo:pointerover">
+			<Setter Property="BorderBrush" Value="{StaticResource PrimaryLightBrush}"/>
+		</Style>
+
+		<!-- Clear Filter Button Style -->
+		<Style Selector="^Button#PART_ClearFilterButton">
+			<Setter Property="Background" Value="{StaticResource NeutralGrayBrush}"/>
+			<Setter Property="Foreground" Value="{StaticResource TextLightBrush}"/>
+			<Setter Property="BorderThickness" Value="{StaticResource BorderThicknessNone}"/>
+			<Setter Property="CornerRadius" Value="{StaticResource CornerRadiusSmall}"/>
+		</Style>
+
+		<Style Selector="^Button#PART_ClearFilterButton:pointerover">
+			<Setter Property="Background" Value="{StaticResource AccentWarningBrush}"/>
+		</Style>
+
+		<Style Selector="^Button#PART_ClearFilterButton:pressed">
+			<Setter Property="Background" Value="{StaticResource AccentDangerBrush}"/>
+		</Style>
+	</ControlTheme>
+
+</ResourceDictionary>

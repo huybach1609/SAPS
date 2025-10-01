@@ -1,0 +1,430 @@
+<rxui:ReactiveUserControl xmlns="https://github.com/avaloniaui"
+                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                         xmlns:rxui="http://reactiveui.net"
+                         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+						  xmlns:resources="using:SAPLDesktopApp.Resources"
+                         xmlns:vm="clr-namespace:SAPLDesktopApp.ViewModels"
+                         mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="700"
+                         x:DataType="vm:ParkingSessionDetailsViewModel"
+                         x:Class="SAPLDesktopApp.Views.ParkingSessionDetailsView">
+
+    <rxui:ReactiveUserControl.Styles>
+         <!--Section Card Styles--> 
+        <Style Selector="Border.section-card">
+            <Setter Property="Background" Value="{StaticResource NeutralBackgroundBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource PrimaryMediumBrush}"/>
+            <Setter Property="BorderThickness" Value="{StaticResource BorderThicknessThin}"/>
+            <Setter Property="CornerRadius" Value="{StaticResource CornerRadiusMedium}"/>
+            <Setter Property="Padding" Value="{StaticResource PaddingLarge}"/>
+            <Setter Property="Margin" Value="{StaticResource MarginMedium}"/>
+        </Style>
+
+         <!--Section Header Styles--> 
+        <Style Selector="TextBlock.section-title">
+            <Setter Property="FontSize" Value="{StaticResource FontSizeXLarge}"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource PrimaryDarkBrush}"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,0,20"/>
+        </Style>
+
+         <!--Detail Label Styles--> 
+        <Style Selector="TextBlock.detail-label">
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+            <Setter Property="FontSize" Value="{StaticResource FontSizeMedium}"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+         <!--Detail Value Styles--> 
+        <Style Selector="TextBlock.detail-value">
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+            <Setter Property="FontSize" Value="{StaticResource FontSizeMedium}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+         <!--License Plate Special Style--> 
+        <Style Selector="TextBlock.license-plate-display">
+            <Setter Property="FontSize" Value="28"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextLightBrush}"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+         <!--Profile Image Style--> 
+        <Style Selector="Border.profile-image">
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Height" Value="100"/>
+            <Setter Property="CornerRadius" Value="50"/>
+            <Setter Property="BorderBrush" Value="{StaticResource PrimaryMediumBrush}"/>
+            <Setter Property="BorderThickness" Value="3"/>
+            <Setter Property="Background" Value="{StaticResource NeutralLightBrush}"/>
+        </Style>
+
+         <!--Enhanced Vehicle Image Styles--> 
+        <Style Selector="Border.vehicle-image">
+            <Setter Property="Width" Value="140"/>
+            <Setter Property="Height" Value="95"/>
+            <Setter Property="CornerRadius" Value="{StaticResource CornerRadiusSmall}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource PrimaryMediumBrush}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Background" Value="{StaticResource NeutralLightBrush}"/>
+        </Style>
+
+         <!--Status Badge Styles--> 
+        <Style Selector="Border.status-completed">
+            <Setter Property="Background" Value="{StaticResource SuccessBrush}"/>
+            <Setter Property="CornerRadius" Value="{StaticResource CornerRadiusSmall}"/>
+            <Setter Property="Padding" Value="8,4"/>
+        </Style>
+
+        <Style Selector="Border.status-active">
+            <Setter Property="Background" Value="{StaticResource WarningBrush}"/>
+            <Setter Property="CornerRadius" Value="{StaticResource CornerRadiusSmall}"/>
+            <Setter Property="Padding" Value="8,4"/>
+        </Style>
+
+         <!--Payment Status Badge Styles--> 
+        <Style Selector="Border.payment-paid">
+            <Setter Property="Background" Value="{StaticResource SuccessBrush}"/>
+            <Setter Property="CornerRadius" Value="{StaticResource CornerRadiusSmall}"/>
+            <Setter Property="Padding" Value="8,4"/>
+        </Style>
+
+         <!--Button Styles--> 
+        <Style Selector="Button.back-button">
+            <Setter Property="Background" Value="{StaticResource NeutralGrayBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextLightBrush}"/>
+            <Setter Property="BorderThickness" Value="{StaticResource BorderThicknessNone}"/>
+            <Setter Property="CornerRadius" Value="{StaticResource CornerRadiusMedium}"/>
+            <Setter Property="Padding" Value="{StaticResource PaddingButtonLarge}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <Style Selector="Button.back-button:pointerover">
+            <Setter Property="Background" Value="{StaticResource NeutralMediumBrush}"/>
+        </Style>
+
+        <Style Selector="Button.image-button">
+            <Setter Property="Background" Value="{StaticResource PrimaryMediumBrush}"/>
+            <Setter Property="Foreground" Value="{StaticResource TextLightBrush}"/>
+            <Setter Property="BorderThickness" Value="{StaticResource BorderThicknessNone}"/>
+            <Setter Property="CornerRadius" Value="{StaticResource CornerRadiusSmall}"/>
+            <Setter Property="Padding" Value="6,4"/>
+            <Setter Property="FontSize" Value="{StaticResource FontSizeSmall}"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+
+        <Style Selector="Button.image-button:pointerover">
+            <Setter Property="Background" Value="{StaticResource PrimaryLightBrush}"/>
+        </Style>
+    </rxui:ReactiveUserControl.Styles>
+
+    <ScrollViewer>
+        <Grid Margin="{StaticResource PaddingContainer}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+             <!--Header Section--> 
+            <Grid Grid.Row="0" Margin="0,0,0,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0"
+                        Classes="back-button"
+                        Command="{Binding BackCommand}"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Left">
+                    <StackPanel Orientation="Horizontal" Spacing="8">
+                        <TextBlock Text="{x:Static resources:TextResource.BtnBack}" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Button>
+                <TextBlock Grid.Column="1"
+                           Text="{x:Static resources:TextResource.HistoryDetailsTitle}"
+                           FontSize="{StaticResource FontSizeXXLarge}"
+                           FontWeight="Bold"
+                           Foreground="{StaticResource TextPrimaryBrush}"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"/>
+            </Grid>
+
+             <!--License Plate Banner--> 
+            <Border Grid.Row="1"
+                    Background="{StaticResource PrimaryDarkBrush}"
+                    CornerRadius="{StaticResource CornerRadiusMedium}"
+                    Height="80"
+                    Margin="0,0,0,20">
+                <TextBlock Classes="license-plate-display"
+                           Text="{Binding Details.LicensePlate}"/>
+            </Border>
+
+             <!--Main Content Grid--> 
+            <Grid Grid.Row="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                 <!--First Row: Owner Information and Vehicle Information--> 
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                     <!--Owner Information Section--> 
+                    <Border Grid.Column="0" Classes="section-card">
+                        <StackPanel>
+                            <TextBlock Classes="section-title" Text="{x:Static resources:TextResource.OwnerInformationTitle}"/>
+                            <Border Classes="profile-image" HorizontalAlignment="Center" Margin="0,0,0,15">
+                                <TextBlock Text="👤"
+                                           FontSize="40"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Foreground="{StaticResource TextMutedBrush}"/>
+                            </Border>
+                            <StackPanel Spacing="10">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.Row="0" Classes="detail-label" Text="{x:Static resources:TextResource.LabelOwnerFullName}"/>
+                                    <TextBlock Grid.Row="1" Classes="detail-value" Text="{Binding OwnerFullName}"/>
+                                </Grid>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.Row="0" Classes="detail-label" Text="{x:Static resources:TextResource.LabelOwnerPhoneNumber}"/>
+                                    <TextBlock Grid.Row="1" Classes="detail-value" Text="{Binding OwnerPhoneNumber}"/>
+                                </Grid>
+                            </StackPanel>
+                            <Button Classes="image-button"
+                                    Content="{x:Static resources:TextResource.BtnViewFullImage}"
+                                    Command="{Binding ViewProfileImageCommand}"
+                                    HorizontalAlignment="Center"
+                                    Margin="0,15,0,0"/>
+                        </StackPanel>
+                    </Border>
+
+                     <!--Vehicle Information Section--> 
+                    <Border Grid.Column="1" Classes="section-card">
+                        <StackPanel>
+                            <TextBlock Classes="section-title" Text="{x:Static resources:TextResource.VehicleInformationTitle}"/>
+                            <TextBlock Text="🚗"
+                                       FontSize="60"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,0,0,20"/>
+                            <StackPanel Spacing="10">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.Row="0" Classes="detail-label" Text="{x:Static resources:TextResource.LabelPlateNumber}"/>
+                                    <TextBlock Grid.Row="1" Classes="detail-value" Text="{Binding Details.LicensePlate}"/>
+                                </Grid>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.Row="0" Classes="detail-label" Text="{x:Static resources:TextResource.LabelVehicleColor}"/>
+                                    <TextBlock Grid.Row="1" Classes="detail-value" Text="{Binding VehicleColor}"/>
+                                </Grid>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.Row="0" Classes="detail-label" Text="{x:Static resources:TextResource.LabelVehicleBrand}"/>
+                                    <TextBlock Grid.Row="1" Classes="detail-value" Text="{Binding VehicleBrand}"/>
+                                </Grid>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.Row="0" Classes="detail-label" Text="{x:Static resources:TextResource.LabelVehicleModel}"/>
+                                    <TextBlock Grid.Row="1" Classes="detail-value" Text="{Binding VehicleModelCode}"/>
+                                </Grid>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                 <!--Second Row: Session Information with Payment & Images--> 
+                <Border Grid.Row="1" Classes="section-card" Margin="0,20,0,0">
+                    <StackPanel>
+                        <TextBlock Classes="section-title" Text="{x:Static resources:TextResource.SessionInformationTitle}"/>
+                        <Border HorizontalAlignment="Center" Margin="0,0,0,25">
+                            <Border.Classes>
+                                <x:String>status-completed</x:String>
+                            </Border.Classes>
+                            <TextBlock Text="{Binding Status}"
+                                       Foreground="{StaticResource TextLightBrush}"
+                                       FontWeight="SemiBold"/>
+                        </Border>
+                        <Grid HorizontalAlignment="Center" Margin="0,0,0,25">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="40"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                                <TextBlock Classes="detail-label"
+                                           Text="{x:Static resources:TextResource.LabelEntryTime}"
+                                           HorizontalAlignment="Center"
+                                           Margin="0,0,0,5"/>
+                                <TextBlock Classes="detail-value"
+                                           Text="{Binding FormattedEntryTime}"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                                <TextBlock Classes="detail-label"
+                                           Text="{x:Static resources:TextResource.LabelExitTime}"
+                                           HorizontalAlignment="Center"
+                                           Margin="0,0,0,5"/>
+                                <TextBlock Classes="detail-value"
+                                           Text="{Binding FormattedExitTime}"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="4" HorizontalAlignment="Center">
+                                <TextBlock Classes="detail-label"
+                                           Text="{x:Static resources:TextResource.LabelDuration}"
+                                           HorizontalAlignment="Center"
+                                           Margin="0,0,0,5"/>
+                                <TextBlock Classes="detail-value"
+                                           Text="{Binding FormattedDuration}"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="6" HorizontalAlignment="Center">
+                                <TextBlock Classes="detail-label"
+                                           Text="{x:Static resources:TextResource.LabelFee}"
+                                           HorizontalAlignment="Center"
+                                           Margin="0,0,0,5"/>
+                                <TextBlock Classes="detail-value"
+                                           Text="{Binding FormattedFee}"
+                                           HorizontalAlignment="Center"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="8" HorizontalAlignment="Center">
+                                <TextBlock Classes="detail-label"
+                                           Text="{x:Static resources:TextResource.PayStatusLabel}"
+                                           HorizontalAlignment="Center"
+                                           Margin="0,0,0,8"/>
+                                <Border HorizontalAlignment="Center">
+                                    <Border.Classes>
+                                        <x:String>payment-paid</x:String>
+                                    </Border.Classes>
+                                    <TextBlock Text="{Binding PaymentStatus}"
+                                               Foreground="{StaticResource TextLightBrush}"
+                                               FontWeight="SemiBold"/>
+                                </Border>
+                            </StackPanel>
+                        </Grid>
+                        <StackPanel>
+                            <TextBlock Classes="detail-label"
+                                       Text="{x:Static resources:TextResource.LabelVehicleImages}"
+                                       HorizontalAlignment="Center"
+                                       FontSize="{StaticResource FontSizeLarge}"
+                                       Margin="0,0,0,20"/>
+                            <Grid HorizontalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="60"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                 <!--Entry Gate Images--> 
+                                <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                                    <TextBlock Classes="detail-label"
+                                               Text="{x:Static resources:TextResource.LabelEntranceCameras}"
+                                               HorizontalAlignment="Center"
+                                               FontSize="{StaticResource FontSizeMedium}"
+                                               Margin="0,0,0,15"/>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="15"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                         <!--Entry Front Camera--> 
+                                        <StackPanel Grid.Row="0" HorizontalAlignment="Center">
+                                            <TextBlock Classes="detail-label"
+                                                       Text="{x:Static resources:TextResource.LabelFrontCamera}"
+                                                       HorizontalAlignment="Center"
+                                                       Margin="0,0,0,5"/>
+                                            <Border Classes="vehicle-image">
+                                                <Image Source="{Binding EntryFrontImage}" Stretch="UniformToFill"/>
+                                            </Border>
+                                        </StackPanel>
+                                         <!--Entry Back Camera--> 
+                                        <StackPanel Grid.Row="2" HorizontalAlignment="Center">
+                                            <TextBlock Classes="detail-label"
+                                                       Text="{x:Static resources:TextResource.LabelBackCamera}"
+                                                       HorizontalAlignment="Center"
+                                                       Margin="0,0,0,5"/>
+                                            <Border Classes="vehicle-image">
+                                                <Image Source="{Binding EntryBackImage}" Stretch="UniformToFill"/>
+                                            </Border>
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                                 <!--Exit Gate Images--> 
+                                <StackPanel Grid.Column="2" HorizontalAlignment="Center">
+                                    <TextBlock Classes="detail-label"
+                                               Text="{x:Static resources:TextResource.LabelExitCameras}"
+                                               HorizontalAlignment="Center"
+                                               FontSize="{StaticResource FontSizeMedium}"
+                                               Margin="0,0,0,15"/>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="15"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                         <!--Exit Front Camera--> 
+                                        <StackPanel Grid.Row="0" HorizontalAlignment="Center">
+                                            <TextBlock Classes="detail-label"
+                                                       Text="{x:Static resources:TextResource.LabelFrontCamera}"
+                                                       HorizontalAlignment="Center"
+                                                       Margin="0,0,0,5"/>
+                                            <Border Classes="vehicle-image">
+                                                <Image Source="{Binding ExitFrontImage}" Stretch="UniformToFill"/>
+                                            </Border>
+                                        </StackPanel>
+                                         <!--Exit Back Camera--> 
+                                        <StackPanel Grid.Row="2" HorizontalAlignment="Center">
+                                            <TextBlock Classes="detail-label"
+                                                       Text="{x:Static resources:TextResource.LabelBackCamera}"
+                                                       HorizontalAlignment="Center"
+                                                       Margin="0,0,0,5"/>
+                                            <Border Classes="vehicle-image">
+                                                <Image Source="{Binding ExitBackImage}" Stretch="UniformToFill"/>
+                                            </Border>
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Grid>
+    </ScrollViewer>
+</rxui:ReactiveUserControl>

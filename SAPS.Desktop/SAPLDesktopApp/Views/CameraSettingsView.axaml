@@ -1,0 +1,364 @@
+<rxui:ReactiveUserControl xmlns="https://github.com/avaloniaui"
+                          xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                          xmlns:rxui="http://reactiveui.net"
+                          xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                          xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                          xmlns:vm="clr-namespace:SAPLDesktopApp.ViewModels"
+						  xmlns:resources="using:SAPLDesktopApp.Resources"
+                          mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                          x:Class="SAPLDesktopApp.Views.CameraSettingsView"
+                          x:DataType="vm:CameraSettingsViewModel">
+
+	<rxui:ReactiveUserControl.Styles>
+		<!-- Header Style -->
+		<Style Selector="Border.settings-header">
+			<Setter Property="Background" Value="{StaticResource PrimaryDarkBrush}"/>
+			<Setter Property="Padding" Value="{StaticResource PaddingLarge}"/>
+			<Setter Property="BorderThickness" Value="{StaticResource BorderThicknessNone}"/>
+		</Style>
+
+		<!-- Header Text Style -->
+		<Style Selector="TextBlock.header-text">
+			<Setter Property="Foreground" Value="{StaticResource TextLightBrush}"/>
+			<Setter Property="FontWeight" Value="Bold"/>
+			<Setter Property="FontSize" Value="{StaticResource FontSizeLarge}"/>
+			<Setter Property="VerticalAlignment" Value="Center"/>
+			<Setter Property="HorizontalAlignment" Value="Center"/>
+		</Style>
+
+		<!-- Back Button Style -->
+		<Style Selector="Button.back-button">
+			<Setter Property="Background" Value="{StaticResource TransparentBrush}"/>
+			<Setter Property="Foreground" Value="{StaticResource TextLightBrush}"/>
+			<Setter Property="BorderThickness" Value="{StaticResource BorderThicknessNone}"/>
+			<Setter Property="FontSize" Value="{StaticResource FontSizeRegular}"/>
+			<Setter Property="Padding" Value="{StaticResource PaddingSmall}"/>
+			<Setter Property="CornerRadius" Value="{StaticResource CornerRadiusSmall}"/>
+		</Style>
+
+		<Style Selector="Button.back-button:pointerover">
+			<Setter Property="Background" Value="{StaticResource PrimaryMediumBrush}"/>
+		</Style>
+
+		<!-- Section Container Style -->
+		<Style Selector="Border.settings-section">
+			<Setter Property="Background" Value="{StaticResource NeutralBackgroundBrush}"/>
+			<Setter Property="BorderBrush" Value="{StaticResource NeutralBorderBrush}"/>
+			<Setter Property="BorderThickness" Value="{StaticResource BorderThicknessThin}"/>
+			<Setter Property="CornerRadius" Value="{StaticResource CornerRadiusMedium}"/>
+			<Setter Property="Padding" Value="{StaticResource PaddingLarge}"/>
+			<Setter Property="Margin" Value="0,0,0,16"/>
+		</Style>
+
+		<!-- Section Title Style -->
+		<Style Selector="TextBlock.section-title">
+			<Setter Property="FontSize" Value="{StaticResource FontSizeMedium}"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+			<Setter Property="Margin" Value="0,0,0,12"/>
+		</Style>
+
+		<!-- Camera Item Style -->
+		<Style Selector="Border.camera-item">
+			<Setter Property="Background" Value="{StaticResource NeutralLightBrush}"/>
+			<Setter Property="BorderBrush" Value="{StaticResource NeutralBorderBrush}"/>
+			<Setter Property="BorderThickness" Value="{StaticResource BorderThicknessThin}"/>
+			<Setter Property="CornerRadius" Value="{StaticResource CornerRadiusSmall}"/>
+			<Setter Property="Padding" Value="{StaticResource PaddingMedium}"/>
+			<Setter Property="Margin" Value="0,0,0,8"/>
+		</Style>
+
+		<!-- Camera Preview Style -->
+		<Style Selector="Border.camera-preview">
+			<Setter Property="Width" Value="160"/>
+			<Setter Property="Height" Value="120"/>
+			<Setter Property="BorderBrush" Value="{StaticResource NeutralBorderBrush}"/>
+			<Setter Property="BorderThickness" Value="{StaticResource BorderThicknessThin}"/>
+			<Setter Property="CornerRadius" Value="{StaticResource CornerRadiusSmall}"/>
+			<Setter Property="Background" Value="{StaticResource NeutralDarkBrush}"/>
+			<Setter Property="Margin" Value="0,0,12,0"/>
+		</Style>
+
+		<!-- Camera Name Style -->
+		<Style Selector="TextBlock.camera-name">
+			<Setter Property="FontSize" Value="{StaticResource FontSizeRegular}"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+		</Style>
+
+		<!-- Camera Details Style -->
+		<Style Selector="TextBlock.camera-details">
+			<Setter Property="FontSize" Value="{StaticResource FontSizeSmall}"/>
+			<Setter Property="Foreground" Value="{StaticResource TextMutedBrush}"/>
+			<Setter Property="Margin" Value="0,2,0,0"/>
+		</Style>
+
+		<!-- Primary Button Style -->
+		<Style Selector="Button.primary-button">
+			<Setter Property="Background" Value="{StaticResource AccentSuccessBrush}"/>
+			<Setter Property="Foreground" Value="{StaticResource TextLightBrush}"/>
+			<Setter Property="BorderThickness" Value="{StaticResource BorderThicknessNone}"/>
+			<Setter Property="CornerRadius" Value="{StaticResource CornerRadiusMedium}"/>
+			<Setter Property="Padding" Value="{StaticResource PaddingButtonLarge}"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="FontSize" Value="{StaticResource FontSizeRegular}"/>
+		</Style>
+
+		<Style Selector="Button.primary-button:pointerover">
+			<Setter Property="Background" Value="{StaticResource PrimaryMediumBrush}"/>
+		</Style>
+
+		<!-- Secondary Button Style -->
+		<Style Selector="Button.secondary-button">
+			<Setter Property="Background" Value="{StaticResource NeutralGrayBrush}"/>
+			<Setter Property="Foreground" Value="{StaticResource TextLightBrush}"/>
+			<Setter Property="BorderThickness" Value="{StaticResource BorderThicknessNone}"/>
+			<Setter Property="CornerRadius" Value="{StaticResource CornerRadiusMedium}"/>
+			<Setter Property="Padding" Value="{StaticResource PaddingButtonLarge}"/>
+			<Setter Property="FontWeight" Value="SemiBold"/>
+			<Setter Property="FontSize" Value="{StaticResource FontSizeRegular}"/>
+		</Style>
+
+		<Style Selector="Button.secondary-button:pointerover">
+			<Setter Property="Background" Value="{StaticResource NeutralDarkBrush}"/>
+		</Style>
+
+		<!-- Footer Style -->
+		<Style Selector="Border.settings-footer">
+			<Setter Property="Background" Value="{StaticResource NeutralLightBrush}"/>
+			<Setter Property="BorderBrush" Value="{StaticResource NeutralBorderBrush}"/>
+			<Setter Property="BorderThickness" Value="{StaticResource BorderThicknessTopOnly}"/>
+			<Setter Property="Padding" Value="{StaticResource PaddingLarge}"/>
+		</Style>
+	</rxui:ReactiveUserControl.Styles>
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+
+		<!-- Header -->
+		<Border Grid.Row="0" Classes="settings-header">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+
+				<Button Grid.Column="0"
+                        Content="{x:Static resources:TextResource.BtnBack}"
+                        Classes="back-button"
+                        Command="{Binding BackCommand}"/>
+
+				<TextBlock Grid.Column="1"
+                           Text="{x:Static resources:TextResource.SettingsTitle}"
+                           Classes="header-text"/>
+
+				<Button Grid.Column="2"
+                        Content="🔄"
+                        Classes="back-button"
+                        Command="{Binding RefreshCamerasCommand}"
+                        ToolTip.Tip="Refresh Cameras"/>
+			</Grid>
+		</Border>
+
+		<!-- Settings Content -->
+		<ScrollViewer Grid.Row="1" Padding="{StaticResource PaddingLarge}">
+			<StackPanel>
+
+				<!-- Available Cameras Section -->
+				<Border Classes="settings-section">
+					<StackPanel>
+						<TextBlock Text="{x:Static resources:TextResource.AvailableCamerasTitle}"
+                                   Classes="section-title"/>
+
+						<ItemsControl ItemsSource="{Binding AvailableCameras}">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<Border Classes="camera-item">
+										<Grid>
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="Auto"/>
+												<ColumnDefinition Width="*"/>
+												<ColumnDefinition Width="Auto"/>
+											</Grid.ColumnDefinitions>
+
+											<!-- Live Camera Frame Container -->
+											<Border Grid.Column="0" Classes="camera-preview">
+												<Grid>
+													<!-- Show live frame if available -->
+													<Image Source="{Binding LiveFrame}"
+														   Stretch="UniformToFill"
+														   IsVisible="{Binding LiveFrame, Converter={x:Static ObjectConverters.IsNotNull}}"/>
+
+													<!-- Show placeholder if no frame -->
+													<StackPanel HorizontalAlignment="Center"
+																VerticalAlignment="Center"
+																IsVisible="{Binding LiveFrame, Converter={x:Static ObjectConverters.IsNull}}">
+														<TextBlock Text="📹"
+																   FontSize="32"
+																   HorizontalAlignment="Center"
+																   Foreground="{StaticResource TextMutedBrush}"/>
+														<TextBlock Text="{x:Static resources:TextResource.NoPreviewText}"
+																   FontSize="{StaticResource FontSizeSmall}"
+																   HorizontalAlignment="Center"
+																   Foreground="{StaticResource TextMutedBrush}"/>
+													</StackPanel>
+
+													<!-- Live indicator overlay -->
+													<Border Background="{StaticResource AccentSuccessBrush}"
+															CornerRadius="2"
+															Padding="4,1"
+															HorizontalAlignment="Left"
+															VerticalAlignment="Top"
+															Margin="4"
+															IsVisible="{Binding IsStreaming}">
+														<TextBlock Text="{x:Static resources:TextResource.LiveIndicatorText}"
+																   FontSize="10"
+																   Foreground="{StaticResource TextLightBrush}"
+																   FontWeight="Bold"/>
+													</Border>
+												</Grid>
+											</Border>
+
+											<!-- Camera Information -->
+											<StackPanel Grid.Column="1" VerticalAlignment="Center">
+												<TextBlock Text="{Binding Name}"
+                                                           Classes="camera-name"/>
+												<TextBlock Text="{Binding DeviceId}"
+                                                           Classes="camera-details"/>
+												<TextBlock Text="{Binding Description}"
+                                                           Classes="camera-details"/>
+												<TextBlock Text="{Binding Manufacturer}"
+                                                           Classes="camera-details"/>
+												<TextBlock Classes="camera-details">
+													<TextBlock.Text>
+														<MultiBinding StringFormat="Index: {0}">
+															<Binding Path="CameraIndex"/>
+														</MultiBinding>
+													</TextBlock.Text>
+												</TextBlock>
+											</StackPanel>
+
+											<!-- Status Indicator -->
+											<StackPanel Grid.Column="2" VerticalAlignment="Top">
+												<Border Background="{StaticResource AccentSuccessBrush}"
+                                                        CornerRadius="8"
+                                                        Padding="6,2"
+                                                        IsVisible="{Binding IsAvailable}">
+													<TextBlock Text="{x:Static resources:TextResource.AvailableStatusText}"
+                                                               FontSize="{StaticResource FontSizeSmall}"
+                                                               Foreground="{StaticResource TextLightBrush}"/>
+												</Border>
+
+												<Border Background="{StaticResource NeutralGrayBrush}"
+                                                        CornerRadius="8"
+                                                        Padding="6,2"
+                                                        IsVisible="{Binding !IsAvailable}">
+													<TextBlock Text="{x:Static resources:TextResource.UnavailableStatusText}"
+                                                               FontSize="{StaticResource FontSizeSmall}"
+                                                               Foreground="{StaticResource TextLightBrush}"/>
+												</Border>
+											</StackPanel>
+										</Grid>
+									</Border>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</StackPanel>
+				</Border>
+
+				<!-- Camera Assignments Section -->
+				<Border Classes="settings-section">
+    <StackPanel>
+        <TextBlock Text="{x:Static resources:TextResource.CameraAssignmentsTitle}"
+                   Classes="section-title"/>
+
+        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto,Auto,Auto,Auto" ColumnSpacing="16" RowSpacing="12">
+            <!-- Front Entrance -->
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static resources:TextResource.FrontEntranceLabel}" VerticalAlignment="Center" FontWeight="SemiBold"/>
+            <ComboBox Grid.Row="0" Grid.Column="1" 
+                      ItemsSource="{Binding AvailableCameras}"
+                      SelectedItem="{Binding FrontEntranceSelectedCamera}"
+                      PlaceholderText="{x:Static resources:TextResource.SelectCameraPlaceholder}"
+                      MinWidth="200">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+            <!-- Back Entrance -->
+            <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static resources:TextResource.BackEntranceLabel}" VerticalAlignment="Center" FontWeight="SemiBold"/>
+            <ComboBox Grid.Row="1" Grid.Column="1" 
+                      ItemsSource="{Binding AvailableCameras}"
+                      SelectedItem="{Binding BackEntranceSelectedCamera}"
+                      PlaceholderText="{x:Static resources:TextResource.SelectCameraPlaceholder}"
+                      MinWidth="200">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+            <!-- Front Exit -->
+            <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static resources:TextResource.FrontExitLabel}" VerticalAlignment="Center" FontWeight="SemiBold"/>
+            <ComboBox Grid.Row="2" Grid.Column="1" 
+                      ItemsSource="{Binding AvailableCameras}"
+                      SelectedItem="{Binding FrontExitSelectedCamera}"
+                      PlaceholderText="{x:Static resources:TextResource.SelectCameraPlaceholder}"
+                      MinWidth="200">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+
+            <!-- Back Exit -->
+            <TextBlock Grid.Row="3" Grid.Column="0" Text="{x:Static resources:TextResource.BackExitLabel}" VerticalAlignment="Center" FontWeight="SemiBold"/>
+            <ComboBox Grid.Row="3" Grid.Column="1" 
+                      ItemsSource="{Binding AvailableCameras}"
+                      SelectedItem="{Binding BackExitSelectedCamera}"
+                      PlaceholderText="{x:Static resources:TextResource.SelectCameraPlaceholder}"
+                      MinWidth="200">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Name}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </Grid>
+    </StackPanel>
+</Border>
+			</StackPanel>
+		</ScrollViewer>
+
+		<!-- Footer Actions -->
+		<Border Grid.Row="2" Classes="settings-footer">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="Auto"/>
+				</Grid.ColumnDefinitions>
+
+				<Button Grid.Column="1"
+                        Content="{x:Static resources:TextResource.SettingsCancelButton}"
+                        Classes="secondary-button"
+                        Margin="0,0,8,0"
+                        Command="{Binding BackCommand}"/>
+
+				<Button Grid.Column="2"
+                        Content="{x:Static resources:TextResource.SettingsSaveButton}"
+                        Classes="primary-button"
+                        Command="{Binding SaveSettingsCommand}"/>
+			</Grid>
+		</Border>
+	</Grid>
+</rxui:ReactiveUserControl>

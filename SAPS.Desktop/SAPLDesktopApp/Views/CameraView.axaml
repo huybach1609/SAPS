@@ -1,0 +1,530 @@
+<rxui:ReactiveUserControl xmlns="https://github.com/avaloniaui"
+                         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                         xmlns:rxui="http://reactiveui.net"
+                         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                         xmlns:vm="clr-namespace:SAPLDesktopApp.ViewModels"
+                         xmlns:resources="using:SAPLDesktopApp.Resources"
+                         xmlns:controls="clr-namespace:SAPLDesktopApp.Controls"
+                         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+                         x:Class="SAPLDesktopApp.Views.CameraView"
+                         x:DataType="vm:CameraViewModel">
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="{Binding SidebarWidth}"/>
+		</Grid.ColumnDefinitions>
+
+		<!-- Main Camera Area -->
+		<controls:CameraFeedControl Grid.Column="0"
+                                    FrontEntranceImage="{Binding FrontEntranceCameraFrame}"
+                                    BackEntranceImage="{Binding BackEntranceCameraFrame}"
+                                    FrontExitImage="{Binding FrontExitCameraFrame}"
+                                    BackExitImage="{Binding BackExitCameraFrame}"
+                                    FooterButtons="{Binding CameraButtons}"/>
+
+		<!-- Enhanced Sidebar -->
+		<Border Grid.Column="1"
+                IsVisible="{Binding IsSidebarOpen}"
+                Background="{StaticResource NeutralBackgroundBrush}"
+                BorderBrush="{StaticResource NeutralBorderBrush}"
+                BorderThickness="1,0,0,0"
+                BoxShadow="0 0 15 0 #30000000">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="*"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+
+				<!-- Sidebar Header -->
+				<Border Grid.Row="0"
+                        Background="{StaticResource PrimaryDarkBrush}"
+                        Padding="20,16">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="Auto"/>
+						</Grid.ColumnDefinitions>
+						<StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="12">
+							<TextBlock Text="{Binding SidebarIcon}"
+                                       FontSize="20"
+                                       Foreground="{StaticResource TextLightBrush}"
+                                       VerticalAlignment="Center"/>
+							<TextBlock Text="{Binding SidebarMode}"
+                                       FontSize="18"
+                                       FontWeight="SemiBold"
+                                       Foreground="{StaticResource TextLightBrush}"
+                                       VerticalAlignment="Center"/>
+						</StackPanel>
+						<Button Grid.Column="1"
+                                Content="✕"
+                                Background="Transparent"
+                                Foreground="{StaticResource TextLightBrush}"
+                                BorderThickness="0"
+                                FontSize="16"
+                                FontWeight="Bold"
+                                Width="36"
+                                Height="36"
+                                CornerRadius="6"
+                                Command="{Binding CloseSidebarCommand}"
+                                ToolTip.Tip="{x:Static resources:TextResource.CloseSidebarTooltip}"/>
+					</Grid>
+				</Border>
+
+				<!-- Scrollable Content -->
+				<ScrollViewer Grid.Row="1" Padding="0" VerticalScrollBarVisibility="Auto">
+					<StackPanel Spacing="0">
+
+						<!-- Captured Images Section -->
+						<Border Background="{StaticResource NeutralLightBrush}"
+                                BorderBrush="{StaticResource NeutralBorderBrush}"
+                                BorderThickness="0,0,0,1"
+                                Padding="20,16">
+							<StackPanel Spacing="12">
+								<TextBlock Text="{x:Static resources:TextResource.CapturedImagesTitle}"
+                                           FontSize="14"
+                                           FontWeight="SemiBold"
+                                           Foreground="{StaticResource TextPrimaryBrush}"/>
+
+								<!-- Check-in Mode Images -->
+								<StackPanel>
+									<Grid IsVisible="True">
+										<Grid.RowDefinitions>
+											<RowDefinition Height="Auto"/>
+											<RowDefinition Height="Auto"/>
+										</Grid.RowDefinitions>
+
+										<TextBlock Grid.Row="0"
+                                                   Text="{x:Static resources:TextResource.EntranceCamerasText}"
+                                                   FontSize="12"
+                                                   FontWeight="Medium"
+                                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                                   Margin="0,0,0,8"/>
+
+										<Grid Grid.Row="1">
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="*"/>
+												<ColumnDefinition Width="6"/>
+												<ColumnDefinition Width="*"/>
+											</Grid.ColumnDefinitions>
+
+											<Border Grid.Column="0"
+                                                    Background="White"
+                                                    BorderBrush="{StaticResource NeutralBorderBrush}"
+                                                    BorderThickness="1"
+                                                    CornerRadius="4"
+                                                    Padding="4">
+												<StackPanel>
+													<Image Source="{Binding CapturedFrontEntranceImage}"
+                                                           Height="80"
+                                                           Stretch="UniformToFill"/>
+													<TextBlock Text="{x:Static resources:TextResource.FrontCameraLabel}"
+                                                               FontSize="10"
+                                                               Foreground="{StaticResource TextMutedBrush}"
+                                                               HorizontalAlignment="Center"
+                                                               Margin="0,2,0,0"/>
+												</StackPanel>
+											</Border>
+
+											<Border Grid.Column="2"
+                                                    Background="White"
+                                                    BorderBrush="{StaticResource NeutralBorderBrush}"
+                                                    BorderThickness="1"
+                                                    Padding="4">
+												<StackPanel>
+													<Image Source="{Binding CapturedBackEntranceImage}"
+                                                           Height="80"
+                                                           Stretch="UniformToFill"/>
+													<TextBlock Text="{x:Static resources:TextResource.BackCameraLabel}"
+                                                               FontSize="10"
+                                                               Foreground="{StaticResource TextMutedBrush}"
+                                                               HorizontalAlignment="Center"
+                                                               Margin="0,2,0,0"/>
+												</StackPanel>
+											</Border>
+										</Grid>
+									</Grid>
+
+									<StackPanel IsVisible="False"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Spacing="8">
+										<TextBlock Text="📷"
+                                                   FontSize="32"
+                                                   Foreground="{StaticResource TextMutedBrush}"
+                                                   HorizontalAlignment="Center"/>
+										<TextBlock Text="{x:Static resources:TextResource.NoEntranceImagesCaptured}"
+                                                   FontSize="11"
+                                                   FontStyle="Italic"
+                                                   Foreground="{StaticResource TextMutedBrush}"
+                                                   HorizontalAlignment="Center"
+                                                   TextWrapping="Wrap"/>
+									</StackPanel>
+								</StackPanel>
+
+								<!-- Check-out Mode Images -->
+								<StackPanel IsVisible="{Binding IsCheckOutMode}">
+									<Grid IsVisible="True">
+										<Grid.RowDefinitions>
+											<RowDefinition Height="Auto"/>
+											<RowDefinition Height="Auto"/>
+										</Grid.RowDefinitions>
+
+										<TextBlock Grid.Row="0"
+                                                   Text="{x:Static resources:TextResource.ExitCamerasText}"
+                                                   FontSize="12"
+                                                   FontWeight="Medium"
+                                                   Foreground="{StaticResource TextSecondaryBrush}"
+                                                   Margin="0,0,0,8"/>
+
+										<Grid Grid.Row="1">
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="*"/>
+												<ColumnDefinition Width="6"/>
+												<ColumnDefinition Width="*"/>
+											</Grid.ColumnDefinitions>
+
+											<Border Grid.Column="0"
+                                                    Background="White"
+                                                    BorderBrush="{StaticResource NeutralBorderBrush}"
+                                                    BorderThickness="1"
+                                                    CornerRadius="4"
+                                                    Padding="4">
+												<StackPanel>
+													<Image Source="{Binding CapturedFrontExitImage}"
+                                                           Height="80"
+                                                           Stretch="UniformToFill"/>
+													<TextBlock Text="{x:Static resources:TextResource.FrontCameraLabel}"
+                                                               FontSize="10"
+                                                               Foreground="{StaticResource TextMutedBrush}"
+                                                               HorizontalAlignment="Center"
+                                                               Margin="0,2,0,0"/>
+												</StackPanel>
+											</Border>
+
+											<Border Grid.Column="2"
+                                                    Background="White"
+                                                    BorderBrush="{StaticResource NeutralBorderBrush}"
+                                                    BorderThickness="1"
+                                                    CornerRadius="4"
+                                                    Padding="4">
+												<StackPanel>
+													<Image Source="{Binding CapturedBackExitImage}"
+                                                           Height="80"
+                                                           Stretch="UniformToFill"/>
+													<TextBlock Text="{x:Static resources:TextResource.BackCameraLabel}"
+                                                               FontSize="10"
+                                                               Foreground="{StaticResource TextMutedBrush}"
+                                                               HorizontalAlignment="Center"
+                                                               Margin="0,2,0,0"/>
+												</StackPanel>
+											</Border>
+										</Grid>
+									</Grid>
+
+									<StackPanel IsVisible="False"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Spacing="8">
+										<TextBlock Text="📷"
+                                                   FontSize="32"
+                                                   Foreground="{StaticResource TextMutedBrush}"
+                                                   HorizontalAlignment="Center"/>
+										<TextBlock Text="{x:Static resources:TextResource.NoExitImagesCaptured}"
+                                                   FontSize="11"
+                                                   FontStyle="Italic"
+                                                   Foreground="{StaticResource TextMutedBrush}"
+                                                   HorizontalAlignment="Center"
+                                                   TextWrapping="Wrap"/>
+									</StackPanel>
+								</StackPanel>
+
+								<!-- Capture Timestamp -->
+								<TextBlock Text="{Binding CaptureTimestamp}"
+                                           IsVisible="{Binding HasCapturedImages}"
+                                           FontSize="10"
+                                           Foreground="{StaticResource TextMutedBrush}"
+                                           HorizontalAlignment="Center"/>
+							</StackPanel>
+						</Border>
+
+						<!-- License Plate Input Section -->
+						<Border Background="White"
+                                BorderBrush="{StaticResource NeutralBorderBrush}"
+                                BorderThickness="0,0,0,1"
+                                Padding="20,16">
+							<StackPanel Spacing="12">
+								<TextBlock Text="{x:Static resources:TextResource.LicensePlateNumberTitle}"
+                                           FontSize="14"
+                                           FontWeight="SemiBold"
+                                           Foreground="{StaticResource TextPrimaryBrush}"/>
+
+								<TextBox Text="{Binding VehiclePlateNumber}"
+                                         FontSize="14"
+                                         Padding="12,10"
+                                         CornerRadius="6"
+                                         BorderBrush="{StaticResource PrimaryMediumBrush}"
+                                         BorderThickness="2"
+                                         Background="White"
+                                         Watermark="{x:Static resources:TextResource.EnterLicensePlatePlaceholder}"
+                                         Height="44"/>
+							</StackPanel>
+						</Border>
+
+						<!-- Vehicle Type Dropdown Section -->
+                        <Border Background="White"
+                                BorderBrush="{StaticResource NeutralBorderBrush}"
+                                BorderThickness="0,0,0,1"
+                                Padding="20,16"
+                                IsVisible="{Binding ShowVehicleTypeDropdown}">
+                            <StackPanel Spacing="12">
+                                <TextBlock Text="{x:Static resources:TextResource.VehicleTypeTitle}"
+                                           FontSize="14"
+                                           FontWeight="SemiBold"
+                                           Foreground="{StaticResource TextPrimaryBrush}"/>
+
+                                <ComboBox ItemsSource="{Binding AvailableVehicleTypes}"
+                                          SelectedItem="{Binding SelectedVehicleType}"
+                                          FontSize="14"
+                                          Padding="12,10"
+                                          CornerRadius="6"
+                                          BorderBrush="{StaticResource PrimaryMediumBrush}"
+                                          BorderThickness="2"
+                                          Background="White"
+                                          Height="44"
+                                          HorizontalAlignment="Stretch"/>
+                  
+                                <TextBlock Text="{x:Static resources:TextResource.SelectVehicleTypeDescription}"
+                                           FontSize="11"
+                                           Foreground="{StaticResource TextMutedBrush}"/>
+                            </StackPanel>
+                        </Border>
+
+						<!-- Action Buttons Section -->
+						<Border Background="White"
+                                BorderBrush="{StaticResource NeutralBorderBrush}"
+                                BorderThickness="0,0,0,1"
+                                Padding="20,16">
+							<StackPanel Spacing="12">
+								<TextBlock Text="{x:Static resources:TextResource.ActionsTitle}"
+                                           FontSize="14"
+                                           FontWeight="SemiBold"
+                                           Foreground="{StaticResource TextPrimaryBrush}"/>
+
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*"/>
+										<ColumnDefinition Width="8"/>
+										<ColumnDefinition Width="*"/>
+									</Grid.ColumnDefinitions>
+
+									<Button Grid.Column="0"
+                                            Content="{x:Static resources:TextResource.CaptureButtonText}"
+                                            Background="{StaticResource PrimaryMediumBrush}"
+                                            Foreground="{StaticResource TextLightBrush}"
+                                            Padding="12,10"
+                                            CornerRadius="6"
+                                            FontWeight="SemiBold"
+                                            FontSize="12"
+                                            Height="40"
+                                            Command="{Binding CaptureImagesCommand}"/>
+
+									<Button Grid.Column="2"
+                                            Content="{Binding ProcessButtonText}"
+                                            Background="{Binding ProcessButtonBackground}"
+                                            Foreground="{StaticResource TextLightBrush}"
+                                            Padding="12,10"
+                                            CornerRadius="6"
+                                            FontWeight="SemiBold"
+                                            FontSize="12"
+                                            Height="40"
+                                            IsVisible="{Binding CanProcess}"
+                                            Command="{Binding ProcessCommand}"/>
+								</Grid>
+							</StackPanel>
+						</Border>
+
+						<!-- Vehicle Information Section -->
+						<Border IsVisible="{Binding HasSessionDetails}"
+                                Background="{StaticResource NeutralLightBrush}"
+                                Padding="20,16">
+							<StackPanel Spacing="16">
+								<TextBlock Text="{x:Static resources:TextResource.VehicleInformationTitle}"
+                                           FontSize="14"
+                                           FontWeight="SemiBold"
+                                           Foreground="{StaticResource TextPrimaryBrush}"/>
+
+								<!-- Owner Information -->
+								<Border Background="White"
+                                        BorderBrush="{StaticResource NeutralBorderBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="6"
+                                        Padding="16,12">
+									<StackPanel Spacing="8">
+										<TextBlock Text="{x:Static resources:TextResource.OwnerInformationTitle}"
+                                                   FontSize="12"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextSecondaryBrush}"/>
+										<StackPanel Spacing="4">
+											<TextBlock Text="{Binding OwnerName}"
+                                                       FontSize="14"
+                                                       FontWeight="SemiBold"/>
+											<TextBlock Text="{Binding OwnerPhone}"
+                                                       FontSize="12"
+                                                       Foreground="{StaticResource TextMutedBrush}"/>
+										</StackPanel>
+									</StackPanel>
+								</Border>
+
+								<!-- Vehicle Details -->
+								<Border Background="White"
+                                        BorderBrush="{StaticResource NeutralBorderBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="6"
+                                        Padding="16,12">
+									<StackPanel Spacing="8">
+										<TextBlock Text="{x:Static resources:TextResource.VehicleDetailsTitle}"
+                                                   FontSize="12"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource TextSecondaryBrush}"/>
+										<TextBlock Text="{Binding VehicleInfo}"
+                                                   FontSize="12"
+                                                   TextWrapping="Wrap"/>
+									</StackPanel>
+								</Border>
+
+								<!-- Parking Information -->
+								<Border Background="{StaticResource InfoLightBrush}"
+                                        BorderBrush="{StaticResource InfoBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="6"
+                                        Padding="16,12">
+									<StackPanel Spacing="8">
+										<TextBlock Text="{x:Static resources:TextResource.ParkingInformationTitle}"
+                                                   FontSize="12"
+                                                   FontWeight="SemiBold"
+                                                   Foreground="{StaticResource InfoDarkBrush}"/>
+										<Grid>
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="Auto"/>
+												<ColumnDefinition Width="*"/>
+											</Grid.ColumnDefinitions>
+											<Grid.RowDefinitions>
+												<RowDefinition Height="Auto"/>
+												<RowDefinition Height="Auto"/>
+												<RowDefinition Height="Auto"/>
+												<RowDefinition Height="Auto"/>
+												<RowDefinition Height="Auto"/>
+												<RowDefinition Height="Auto"/>
+											</Grid.RowDefinitions>
+
+											<TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static resources:TextResource.CheckInTimeLabel}" FontSize="11" FontWeight="SemiBold" Margin="0,0,8,2"/>
+											<TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding CheckInTime}" FontSize="11" Margin="0,0,0,2"/>
+
+											<TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static resources:TextResource.CheckOutTimeLabel}" FontSize="11" FontWeight="SemiBold" Margin="0,0,8,2"/>
+											<TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding CheckOutTime}" FontSize="11" Margin="0,0,0,2"/>
+
+											<TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static resources:TextResource.DurationLabel}" FontSize="11" FontWeight="SemiBold" Margin="0,0,8,2"/>
+											<TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding ParkingDuration}" FontSize="11" Margin="0,0,0,2"/>
+
+											<TextBlock Grid.Row="3" Grid.Column="0" Text="{x:Static resources:TextResource.LabelStatus}" FontSize="11" FontWeight="SemiBold" Margin="0,0,8,2"/>
+											<TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding SessionStatus}" FontSize="11" Margin="0,0,0,2"/>
+
+											<TextBlock Grid.Row="4" Grid.Column="0" Text="{x:Static resources:TextResource.PayStatusLabel}" FontSize="11" FontWeight="SemiBold" Margin="0,0,8,2"/>
+											<TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding PaymentStatus}" FontSize="11" Margin="0,0,0,2"/>
+
+											<TextBlock Grid.Row="5" Grid.Column="0" Text="{x:Static resources:TextResource.FeeLabel}" FontSize="11" FontWeight="SemiBold" Margin="0,0,8,0"/>
+											<TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding ParkingFee}" FontSize="11" FontWeight="Bold" Foreground="{StaticResource AccentSuccessBrush}"/>
+										</Grid>
+									</StackPanel>
+								</Border>
+
+								<!-- Payment Information Button -->
+								<Button Background="{StaticResource AccentSuccessBrush}"
+										Foreground="{StaticResource TextLightBrush}"
+										Padding="16,12"
+										CornerRadius="6"
+										FontWeight="SemiBold"
+										FontSize="14"
+										HorizontalAlignment="Stretch"
+										IsVisible="{Binding CanGetSessionPaymentInformation}"
+										Command="{Binding ShowPaymentInfoCommand}">
+									<Button.Content>
+										<StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Spacing="8">
+											<TextBlock Text="💳" FontSize="16" VerticalAlignment="Center"/>
+											<TextBlock Text="{x:Static resources:TextResource.PaymentInfoButtonText}" VerticalAlignment="Center"/>
+										</StackPanel>
+									</Button.Content>
+								</Button>
+							</StackPanel>
+						</Border>
+					</StackPanel>
+				</ScrollViewer>
+
+				<!-- Bottom Action Buttons -->
+				<Border Grid.Row="2"
+                        Background="{StaticResource NeutralLightBrush}"
+                        BorderBrush="{StaticResource NeutralBorderBrush}"
+                        BorderThickness="0,1,0,0"
+                        Padding="20,16">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="8"/>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="8"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
+
+						<!-- Cancel Button -->
+						<Button Grid.Column="2"
+                                Content="{x:Static resources:TextResource.CancelButtonText}"
+                                Background="{StaticResource NeutralGrayBrush}"
+                                Foreground="{StaticResource TextLightBrush}"
+                                Padding="16,12"
+                                CornerRadius="6"
+                                FontWeight="SemiBold"
+                                FontSize="12"
+                                Height="44"
+                                Command="{Binding CloseSidebarCommand}"/>
+
+						<!-- Refresh Button (only visible in checkout mode when session details are available) -->
+						<Button Grid.Column="0"
+                                Background="{StaticResource InfoBrush}"
+                                Foreground="{StaticResource TextLightBrush}"
+                                Padding="12,8"
+                                CornerRadius="6"
+                                FontWeight="SemiBold"
+                                FontSize="11"
+                                Height="44"
+                                IsVisible="{Binding CanRefreshSession}"
+                                Command="{Binding RefreshSessionCommand}">
+							<Button.Content>
+								<StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+									<TextBlock Text="🔄" FontSize="12" VerticalAlignment="Center"/>
+									<TextBlock Text="{x:Static resources:TextResource.BtnRefreshSession}" 
+											   VerticalAlignment="Center"
+											   FontSize="11"/>
+								</StackPanel>
+							</Button.Content>
+						</Button>
+
+						<!-- Confirm Button -->
+						<Button Grid.Column="4"
+                                Content="{x:Static resources:TextResource.ConfirmButtonText}"
+                                Background="{Binding ConfirmButtonBackground}"
+                                Foreground="{StaticResource TextLightBrush}"
+                                Padding="16,12"
+                                CornerRadius="6"
+                                FontWeight="SemiBold"
+                                FontSize="12"
+                                Height="44"
+                                IsVisible="{Binding CanConfirm}"
+                                Command="{Binding ConfirmCommand}"/>
+					</Grid>
+				</Border>
+			</Grid>
+		</Border>
+	</Grid>
+</rxui:ReactiveUserControl>
